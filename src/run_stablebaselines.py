@@ -6,7 +6,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
 
-from classic_control.meta_mountaincar import MountainCarEnv
+from classic_control.meta_mountaincar import MetaMountainCarEnv
 # from gym.envs.classic_control import MountainCarEnv
 
 
@@ -36,10 +36,10 @@ if __name__ == '__main__':
     # Stable Baselines provides you with make_vec_env() helper
     # which does exactly the previous steps for you:
     # env = make_vec_env(env_id, n_envs=num_cpu, seed=0)
-    env = MountainCarEnv()
+    env = MetaMountainCarEnv()
 
     model = PPO('MlpPolicy', env, verbose=1)
-    model.learn(total_timesteps=100000)
+    model.learn(total_timesteps=25000)
 
     obs = env.reset()
     for _ in range(1000):
