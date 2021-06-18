@@ -1,8 +1,10 @@
 from gym import Wrapper
+import numpy as np
+
 
 class MetaEnv(Wrapper):
     def __init__(self, env, contexts, instance_mode="rr"):
-        super(self, MetaCartPoleEnv).__init__(env)
+        super().__init__(env=env)
         self.contexts = contexts
         self.instance_mode = instance_mode
         self.context = contexts[0]
@@ -13,14 +15,14 @@ class MetaEnv(Wrapper):
         self._update_context()
         return self.env.reset()
 
-    def _progress_instance():
+    def _progress_instance(self):
         if self.instance_mode == "random":
             self.context_index = np.random_choice(np.arange(len(self.contexts.keys())))
         else:
             self.context_index = (self.context_index + 1) % len(self.contexts.keys())
         self.context = self.contexts[self.context_index]
 
-    def _update_context():
+    def _update_context(self):
         raise NotImplementedError
 
 
