@@ -7,6 +7,7 @@ from gym.utils import seeding
 from typing import List, Dict
 from src.meta_env import MetaEnv
 
+
 DEFAULT_CONTEXT = {
     "min_position": -1.2,  # unit?
     "max_position": 0.6,  # unit?
@@ -46,7 +47,9 @@ class MetaMountainCarEnv(MetaEnv):
             self,
             env: gym.Env = CustomMountainCarEnv(),
             contexts: Dict[int, Dict] = {},  # ??? what should be the type of the dict keys?
-            instance_mode: str = "rr"
+            instance_mode: str = "rr",
+            add_gaussian_noise_to_context: bool = True,
+            gaussian_noise_std_percentage: float = 0.01
     ):
         """
 
@@ -60,11 +63,15 @@ class MetaMountainCarEnv(MetaEnv):
         """
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
-        super().__init__(env=env, contexts=contexts, instance_mode=instance_mode)
-
+        super().__init__(
+            env=env,
+            contexts=contexts,
+            instance_mode=instance_mode,
+            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
+            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
+        )
+        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()
-        # self.viewer = None
-        # self.seed()
 
     def _update_context(self):
         self.min_position = self.context["min_position"]
@@ -90,3 +97,5 @@ class MetaMountainCarEnv(MetaEnv):
         self.observation_space = spaces.Box(
             self.low, self.high, dtype=np.float32
         )
+
+        # TODO log context to debug
