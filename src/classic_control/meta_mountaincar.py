@@ -93,7 +93,6 @@ class MetaMountainCarEnv(MetaEnv):
             [self.max_position, self.max_speed], dtype=np.float32
         )
 
-        self.action_space = spaces.Discrete(3)
         self.observation_space = spaces.Box(
             self.low, self.high, dtype=np.float32
         )
