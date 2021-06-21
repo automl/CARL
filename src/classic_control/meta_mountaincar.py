@@ -38,8 +38,12 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         ])
 
     def reset(self):
-        self.state = self.reset_state()
-        return np.array(self.state)
+        self.state = self.reset_state().squeeze()
+        return self.state
+
+    def step(self, action):
+        state, reward, done, info = super().step(action)
+        return state.squeeze(), reward, done, info  # TODO something weird is happening such that the state gets shape (2,1) instead of (2,)
 
 
 class MetaMountainCarEnv(MetaEnv):
@@ -74,27 +78,28 @@ class MetaMountainCarEnv(MetaEnv):
         self._update_context()
 
     def _update_context(self):
-        self.min_position = self.context["min_position"]
-        self.max_position = self.context["max_position"]
-        self.max_speed = self.context["max_speed"]
-        self.goal_position = self.context["goal_position"]
-        self.goal_velocity = self.context["goal_velocity"]
-        self.min_position_start = self.context["min_position_start"]
-        self.max_position_start = self.context["max_position_start"]
-        self.min_velocity_start = self.context["min_velocity_start"]
-        self.max_velocity_start = self.context["max_velocity_start"]
-        self.force = self.context["force"]
-        self.gravity = self.context["gravity"]
+        self.env.min_position = self.context["min_position"]
+        self.env.max_position = self.context["max_position"]
+        self.env.max_speed = self.context["max_speed"]
+        self.env.goal_position = self.context["goal_position"]
+        self.env.goal_velocity = self.context["goal_velocity"]
+        self.env.min_position_start = self.context["min_position_start"]
+        self.env.max_position_start = self.context["max_position_start"]
+        self.env.min_velocity_start = self.context["min_velocity_start"]
+        self.env.max_velocity_start = self.context["max_velocity_start"]
+        self.env.force = self.context["force"]
+        self.env.gravity = self.context["gravity"]
 
         self.low = np.array(
-            [self.min_position, -self.max_speed], dtype=np.float32
-        )
+            [self.env.min_position, -self.env.max_speed], dtype=np.float32
+        ).squeeze()
         self.high = np.array(
-            [self.max_position, self.max_speed], dtype=np.float32
-        )
+            [self.env.max_position, self.env.max_speed], dtype=np.float32
+        ).squeeze()
 
-        self.observation_space = spaces.Box(
-            self.low, self.high, dtype=np.float32
+        self.env.observation_space = spaces.Box(
+            self.low, self.high, dtype=np.float32,
         )
+        self.observation_space = self.env.observation_space  # make sure it is the same object
 
         # TODO log context to debug
