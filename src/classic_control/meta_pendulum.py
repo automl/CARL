@@ -67,9 +67,4 @@ class MetaPendulumEnv(MetaEnv):
         self.env.g = self.context["g"]
 
         high = np.array([1., 1., self.max_speed], dtype=np.float32)
-        self.env.observation_space = spaces.Box(
-            low=-high,
-            high=high,
-            dtype=np.float32
-        )
-        self.observation_space = self.env.observation_space
+        self.build_observation_space(-high, high, CONTEXT_BOUNDS)
