@@ -6,6 +6,7 @@ from gym import spaces
 from gym.utils import seeding
 from typing import List, Dict
 from src.meta_env import MetaEnv
+from src.context_utils import get_context_bounds
 
 
 DEFAULT_CONTEXT = {
@@ -22,8 +23,18 @@ DEFAULT_CONTEXT = {
     "max_velocity_start": 0.,
 }
 
-DEFAULT_CONTEXT_BOUNDS = {
+CONTEXT_BOUNDS = {
+    "min_position": (-np.inf, np.inf),
+    "max_position": (-np.inf, np.inf),
+    "max_speed": (0, np.inf),
+    "goal_position": (-np.inf, np.inf),
+    "goal_velocity": (-np.inf, np.inf),
+    "force": (-np.inf, np.inf),
     "gravity": (0, np.inf),
+    "min_position_start": (-np.inf, np.inf),  # TODO need to check these
+    "max_position_start": (-np.inf, np.inf),
+    "min_velocity_start": (-np.inf, np.inf),
+    "max_velocity_start": (-np.inf, np.inf),
     # TODO add bounds for each env
 }
 
@@ -104,9 +115,5 @@ class MetaMountainCarEnv(MetaEnv):
             [self.env.max_position, self.env.max_speed], dtype=np.float32
         ).squeeze()
 
-        self.env.observation_space = spaces.Box(  # TODO check this for every env (".env.")
-            self.low, self.high, dtype=np.float32,
-        ) # TODO add context space if applicable (in every child env)
-        self.observation_space = self.env.observation_space  # make sure it is the same object
+        self.build_observation_space(self.low, self.high, CONTEXT_BOUNDS)
 
-        # TODO log context to debug and put into info object
