@@ -8,7 +8,7 @@ def add_gaussian_noise(
     mean = 0
     if not random_generator:
         random_generator = np.random.default_rng()
-    value = default_value + random_generator.normal(loc=mean, scale=std, size=1)
+    value = default_value + random_generator.normal(loc=mean, scale=std)
 
     return value
 
