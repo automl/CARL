@@ -1,3 +1,4 @@
+import gym
 from gym import Wrapper
 import numpy as np
 from src.context_changer import add_gaussian_noise
@@ -22,6 +23,12 @@ class MetaEnv(Wrapper):
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
         self.whitelist_gaussian_noise = None  # type: list[str]
+
+        if not self.hide_context:
+            context_dim = len(list(self.context.values()))
+            #TODO: extend this to non-Box obs spaces somehow
+            obs_dim = self.env.observation_space.low.shape[0]
+            self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim))
 
     def reset(self):
         self._progress_instance()
