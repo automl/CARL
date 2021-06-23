@@ -52,6 +52,7 @@ class MetaMountainCarEnv(MetaEnv):
             env: gym.Env = CustomMountainCarEnv(),
             contexts: Dict[int, Dict] = {},  # ??? what should be the type of the dict keys?
             instance_mode: str = "rr",
+            hide_context: bool = False,
             add_gaussian_noise_to_context: bool = True,
             gaussian_noise_std_percentage: float = 0.01
     ):
@@ -71,6 +72,7 @@ class MetaMountainCarEnv(MetaEnv):
             env=env,
             contexts=contexts,
             instance_mode=instance_mode,
+            hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
         )
