@@ -27,6 +27,7 @@ class MetaEnv(Wrapper):
         if not self.hide_context:
             context_dim = len(list(self.context.values()))
             #TODO: extend this to non-Box obs spaces somehow
+            # TODO check if observation space of env is a box or not
             obs_dim = self.env.observation_space.low.shape[0]
             self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim))
 
@@ -34,14 +35,14 @@ class MetaEnv(Wrapper):
         self._progress_instance()
         self._update_context()
         state = self.env.reset()
-        if not hide_context:
-            state = np.concatenate(state, np.array(list(self.context.values())))
+        if not self.hide_context:
+            state = np.concatenate((state, np.array(list(self.context.values()))))  # TODO test if this has the correct shape
         return state
 
     def step(self, action):
         state, reward, done, info = self.env.step(action)
-        if not hide_context:
-            state = np.concatenate(state, np.array(list(self.context.values())))
+        if not self.hide_context:
+            state = np.concatenate((state, np.array(list(self.context.values()))))  # TODO test if this has the correct shape
         return state, reward, done, info
 
     def __getattr__(self, name):

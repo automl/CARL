@@ -1,12 +1,15 @@
 import gym
 import numpy as np
+import importlib
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
 
-from classic_control.meta_mountaincar import MetaMountainCarEnv
+import classic_control.meta_mountaincar
+importlib.reload(classic_control.meta_mountaincar)
+from classic_control.meta_mountaincar import MetaMountainCarEnv, CustomMountainCarEnv
 # from gym.envs.classic_control import MountainCarEnv
 
 
@@ -47,3 +50,11 @@ if __name__ == '__main__':
         obs, rewards, dones, info = env.step(action)
         env.render()
     env.close()
+
+    # TODO add cmdline arguments
+
+    # TODO check logging of stable baselines
+    # TODO CREATE LOGGING
+    # TODO create context changer for each method
+
+    # TODO add spawner

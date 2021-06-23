@@ -22,6 +22,11 @@ DEFAULT_CONTEXT = {
     "max_velocity_start": 0.,
 }
 
+DEFAULT_CONTEXT_BOUNDS = {
+    "gravity": (0, np.inf),
+    # TODO add bounds for each env
+}
+
 
 class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
     def __init__(self, goal_velocity: float = 0.):
@@ -50,7 +55,7 @@ class MetaMountainCarEnv(MetaEnv):
     def __init__(
             self,
             env: gym.Env = CustomMountainCarEnv(),
-            contexts: Dict[int, Dict] = {},  # ??? what should be the type of the dict keys?
+            contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
             add_gaussian_noise_to_context: bool = True,
@@ -99,9 +104,9 @@ class MetaMountainCarEnv(MetaEnv):
             [self.env.max_position, self.env.max_speed], dtype=np.float32
         ).squeeze()
 
-        self.env.observation_space = spaces.Box(
+        self.env.observation_space = spaces.Box(  # TODO check this for every env (".env.")
             self.low, self.high, dtype=np.float32,
-        )
+        ) # TODO add context space if applicable (in every child env)
         self.observation_space = self.env.observation_space  # make sure it is the same object
 
-        # TODO log context to debug
+        # TODO log context to debug and put into info object
