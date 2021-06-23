@@ -2,6 +2,7 @@ import gym
 from gym import Wrapper
 from gym import spaces
 import numpy as np
+from typing import Dict, Tuple, Union, List
 from src.context_changer import add_gaussian_noise
 from src.context_utils import get_context_bounds
 
@@ -72,7 +73,12 @@ class MetaEnv(Wrapper):
                         random_generator=self.np_random
                     )
 
-    def build_observation_space(self, env_lower_bounds, env_upper_bounds, context_bounds):
+    def build_observation_space(
+            self,
+            env_lower_bounds: Union[List, np.array],
+            env_upper_bounds: Union[List, np.array],
+            context_bounds: Dict[str, Tuple[float]]
+    ):
         if self.hide_context:
             self.env.observation_space = spaces.Box(
                 env_lower_bounds, env_upper_bounds, dtype=np.float32,
