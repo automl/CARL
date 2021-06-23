@@ -1,7 +1,10 @@
 import gym
 from gym import Wrapper
+from gym import spaces
 import numpy as np
 from src.context_changer import add_gaussian_noise
+from src.context_utils import get_context_bounds
+
 
 class MetaEnv(Wrapper):
     def __init__(
@@ -68,6 +71,22 @@ class MetaEnv(Wrapper):
                         percentage_std=self.gaussian_noise_std_percentage,
                         random_generator=self.np_random
                     )
+
+    def build_observation_space(self, env_lower_bounds, env_upper_bounds, context_bounds):
+        if self.hide_context:
+            self.env.observation_space = spaces.Box(
+                env_lower_bounds, env_upper_bounds, dtype=np.float32,
+            )
+        else:
+            context_keys = list(self.context.keys())
+            context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
+            low = np.concatenate((env_lower_bounds, context_lower_bounds))
+            high = np.concatenate((env_upper_bounds, context_upper_bounds))
+            self.env.observation_space = spaces.Box(
+                low=low,
+                high=high
+            )
+        self.observation_space = self.env.observation_space  # make sure it is the same object
 
     def _update_context(self):
         raise NotImplementedError
