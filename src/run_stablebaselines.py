@@ -56,5 +56,7 @@ if __name__ == '__main__':
     # TODO check logging of stable baselines
     # TODO CREATE LOGGING
     # TODO create context changer for each method
+    # TODO check if observation space is set correctly for every env (".env.")
+    # TODO put config into info object
 
     # TODO add spawner
