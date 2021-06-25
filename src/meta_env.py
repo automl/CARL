@@ -2,9 +2,10 @@ import gym
 from gym import Wrapper
 from gym import spaces
 import numpy as np
-from typing import Dict, Tuple, Union, List
+from typing import Dict, Tuple, Union, List, Optional
 from src.context_changer import add_gaussian_noise
 from src.context_utils import get_context_bounds
+from src.logging import TrialLogger
 
 
 class MetaEnv(Wrapper):
@@ -15,7 +16,8 @@ class MetaEnv(Wrapper):
             instance_mode="rr",
             hide_context=False,
             add_gaussian_noise_to_context: bool = True,
-            gaussian_noise_std_percentage: float = 0.01
+            gaussian_noise_std_percentage: float = 0.01,
+            logger: Optional[TrialLogger] = None
     ):
         super().__init__(env=env)
         self.contexts = contexts
@@ -23,6 +25,10 @@ class MetaEnv(Wrapper):
         self.hide_context = hide_context
         self.context = contexts[0]
         self.context_index = 0
+
+        self.logger = logger
+        self.step_counter = 0  # type: int # increased in/after step
+        self.episode_counter = -1  # type: int # increased during reset
 
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
@@ -36,8 +42,10 @@ class MetaEnv(Wrapper):
             self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim))
 
     def reset(self):
+        self.episode_counter += 1
         self._progress_instance()
         self._update_context()
+        self._log_context()
         state = self.env.reset()
         if not self.hide_context:
             state = np.concatenate((state, np.array(list(self.context.values()))))  # TODO test if this has the correct shape
@@ -47,6 +55,7 @@ class MetaEnv(Wrapper):
         state, reward, done, info = self.env.step(action)
         if not self.hide_context:
             state = np.concatenate((state, np.array(list(self.context.values()))))  # TODO test if this has the correct shape
+        self.step_counter += 1
         return state, reward, done, info
 
     def __getattr__(self, name):
@@ -96,5 +105,9 @@ class MetaEnv(Wrapper):
 
     def _update_context(self):
         raise NotImplementedError
+
+    def _log_context(self):
+        if self.logger:
+            self.logger.write_context(self.episode_counter, self.step_counter, self.context)
 
 
