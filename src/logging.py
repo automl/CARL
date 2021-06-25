@@ -32,7 +32,6 @@ from pathlib import Path
 import argparse
 import configargparse
 import pandas as pd
-import numpy as np
 
 from stable_baselines3.common.logger import configure
 
