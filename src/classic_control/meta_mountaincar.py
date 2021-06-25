@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from typing import Optional
 import gym
 import gym.envs.classic_control as gccenvs
 from gym import spaces
@@ -7,6 +8,7 @@ from gym.utils import seeding
 from typing import List, Dict
 from src.meta_env import MetaEnv
 from src.context_utils import get_context_bounds
+from src.logging import TrialLogger
 
 
 DEFAULT_CONTEXT = {
@@ -70,7 +72,8 @@ class MetaMountainCarEnv(MetaEnv):
             instance_mode: str = "rr",
             hide_context: bool = False,
             add_gaussian_noise_to_context: bool = True,
-            gaussian_noise_std_percentage: float = 0.01
+            gaussian_noise_std_percentage: float = 0.01,
+            logger: Optional[TrialLogger] = None,
     ):
         """
 
@@ -91,6 +94,7 @@ class MetaMountainCarEnv(MetaEnv):
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
+            logger=logger
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()

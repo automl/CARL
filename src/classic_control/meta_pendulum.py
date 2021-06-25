@@ -1,10 +1,11 @@
 import numpy as np
-from typing import Dict
+from typing import Dict, Optional
 import gym
 from gym import spaces
 import gym.envs.classic_control as gccenvs
 
 from src.meta_env import MetaEnv
+from src.logging import TrialLogger
 
 
 DEFAULT_CONTEXT = {
@@ -32,7 +33,8 @@ class MetaPendulumEnv(MetaEnv):
             instance_mode: str = "rr",
             hide_context: bool = False,
             add_gaussian_noise_to_context: bool = True,
-            gaussian_noise_std_percentage: float = 0.01
+            gaussian_noise_std_percentage: float = 0.01,
+            logger: Optional[TrialLogger] = None
     ):
         """
         Max torque is not a context feature because it changes the action space.
