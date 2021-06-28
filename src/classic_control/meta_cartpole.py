@@ -1,5 +1,9 @@
+import gym
+import numpy as np
+from typing import Optional, Dict
 from gym.envs.classic_control import CartPoleEnv
 from src.meta_env import MetaEnv
+from src.logging import TrialLogger
 
 DEFAULT_CONTEXT = {
     "gravity": 9.8,

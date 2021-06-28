@@ -33,13 +33,14 @@ class MetaEnv(Wrapper):
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
         self.whitelist_gaussian_noise = None  # type: list[str]
-
+        
         if not self.hide_context:
             context_dim = len(list(self.context.values()))
             #TODO: extend this to non-Box obs spaces somehow
             # TODO check if observation space of env is a box or not
             obs_dim = self.env.observation_space.low.shape[0]
             self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim))
+            self.observation_space = self.env.observation_space
 
     def reset(self):
         self.episode_counter += 1
@@ -48,13 +49,13 @@ class MetaEnv(Wrapper):
         self._log_context()
         state = self.env.reset()
         if not self.hide_context:
-            state = np.concatenate((state, np.array(list(self.context.values()))))  # TODO test if this has the correct shape
+            state = np.concatenate((state, np.array(list(self.context.values()))))
         return state
 
     def step(self, action):
         state, reward, done, info = self.env.step(action)
         if not self.hide_context:
-            state = np.concatenate((state, np.array(list(self.context.values()))))  # TODO test if this has the correct shape
+            state = np.concatenate((state, np.array(list(self.context.values()))))
         self.step_counter += 1
         return state, reward, done, info
 
