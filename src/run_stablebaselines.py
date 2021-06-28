@@ -176,12 +176,16 @@ if __name__ == '__main__':
         env.render()
     env.close()
 
-    # TODO add cmdline arguments
+    # TODO add more cmdline arguments
 
     # TODO check logging of stable baselines
-    # TODO CREATE LOGGING
+    # TODO CREATE LOGGING:
+    #   Are these done?
+
     # TODO create context changer for each method
-    # TODO check if observation space is set correctly for every env (".env.")
+    # TODO check if observation space is set correctly for every env (".env."):
+    #   this is fine for acrobot/cartpole, but the other two change their obs spaces.
+    #   I think this shouldn't happen
     # TODO put config into info object
 
     # TODO add spawner

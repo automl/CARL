@@ -37,7 +37,8 @@ class MetaEnv(Wrapper):
         if not self.hide_context:
             context_dim = len(list(self.context.values()))
             #TODO: extend this to non-Box obs spaces somehow
-            # TODO check if observation space of env is a box or not
+            if not isinstance(self.observation_space, gym.spaces.Box):
+                raise ValueError("This environment does not yet support non-hidden contexts")
             obs_dim = self.env.observation_space.low.shape[0]
             self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim))
             self.observation_space = self.env.observation_space
