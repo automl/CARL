@@ -2,6 +2,7 @@ import gym
 import numpy as np
 import importlib
 import configargparse
+from scipy.stats import norm
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv
@@ -16,8 +17,9 @@ from classic_control.meta_mountaincar import MetaMountainCarEnv, CustomMountainC
 import logging
 importlib.reload(logging)
 from logging import TrialLogger
+from src import classic_control
 
-
+# TODO: what does this do? Do we even need it?
 def make_env(env_id, rank, seed=0):
     """
     Utility function for multiprocessed env.
@@ -33,6 +35,39 @@ def make_env(env_id, rank, seed=0):
         return env
     set_random_seed(seed)
     return _init
+
+def sample_contexts(env_name, unknown_args, num_contexts):
+    # TODO makes separate folders harder to parse... there should be a better solution
+    env_defaults = getattr(classic_control, f"{env_name}_defaults")
+    env_bounds = getattr(classic_control, f"{env_name}_bounds")
+
+    sample_dists = {}
+    for key in env_defaults.keys():
+        if key in unknown_args:
+            if f"{key}_mean" is in unknown_args:
+                sample_mean = unknown_args[unknown_args.index(f"{key}_mean")+1]
+            else:
+                sample_mean = env_defaults[key]
+
+            if f"{key}_std" is in unknown_args:
+                sample_std = unknown_args[unknown_args.index(f"{key}_std")+1]
+            else:
+                # TODO make sure this is a good default
+                sample_std = 0.05
+
+            sample_dists[key] = norm(loc=sample_mean, scale=sample_std)
+
+    contexts = {}
+    for i in range(0, num_contexts):
+        c = {}
+        for k in env_defaults.keys():
+            if k is in sample_dists.keys():
+                c[k] = sample_dists[k].rvs(size=1)
+            else:
+                c[k] = env_defaults[k]
+        contexts[i] = c
+
+    return contexts
 
 
 def get_parser() -> configargparse.ArgumentParser:
@@ -87,6 +122,20 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Stablebaselines3 agent",
     )
 
+    parser.add_argument(
+        "--num_contexts",
+        type=int,
+        default=100,
+        help="Number of contexts to be sampled",
+    )
+
+    parser.add_argument(
+        "--steps",
+        type=int,
+        default=1e6,
+        help="Number of training steps",
+    )
+
     return parser
 
 
@@ -94,33 +143,28 @@ if __name__ == '__main__':
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
 
-    env_id = "MountainCar-v0"
     num_cpu = 4  # Number of processes to use
-    # Create the vectorized environment
-    # env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
-
-
     # set up logger
     logger = TrialLogger(args.outdir, parser=parser, trial_setup_args=args)
     logger.write_trial_setup()
 
-    # Stable Baselines provides you with make_vec_env() helper
-    # which does exactly the previous steps for you:
-    # env = make_vec_env(env_id, n_envs=num_cpu, seed=0)
-    if args.env == "MetaMountainCarEnv":
-        env = MetaMountainCarEnv(logger=logger)
-    else:
-        raise ValueError(f"{args.env} not registered yet.")
+    # sample contexts using unknown args
+    contexts = sample_contexts(args.env, unknown_args, args.num_contexts)
 
-    if args.agent == "PPO":
-        agent_class = PPO
-    else:
-        raise ValueError(f"{args.agent} not registered yet.")
+    # make meta-env
+    try:
+        base_env = gym.make(args.env[4:])()
+    except ValueError:
+        print(f"{args.env} not registered yet.")
+    env = eval(args.env)(env, contexts, logger=logger)
 
+    try args.agent == "PPO":
+        model = agent_class('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
+    except ValueError:
+        print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
-    model = agent_class('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
     # model.set_logger(new_logger)
-    model.learn(total_timesteps=25000)
+    model.learn(total_timesteps=args.steps)
 
     obs = env.reset()
     for _ in range(1000):
