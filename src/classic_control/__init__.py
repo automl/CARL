@@ -1,3 +1,8 @@
+from src.classic_control.meta_mountaincar import MetaMountainCarEnv
+from src.classic_control.meta_pendulum import MetaPendulumEnv
+from src.classic_control.meta_acrobot import MetaAcrobotEnv
+from src.classic_control.meta_cartpole import MetaCartPoleEnv
+
 # Contexts and bounds by name
 from src.classic_control.meta_acrobot import DEFAULT_CONTEXT as MetaAcrobotEnv_defaults
 from src.classic_control.meta_acrobot import CONTEXT_BOUNDS as MetaAcrobotEnv_bounds

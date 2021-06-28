@@ -8,7 +8,7 @@ from gym.utils import seeding
 from typing import List, Dict
 from src.meta_env import MetaEnv
 from src.context_utils import get_context_bounds
-from src.logging import TrialLogger
+from src.trial_logger import TrialLogger
 
 
 DEFAULT_CONTEXT = {

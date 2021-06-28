@@ -5,7 +5,7 @@ from gym import spaces
 import gym.envs.classic_control as gccenvs
 
 from src.meta_env import MetaEnv
-from src.logging import TrialLogger
+from src.trial_logger import TrialLogger
 
 
 DEFAULT_CONTEXT = {

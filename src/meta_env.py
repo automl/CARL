@@ -5,7 +5,7 @@ import numpy as np
 from typing import Dict, Tuple, Union, List, Optional
 from src.context_changer import add_gaussian_noise
 from src.context_utils import get_context_bounds
-from src.logging import TrialLogger
+from src.trial_logger import TrialLogger
 
 
 class MetaEnv(Wrapper):
@@ -40,7 +40,7 @@ class MetaEnv(Wrapper):
             if not isinstance(self.observation_space, gym.spaces.Box):
                 raise ValueError("This environment does not yet support non-hidden contexts")
             obs_dim = self.env.observation_space.low.shape[0]
-            self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim))
+            self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim), dtype=np.float32)
             self.observation_space = self.env.observation_space
 
     def reset(self):

@@ -3,7 +3,7 @@ import numpy as np
 from typing import Optional, Dict
 from gym.envs.classic_control import AcrobotEnv
 from src.meta_env import MetaEnv
-from src.logging import TrialLogger
+from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "link_length_1": 1,  # should be seen as 100% default and scaled

@@ -14,10 +14,11 @@ from stable_baselines3.common.utils import set_random_seed
 from src.classic_control.meta_mountaincar import CustomMountainCarEnv
 # from gym.envs.classic_control import MountainCarEnv
 
-import src.logging
-importlib.reload(src.logging)
-from logging import TrialLogger
-import src.classic_control
+import src.trial_logger
+importlib.reload(src.trial_logger)
+from src.trial_logger import TrialLogger
+from src import classic_control
+from src.classic_control import *
 
 # TODO: what does this do? Do we even need it?
 def make_env(env_id, rank, seed=0):
@@ -45,12 +46,12 @@ def sample_contexts(env_name, unknown_args, num_contexts):
     for key in env_defaults.keys():
         if key in unknown_args:
             if f"{key}_mean" in unknown_args:
-                sample_mean = unknown_args[unknown_args.index(f"{key}_mean")+1]
+                sample_mean = float(unknown_args[unknown_args.index(f"{key}_mean")+1])
             else:
                 sample_mean = env_defaults[key]
 
             if f"{key}_std" in unknown_args:
-                sample_std = unknown_args[unknown_args.index(f"{key}_std")+1]
+                sample_std = float(unknown_args[unknown_args.index(f"{key}_std")+1])
             else:
                 # TODO make sure this is a good default
                 sample_std = 0.05
@@ -62,7 +63,7 @@ def sample_contexts(env_name, unknown_args, num_contexts):
         c = {}
         for k in env_defaults.keys():
             if k in sample_dists.keys():
-                c[k] = sample_dists[k].rvs(size=1)
+                c[k] = sample_dists[k].rvs(size=1)[0]
             else:
                 c[k] = env_defaults[k]
         contexts[i] = c
