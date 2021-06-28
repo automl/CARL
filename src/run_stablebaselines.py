@@ -9,15 +9,15 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
 
-import classic_control.meta_mountaincar
-importlib.reload(classic_control.meta_mountaincar)
-from classic_control.meta_mountaincar import MetaMountainCarEnv, CustomMountainCarEnv
+#from classic_control import MetaMountainCarEnv
+#importlib.reload(classic_control.meta_mountaincar)
+from src.classic_control.meta_mountaincar import CustomMountainCarEnv
 # from gym.envs.classic_control import MountainCarEnv
 
-import logging
-importlib.reload(logging)
+import src.logging
+importlib.reload(src.logging)
 from logging import TrialLogger
-from src import classic_control
+import src.classic_control
 
 # TODO: what does this do? Do we even need it?
 def make_env(env_id, rank, seed=0):
@@ -152,14 +152,17 @@ if __name__ == '__main__':
     contexts = sample_contexts(args.env, unknown_args, args.num_contexts)
 
     # make meta-env
-    try:
-        base_env = gym.make(args.env[4:])()
-    except ValueError:
-        print(f"{args.env} not registered yet.")
-    env = eval(args.env)(env, contexts, logger=logger)
+    if args.env.startswith("MetaMountain"):
+        base_env = CustomMountainCarEnv()
+    else:
+        try:
+            base_env = eval(args.env[4:])()
+        except ValueError:
+            print(f"{args.env} not registered yet.")
+    env = eval(args.env)(base_env, contexts, logger=logger)
 
     try:
-        model = agent_class('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
+        model = eval(args.agent)('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
