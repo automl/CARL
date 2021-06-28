@@ -44,12 +44,12 @@ def sample_contexts(env_name, unknown_args, num_contexts):
     sample_dists = {}
     for key in env_defaults.keys():
         if key in unknown_args:
-            if f"{key}_mean" is in unknown_args:
+            if f"{key}_mean" in unknown_args:
                 sample_mean = unknown_args[unknown_args.index(f"{key}_mean")+1]
             else:
                 sample_mean = env_defaults[key]
 
-            if f"{key}_std" is in unknown_args:
+            if f"{key}_std" in unknown_args:
                 sample_std = unknown_args[unknown_args.index(f"{key}_std")+1]
             else:
                 # TODO make sure this is a good default
@@ -61,7 +61,7 @@ def sample_contexts(env_name, unknown_args, num_contexts):
     for i in range(0, num_contexts):
         c = {}
         for k in env_defaults.keys():
-            if k is in sample_dists.keys():
+            if k in sample_dists.keys():
                 c[k] = sample_dists[k].rvs(size=1)
             else:
                 c[k] = env_defaults[k]
@@ -158,7 +158,7 @@ if __name__ == '__main__':
         print(f"{args.env} not registered yet.")
     env = eval(args.env)(env, contexts, logger=logger)
 
-    try args.agent == "PPO":
+    try:
         model = agent_class('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
