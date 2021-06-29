@@ -2,23 +2,24 @@ import gym
 import numpy as np
 import importlib
 import configargparse
-from scipy.stats import norm
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
 
-#from classic_control import MetaMountainCarEnv
-#importlib.reload(classic_control.meta_mountaincar)
-from src.classic_control.meta_mountaincar import CustomMountainCarEnv
+# from classic_control import MetaMountainCarEnv
+# importlib.reload(classic_control.meta_mountaincar)
 # from gym.envs.classic_control import MountainCarEnv
+from src.classic_control.meta_mountaincar import CustomMountainCarEnv
+from src.classic_control import *
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
 from src.trial_logger import TrialLogger
-from src import classic_control
-from src.classic_control import *
+
+from src.context_utils import sample_contexts
+
 
 # TODO: what does this do? Do we even need it?
 def make_env(env_id, rank, seed=0):
@@ -36,39 +37,6 @@ def make_env(env_id, rank, seed=0):
         return env
     set_random_seed(seed)
     return _init
-
-def sample_contexts(env_name, unknown_args, num_contexts):
-    # TODO makes separate folders harder to parse... there should be a better solution
-    env_defaults = getattr(classic_control, f"{env_name}_defaults")
-    env_bounds = getattr(classic_control, f"{env_name}_bounds")
-
-    sample_dists = {}
-    for key in env_defaults.keys():
-        if key in unknown_args:
-            if f"{key}_mean" in unknown_args:
-                sample_mean = float(unknown_args[unknown_args.index(f"{key}_mean")+1])
-            else:
-                sample_mean = env_defaults[key]
-
-            if f"{key}_std" in unknown_args:
-                sample_std = float(unknown_args[unknown_args.index(f"{key}_std")+1])
-            else:
-                # TODO make sure this is a good default
-                sample_std = 0.05
-
-            sample_dists[key] = norm(loc=sample_mean, scale=sample_std)
-
-    contexts = {}
-    for i in range(0, num_contexts):
-        c = {}
-        for k in env_defaults.keys():
-            if k in sample_dists.keys():
-                c[k] = sample_dists[k].rvs(size=1)[0]
-            else:
-                c[k] = env_defaults[k]
-        contexts[i] = c
-
-    return contexts
 
 
 def get_parser() -> configargparse.ArgumentParser:
@@ -150,7 +118,8 @@ if __name__ == '__main__':
     logger.write_trial_setup()
 
     # sample contexts using unknown args
-    contexts = sample_contexts(args.env, unknown_args, args.num_contexts)
+    # TODO find good sample std, make sure it is a good default
+    contexts = sample_contexts(args.env, unknown_args, args.num_contexts, default_sample_std=0.05)
 
     # make meta-env
     if args.env.startswith("MetaMountain"):
