@@ -31,7 +31,7 @@ def sample_contexts(env_name: str, unknown_args: List[str], num_contexts: int, d
         for k in env_defaults.keys():
             if k in sample_dists.keys():
                 c[k] = sample_dists[k].rvs(size=1)[0]
-                c[k] = max(env_bounds[k][0], min(c[k], env_bounds[k][upper]))
+                c[k] = max(env_bounds[k][0], min(c[k], env_bounds[k][1]))
             else:
                 c[k] = env_defaults[k]
         contexts[i] = c
