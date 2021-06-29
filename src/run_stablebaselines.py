@@ -10,7 +10,7 @@ from stable_baselines3.common.utils import set_random_seed
 
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
-# from gym.envs.classic_control import MountainCarEnv
+from gym.envs.classic_control import *
 from src.classic_control.meta_mountaincar import CustomMountainCarEnv
 from src.classic_control import *
 
