@@ -23,10 +23,11 @@ CONTEXT_BOUNDS = {
     "update_interval": (0.002, 0.2), # Update interval can be varied by a factor of 10
 }
 
+
 class MetaCartPoleEnv(MetaEnv):
     def __init__(
             self,
-            env: gym.Env = CartPoleEnv,
+            env: gym.Env = CartPoleEnv(),
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
@@ -55,4 +56,12 @@ class MetaCartPoleEnv(MetaEnv):
         self.env.length = self.context["pole_length"]
         self.env.force_mag = self.context["force_magnifier"]
         self.env.tau = self.context["update_interval"]
+
+        high = np.array([self.env.x_threshold * 2,
+                         np.finfo(np.float32).max,
+                         self.env.theta_threshold_radians * 2,
+                         np.finfo(np.float32).max],
+                        dtype=np.float32)
+        low = -high
+        self.build_observation_space(low, high, CONTEXT_BOUNDS)
 
