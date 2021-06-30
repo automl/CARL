@@ -11,14 +11,17 @@ from stable_baselines3.common.utils import set_random_seed
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
 from gym.envs.classic_control import *
+from gym.envs.box2d import LunarLander
 from src.classic_control.meta_mountaincar import CustomMountainCarEnv
+from src.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
 from src.classic_control import *
+from src.box2d import *
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
 from src.trial_logger import TrialLogger
 
-from src.context_utils import sample_contexts
+from src.context_sampler import sample_contexts
 
 
 # TODO: what does this do? Do we even need it?
@@ -80,7 +83,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--env",
         type=str,
-        default="MetaMountainCarEnv",
+        default="MetaLunarLanderEnv",
         help="Environment",
     )
 
@@ -122,8 +125,12 @@ if __name__ == '__main__':
     contexts = sample_contexts(args.env, unknown_args, args.num_contexts, default_sample_std=0.05)
 
     # make meta-env
-    if args.env.startswith("MetaMountain"):
+    if args.env == "MetaMountainCarEnv":
         base_env = CustomMountainCarEnv()
+    elif args.env == "MetaMountainCarContinuousEnv":
+        base_env = CustomMountainCarContinuousEnv()
+    elif args.env == "MetaLunarLanderEnv":
+        base_env = LunarLander()
     else:
         try:
             base_env = eval(args.env[4:])()
@@ -160,7 +167,7 @@ if __name__ == '__main__':
     # TODO create requirements
 
     # ENVS
-    # TODO add continuous mountain car as env -> Carolin
+    # TODO add continuous mountain car as env -> Carolin [DONE]
     # TODO add lunar lander -> Carolin
     # TODO maybe add bipedal -> Carolin
     # TODO look at metacarracing -> Theresa, [Carolin]
