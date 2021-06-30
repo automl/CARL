@@ -149,14 +149,14 @@ if __name__ == '__main__':
     # TODO add more cmdline arguments
 
     # TODO check logging of stable baselines
-    # TODO CREATE LOGGING:
-    #   Are these done?
 
     # TODO create context changer for each method
     # TODO check if observation space is set correctly for every env (".env."):
     #   this is fine for acrobot/cartpole, but the other two change their obs spaces.
-    #   I think this shouldn't happen
-    # TODO put config into info object
+    #   I think this shouldn't happen --> let's dicuss
+    # TODO put config into info object ?
 
-    # TODO add spawner
     # TODO create requirements
+
+    # TODO add continuous mountain car as env
+
