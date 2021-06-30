@@ -29,10 +29,11 @@ CONTEXT_BOUNDS = {
     "max_velocity_2": (0.9*np.pi, 90*np.pi),
 }
 
+
 class MetaAcrobotEnv(MetaEnv):
     def __init__(
             self,
-            env: gym.Env = AcrobotEnv,
+            env: gym.Env = AcrobotEnv(),
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
@@ -64,4 +65,9 @@ class MetaAcrobotEnv(MetaEnv):
         self.env.LINK_MOI = self.context["link_moi"]
         self.env.MAX_VEL_1 = self.context["max_velocity_1"]
         self.env.MAX_VEL_2 = self.context["max_velocity_2"]
+
+        # TODO: check if MAX_VEL_1 and MAX_VEL_2 are in bounds
+        high = np.array([1.0, 1.0, 1.0, 1.0, self.env.MAX_VEL_1, self.env.MAX_VEL_2], dtype=np.float32)
+        low = -high
+        self.build_observation_space(low, high, CONTEXT_BOUNDS)
 
