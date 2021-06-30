@@ -158,5 +158,9 @@ if __name__ == '__main__':
 
     # TODO create requirements
 
-    # TODO add continuous mountain car as env
+    # TODO add continuous mountain car as env -> Carolin
+    # TODO add lunar lander -> Carolin
+    # TODO maybe add bipedal -> Carolin
+    # TODO look at metacarracing -> Theresa, [Carolin]
+    # TODO add ToadGAN -> Frederik
 
