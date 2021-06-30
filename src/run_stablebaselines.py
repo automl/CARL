@@ -149,6 +149,7 @@ if __name__ == '__main__':
     # TODO add more cmdline arguments
 
     # TODO check logging of stable baselines
+    # TODO check if every env properly rebuilds the observation space in _update_context
 
     # TODO create context changer for each method
     # TODO check if observation space is set correctly for every env (".env."):
@@ -158,6 +159,7 @@ if __name__ == '__main__':
 
     # TODO create requirements
 
+    # ENVS
     # TODO add continuous mountain car as env -> Carolin
     # TODO add lunar lander -> Carolin
     # TODO maybe add bipedal -> Carolin
