@@ -15,7 +15,7 @@ class MetaEnv(Wrapper):
             contexts,
             instance_mode="rr",
             hide_context=False,
-            add_gaussian_noise_to_context: bool = True,
+            add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None
     ):
@@ -61,6 +61,7 @@ class MetaEnv(Wrapper):
         return state, reward, done, info
 
     def __getattr__(self, name):
+        # TODO: does this work with activated noise? I think we need to update it
         if name in ["_progress_instance", "_update_context"]:
             return getattr(self, name)
         if name.startswith('_'):
