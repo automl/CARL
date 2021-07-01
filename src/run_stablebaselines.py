@@ -1,21 +1,17 @@
 import gym
-import numpy as np
 import importlib
 import configargparse
 
-from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
+from stable_baselines3.ppo import PPO
 
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
-from gym.envs.classic_control import *
-from gym.envs.box2d import LunarLander
-from src.classic_control.meta_mountaincar import CustomMountainCarEnv
-from src.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
-from src.classic_control import *
-from src.box2d import *
+from gym.envs.box2d.lunar_lander import LunarLander
+from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
+from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
+
+from src.envs import *
 
 import src.trial_logger
 importlib.reload(src.trial_logger)

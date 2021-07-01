@@ -1,20 +1,13 @@
 from typing import List
 from scipy.stats import norm
 
-from src import classic_control
-from src import box2d
+from src import envs
 
 
 def get_default_context_and_bounds(env_name: str):
-    # TODO makes separate folders harder to parse... there should be a better solution --> make explicit?
-    # TODO maybe new folder structure? envs/box2d and envs/classic_control
-    # TODO make less hacky
-    try:
-        env_defaults = getattr(classic_control, f"{env_name}_defaults")
-        env_bounds = getattr(classic_control, f"{env_name}_bounds")
-    except AttributeError:
-        env_defaults = getattr(box2d, f"{env_name}_defaults")
-        env_bounds = getattr(box2d, f"{env_name}_bounds")
+    # TODO make less hacky / make explicit
+    env_defaults = getattr(envs, f"{env_name}_defaults")
+    env_bounds = getattr(envs, f"{env_name}_bounds")
 
     return env_defaults, env_bounds
 
