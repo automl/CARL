@@ -4,7 +4,7 @@ from typing import Optional, Dict
 import gym
 import gym.envs.classic_control as gccenvs
 
-from src.meta_env import MetaEnv
+from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {

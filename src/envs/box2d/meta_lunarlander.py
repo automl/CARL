@@ -1,10 +1,9 @@
-from typing import List, Dict, Optional
-import numpy as np
+from typing import Dict, Optional
 
 import gym
 from gym.envs.box2d import lunar_lander
 
-from src.meta_env import MetaEnv
+from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 # TODO debug/test this environment by looking at rendering!

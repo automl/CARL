@@ -1,12 +1,9 @@
 import numpy as np
-import math
 from typing import Optional
 import gym
 import gym.envs.classic_control as gccenvs
-from gym import spaces
-from gym.utils import seeding
-from typing import List, Dict
-from src.meta_env import MetaEnv
+from typing import Dict
+from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 
