@@ -34,7 +34,7 @@ CONTEXT_BOUNDS = {
 class MetaHumanoid(MetaEnv):
     def __init__(
             self,
-            env: Humanoid,
+            env: Humanoid = Humanoid(),
             contexts,
             instance_mode="rr",
             hide_context=False,

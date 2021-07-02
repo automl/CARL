@@ -32,7 +32,7 @@ CONTEXT_BOUNDS = {
 class MetaHalfcheetah(MetaEnv):
     def __init__(
             self,
-            env: Halfcheetah,
+            env: Halfcheetah = Halfcheetah(),
             contexts,
             instance_mode="rr",
             hide_context=False,

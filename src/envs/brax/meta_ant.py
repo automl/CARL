@@ -34,7 +34,7 @@ CONTEXT_BOUNDS = {
 class MetaAnt(MetaEnv):
     def __init__(
             self,
-            env: Ant,
+            env: Ant = Ant(),
             contexts,
             instance_mode="rr",
             hide_context=False,

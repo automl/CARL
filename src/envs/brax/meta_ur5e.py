@@ -36,7 +36,7 @@ CONTEXT_BOUNDS = {
 class MetaUr5e(MetaEnv):
     def __init__(
             self,
-            env: Ur5e,
+            env: Ur5e = Ur5e,
             contexts,
             instance_mode="rr",
             hide_context=False,

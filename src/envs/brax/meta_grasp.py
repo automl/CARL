@@ -38,7 +38,7 @@ CONTEXT_BOUNDS = {
 class MetaGrasp(MetaEnv):
     def __init__(
             self,
-            env: Grasp,
+            env: Grasp = Grasp(),
             contexts,
             instance_mode="rr",
             hide_context=False,

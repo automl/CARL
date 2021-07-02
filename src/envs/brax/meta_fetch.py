@@ -38,7 +38,7 @@ CONTEXT_BOUNDS = {
 class MetaFetch(MetaEnv):
     def __init__(
             self,
-            env: Fetch,
+            env: Fetch = Fetch(),
             contexts,
             instance_mode="rr",
             hide_context=False,
