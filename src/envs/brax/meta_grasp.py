@@ -75,7 +75,7 @@ class MetaGrasp(MetaEnv):
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
         self.env.sys = brax.System(json_format.Parse(json.dumps(config), brax.Config()))
-        self.object_idx = self.env.sys.body_idx['Object']
+        self.env.object_idx = self.env.sys.body_idx['Object']
         self.env.target_idx = self.env.sys.body_idx['Target']
         self.env.hand_idx = self.env.sys.body_idx['HandThumbProximal']
         self.env.palm_idx = self.env.sys.body_idx['HandPalm']
@@ -84,8 +84,8 @@ class MetaGrasp(MetaEnv):
         self.env.target_height = self.context["target_height"]
 
     def __getattr__(self, name):
-        if name in ["_progress_instance", "_update_context"]:
+        if name in ["sys", "object_idx", "target_idx", "hand_idx",
+                    "palm_idx", "target_radius", "target_distance", "target_height"]:
+            return getattr(self.env._environment, name)
+        else:
             return getattr(self, name)
-        if name.startswith('_'):
-            raise AttributeError("attempted to get missing private attribute '{}'".format(name))
-        return getattr(self.env._environment, name)

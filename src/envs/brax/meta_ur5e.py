@@ -79,8 +79,7 @@ class MetaUr5e(MetaEnv):
         self.env.target_distance = self.context["target_distance"]
 
     def __getattr__(self, name):
-        if name in ["_progress_instance", "_update_context"]:
+        if name in ["sys", "target_idx", "torso_idx", "target_radius", "target_distance"]:
+            return getattr(self.env._environment, name)
+        else:
             return getattr(self, name)
-        if name.startswith('_'):
-            raise AttributeError("attempted to get missing private attribute '{}'".format(name))
-        return getattr(self.env._environment, name)

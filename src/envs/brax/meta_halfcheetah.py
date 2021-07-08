@@ -69,8 +69,7 @@ class MetaHalfcheetah(MetaEnv):
         self.env.sys = brax.System(json_format.Parse(json.dumps(config), brax.Config()))
 
     def __getattr__(self, name):
-        if name in ["_progress_instance", "_update_context"]:
+        if name in ["sys"]:
+            return getattr(self.env._environment, name)
+        else:
             return getattr(self, name)
-        if name.startswith('_'):
-            raise AttributeError("attempted to get missing private attribute '{}'".format(name))
-        return getattr(self.env._environment, name)
