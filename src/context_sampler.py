@@ -37,7 +37,7 @@ def sample_contexts(env_name: str, unknown_args: List[str], num_contexts: int, d
         c = {}
         for k in env_defaults.keys():
             if k in sample_dists.keys():
-                if sample_dists[k][1][0]==list:
+                if sample_dists[k][1]==list:
                     length = np.random.randint(5e5)
                     arg_class = sample_dists[k][1][1]
                     context_list = [arg_class(sample_dists[k][0].rvs(size=1)[0]) for i in range(length)]

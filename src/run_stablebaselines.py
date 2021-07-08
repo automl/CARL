@@ -131,12 +131,12 @@ if __name__ == '__main__':
     # model.set_logger(new_logger)
     model.learn(total_timesteps=args.steps)
 
-    obs = env.reset()
-    for _ in range(1000):
-        action, _states = model.predict(obs)
-        obs, rewards, dones, info = env.step(action)
-        env.render()
-    env.close()
+    #obs = env.reset()
+    #for _ in range(1000):
+    #    action, _states = model.predict(obs)
+    #    obs, rewards, dones, info = env.step(action)
+    #    env.render()
+    #env.close()
 
     # TODO add more cmdline arguments
 
