@@ -15,12 +15,12 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "gravity": (0.1, np.inf), # Positive gravity
-    "masscart": (0.1, 10), # Cart mass can be varied by a factor of 10
-    "masspole":  (0.01, 1), # Pole mass can be varied by a factor of 10
-    "pole_length": (0.05, 5), # Pole length can be varied by a factor of 10
-    "force_magnifier": (1, 100), # Force magnifier can be varied by a factor of 10
-    "update_interval": (0.002, 0.2), # Update interval can be varied by a factor of 10
+    "gravity": (0.1, np.inf, float), # Positive gravity
+    "masscart": (0.1, 10, float), # Cart mass can be varied by a factor of 10
+    "masspole":  (0.01, 1, float), # Pole mass can be varied by a factor of 10
+    "pole_length": (0.05, 5, float), # Pole length can be varied by a factor of 10
+    "force_magnifier": (1, 100, int), # Force magnifier can be varied by a factor of 10
+    "update_interval": (0.002, 0.2, float), # Update interval can be varied by a factor of 10
 }
 
 

@@ -22,18 +22,18 @@ DEFAULT_CONTEXT = {
 
 }
 CONTEXT_BOUNDS = {
-    "min_position": (-np.inf, np.inf),
-    "max_position": (-np.inf, np.inf),
-    "max_speed": (0, np.inf),
-    "goal_position": (-np.inf, np.inf),
-    "goal_velocity": (-np.inf, np.inf),
-    "power": (-np.inf, np.inf),
+    "min_position": (-np.inf, np.inf, float),
+    "max_position": (-np.inf, np.inf, float),
+    "max_speed": (0, np.inf, float),
+    "goal_position": (-np.inf, np.inf, float),
+    "goal_velocity": (-np.inf, np.inf, float),
+    "power": (-np.inf, np.inf, float),
     # "force": (-np.inf, np.inf),
     # "gravity": (0, np.inf),
-    "min_position_start": (-np.inf, np.inf),  # TODO need to check these
-    "max_position_start": (-np.inf, np.inf),
-    "min_velocity_start": (-np.inf, np.inf),
-    "max_velocity_start": (-np.inf, np.inf),
+    "min_position_start": (-np.inf, np.inf, float),  # TODO need to check these
+    "max_position_start": (-np.inf, np.inf, float),
+    "min_velocity_start": (-np.inf, np.inf, float),
+    "max_velocity_start": (-np.inf, np.inf, float),
 }
 
 

@@ -2,7 +2,7 @@ from src.envs.meta_env import MetaEnv
 from src.envs.rna.learna.src.data import parse_dot_brackets
 from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
@@ -14,12 +14,11 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "mutation_threshold": (0.1, np.inf),
-    "reward_exponent": (0.1, np.inf),
-    "state_radius": (1, np.inf),
-    #TODO: add datatypes to contexts
-    "dataset": ("eterna", "rfam_taneda"),
-    "target_structure_ids": (0, np.inf) #This is conditional on the dataset (and also a list)
+    "mutation_threshold": (0.1, np.inf, int),
+    "reward_exponent": (0.1, np.inf, int),
+    "state_radius": (1, np.inf, int),
+    "dataset": ("eterna", "rfam_taneda", None),
+    "target_structure_ids": (0, np.inf, List[int]) #This is conditional on the dataset (and also a list)
 }
 
 class MetaRnaDesignEnvironment(MetaEnv):

@@ -16,11 +16,11 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "max_speed": (-np.inf, np.inf),  # TODO: discuss limits
-    "dt": (0, np.inf),
-    "g": (0, np.inf),
-    "m": (0, np.inf),
-    "l": (0, np.inf),
+    "max_speed": (-np.inf, np.inf, float),  # TODO: discuss limits
+    "dt": (0, np.inf, float),
+    "g": (0, np.inf, float),
+    "m": (0, np.inf, float),
+    "l": (0, np.inf, float),
 }
 
 

@@ -23,11 +23,11 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "gravity": (0.1, np.inf),
-    "friction": (-np.inf, np.inf),
-    "angular_damping": (-np.inf, np.inf),
-    "joint_angular_damping": (0, 360),
-    "torso_mass": (0.1, np.inf),
+    "gravity": (0.1, np.inf, float),
+    "friction": (-np.inf, np.inf, float),
+    "angular_damping": (-np.inf, np.inf, float),
+    "joint_angular_damping": (0, 360, int),
+    "torso_mass": (0.1, np.inf, float),
 }
 
 

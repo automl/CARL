@@ -1,3 +1,5 @@
+import numpy as np
+import typing
 from typing import List
 from scipy.stats import norm
 
@@ -28,15 +30,22 @@ def sample_contexts(env_name: str, unknown_args: List[str], num_contexts: int, d
             else:
                 sample_std = default_sample_std
 
-            sample_dists[key] = norm(loc=sample_mean, scale=sample_std)
+            sample_dists[key] = (norm(loc=sample_mean, scale=sample_std), env_bounds[key][2])
 
     contexts = {}
     for i in range(0, num_contexts):
         c = {}
         for k in env_defaults.keys():
             if k in sample_dists.keys():
-                c[k] = sample_dists[k].rvs(size=1)[0]
-                c[k] = max(env_bounds[k][0], min(c[k], env_bounds[k][1]))
+                if isinstance(sample_dists[k][1], typing.List):
+                    length = np.randint()
+                    arg_class = typing.get_args(sample_dists[k][1])
+                    context_list = [arg_class(sample_dists[k][0].rvs(size=1)[0]) for i in range(length)]
+                    c[k] = context_list
+                else:
+                    c[k] = sample_dists[k][0].rvs(size=1)[0]
+                    c[k] = sample_dists[k][1](c[k])
+                c[k] = np.clip(c[k], env_bounds[k][0], env_bounds[k][1])
             else:
                 c[k] = env_defaults[k]
         contexts[i] = c

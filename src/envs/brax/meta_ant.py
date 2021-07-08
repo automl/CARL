@@ -21,13 +21,13 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "joint_stiffness": (1, np.inf),
-    "gravity": (0.1, np.inf),
-    "friction": (-np.inf, np.inf),
-    "angular_damping": (-np.inf, np.inf),
-    "actuator_strength": (1, np.inf),
-    "joint_angular_damping": (0, 360),
-    "torso_mass": (0.1, np.inf),
+    "joint_stiffness": (1, np.inf, int),
+    "gravity": (0.1, np.inf, float),
+    "friction": (-np.inf, np.inf, float),
+    "angular_damping": (-np.inf, np.inf, float),
+    "actuator_strength": (1, np.inf, int),
+    "joint_angular_damping": (0, 360, int),
+    "torso_mass": (0.1, np.inf, float),
 }
 
 

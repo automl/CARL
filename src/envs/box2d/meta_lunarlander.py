@@ -32,26 +32,26 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "FPS": (1, 500),
-    "SCALE": (1, 100),   # affects how fast-paced the game is, forces should be adjusted as well
-    "MAIN_ENGINE_POWER": (0, 50),
-    "SIDE_ENGINE_POWER": (0, 50),
+    "FPS": (1, 500, int),
+    "SCALE": (1, 100, int),   # affects how fast-paced the game is, forces should be adjusted as well
+    "MAIN_ENGINE_POWER": (0, 50, float),
+    "SIDE_ENGINE_POWER": (0, 50, float),
 
     # random force on lunar lander body on reset
-    "INITIAL_RANDOM": (0, 2000),   # Set 1500 to make game harder
+    "INITIAL_RANDOM": (0, 2000, int),   # Set 1500 to make game harder
 
     # lunar lander body specification
-    "LEG_AWAY": (0, 50),
-    "LEG_DOWN": (0, 50),
-    "LEG_W": (1, 10),
-    "LEG_H": (1, 20),
-    "LEG_SPRING_TORQUE": (0, 100),
-    "SIDE_ENGINE_HEIGHT": (1, 20),
-    "SIDE_ENGINE_AWAY": (1, 20),
+    "LEG_AWAY": (0, 50, int),
+    "LEG_DOWN": (0, 50, int),
+    "LEG_W": (1, 10, int),
+    "LEG_H": (1, 20, int),
+    "LEG_SPRING_TORQUE": (0, 100, float),
+    "SIDE_ENGINE_HEIGHT": (1, 20, int),
+    "SIDE_ENGINE_AWAY": (1, 20, int),
 
     # Size of world
-    "VIEWPORT_W": (400, 1000),
-    "VIEWPORT_H": (200, 800),
+    "VIEWPORT_W": (400, 1000, int),
+    "VIEWPORT_H": (200, 800, int),
 }
 
 
