@@ -121,18 +121,7 @@ if __name__ == '__main__':
     contexts = sample_contexts(args.env, unknown_args, args.num_contexts, default_sample_std=0.05)
 
     # make meta-env
-    if args.env == "MetaMountainCarEnv":
-        base_env = CustomMountainCarEnv()
-    elif args.env == "MetaMountainCarContinuousEnv":
-        base_env = CustomMountainCarContinuousEnv()
-    elif args.env == "MetaLunarLanderEnv":
-        base_env = LunarLander()
-    else:
-        try:
-            base_env = eval(args.env[4:])()
-        except ValueError:
-            print(f"{args.env} not registered yet.")
-    env = eval(args.env)(base_env, contexts, logger=logger)
+    env = eval(args.env)(contexts=contexts, logger=logger)
 
     try:
         model = eval(args.agent)('MlpPolicy', env, verbose=1) # TODO add agent_kwargs

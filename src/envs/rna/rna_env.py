@@ -24,9 +24,7 @@ CONTEXT_BOUNDS = {
 class MetaRnaDesignEnvironment(MetaEnv):
     def __init__(
             self,
-            #TODO: add exception to runscript once everything else works
-            # This actually needs to be initialized beforehand
-            env: RnaDesignEnvironment,
+            env = None,
             data_location: str,
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
@@ -47,6 +45,18 @@ class MetaRnaDesignEnvironment(MetaEnv):
         """
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
+        if env is None:
+            env_config = RnaDesignEnvironmentConfig(
+                mutation_threshold=DEFAULT_CONTEXT["mutation_threshold"],
+                reward_exponent=DEFAULT_CONTEXT["reward_exponent"],
+                state_radius=DEFAULT_CONTEXT["state_radius"],
+            )
+            dot_brackets = parse_dot_brackets(
+                dataset=DEFAULT_CONTEXT["dataset"],
+                data_dir=data_location,
+                target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
+            )
+            env = RnaDesignEnvironment(dot_brackets, env_config)
         super().__init__(
             env=env,
             contexts=contexts,
