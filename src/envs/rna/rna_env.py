@@ -1,6 +1,6 @@
-from src.meta_env import MetaEnv
-from learna.data import parse_dot_brackets
-from learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
+from src.envs.meta_env import MetaEnv
+from src.envs.rna.learna.src.data import parse_dot_brackets
+from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
 from typing import Optional, Dict
 from src.trial_logger import TrialLogger
