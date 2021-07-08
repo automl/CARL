@@ -18,7 +18,7 @@ CONTEXT_BOUNDS = {
     "reward_exponent": (0.1, np.inf, int),
     "state_radius": (1, np.inf, int),
     "dataset": ("eterna", "rfam_taneda", None),
-    "target_structure_ids": (0, np.inf, List[int]) #This is conditional on the dataset (and also a list)
+    "target_structure_ids": (0, np.inf, [list, int]) #This is conditional on the dataset (and also a list)
 }
 
 class MetaRnaDesignEnvironment(MetaEnv):
