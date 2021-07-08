@@ -97,7 +97,7 @@ class MetaEnv(Wrapper):
             )
         else:
             context_keys = list(self.context.keys())
-            context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
+            context_lower_bounds, context_upper_bounds, _ = get_context_bounds(context_keys, context_bounds)
             low = np.concatenate((env_lower_bounds, context_lower_bounds))
             high = np.concatenate((env_upper_bounds, context_upper_bounds))
             self.env.observation_space = spaces.Box(
