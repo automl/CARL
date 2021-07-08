@@ -63,7 +63,7 @@ class MetaGrasp(MetaEnv):
         self._update_context()
 
     def _update_context(self):
-        config = deepcopy(self.base_config)
+        config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
         config["angularDamping"] = self.context["angular_damping"]
