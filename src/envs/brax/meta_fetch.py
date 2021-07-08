@@ -39,7 +39,7 @@ class MetaFetch(MetaEnv):
     def __init__(
             self,
             env: Fetch = Fetch(),
-            contexts,
+            contexts: Dict[str, Dict] = {},
             instance_mode="rr",
             hide_context=False,
             add_gaussian_noise_to_context: bool = False,

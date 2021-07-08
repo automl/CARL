@@ -35,7 +35,7 @@ class MetaHumanoid(MetaEnv):
     def __init__(
             self,
             env: Humanoid = Humanoid(),
-            contexts,
+            contexts: Dict[str, Dict] = {},
             instance_mode="rr",
             hide_context=False,
             add_gaussian_noise_to_context: bool = False,
