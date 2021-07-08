@@ -1,6 +1,7 @@
 from slurmbuilder.slurmbuilder import SlurmBuilder
+import src.envs as envs
 
-mail_user = "benjamin@tnt.uni-hannover.de"
+mail_user = "eimer@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
 time = "48:00:00"
 mem_per_cpu = "2000M"
@@ -8,10 +9,11 @@ basecommands = {
         "classic_control": "python run_stablebaselines.py --num_contexts 100 --steps 1000000"
     }
 cpus_per_task = "1"
-env = "MetaMountainCarEnv"  # "MetaAcrobotEnv", "MetaCartPoleEnv", "MetaPendulumEnv"
-outdir = f"results/classic_control/{env}"
+env = "MetaAnt"#"MetaMountainCarEnv", "MetaAcrobotEnv", "MetaCartPoleEnv", "MetaPendulumEnv"
+env_defaults = getattr(envs, f"{env}_defaults")
+outdir = f"results/brax/{env}"
 for job_name, basecommand in basecommands.items():
-    basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --env"
+    basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task}"
 
     sbuilder = SlurmBuilder(
         job_name=job_name,
@@ -31,6 +33,11 @@ for job_name, basecommand in basecommands.items():
                 "name": "env",
                 "id": "env",
                 "values": [env]
+            },
+            {
+                "name": "",
+                "id": "",
+                "values": list(env_defaults.keys())
             }
         ]
     )

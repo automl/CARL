@@ -1,8 +1,8 @@
-from src.meta_env import MetaEnv
-from learna.data import parse_dot_brackets
-from learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
+from src.envs.meta_env import MetaEnv
+from src.envs.rna.learna.src.data import parse_dot_brackets
+from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
@@ -14,21 +14,18 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "mutation_threshold": (0.1, np.inf),
-    "reward_exponent": (0.1, np.inf),
-    "state_radius": (1, np.inf),
-    #TODO: add datatypes to contexts
-    "dataset": ("eterna", "rfam_taneda"),
-    "target_structure_ids": (0, np.inf) #This is conditional on the dataset (and also a list)
+    "mutation_threshold": (0.1, np.inf, int),
+    "reward_exponent": (0.1, np.inf, int),
+    "state_radius": (1, np.inf, int),
+    "dataset": ("eterna", "rfam_taneda", None),
+    "target_structure_ids": (0, np.inf, [list, int]) #This is conditional on the dataset (and also a list)
 }
 
 class MetaRnaDesignEnvironment(MetaEnv):
     def __init__(
             self,
-            #TODO: add exception to runscript once everything else works
-            # This actually needs to be initialized beforehand
-            env: RnaDesignEnvironment,
-            data_location: str,
+            env = None,
+            data_location: str = "src/envs/rna/learna/data",
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
@@ -48,6 +45,18 @@ class MetaRnaDesignEnvironment(MetaEnv):
         """
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
+        if env is None:
+            env_config = RnaDesignEnvironmentConfig(
+                mutation_threshold=DEFAULT_CONTEXT["mutation_threshold"],
+                reward_exponent=DEFAULT_CONTEXT["reward_exponent"],
+                state_radius=DEFAULT_CONTEXT["state_radius"],
+            )
+            dot_brackets = parse_dot_brackets(
+                dataset=DEFAULT_CONTEXT["dataset"],
+                data_dir=data_location,
+                target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
+            )
+            env = RnaDesignEnvironment(dot_brackets, env_config)
         super().__init__(
             env=env,
             contexts=contexts,
