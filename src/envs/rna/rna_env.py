@@ -25,7 +25,7 @@ class MetaRnaDesignEnvironment(MetaEnv):
     def __init__(
             self,
             env = None,
-            data_location: str,
+            data_location: str = "src/envs/rna/learna/data",
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
