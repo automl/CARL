@@ -2,3 +2,8 @@
 .vscode
 *.class
 *.pyc
+/shelf/
+/workspace.xml
+/dataSources/
+/dataSources.local.xml
+/httpRequests/
