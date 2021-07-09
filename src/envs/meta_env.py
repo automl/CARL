@@ -70,7 +70,8 @@ class MetaEnv(Wrapper):
 
     def _progress_instance(self):
         if self.instance_mode == "random":
-            self.context_index = np.random_choice(np.arange(len(self.contexts.keys())))
+            # TODO pass seed?
+            self.context_index = np.random.choice(np.arange(len(self.contexts.keys())))
         else:
             self.context_index = (self.context_index + 1) % len(self.contexts.keys())
         self.context = self.contexts[self.context_index]
