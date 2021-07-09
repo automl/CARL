@@ -68,8 +68,9 @@ class MetaHumanoid(MetaEnv):
             config["joints"][j]["angularDamping"] = self.context["joint_angular_damping"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config()))
-        self.env.body = bodies.Body.from_config(config)
+        protobuf_config = json_format.Parse(json.dumps(config, cls=NumpyEncoder))
+        self.env.sys = brax.System(protobuf_config, brax.Config())
+        self.env.body = bodies.Body.from_config(protobuf_config)
         self.env.body = take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
