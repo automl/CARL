@@ -70,9 +70,13 @@ class MetaEnv(Wrapper):
 
     def _progress_instance(self):
         if self.instance_mode == "random":
-            self.context_index = np.random_choice(np.arange(len(self.contexts.keys())))
-        else:
+            # TODO pass seed?
+            self.context_index = np.random.choice(np.arange(len(self.contexts.keys())))
+        elif self.instance_mode in ["rr", "roundrobin"]:
             self.context_index = (self.context_index + 1) % len(self.contexts.keys())
+        else:
+            raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
+        # TODO add the case that instance_mode is a function or a class
         self.context = self.contexts[self.context_index]
 
         # TODO use class for context changing / value augmentation
