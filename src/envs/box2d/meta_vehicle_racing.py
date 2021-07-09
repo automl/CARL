@@ -93,6 +93,7 @@ CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 # TODO add wind to world
 # TODO add different aerodynamic drags (Luftwiederstand)
 
+
 class CustomCarRacingEnv(CarRacing):
     def __init__(self, vehicle_class: type(Car) = Car, verbose=1):
         super().__init__(verbose)
