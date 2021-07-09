@@ -45,26 +45,26 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "FPS": (1, 500, int),
-    "SCALE": (1, 100, int),   # affects how fast-paced the game is, forces should be adjusted as well
+    "FPS": (1, 500, float),
+    "SCALE": (1, 100, float),   # affects how fast-paced the game is, forces should be adjusted as well
     "MAIN_ENGINE_POWER": (0, 50, float),
     "SIDE_ENGINE_POWER": (0, 50, float),
 
     # random force on lunar lander body on reset
-    "INITIAL_RANDOM": (0, 2000, int),   # Set 1500 to make game harder
+    "INITIAL_RANDOM": (0, 2000, float),   # Set 1500 to make game harder
 
-    "GRAVITY_X": (-20, 20),  # unit: m/s²
-    "GRAVITY_Y": (-20, -0.01),   # the y-component of gravity must be smaller than 0 because otherwise the
+    "GRAVITY_X": (-20, 20, float),  # unit: m/s²
+    "GRAVITY_Y": (-20, -0.01, float),   # the y-component of gravity must be smaller than 0 because otherwise the
                                  # lunarlander leaves the frame by going up
 
     # lunar lander body specification
-    "LEG_AWAY": (0, 50, int),
-    "LEG_DOWN": (0, 50, int),
-    "LEG_W": (1, 10, int),
-    "LEG_H": (1, 20, int),
+    "LEG_AWAY": (0, 50, float),
+    "LEG_DOWN": (0, 50, float),
+    "LEG_W": (1, 10, float),
+    "LEG_H": (1, 20, float),
     "LEG_SPRING_TORQUE": (0, 100, float),
-    "SIDE_ENGINE_HEIGHT": (1, 20, int),
-    "SIDE_ENGINE_AWAY": (1, 20, int),
+    "SIDE_ENGINE_HEIGHT": (1, 20, float),
+    "SIDE_ENGINE_AWAY": (1, 20, float),
 
     # Size of world
     "VIEWPORT_W": (400, 1000, int),
