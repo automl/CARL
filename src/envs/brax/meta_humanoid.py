@@ -70,8 +70,8 @@ class MetaHumanoid(MetaEnv):
         # This converts the dict to a JSON String, then parses it into an empty brax config
         protobuf_config = json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         self.env.sys = brax.System(protobuf_config)
-        self.env.body = bodies.Body.from_config(protobuf_config)
-        self.env.body = take(body, body.idx[:-1])  # skip the floor body
+        body = bodies.Body.from_config(protobuf_config)
+        body = take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 
