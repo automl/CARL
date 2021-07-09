@@ -8,6 +8,7 @@ from src.envs.meta_env import MetaEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from typing import Optional, Dict
+from numpyencoder import NumpyEncoder
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
@@ -72,7 +73,7 @@ class MetaUr5e(MetaEnv):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(json_format.Parse(json.dumps(config), brax.Config()))
+        self.env.sys = brax.System(json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config()))
         self.env.target_idx = self.env.sys.body_idx['Target']
         self.env.torso_idx = self.env.sys.body_idx['wrist_3_link']
         self.env.target_radius = self.context["target_radius"]
