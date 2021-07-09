@@ -77,17 +77,20 @@ class MetaEnv(Wrapper):
         else:
             raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
         # TODO add the case that instance_mode is a function or a class
-        self.context = self.contexts[self.context_index]
+        context = self.contexts[self.context_index]
 
         # TODO use class for context changing / value augmentation
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
-            for key, value in self.context.items():
+            context_augmented = {}
+            for key, value in context.items():
                 if key in self.whitelist_gaussian_noise:
-                    self.context[key] = add_gaussian_noise(
+                    context_augmented[key] = add_gaussian_noise(
                         default_value=value,
                         percentage_std=self.gaussian_noise_std_percentage,
-                        random_generator=self.np_random
+                        random_generator=None,  # self.np_random TODO discuss this
                     )
+            context = context_augmented
+        self.context = context
 
     def build_observation_space(
             self,
