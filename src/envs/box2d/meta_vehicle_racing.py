@@ -87,10 +87,11 @@ DEFAULT_CONTEXT = {
     "VEHICLE": PARKING_GARAGE.index(RaceCar),
 }
 
-CONTEXT_BOUNDS = {
-    "VEHICLE": None,  # TODO make special case
-}
+CONTEXT_BOUNDS = {}
+CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
+# TODO add wind to world
+# TODO add different aerodynamic drags (Luftwiederstand)
 
 class CustomCarRacingEnv(CarRacing):
     def __init__(self, vehicle_class: type(Car) = Car, verbose=1):
@@ -122,6 +123,7 @@ class CustomCarRacingEnv(CarRacing):
         return self.step(None)[0]
 
     def render_indicators(self, W, H):
+        # copied from meta car racing
         s = W / 40.0
         h = H / 40.0
         colors = [0, 0, 0, 1] * 4
@@ -172,7 +174,6 @@ class CustomCarRacingEnv(CarRacing):
 
         vertical_ind(5, 0.02 * true_speed, (1, 1, 1))
 
-
         # Custom render to handle different amounts of wheels
         vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # ABS sensors
         for i in range(len(self.car.wheels)):
@@ -219,14 +220,12 @@ class MetaVehicleRacingEnv(MetaEnv):
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger
         )
-        self.whitelist_gaussian_noise = []  # no continuous context features. list(DEFAULT_CONTEXT.keys())  # allow to augment all values
+        self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
         self._update_context()
 
     def _update_context(self):
         vehicle_class_index = self.context["VEHICLE"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
-        print(self.env.vehicle_class)
-
 
 
 if __name__ == '__main__':
@@ -234,7 +233,6 @@ if __name__ == '__main__':
     import time
 
     a = np.array([0.0, 0.0, 0.0])
-
 
     def key_press(k, mod):
         global restart
@@ -287,8 +285,6 @@ if __name__ == '__main__':
                 print("step {} total_reward {:+0.2f}".format(steps, total_reward))
             steps += 1
             isopen = env.render()
-            if done or restart or isopen == False:
+            if done or restart or not isopen:
                 break
     env.close()
-
-
