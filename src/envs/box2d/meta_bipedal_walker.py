@@ -109,7 +109,7 @@ class MetaBipedalWalkerEnv(MetaEnv):
         bpw.SCALE = self.context["SCALE"]
         bpw.FRICTION = self.context["FRICTION"]
         bpw.TERRAIN_STEP = self.context["TERRAIN_STEP"]
-        bpw.TERRAIN_LENGTH = self.context["TERRAIN_LENGTH"]
+        bpw.TERRAIN_LENGTH = int(self.context["TERRAIN_LENGTH"])  # TODO do this automatically
         bpw.TERRAIN_HEIGHT = self.context["TERRAIN_HEIGHT"]
         bpw.TERRAIN_GRASS = self.context["TERRAIN_GRASS"]
         bpw.TERRAIN_STARTPAD = self.context["TERRAIN_STARTPAD"]
