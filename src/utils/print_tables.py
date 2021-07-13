@@ -121,6 +121,26 @@ df_cf_defbounds_fname = "utils/context_features_defaults_bounds.tex"
 with open(df_cf_defbounds_fname, 'w') as file:
     file.write(table_str)
 
+for env_name, df in zip(env_names, dfs):
+    index = [ind[1] for ind in df.index]  # no multi-index anymore
+    df.index = index
+    table_str = df.to_latex(
+        header=True,
+        index=True,
+        index_names=True,
+        float_format="{:0.2f}".format,
+        bold_rows=True,
+        caption=(
+            f"Context Features: Defaults and Bounds ({env_name})",
+            f"Context Features: Defaults and bounds for {env_name}."
+        ),
+        label=f"tab:context_features_defaults_bounds_{env_name}",
+        # position="c",?
+    )
+    fname = f"utils/context_features_defaults_bounds_{env_name}.tex"
+    with open(fname, 'w') as file:
+        file.write(table_str)
+
 plot_context_feature_freq(context_feature_names=context_feature_names, fname="utils/context_feature_freq.png")
 
 
