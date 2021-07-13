@@ -44,7 +44,7 @@ class MarioEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=0,
             high=255,
-            shape=[self.frame_stack if grayscale else 3, self.height, self.width,],
+            shape=[self.frame_stack if grayscale else 3, self.height, self.width],
             dtype=int,
         )
         self.original_obs = deque(maxlen=self.frame_skip)
