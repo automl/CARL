@@ -2,6 +2,9 @@ import numpy as np
 import math
 from typing import Dict, Optional, Type
 
+# import pyglet
+# pyglet.options["shadow_window"] = False
+
 import gym
 import Box2D
 # from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revoluteJointDef, contactListener)
@@ -74,6 +77,7 @@ CONTEXT_BOUNDS = {
 
 class CustomLunarLanderEnv(lunar_lander.LunarLander):
     def __init__(self, gravity: (float, float) = (0, -10)):
+        print("init customlunarlander")
         EzPickle.__init__(self)
         self.seed()
         self.viewer = None
@@ -260,7 +264,7 @@ def safe_destroy(world: Box2D.b2World, bodies):
 class MetaLunarLanderEnv(MetaEnv):
     def __init__(
             self,
-            env: CustomLunarLanderEnv = CustomLunarLanderEnv(),
+            env: Optional[CustomLunarLanderEnv] = None,
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
@@ -278,6 +282,8 @@ class MetaLunarLanderEnv(MetaEnv):
             Different contexts / different environment parameter settings.
         instance_mode: str, optional
         """
+        if env is None:
+            env = CustomLunarLanderEnv()
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
@@ -329,6 +335,7 @@ def demo_heuristic_lander(env, seed=None, render=False):
     env.seed(seed)
     total_reward = 0
     steps = 0
+    env.render()
     s = env.reset()
     while True:
         a = heuristic(env, s)
@@ -355,5 +362,5 @@ if __name__ == '__main__':
     # env = ll.LunarLander()
     # env = CustomLunarLanderEnv()
     for i in range(5):
-        demo_heuristic_lander(env, seed=1, render=False)
+        demo_heuristic_lander(env, seed=1, render=True)
     env.close()
