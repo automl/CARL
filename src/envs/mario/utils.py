@@ -1,13 +1,17 @@
+import atexit
 import os
 import socket
 import sys
 from contextlib import closing
+from xvfbwrapper import Xvfb
 
 from py4j.java_gateway import JavaGateway
 
 MARIO_AI_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "Mario-AI-Framework")
 )
+_gateway = None
+_port = None
 
 
 def find_free_port() -> int:
@@ -28,13 +32,24 @@ def load_level(level_name: str = "lvl-1.txt"):
     return level
 
 
+def get_port():
+    global _gateway
+    global _port
+    if _gateway is None:
+        _gateway, _port = launch_gateway()
+    return _port
+
+
 def launch_gateway():
+    vdisplay = Xvfb(width=1280, height=740, colordepth=16)
+    vdisplay.start()
+    atexit.register(lambda: vdisplay.stop())
     free_port = find_free_port()
     return (
         JavaGateway.launch_gateway(
             classpath=os.path.join(MARIO_AI_PATH, "src"),
-            # redirect_stderr=sys.stderr,
-            # redirect_stdout=sys.stdout,
+            redirect_stderr=sys.stderr,
+            redirect_stdout=sys.stdout,
             die_on_exit=True,
             port=free_port,
         ),

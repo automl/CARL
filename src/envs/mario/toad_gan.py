@@ -1,9 +1,10 @@
-from dataclasses import dataclass
 import functools
 import os
-from src.envs.mario.generate_sample import generate_sample
+from dataclasses import dataclass
+import sys
 
 import torch
+from src.envs.mario.generate_sample import generate_sample
 
 
 @dataclass
@@ -36,6 +37,8 @@ GENERATOR_PATHS = sorted(
 
 @functools.lru_cache(maxsize=None)
 def load_generator(level_index: int):
+    import src.envs.mario.models as models
+    sys.modules["models"] = models
     gen_path = os.path.join(GENERATOR_DIR, GENERATOR_PATHS[level_index])
     reals = torch.load(
         "%s/reals.pth" % gen_path,
