@@ -42,11 +42,20 @@ class TrialLogger(object):
             logdir: Union[str, Path],
             parser: configargparse.ArgParser,
             trial_setup_args: Optional[argparse.Namespace] = None,
+            add_context_feature_names_to_logdir: bool = False,
     ):
         self.parser = parser
         seed = trial_setup_args.seed
         agent = trial_setup_args.agent
-        self.logdir = Path(logdir) / f"{agent}_{seed}"
+        if add_context_feature_names_to_logdir:
+            context_feature_args = trial_setup_args.context_feature_args
+            names = [n for n in context_feature_args if "std" not in n and "mean" not in n]
+            context_feature_dirname = "all"
+            if names:
+                context_feature_dirname = names[0] if len(names) == 1 else "__".join(names)
+            self.logdir = Path(logdir) / context_feature_dirname/f"{agent}_{seed}"
+        else:
+            self.logdir = Path(logdir) / f"{agent}_{seed}"
         self.logdir.mkdir(parents=True, exist_ok=True)
 
         self.trial_setup_args = trial_setup_args

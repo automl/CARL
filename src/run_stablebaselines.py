@@ -112,6 +112,12 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Context feature args. Specify the name of a context feature and optionally name_mean and name_mean.",
     )
 
+    parser.add_argument(
+        "--add_context_feature_names_to_logdir",
+        action="store_true",
+        help="Creates logdir in following way: {logdir}/{context_feature_name_0}__{context_feature_name_1}/{agent}_{seed}"
+    )
+
     return parser
 
 
