@@ -77,13 +77,6 @@ def get_parser() -> configargparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--env",
-        type=str,
-        default="MetaLunarLanderEnv",
-        help="Environment",
-    )
-
-    parser.add_argument(
         "--agent",
         type=str,
         default="PPO",
@@ -104,6 +97,21 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Number of training steps",
     )
 
+    parser.add_argument(
+        "--env",
+        type=str,
+        default="MetaLunarLanderEnv",
+        help="Environment",
+    )
+
+    parser.add_argument(
+        "--context_feature_args",
+        type=str,
+        default=[],
+        nargs="+",
+        help="Context feature args. Specify the name of a context feature and optionally name_mean and name_mean.",
+    )
+
     return parser
 
 
@@ -118,7 +126,10 @@ if __name__ == '__main__':
 
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
-    contexts = sample_contexts(args.env, unknown_args, args.num_contexts, default_sample_std=0.05)
+    if args.env == "MetaVehicleRacingEnv":
+        contexts = {}  # each vehicle will be one context.
+    else:
+        contexts = sample_contexts(args.env, args.context_feature_args, args.num_contexts, default_sample_std_percentage=0.05)
 
     # make meta-env
     env = eval(args.env)(contexts=contexts, logger=logger)
@@ -150,6 +161,8 @@ if __name__ == '__main__':
     # TODO put config into info object ?
 
     # TODO create requirements
+
+    # TODO if a default context is 0, the sampled/altered context will be also zero (because of 0 std)
 
     # ENVS
     # TODO add continuous mountain car as env -> Carolin [DONE]
