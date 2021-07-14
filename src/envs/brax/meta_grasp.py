@@ -29,7 +29,7 @@ CONTEXT_BOUNDS = {
     "friction": (-np.inf, np.inf, float),
     "angular_damping": (-np.inf, np.inf, float),
     "actuator_strength": (1, np.inf, int),
-    "joint_angular_damping": (0, 360, int),
+    "joint_angular_damping": (0, np.inf, float),
     "target_radius": (0.1, np.inf, float),
     "target_distance": (0.1, np.inf, float),
     "target_height": (0.1, np.inf, float)

@@ -14,21 +14,26 @@ def get_default_context_and_bounds(env_name: str):
     return env_defaults, env_bounds
 
 
-def sample_contexts(env_name: str, unknown_args: List[str], num_contexts: int, default_sample_std: float = 0.05):
+def sample_contexts(
+        env_name: str,
+        context_feature_args: List[str],
+        num_contexts: int,
+        default_sample_std_percentage: float = 0.05
+):
     env_defaults, env_bounds = get_default_context_and_bounds(env_name=env_name)
 
     sample_dists = {}
     for key in env_defaults.keys():
-        if key in unknown_args:
-            if f"{key}_mean" in unknown_args:
-                sample_mean = float(unknown_args[unknown_args.index(f"{key}_mean")+1])
+        if key in context_feature_args:
+            if f"{key}_mean" in context_feature_args:
+                sample_mean = float(context_feature_args[context_feature_args.index(f"{key}_mean")+1])
             else:
                 sample_mean = env_defaults[key]
 
-            if f"{key}_std" in unknown_args:
-                sample_std = float(unknown_args[unknown_args.index(f"{key}_std")+1])
+            if f"{key}_std" in context_feature_args:
+                sample_std = float(context_feature_args[context_feature_args.index(f"{key}_std")+1])
             else:
-                sample_std = default_sample_std
+                sample_std = default_sample_std_percentage * np.abs(sample_mean)
 
             sample_dists[key] = (norm(loc=sample_mean, scale=sample_std), env_bounds[key][2])
 

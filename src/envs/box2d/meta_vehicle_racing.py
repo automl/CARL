@@ -1,7 +1,6 @@
 import numpy as np
-import gym
 from gym.envs.box2d import CarRacing
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 import pyglet
 pyglet.options["debug_gl"] = False
 from pyglet import gl
@@ -10,38 +9,38 @@ from src.trial_logger import TrialLogger
 
 from gym.envs.box2d.car_dynamics import Car
 
-from car_racing.parking_garage.race_car import RaceCar
-from car_racing.parking_garage.race_car import FWDRaceCar  # as Car
-from car_racing.parking_garage.race_car import AWDRaceCar  # as Car
-from car_racing.parking_garage.race_car import RaceCarSmallTrailer  # as Car
-from car_racing.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
-from car_racing.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
-from car_racing.parking_garage.race_car import RaceCarLargeTrailer  # as Car
-from car_racing.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
-from car_racing.parking_garage.race_car import AWDRaceCarLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import RaceCar
+from src.envs.box2d.car_racing.parking_garage.race_car import FWDRaceCar  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import AWDRaceCar  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import RaceCarSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import RaceCarLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.race_car import AWDRaceCarLargeTrailer  # as Car
 
-from car_racing.parking_garage.street_car import StreetCar  # as Car
-from car_racing.parking_garage.street_car import FWDStreetCar  # as Car
-from car_racing.parking_garage.street_car import AWDStreetCar  # as Car
-from car_racing.parking_garage.street_car import StreetCarSmallTrailer  # as Car
-from car_racing.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
-from car_racing.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
-from car_racing.parking_garage.street_car import StreetCarLargeTrailer  # as Car
-from car_racing.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
-from car_racing.parking_garage.street_car import AWDStreetCarLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import StreetCar  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import FWDStreetCar  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import AWDStreetCar  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import StreetCarSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import StreetCarLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.street_car import AWDStreetCarLargeTrailer  # as Car
 
-from car_racing.parking_garage.trike import TukTuk  # as Car
-from car_racing.parking_garage.trike import TukTukSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.trike import TukTuk  # as Car
+from src.envs.box2d.car_racing.parking_garage.trike import TukTukSmallTrailer  # as Car
 
-from car_racing.parking_garage.bus import Bus  # as Car
-from car_racing.parking_garage.bus import FWDBus  # as Car
-from car_racing.parking_garage.bus import AWDBus  # as Car
-from car_racing.parking_garage.bus import BusSmallTrailer  # as Car
-from car_racing.parking_garage.bus import FWDBusSmallTrailer  # as Car
-from car_racing.parking_garage.bus import AWDBusSmallTrailer  # as Car
-from car_racing.parking_garage.bus import BusLargeTrailer  # as Car
-from car_racing.parking_garage.bus import FWDBusLargeTrailer  # as Car
-from car_racing.parking_garage.bus import AWDBusLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import Bus  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import FWDBus  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import AWDBus  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import BusSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import FWDBusSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import AWDBusSmallTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import BusLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import FWDBusLargeTrailer  # as Car
+from src.envs.box2d.car_racing.parking_garage.bus import AWDBusLargeTrailer  # as Car
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -193,9 +192,9 @@ class MetaVehicleRacingEnv(MetaEnv):
     def __init__(
             self,
             env: CustomCarRacingEnv = CustomCarRacingEnv(),
-            contexts: Dict[str, Dict] = {},
+            contexts: Optional[Dict[Union[str, int], Dict]] = None,
             instance_mode: str = "random",
-            hide_context: bool = True,  # the context is already coded in the pixel state
+            hide_context: bool = True,  # TODO the context is already coded in the pixel state, the context cannot be hidden that easily
             add_gaussian_noise_to_context: bool = True,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,

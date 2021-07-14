@@ -10,7 +10,7 @@ from gym import spaces
 from py4j.java_gateway import GatewayParameters, JavaGateway
 
 from .mario_game import MarioGame
-from .utils import load_level
+from .utils import get_port, load_level
 
 
 class MarioEnv(gym.Env):
@@ -23,7 +23,6 @@ class MarioEnv(gym.Env):
         frame_skip=2,
         frame_stack=4,
         frame_dim=64,
-        port: int = None,
         hide_points_banner=False,
         sparse_rewards=False,
         grayscale=False,
@@ -44,7 +43,7 @@ class MarioEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=0,
             high=255,
-            shape=[self.frame_stack if grayscale else 3, self.height, self.width,],
+            shape=[self.frame_stack if grayscale else 3, self.height, self.width],
             dtype=int,
         )
         self.original_obs = deque(maxlen=self.frame_skip)
@@ -64,7 +63,7 @@ class MarioEnv(gym.Env):
         self._obs = np.zeros(shape=self.observation_space.shape, dtype=np.uint8)
         self.current_level_idx = 0
         self.frame_size = -1
-        self.port = port
+        self.port = get_port()
         self._init_game()
 
     def reset(self):

@@ -27,7 +27,7 @@ CONTEXT_BOUNDS = {
     "gravity": (-np.inf, -0.1, float),
     "friction": (-np.inf, np.inf, float),
     "angular_damping": (-np.inf, np.inf, float),
-    "joint_angular_damping": (0, 360, int),
+    "joint_angular_damping": (0, np.inf, float),
     "torso_mass": (0.1, np.inf, float),
 }
 

@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def add_gaussian_noise(
@@ -14,6 +13,7 @@ def add_gaussian_noise(
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
     seed = 123456
     rng = np.random.default_rng(seed=seed)
     default_value = 10
