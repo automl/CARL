@@ -118,6 +118,13 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Creates logdir in following way: {logdir}/{context_feature_name_0}__{context_feature_name_1}/{agent}_{seed}"
     )
 
+    parser.add_argument(
+        "--default_sample_std_percentage",
+        default=0.05,
+        help="Standard deviation as percentage of mean",
+        type=float
+    )
+
     return parser
 
 
@@ -127,7 +134,12 @@ if __name__ == '__main__':
 
     num_cpu = 4  # Number of processes to use
     # set up logger
-    logger = TrialLogger(args.outdir, parser=parser, trial_setup_args=args)
+    logger = TrialLogger(
+        args.outdir,
+        parser=parser,
+        trial_setup_args=args,
+        add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir
+    )
     logger.write_trial_setup()
 
     # sample contexts using unknown args
@@ -135,7 +147,12 @@ if __name__ == '__main__':
     if args.env == "MetaVehicleRacingEnv":
         contexts = {}  # each vehicle will be one context.
     else:
-        contexts = sample_contexts(args.env, args.context_feature_args, args.num_contexts, default_sample_std_percentage=0.05)
+        contexts = sample_contexts(
+            args.env,
+            args.context_feature_args,
+            args.num_contexts,
+            default_sample_std_percentage=args.default_sample_std_percentage
+        )
 
     # make meta-env
     env = eval(args.env)(contexts=contexts, logger=logger)
