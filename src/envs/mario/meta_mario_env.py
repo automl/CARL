@@ -1,18 +1,16 @@
-from src.envs.mario.toad_gan import generate_level
 from typing import Dict, Optional
 
 import gym
 import numpy as np
+from src.envs.mario.mario_env import MarioEnv
+from src.envs.mario.toad_gan import generate_level
 from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
 
-
-from .mario_env import MarioEnv
-
-DEFAULT_CONTEXT = {"level_idx": 0, "width": 200, "height": 16}
+DEFAULT_CONTEXT = {"level_index": 0, "width": 200, "height": 16}
 
 CONTEXT_BOUNDS = {
-    "level_idx": (0, 14, int),
+    "level_index": (0, 14, int),
     "width": (16, np.inf, int),
     "height": (8, 32, int),
 }
@@ -47,5 +45,5 @@ class MetaMarioEnv(MetaEnv):
 
     def _update_context(self):
         # TODO(frederik): filter generated levels by reachability
-        level = generate_level(self.context["width"], self.context["height"], self.context["level_index"])
+        level = generate_level(self.context["width"], self.context["height"], int(self.context["level_index"])) # TODO(frederik): implement integer context variables
         self.env.levels = [level]

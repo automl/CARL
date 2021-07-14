@@ -1,6 +1,7 @@
 from src.envs.classic_control import *
 from src.envs.box2d import *
 from src.envs.brax import *
+from src.envs.mario import *
 
 # RNA environment loading
 import importlib
