@@ -129,7 +129,6 @@ def get_parser() -> configargparse.ArgumentParser:
         "--hide_context",
         action="store_true",
         help="Standard deviation as percentage of mean",
-        type=float
     )
 
     return parser
