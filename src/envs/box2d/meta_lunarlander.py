@@ -77,7 +77,6 @@ CONTEXT_BOUNDS = {
 
 class CustomLunarLanderEnv(lunar_lander.LunarLander):
     def __init__(self, gravity: (float, float) = (0, -10)):
-        print("init customlunarlander")
         EzPickle.__init__(self)
         self.seed()
         self.viewer = None
@@ -323,9 +322,7 @@ class MetaLunarLanderEnv(MetaEnv):
         self.gravity_y = self.context["GRAVITY_Y"]
 
         gravity = (self.gravity_x, self.gravity_y)
-        self.env.world = Box2D.b2World(gravity=gravity)
-
-        # self.env.__init__(gravity=(self.gravity_x, self.gravity_y))
+        self.env.world.gravity = gravity
 
 
 def demo_heuristic_lander(env, seed=None, render=False):
