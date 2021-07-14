@@ -195,7 +195,7 @@ class MetaVehicleRacingEnv(MetaEnv):
             contexts: Optional[Dict[Union[str, int], Dict]] = None,
             instance_mode: str = "random",
             hide_context: bool = True,  # TODO the context is already coded in the pixel state, the context cannot be hidden that easily
-            add_gaussian_noise_to_context: bool = True,
+            add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
     ):

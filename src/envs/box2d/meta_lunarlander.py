@@ -267,7 +267,7 @@ class MetaLunarLanderEnv(MetaEnv):
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = True,
+            add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.05,
             logger: Optional[TrialLogger] = None,
     ):
