@@ -50,7 +50,7 @@ class TrialLogger(object):
         if add_context_feature_names_to_logdir:
             context_feature_args = trial_setup_args.context_feature_args
             names = [n for n in context_feature_args if "std" not in n and "mean" not in n]
-            context_feature_dirname = "all"
+            context_feature_dirname = "default"
             if names:
                 context_feature_dirname = names[0] if len(names) == 1 else "__".join(names)
             self.logdir = Path(logdir) / context_feature_dirname/f"{agent}_{seed}"
