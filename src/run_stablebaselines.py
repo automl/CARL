@@ -124,6 +124,13 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Standard deviation as percentage of mean",
         type=float
     )
+    
+    parser.add_argument(
+        "--hide_context",
+        action="store_true",
+        help="Standard deviation as percentage of mean",
+        type=float
+    )
 
     return parser
 
@@ -155,7 +162,7 @@ if __name__ == '__main__':
         )
 
     # make meta-env
-    env = eval(args.env)(contexts=contexts, logger=logger)
+    env = eval(args.env)(contexts=contexts, logger=logger, hide_context=args.hide_context)
 
     try:
         model = eval(args.agent)('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
