@@ -210,7 +210,8 @@ class MetaVehicleRacingEnv(MetaEnv):
         instance_mode: str, optional
         """
         if not contexts:
-            contexts = {i: {"VEHICLE": i} for i in range(len(PARKING_GARAGE))}
+            # contexts = {i: {"VEHICLE": i} for i in range(len(PARKING_GARAGE))}
+            contexts = {0: {"VEHICLE": 0}}  # standard race car
         super().__init__(
             env=env,
             contexts=contexts,
