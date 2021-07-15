@@ -12,6 +12,7 @@ from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
 from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
+from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
@@ -151,7 +152,9 @@ if __name__ == '__main__':
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
     if args.env == "MetaVehicleRacingEnv":
-        contexts = {}  # each vehicle will be one context.
+        if not args.hide_context:
+            raise ValueError("Please set --hide_context because the context cannot be concatenated for pixel-based states.")
+        contexts = {i: {"VEHICLE": i} for i in range(len(PARKING_GARAGE))}  # each vehicle will be one context.
     else:
         contexts = sample_contexts(
             args.env,
@@ -164,7 +167,7 @@ if __name__ == '__main__':
     env = eval(args.env)(contexts=contexts, logger=logger, hide_context=args.hide_context)
 
     try:
-        model = eval(args.agent)('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
+        model = eval(args.agent)('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
