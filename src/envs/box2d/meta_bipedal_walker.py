@@ -67,7 +67,7 @@ CONTEXT_BOUNDS = {
     "LIDAR_RANGE": (0.5, 20, float),
     "LEG_DOWN": (-2, -0.25, float),
     "LEG_W": (0.25, 0.5, float),
-    "LEG_H": (0.25, 2),
+    "LEG_H": (0.25, 2, float),
 
     # absolute value of random force applied to walker at start of episode
     "INITIAL_RANDOM": (0, 50, float),
