@@ -1,9 +1,12 @@
 from typing import Dict, Optional
+import numpy as np
 
-import gym
+import Box2D
+from gym import spaces
+from gym.utils import seeding, EzPickle
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
-from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revoluteJointDef, contactListener)
+from Box2D.b2 import (edgeShape, fixtureDef, polygonShape)
 
 from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
@@ -12,6 +15,9 @@ from src.trial_logger import TrialLogger
 DEFAULT_CONTEXT = {
     "FPS": 50,
     "SCALE": 30.0,   # affects how fast-paced the game is, forces should be adjusted as well
+
+    "GRAVITY_X": 0,
+    "GRAVITY_Y": -10,
 
     # surroundings
     "FRICTION": 2.5,
@@ -37,8 +43,11 @@ DEFAULT_CONTEXT = {
     # Size of world
     "VIEWPORT_W": 600,
     "VIEWPORT_H": 400,
+
+
 }
 
+# TODO make bounds more generous for all Box2D envs?
 CONTEXT_BOUNDS = {
     "FPS": (1, 500, float),
     "SCALE": (1, 100, float),   # affects how fast-paced the game is, forces should be adjusted as well
@@ -58,7 +67,7 @@ CONTEXT_BOUNDS = {
     "LIDAR_RANGE": (0.5, 20, float),
     "LEG_DOWN": (-2, -0.25, float),
     "LEG_W": (0.25, 0.5, float),
-    "LEG_H": (0.25, 2),
+    "LEG_H": (0.25, 2, float),
 
     # absolute value of random force applied to walker at start of episode
     "INITIAL_RANDOM": (0, 50, float),
@@ -66,17 +75,57 @@ CONTEXT_BOUNDS = {
     # Size of world
     "VIEWPORT_W": (400, 1000, int),
     "VIEWPORT_H": (200, 800, int),
+
+    "GRAVITY_X": (-20, 20, float),  # unit: m/s²
+    "GRAVITY_Y": (-20, -0.01, float),   # the y-component of gravity must be smaller than 0 because otherwise the
+                                        # body leaves the frame by going up
 }
+
+
+class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
+    def __init__(self, gravity: (float, float) = (0, -10)):  # TODO actually we dont need a custom env because the gravity can be adjusted afterwards
+        print("init CustomBipedalWalkerEnv")
+        EzPickle.__init__(self)
+        self.seed()
+        self.viewer = None
+
+        self.world = Box2D.b2World(gravity=gravity)
+        self.terrain = None
+        self.hull = None
+
+        self.prev_shaping = None
+
+        self.fd_polygon = fixtureDef(
+            shape=polygonShape(vertices=
+                               [(0, 0),
+                                (1, 0),
+                                (1, -1),
+                                (0, -1)]),
+            friction=bpw.FRICTION)
+
+        self.fd_edge = fixtureDef(
+            shape=edgeShape(vertices=
+                            [(0, 0),
+                             (1, 1)]),
+            friction=bpw.FRICTION,
+            categoryBits=0x0001,
+        )
+
+        self.reset()
+
+        high = np.array([np.inf] * 24)
+        self.action_space = spaces.Box(np.array([-1, -1, -1, -1]), np.array([1, 1, 1, 1]), dtype=np.float32)
+        self.observation_space = spaces.Box(-high, high, dtype=np.float32)
 
 
 class MetaBipedalWalkerEnv(MetaEnv):
     def __init__(
             self,
-            env: gym.Env = bipedal_walker.BipedalWalker(),
+            env: Optional[CustomBipedalWalkerEnv] = None,
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = True,
+            add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.05,
             logger: Optional[TrialLogger] = None,
     ):
@@ -90,6 +139,8 @@ class MetaBipedalWalkerEnv(MetaEnv):
             Different contexts / different environment parameter settings.
         instance_mode: str, optional
         """
+        if env is None:
+            env = CustomBipedalWalkerEnv()
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
@@ -123,6 +174,12 @@ class MetaBipedalWalkerEnv(MetaEnv):
         bpw.INITIAL_RANDOM = self.context["INITIAL_RANDOM"]
         bpw.VIEWPORT_W = self.context["VIEWPORT_W"]
         bpw.VIEWPORT_H = self.context["VIEWPORT_H"]
+
+        gravity_x = self.context["GRAVITY_X"]
+        gravity_y = self.context["GRAVITY_Y"]
+
+        gravity = (gravity_x, gravity_y)
+        self.env.world.gravity = gravity
 
         # Important for building terrain
         self.env.fd_polygon = fixtureDef(
@@ -162,17 +219,15 @@ class MetaBipedalWalkerEnv(MetaEnv):
             categoryBits=0x0020,
             maskBits=0x001)
 
+        self.env.world.gravity = gravity
 
 
-if __name__=="__main__":
-    # Heurisic: suboptimal, have no notion of balance.
-    import numpy as np
-    env = MetaBipedalWalkerEnv()
+def demo_heuristic(env):
     env.reset()
     steps = 0
     total_reward = 0
     a = np.array([0.0, 0.0, 0.0, 0.0])
-    STAY_ON_ONE_LEG, PUT_OTHER_DOWN, PUSH_OFF = 1,2,3
+    STAY_ON_ONE_LEG, PUT_OTHER_DOWN, PUSH_OFF = 1, 2, 3
     SPEED = 0.29  # Will fall forward on higher speed
     state = STAY_ON_ONE_LEG
     moving_leg = 0
@@ -185,60 +240,70 @@ if __name__=="__main__":
         if steps % 20 == 0 or done:
             print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
             print("step {} total_reward {:+0.2f}".format(steps, total_reward))
-            print("hull " + str(["{:+0.2f}".format(x) for x in s[0:4] ]))
-            print("leg0 " + str(["{:+0.2f}".format(x) for x in s[4:9] ]))
+            print("hull " + str(["{:+0.2f}".format(x) for x in s[0:4]]))
+            print("leg0 " + str(["{:+0.2f}".format(x) for x in s[4:9]]))
             print("leg1 " + str(["{:+0.2f}".format(x) for x in s[9:14]]))
         steps += 1
 
         contact0 = s[8]
         contact1 = s[13]
-        moving_s_base = 4 + 5*moving_leg
-        supporting_s_base = 4 + 5*supporting_leg
+        moving_s_base = 4 + 5 * moving_leg
+        supporting_s_base = 4 + 5 * supporting_leg
 
-        hip_targ  = [None,None]   # -0.8 .. +1.1
-        knee_targ = [None,None]   # -0.6 .. +0.9
-        hip_todo  = [0.0, 0.0]
+        hip_targ = [None, None]  # -0.8 .. +1.1
+        knee_targ = [None, None]  # -0.6 .. +0.9
+        hip_todo = [0.0, 0.0]
         knee_todo = [0.0, 0.0]
 
-        if state==STAY_ON_ONE_LEG:
-            hip_targ[moving_leg]  = 1.1
+        if state == STAY_ON_ONE_LEG:
+            hip_targ[moving_leg] = 1.1
             knee_targ[moving_leg] = -0.6
             supporting_knee_angle += 0.03
             if s[2] > SPEED: supporting_knee_angle += 0.03
-            supporting_knee_angle = min( supporting_knee_angle, SUPPORT_KNEE_ANGLE )
+            supporting_knee_angle = min(supporting_knee_angle, SUPPORT_KNEE_ANGLE)
             knee_targ[supporting_leg] = supporting_knee_angle
-            if s[supporting_s_base+0] < 0.10: # supporting leg is behind
+            if s[supporting_s_base + 0] < 0.10:  # supporting leg is behind
                 state = PUT_OTHER_DOWN
-        if state==PUT_OTHER_DOWN:
-            hip_targ[moving_leg]  = +0.1
+        if state == PUT_OTHER_DOWN:
+            hip_targ[moving_leg] = +0.1
             knee_targ[moving_leg] = SUPPORT_KNEE_ANGLE
             knee_targ[supporting_leg] = supporting_knee_angle
-            if s[moving_s_base+4]:
+            if s[moving_s_base + 4]:
                 state = PUSH_OFF
-                supporting_knee_angle = min( s[moving_s_base+2], SUPPORT_KNEE_ANGLE )
-        if state==PUSH_OFF:
+                supporting_knee_angle = min(s[moving_s_base + 2], SUPPORT_KNEE_ANGLE)
+        if state == PUSH_OFF:
             knee_targ[moving_leg] = supporting_knee_angle
             knee_targ[supporting_leg] = +1.0
-            if s[supporting_s_base+2] > 0.88 or s[2] > 1.2*SPEED:
+            if s[supporting_s_base + 2] > 0.88 or s[2] > 1.2 * SPEED:
                 state = STAY_ON_ONE_LEG
                 moving_leg = 1 - moving_leg
                 supporting_leg = 1 - moving_leg
 
-        if hip_targ[0]: hip_todo[0] = 0.9*(hip_targ[0] - s[4]) - 0.25*s[5]
-        if hip_targ[1]: hip_todo[1] = 0.9*(hip_targ[1] - s[9]) - 0.25*s[10]
-        if knee_targ[0]: knee_todo[0] = 4.0*(knee_targ[0] - s[6])  - 0.25*s[7]
-        if knee_targ[1]: knee_todo[1] = 4.0*(knee_targ[1] - s[11]) - 0.25*s[12]
+        if hip_targ[0]: hip_todo[0] = 0.9 * (hip_targ[0] - s[4]) - 0.25 * s[5]
+        if hip_targ[1]: hip_todo[1] = 0.9 * (hip_targ[1] - s[9]) - 0.25 * s[10]
+        if knee_targ[0]: knee_todo[0] = 4.0 * (knee_targ[0] - s[6]) - 0.25 * s[7]
+        if knee_targ[1]: knee_todo[1] = 4.0 * (knee_targ[1] - s[11]) - 0.25 * s[12]
 
-        hip_todo[0] -= 0.9*(0-s[0]) - 1.5*s[1] # PID to keep head strait
-        hip_todo[1] -= 0.9*(0-s[0]) - 1.5*s[1]
-        knee_todo[0] -= 15.0*s[3]  # vertical speed, to damp oscillations
-        knee_todo[1] -= 15.0*s[3]
+        hip_todo[0] -= 0.9 * (0 - s[0]) - 1.5 * s[1]  # PID to keep head strait
+        hip_todo[1] -= 0.9 * (0 - s[0]) - 1.5 * s[1]
+        knee_todo[0] -= 15.0 * s[3]  # vertical speed, to damp oscillations
+        knee_todo[1] -= 15.0 * s[3]
 
         a[0] = hip_todo[0]
         a[1] = knee_todo[0]
         a[2] = hip_todo[1]
         a[3] = knee_todo[1]
-        a = np.clip(0.5*a, -1.0, 1.0)
+        a = np.clip(0.5 * a, -1.0, 1.0)
 
         env.render()
         if done: break
+
+
+if __name__=="__main__":
+    # Heurisic: suboptimal, have no notion of balance.
+    import numpy as np
+    env = MetaBipedalWalkerEnv(add_gaussian_noise_to_context=True)
+    for i in range(3):
+        demo_heuristic(env)
+    env.close()
+

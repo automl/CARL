@@ -16,6 +16,7 @@ from gym.utils import seeding, EzPickle
 
 from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
+from src.envs.box2d.utils import safe_destroy
 
 # TODO debug/test this environment by looking at rendering!
 
@@ -251,15 +252,6 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
     #     return self.viewer.render(return_rgb_array=mode == 'rgb_array')
 
 
-def safe_destroy(world: Box2D.b2World, bodies):
-    for body in bodies:
-        try:
-            world.DestroyBody(body)
-        except AssertionError as error:
-            if str(error) != "m_bodyCount > 0":
-                raise error
-
-
 class MetaLunarLanderEnv(MetaEnv):
     def __init__(
             self,
@@ -267,7 +259,7 @@ class MetaLunarLanderEnv(MetaEnv):
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = True,
+            add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.05,
             logger: Optional[TrialLogger] = None,
     ):
@@ -295,8 +287,6 @@ class MetaLunarLanderEnv(MetaEnv):
             logger=logger
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self.gravity_x = None
-        self.gravity_y = None
         self._update_context()
 
     def _update_context(self):
@@ -318,10 +308,10 @@ class MetaLunarLanderEnv(MetaEnv):
         lunar_lander.VIEWPORT_W = self.context["VIEWPORT_W"]
         lunar_lander.VIEWPORT_H = self.context["VIEWPORT_H"]
 
-        self.gravity_x = self.context["GRAVITY_X"]
-        self.gravity_y = self.context["GRAVITY_Y"]
+        gravity_x = self.context["GRAVITY_X"]
+        gravity_y = self.context["GRAVITY_Y"]
 
-        gravity = (self.gravity_x, self.gravity_y)
+        gravity = (gravity_x, gravity_y)
         self.env.world.gravity = gravity
 
 

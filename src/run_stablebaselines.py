@@ -12,6 +12,7 @@ from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
 from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
+from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
@@ -118,6 +119,19 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Creates logdir in following way: {logdir}/{context_feature_name_0}__{context_feature_name_1}/{agent}_{seed}"
     )
 
+    parser.add_argument(
+        "--default_sample_std_percentage",
+        default=0.05,
+        help="Standard deviation as percentage of mean",
+        type=float
+    )
+    
+    parser.add_argument(
+        "--hide_context",
+        action="store_true",
+        help="Standard deviation as percentage of mean",
+    )
+
     return parser
 
 
@@ -127,21 +141,33 @@ if __name__ == '__main__':
 
     num_cpu = 4  # Number of processes to use
     # set up logger
-    logger = TrialLogger(args.outdir, parser=parser, trial_setup_args=args)
+    logger = TrialLogger(
+        args.outdir,
+        parser=parser,
+        trial_setup_args=args,
+        add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir
+    )
     logger.write_trial_setup()
 
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
     if args.env == "MetaVehicleRacingEnv":
-        contexts = {}  # each vehicle will be one context.
+        if not args.hide_context:
+            raise ValueError("Please set --hide_context because the context cannot be concatenated for pixel-based states.")
+        contexts = {i: {"VEHICLE": i} for i in range(len(PARKING_GARAGE))}  # each vehicle will be one context.
     else:
-        contexts = sample_contexts(args.env, args.context_feature_args, args.num_contexts, default_sample_std_percentage=0.05)
+        contexts = sample_contexts(
+            args.env,
+            args.context_feature_args,
+            args.num_contexts,
+            default_sample_std_percentage=args.default_sample_std_percentage
+        )
 
     # make meta-env
-    env = eval(args.env)(contexts=contexts, logger=logger)
+    env = eval(args.env)(contexts=contexts, logger=logger, hide_context=args.hide_context)
 
     try:
-        model = eval(args.agent)('MlpPolicy', env, verbose=1) # TODO add agent_kwargs
+        model = eval(args.agent)('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 

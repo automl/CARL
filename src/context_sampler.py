@@ -18,7 +18,8 @@ def sample_contexts(
         env_name: str,
         context_feature_args: List[str],
         num_contexts: int,
-        default_sample_std_percentage: float = 0.05
+        default_sample_std_percentage: float = 0.05,
+        fallback_sample_std: float = 0.1,
 ):
     env_defaults, env_bounds = get_default_context_and_bounds(env_name=env_name)
 
@@ -35,14 +36,19 @@ def sample_contexts(
             else:
                 sample_std = default_sample_std_percentage * np.abs(sample_mean)
 
-            sample_dists[key] = (norm(loc=sample_mean, scale=sample_std), env_bounds[key][2])
+            if sample_mean == 0:
+                sample_std = fallback_sample_std
+
+            random_variable = norm(loc=sample_mean, scale=sample_std)
+            data_type = env_bounds[key][2]
+            sample_dists[key] = (random_variable, data_type)
 
     contexts = {}
     for i in range(0, num_contexts):
         c = {}
         for k in env_defaults.keys():
             if k in sample_dists.keys():
-                if sample_dists[k][1]==list:
+                if sample_dists[k][1] == list:
                     length = np.random.randint(5e5)
                     arg_class = sample_dists[k][1][1]
                     context_list = [arg_class(sample_dists[k][0].rvs(size=1)[0]) for i in range(length)]

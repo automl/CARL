@@ -21,7 +21,7 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "joint_stiffness": (1, np.inf, int),
+    "joint_stiffness": (1, np.inf, float),
     "gravity": (-np.inf, -0.1, float),
     "friction": (-np.inf, np.inf, float),
     "angular_damping": (-np.inf, np.inf, float),
