@@ -17,7 +17,8 @@ class MetaEnv(Wrapper):
             hide_context=False,
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None
+            logger: Optional[TrialLogger] = None,
+            max_episode_length: int = 1e6
     ):
         super().__init__(env=env)
         self.contexts = contexts
@@ -25,6 +26,7 @@ class MetaEnv(Wrapper):
         self.hide_context = hide_context
         self.context = contexts[0]
         self.context_index = 0
+        self.cutoff = max_episode_length
 
         self.logger = logger
         self.step_counter = 0  # type: int # increased in/after step
@@ -58,6 +60,8 @@ class MetaEnv(Wrapper):
         if not self.hide_context:
             state = np.concatenate((state, np.array(list(self.context.values()))))
         self.step_counter += 1
+        if self.step_counter >= self.cutoff:
+            done = True
         return state, reward, done, info
 
     def __getattr__(self, name):
