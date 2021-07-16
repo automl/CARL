@@ -6,14 +6,21 @@ import seaborn as sns
 import numpy as np
 from matplotlib.lines import Line2D
 
-path = Path("results/singlecontextfeature_0.1_hidecontext/box2d/MetaLunarLanderEnv")
+path = "results/singlecontextfeature_0.25_hidecontext/box2d/MetaBipedalWalkerEnv"
+# path = "results/singlecontextfeature_0.25_hidecontext/box2d/MetaLunarLanderEnv"
+
 xname = "step"
+yname = "ep_rew_mean"
+
+plot_comparison = False
+plot_mean_performance = True
 
 """
 Assumend folder structure:
 
 logdir / env_name / name of context feature / {agent}_{seed} 
 """
+path = Path(path)
 env_name = path.stem
 
 progress_fname = "progress.csv"
@@ -55,46 +62,78 @@ for cf_name, cf_dirs in dirs_per_cf.items():
             "seed": [seed] * n,
             "step": df['time/total_timesteps'].to_numpy(),
             "iteration": df['time/iterations'].to_numpy(),
-            "ep_rew_mean": df['rollout/ep_rew_mean'].to_numpy(),
+            yname: df['rollout/ep_rew_mean'].to_numpy(),
         }))
     D = pd.concat(D)
     data[cf_name] = D
 
-sns.set_style("white")
 
-color_palette_name = "colorblind"  # TODO find palette with enough individual colors or use linestyles
-color_default_context = "black"
-figsize = (8, 6)
-dpi = 200
-fig = plt.figure(figsize=figsize, dpi=200)
-ax = fig.add_subplot(111)
-n = len(data)
-colors = sns.color_palette(color_palette_name, n)
-legend_handles = []
-labels = []
-for i, (cf_name, df) in enumerate(data.items()):
-    color = colors[i]
-    if cf_name == default_name:
-        color = color_default_context
-    ax = sns.lineplot(data=df, x=xname, y="ep_rew_mean", ax=ax, color=color)
-    legend_handles.append(Line2D([0], [0], color=color))
-    labels.append(cf_name)
-title = f"{env_name}"
-ax.set_title(title)
+color_palette_name = "husl"  # TODO find palette with enough individual colors or use linestyles
+if plot_mean_performance:
+    means = []
+    for cf_name, df in data.items():
+        mean = df[yname].mean()
+        std = df[yname].std()
+        means.append({"context_feature": cf_name, "mean": mean, "std": std})
+    means = pd.DataFrame(means)
 
-# Sort labels, put default name at front
-idx = labels.index(default_name)
-name_item = labels.pop(idx)
-labels.insert(0, name_item)
-handle_item = legend_handles.pop(idx)
-legend_handles.insert(0, handle_item)
+    figsize = (8, 6)
+    dpi = 200
+    fig = plt.figure(figsize=figsize, dpi=200)
+    axes = fig.subplots(nrows=2, ncols=1, sharex=True)
 
-ax.legend(handles=legend_handles, labels=labels)
-fig.set_tight_layout(True)
-plt.show()
+    ax = axes[0]
+    ax = sns.barplot(data=means, x="context_feature", y="mean", ax=ax, palette=color_palette_name)
+    ax.set_xlabel("")
+    ax = axes[1]
+    ax = sns.barplot(data=means, x="context_feature", y="std", ax=ax, palette=color_palette_name)
+    xticklabels = means["context_feature"]
+    ax.set_xticklabels(xticklabels, rotation=30, fontsize=9, ha="right")
+    title = f"{env_name}"
+    fig.suptitle(title)
+    fig.set_tight_layout(True)
+    fname = path / f"ep_rew_mean_mean_std.png"
+    fig.savefig(fname, bbox_inches="tight")
+    plt.show()
 
-fname = path / f"ep_rew_mean_over_{xname}.png"
-fig.savefig(fname, bbox_inches="tight")
+if plot_comparison:
+    sns.set_style("white")
+
+    color_default_context = "black"
+    figsize = (8, 6)
+    dpi = 200
+    fig = plt.figure(figsize=figsize, dpi=200)
+    ax = fig.add_subplot(111)
+    n = len(data)
+    # n_colors_in_palette = n
+    # if color_palette_name in sns.palettes.SEABORN_PALETTES:
+    #     n_colors_in_palette = sns.palettes.SEABORN_PALETTES[color_palette_name]
+    colors = sns.color_palette(color_palette_name, n)
+    legend_handles = []
+    labels = []
+    for i, (cf_name, df) in enumerate(data.items()):
+        color = colors[i]
+        if cf_name == default_name:
+            color = color_default_context
+        ax = sns.lineplot(data=df, x=xname, y=yname, ax=ax, color=color)
+        legend_handles.append(Line2D([0], [0], color=color))
+        labels.append(cf_name)
+    title = f"{env_name}"
+    ax.set_title(title)
+
+    # Sort labels, put default name at front
+    idx = labels.index(default_name)
+    name_item = labels.pop(idx)
+    labels.insert(0, name_item)
+    handle_item = legend_handles.pop(idx)
+    legend_handles.insert(0, handle_item)
+
+    ax.legend(handles=legend_handles, labels=labels)
+    fig.set_tight_layout(True)
+    plt.show()
+
+    fname = path / f"ep_rew_mean_over_{xname}.png"
+    fig.savefig(fname, bbox_inches="tight")
 
 
 
