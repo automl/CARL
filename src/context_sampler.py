@@ -51,12 +51,13 @@ def sample_contexts(
                 if sample_dists[k][1] == list:
                     length = np.random.randint(5e5)
                     arg_class = sample_dists[k][1][1]
-                    context_list = [arg_class(sample_dists[k][0].rvs(size=1)[0]) for i in range(length)]
-                    c[k] = context_list
+                    context_list = sample_dists[k][0].rvs(size=length)
+                    context_list = np.clip(context_list, env_bounds[k][0], env_bounds[k][1])
+                    c[k] = [arg_class(c) for c in context_list]
                 else:
                     c[k] = sample_dists[k][0].rvs(size=1)[0]
+                    c[k] = np.clip(c[k], env_bounds[k][0], env_bounds[k][1])
                     c[k] = sample_dists[k][1](c[k])
-                c[k] = np.clip(c[k], env_bounds[k][0], env_bounds[k][1])
             else:
                 c[k] = env_defaults[k]
         contexts[i] = c
