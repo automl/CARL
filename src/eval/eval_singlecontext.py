@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import seaborn as sns
 import numpy as np
 from matplotlib.lines import Line2D
@@ -69,6 +70,7 @@ for cf_name, cf_dirs in dirs_per_cf.items():
 
 
 color_palette_name = "husl"  # TODO find palette with enough individual colors or use linestyles
+color_default_context = "black"
 if plot_mean_performance:
     means = []
     for cf_name, df in data.items():
@@ -77,16 +79,21 @@ if plot_mean_performance:
         means.append({"context_feature": cf_name, "mean": mean, "std": std})
     means = pd.DataFrame(means)
 
+    n = len(means)
+    colors = np.array(sns.color_palette(color_palette_name, n))
+    idx = means["context_feature"] == default_name
+    colors[idx] = mpl.colors.to_rgb(color_default_context)
+
     figsize = (8, 6)
     dpi = 200
     fig = plt.figure(figsize=figsize, dpi=200)
     axes = fig.subplots(nrows=2, ncols=1, sharex=True)
 
     ax = axes[0]
-    ax = sns.barplot(data=means, x="context_feature", y="mean", ax=ax, palette=color_palette_name)
+    ax = sns.barplot(data=means, x="context_feature", y="mean", ax=ax, palette=colors)
     ax.set_xlabel("")
     ax = axes[1]
-    ax = sns.barplot(data=means, x="context_feature", y="std", ax=ax, palette=color_palette_name)
+    ax = sns.barplot(data=means, x="context_feature", y="std", ax=ax, palette=colors)
     xticklabels = means["context_feature"]
     ax.set_xticklabels(xticklabels, rotation=30, fontsize=9, ha="right")
     title = f"{env_name}"
@@ -99,7 +106,6 @@ if plot_mean_performance:
 if plot_comparison:
     sns.set_style("white")
 
-    color_default_context = "black"
     figsize = (8, 6)
     dpi = 200
     fig = plt.figure(figsize=figsize, dpi=200)
