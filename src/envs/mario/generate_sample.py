@@ -164,4 +164,4 @@ def one_hot_to_ascii_level(level, tokens):
         if i < level.shape[2] - 1:
             line += "\n"
         ascii_level.append(line)
-    return "".join(ascii_level)
+    return ascii_level
