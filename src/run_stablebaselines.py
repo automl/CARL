@@ -1,9 +1,12 @@
+from functools import partial
+import os
 import gym
 import importlib
 import configargparse
 
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
+from stable_baselines3.common.cmd_util import make_vec_env
 
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -82,6 +85,13 @@ def get_parser() -> configargparse.ArgumentParser:
         type=str,
         default="PPO",
         help="Stablebaselines3 agent",
+    )
+
+    parser.add_argument(
+        "--num_envs",
+        type=int,
+        default=os.cpu_count() or 1,
+        help="Number of vectorized environments",
     )
 
     parser.add_argument(
@@ -164,7 +174,8 @@ if __name__ == '__main__':
         )
 
     # make meta-env
-    env = eval(args.env)(contexts=contexts, logger=logger, hide_context=args.hide_context)
+    EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
+    env = make_vec_env(EnvCls, n_envs=args.num_envs)
 
     try:
         model = eval(args.agent)('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
