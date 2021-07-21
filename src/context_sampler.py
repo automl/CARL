@@ -37,7 +37,7 @@ def sample_contexts(
                 sample_std = default_sample_std_percentage * np.abs(sample_mean)
 
             if sample_mean == 0:
-                sample_std = fallback_sample_std
+                sample_std = fallback_sample_std  # TODO change this back to sample_std
 
             random_variable = norm(loc=sample_mean, scale=sample_std)
             data_type = env_bounds[key][2]
