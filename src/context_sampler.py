@@ -57,6 +57,10 @@ def sample_contexts(
                     context_list = random_variable.rvs(size=length)
                     context_list = np.clip(context_list, lower_bound, upper_bound)
                     c[k] = [arg_class(c) for c in context_list]
+                elif context_feature_type == "categorical":
+                    choices = env_bounds[k][3]
+                    choice = np.random.choice(choices)
+                    c[k] = choice
                 else:
                     c[k] = random_variable.rvs(size=1)[0]
                     c[k] = np.clip(c[k], lower_bound, upper_bound)
