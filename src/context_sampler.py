@@ -40,24 +40,27 @@ def sample_contexts(
                 sample_std = fallback_sample_std  # TODO change this back to sample_std
 
             random_variable = norm(loc=sample_mean, scale=sample_std)
-            data_type = env_bounds[key][2]
-            sample_dists[key] = (random_variable, data_type)
+            context_feature_type = env_bounds[key][2]
+            sample_dists[key] = (random_variable, context_feature_type)
 
     contexts = {}
     for i in range(0, num_contexts):
         c = {}
         for k in env_defaults.keys():
             if k in sample_dists.keys():
-                if sample_dists[k][1] == list:
+                random_variable = sample_dists[k][0]
+                context_feature_type = sample_dists[k][1]
+                lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
+                if context_feature_type == list:
                     length = np.random.randint(5e5)
                     arg_class = sample_dists[k][1][1]
-                    context_list = sample_dists[k][0].rvs(size=length)
-                    context_list = np.clip(context_list, env_bounds[k][0], env_bounds[k][1])
+                    context_list = random_variable.rvs(size=length)
+                    context_list = np.clip(context_list, lower_bound, upper_bound)
                     c[k] = [arg_class(c) for c in context_list]
                 else:
-                    c[k] = sample_dists[k][0].rvs(size=1)[0]
-                    c[k] = np.clip(c[k], env_bounds[k][0], env_bounds[k][1])
-                    c[k] = sample_dists[k][1](c[k])
+                    c[k] = random_variable.rvs(size=1)[0]
+                    c[k] = np.clip(c[k], lower_bound, upper_bound)
+                    c[k] = context_feature_type(c[k])
             else:
                 c[k] = env_defaults[k]
         contexts[i] = c
