@@ -86,7 +86,9 @@ DEFAULT_CONTEXT = {
     "VEHICLE": PARKING_GARAGE.index(RaceCar),
 }
 
-CONTEXT_BOUNDS = {}
+CONTEXT_BOUNDS = {
+    "VEHICLE": (None, None, "categorical", np.arange(0, len(PARKING_GARAGE)))
+}
 CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
 # TODO add wind to world
