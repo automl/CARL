@@ -96,7 +96,7 @@ if plot_mean_performance:
     ax = sns.barplot(data=means, x="context_feature", y="std", ax=ax, palette=colors)
     xticklabels = means["context_feature"]
     ax.set_xticklabels(xticklabels, rotation=30, fontsize=9, ha="right")
-    title = f"{env_name}"
+    title = f"{env_name}\n{str(path)}"
     fig.suptitle(title)
     fig.set_tight_layout(True)
     fname = path / f"ep_rew_mean_mean_std.png"
