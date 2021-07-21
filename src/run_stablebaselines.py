@@ -161,17 +161,12 @@ if __name__ == '__main__':
 
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
-    if args.env == "MetaVehicleRacingEnv":
-        if not args.hide_context:
-            raise ValueError("Please set --hide_context because the context cannot be concatenated for pixel-based states.")
-        contexts = {i: {"VEHICLE": i} for i in range(len(PARKING_GARAGE))}  # each vehicle will be one context.
-    else:
-        contexts = sample_contexts(
-            args.env,
-            args.context_feature_args,
-            args.num_contexts,
-            default_sample_std_percentage=args.default_sample_std_percentage
-        )
+    contexts = sample_contexts(
+        args.env,
+        args.context_feature_args,
+        args.num_contexts,
+        default_sample_std_percentage=args.default_sample_std_percentage
+    )
 
     # make meta-env
     EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
