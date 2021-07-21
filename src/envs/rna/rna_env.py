@@ -1,8 +1,9 @@
 from src.envs.meta_env import MetaEnv
-from src.envs.rna.learna.src.data import parse_dot_brackets
+from src.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
 from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
 from typing import Optional, Dict, List
+from gym import spaces
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
@@ -29,7 +30,7 @@ class MetaRnaDesignEnvironment(MetaEnv):
             contexts: Dict[str, Dict] = {},
             instance_mode: str = "rr",
             hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = True,
+            add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
     ):
@@ -57,6 +58,11 @@ class MetaRnaDesignEnvironment(MetaEnv):
                 target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
+        env.action_space = spaces.Discrete(4)
+        env.observation_space = spaces.Box(low=-np.inf*np.ones(11), high=np.inf*np.ones(11))
+        env.reward_range = (-np.inf, np.inf)
+        env.metadata = {}
+        env.data_location = data_location
         super().__init__(
             env=env,
             contexts=contexts,
@@ -66,9 +72,7 @@ class MetaRnaDesignEnvironment(MetaEnv):
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger
         )
-        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self._update_context()
-        self.data_location = data_location
+        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
     def step(self, action):
         # Step function has a different name in this env
@@ -81,7 +85,7 @@ class MetaRnaDesignEnvironment(MetaEnv):
     def _update_context(self):
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
-            data_dir=self.data_location,
+            data_dir=self.env.data_location,
             target_structure_ids=self.context["target_structure_ids"],)
         env_config = RnaDesignEnvironmentConfig(
             mutation_threshold=self.context["mutation_threshold"],

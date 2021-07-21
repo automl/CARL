@@ -1,6 +1,7 @@
 import functools
 import os
 from dataclasses import dataclass
+from src.envs.mario.reachabillity import reachability_map
 import sys
 
 import torch
@@ -70,9 +71,14 @@ def load_generator(level_index: int):
 
 def generate_level(width: int, height: int, level_index: int):
     toad_gan = load_generator(level_index)
-    level = generate_sample(
-        **vars(toad_gan),
-        scale_h=width / toad_gan.original_width,
-        scale_v=height / toad_gan.original_height
-    )
-    return level
+    playable = False
+    level = None
+    while not playable:
+        level = generate_sample(
+            **vars(toad_gan),
+            scale_h=width / toad_gan.original_width,
+            scale_v=height / toad_gan.original_height
+        )
+        _, playable = reachability_map(level, shape=(height, width))
+    assert level
+    return "".join(level)
