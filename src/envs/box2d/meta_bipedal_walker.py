@@ -62,8 +62,8 @@ CONTEXT_BOUNDS = {
 
     # walker
     "MOTORS_TORQUE": (0, 200, float),
-    "SPEED_HIP": (0, 15, float),
-    "SPEED_KNEE": (0, 15, float),
+    "SPEED_HIP": (1e-6, 15, float),
+    "SPEED_KNEE": (1e-6, 15, float),
     "LIDAR_RANGE": (0.5, 20, float),
     "LEG_DOWN": (-2, -0.25, float),
     "LEG_W": (0.25, 0.5, float),
