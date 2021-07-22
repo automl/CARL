@@ -1,6 +1,5 @@
 import numpy as np
-import typing
-from typing import List
+from typing import List, Dict, Any
 from scipy.stats import norm
 
 from src import envs
@@ -20,7 +19,7 @@ def sample_contexts(
         num_contexts: int,
         default_sample_std_percentage: float = 0.05,
         fallback_sample_std: float = 0.1,
-):
+) -> Dict[Any, Any]:
     env_defaults, env_bounds = get_default_context_and_bounds(env_name=env_name)
 
     sample_dists = {}
