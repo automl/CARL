@@ -24,7 +24,8 @@ class MetaEnv(Wrapper):
         self.contexts = contexts
         self.instance_mode = instance_mode
         self.hide_context = hide_context
-        self.context = contexts[0]
+        context_keys = list(contexts.keys())
+        self.context = contexts[context_keys[0]]
         self.context_index = 0
         self.cutoff = max_episode_length
 
@@ -81,7 +82,8 @@ class MetaEnv(Wrapper):
         else:
             raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
         # TODO add the case that instance_mode is a function or a class
-        context = self.contexts[self.context_index]
+        contexts_keys = list(self.contexts.keys())
+        context = self.contexts[contexts_keys[self.context_index]]
 
         # TODO use class for context changing / value augmentation
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
