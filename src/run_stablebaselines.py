@@ -7,6 +7,7 @@ import configargparse
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 from stable_baselines3.common.cmd_util import make_vec_env
+from stable_baselines3.common.callbacks import EvalCallback
 
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -116,6 +117,13 @@ def get_parser() -> configargparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--eval_freq",
+        type=int,
+        default=1e4,
+        help="Number of steps after which to evaluate",
+    )
+
+    parser.add_argument(
         "--context_feature_args",
         type=str,
         default=[],
@@ -140,6 +148,12 @@ def get_parser() -> configargparse.ArgumentParser:
         "--hide_context",
         action="store_true",
         help="Standard deviation as percentage of mean",
+    )
+
+    parser.add_argument(
+        "--hp_file",
+        type=str,
+        help="YML file with hyperparameter",
     )
 
     return parser
@@ -171,6 +185,11 @@ if __name__ == '__main__':
     # make meta-env
     EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
     env = make_vec_env(EnvCls, n_envs=args.num_envs)
+    eval_env = make_vec_env(EnvCls, n_envs=1)
+    log_path = f"{args.outdir}/{args.agent}_{args.seed}"
+    eval_callback = EvalCallback(eval_env, log_path=log_path, eval_freq=args.eval_freq,
+                                 n_eval_episodes=args.num_contexts,
+                                 deterministic=True, render=False)
 
     try:
         model = eval(args.agent)('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
@@ -178,7 +197,7 @@ if __name__ == '__main__':
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
     # model.set_logger(new_logger)
-    model.learn(total_timesteps=args.steps)
+    model.learn(total_timesteps=args.steps, callback=eval_callback)
 
     #obs = env.reset()
     #for _ in range(1000):
