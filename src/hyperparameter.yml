@@ -177,7 +177,7 @@ MetaGrasp:
                        net_arch=[dict(pi=[256, 256], vf=[256, 256])]
                        )"
 
-  MetaFetch:
+MetaFetch:
     env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
     normalize: true
     n_envs: 8
