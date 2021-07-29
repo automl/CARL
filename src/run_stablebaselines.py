@@ -17,7 +17,7 @@ from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
 from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
-#from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
+from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
@@ -175,13 +175,15 @@ if __name__ == '__main__':
     )
     logger.write_trial_setup()
 
+    print(args.hp_file)
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
             hyperparams = hyperparams_dict[args.env]
             env_wrappers = None
-            hyperparams, env_wrappers, _ = preprocess_hyperparams(hyperparams)
+            hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
 
+    print(env_wrappers)
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
     contexts = sample_contexts(
