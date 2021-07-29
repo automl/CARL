@@ -3,6 +3,7 @@ import os
 import gym
 import importlib
 import configargparse
+import yaml
 
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
@@ -16,7 +17,7 @@ from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
 from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
-from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
+#from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
