@@ -21,6 +21,8 @@ import os
 import glob
 import sys
 import inspect
+from typing import Any
+import numpy as np
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 parentdir = os.path.dirname(parentdir)  # go up twice
@@ -35,10 +37,11 @@ import pandas as pd
 from src.run_stablebaselines import get_parser
 from src.trial_logger import TrialLogger
 from src.context_sampler import get_default_context_and_bounds
-from src.envs import *
+from src.envs import MetaVehicleRacingEnv, MetaLunarLanderEnv
+from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
 
-
-g_earth = 9.80665  # m/s²
+# Experiment 1: LunarLander
+g_earth = - 9.80665  # m/s², beware of coordinate systems
 
 gravities = {
     "Earth": g_earth * 1,
@@ -56,12 +59,45 @@ planets_test_out = ["Jupiter", "Neptune"]
 
 outdir = "results/experiments/policytransfer"
 
+# Experiment 2: MetaVehicleRacingEnv
+vehicle_train = "RaceCar"
+vehicles = {
+    "RaceCar": PARKING_GARAGE.index(RaceCar),
+    "StreetCar": PARKING_GARAGE.index(StreetCar),
+    "TukTuk": PARKING_GARAGE.index(TukTuk),
+    "AWDRaceCar": PARKING_GARAGE.index(AWDRaceCar),
+    "BusSmallTrailer": PARKING_GARAGE.index(BusSmallTrailer),
+}
+
+
+def get_contexts(env_name, context_feature_key, context_feature_mapping, context_feature_id):
+    env_default_context, env_bounds = get_default_context_and_bounds(env_name=env_name)
+    env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
+    contexts = {context_feature_key: env_default_context}
+    return contexts
+
 
 def define_setting(args):
     args.steps = 1e6
+    args.steps = 1000
+    args.env = "MetaVehicleRacingEnv"
+    if args.env == "MetaLunarLanderEnv":
+        context_feature_key = "GRAVITY"
+        context_feature_id = planet_train
+        context_feature_mapping = gravities
+    elif args.env == "MetaVehicleRacingEnv":
+        context_feature_key = "VEHICLE"
+        context_feature_id = vehicle_train
+        context_feature_mapping = vehicles
+        args.hide_context = True
+    else:
+        raise NotImplementedError
+
     env_default_context, env_bounds = get_default_context_and_bounds(env_name=args.env)
-    env_default_context["GRAVITY"] = - gravities[planet_train]  # negative gravity! beware of coordinate systems
-    contexts_train = {planet_train: env_default_context}
+    env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
+    contexts_train = {context_feature_key: env_default_context}
+
+    print(contexts_train)
 
     return args, contexts_train
 
@@ -101,6 +137,9 @@ def train_env():
 
 
 if __name__ == '__main__':
+    vdisplay = Xvfb()
+    vdisplay.start()
+
     import matplotlib.pyplot as plt
     import seaborn as sns
 
@@ -108,9 +147,27 @@ if __name__ == '__main__':
     args, unknown_args = parser.parse_known_args()
     args, contexts_train = define_setting(args)
 
-    model_fnames = glob.glob(os.path.join(args.outdir, args.env, "*", "model.zip"))
+    env_name = "MetaVehicleRacingEnv"
+    model_fnames = glob.glob(os.path.join(outdir, env_name, "*", "model.zip"))
+    model_fnames = ["tmp/test_logs/PPO_123456/model"]
 
-    n_eval_eps = 50
+    if env_name == "MetaLunarLanderEnv":
+        env_class = MetaLunarLanderEnv
+        context_feature_key = "GRAVITY"
+        context_feature_id_train = planet_train
+        planets_test = [planet_train] + planets_test_in + planets_test_out
+        context_feature_ids = planets_test
+        context_feature_mapping = gravities
+    elif env_name == "MetaVehicleRacingEnv":
+        env_class = MetaVehicleRacingEnv
+        context_feature_key = "VEHICLE"
+        context_feature_id_train = vehicle_train
+        context_feature_ids = list(vehicles.keys())
+        context_feature_mapping = vehicles
+    else:
+        raise NotImplementedError
+
+    n_eval_eps = 10
     title = "In vs Out Distribution"
     k_ep_rew_mean = "reward_mean"
     k_ep_rew_std = "reward_std"
@@ -120,14 +177,14 @@ if __name__ == '__main__':
         agenttype_seed_str = model_fname.parent.stem
         train_seed = int(agenttype_seed_str.split("_")[-1])
 
-        planets_test = [planet_train] + planets_test_in + planets_test_out
-        for planet in planets_test:
-            print(f"Landing on {planet}.")
-            env_default_context, env_bounds = get_default_context_and_bounds(env_name=args.env)
-            env_default_context["GRAVITY"] = - gravities[planet]  # negative gravity! beware of coordinate systems
-            contexts = {planet: env_default_context}
+        for context_feature_id in context_feature_ids:
+            print(f">> Evaluating {env_name} trained on/with {context_feature_id_train} on/with {context_feature_id} (train seed {train_seed}).")
 
-            env = MetaLunarLanderEnv(contexts=contexts)
+            env_default_context, env_bounds = get_default_context_and_bounds(env_name=env_name)
+            env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
+            contexts = {context_feature_key: env_default_context}
+
+            env = env_class(contexts=contexts)
             model = PPO.load(path=model_fname, env=env)
             mean_reward, std_reward = evaluate_policy(
                 model,
@@ -135,10 +192,10 @@ if __name__ == '__main__':
                 n_eval_episodes=n_eval_eps,
                 return_episode_rewards=True
             )
-            if planet == planet_train:
-                planet += "*"
+            if context_feature_id == context_feature_id_train:
+                context_feature_id += "*"
             D = pd.DataFrame({
-                "planet": [planet] * n_eval_eps,
+                "planet": [context_feature_id] * n_eval_eps,
                 k_ep_rew_mean: mean_reward,
                 k_ep_rew_std: std_reward,
                 "train_seed": [train_seed] * n_eval_eps,
@@ -146,7 +203,7 @@ if __name__ == '__main__':
             data.append(D)
     data = pd.concat(data)
 
-    fig = plt.figure(figsize=(6, 4), dpi=200)
+    fig = plt.figure(figsize=(6, 8), dpi=200)
     axes = fig.subplots(nrows=2, ncols=1, sharex=True)
 
     ax = axes[0]
