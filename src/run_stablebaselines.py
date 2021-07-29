@@ -6,7 +6,7 @@ import configargparse
 import yaml
 
 from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.ppo import PPO
+from stable_baselines3 import PPO
 from stable_baselines3.common.cmd_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback
 
@@ -175,7 +175,6 @@ if __name__ == '__main__':
     )
     logger.write_trial_setup()
 
-    print(args.hp_file)
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
