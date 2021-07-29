@@ -161,6 +161,11 @@ def get_parser() -> configargparse.ArgumentParser:
 
 
 if __name__ == '__main__':
+    from xvfbwrapper import Xvfb
+
+    vdisplay = Xvfb()
+    vdisplay.start()
+
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
 
