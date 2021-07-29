@@ -187,6 +187,7 @@ if __name__ == '__main__':
     )
     logger.write_trial_setup()
 
+    hyperparams = {}
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
