@@ -40,6 +40,7 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
     if "noise_type" in hyperparams.keys():
         del hyperparams["noise_type"]
         del hyperparams["noise_std"]
-    del hyperparams["normalize"]
+    if "normalize" in hyperparams.keys():
+        del hyperparams["normalize"]
 
     return hyperparams, env_wrapper
