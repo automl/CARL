@@ -1,7 +1,15 @@
 from functools import partial
-import os
 import gym
-import importlib
+import os
+
+# os.chdir(os.path.join(os.getcwd(), ".."))
+import sys
+import inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+print(os.getcwd())
+
 import configargparse
 import yaml
 
