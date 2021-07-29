@@ -23,6 +23,7 @@ importlib.reload(src.trial_logger)
 from src.trial_logger import TrialLogger
 
 from src.context_sampler import sample_contexts
+from utils.hyperparameter_processing import preprocess_hyperparams
 
 
 # TODO: what does this do? Do we even need it?
@@ -177,6 +178,8 @@ if __name__ == '__main__':
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
             hyperparams = hyperparams_dict[args.env]
+            env_wrappers = None
+            hyperparams, env_wrappers, _ = preprocess_hyperparams(hyperparams)
 
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
@@ -189,8 +192,8 @@ if __name__ == '__main__':
 
     # make meta-env
     EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
-    env = make_vec_env(EnvCls, n_envs=args.num_envs)
-    eval_env = make_vec_env(EnvCls, n_envs=1)
+    env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
+    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
     log_path = f"{args.outdir}/{args.agent}_{args.seed}"
     eval_callback = EvalCallback(eval_env, log_path=log_path, eval_freq=args.eval_freq,
                                  n_eval_episodes=args.num_contexts,
