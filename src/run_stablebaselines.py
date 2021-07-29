@@ -173,6 +173,11 @@ if __name__ == '__main__':
     )
     logger.write_trial_setup()
 
+    if args.hp_file is not None:
+        with open(args.hp_file, "r") as f:
+            hyperparams_dict = yaml.safe_load(f)
+            hyperparams = hyperparams_dict[args.env]
+
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
     contexts = sample_contexts(
@@ -192,7 +197,7 @@ if __name__ == '__main__':
                                  deterministic=True, render=False)
 
     try:
-        model = eval(args.agent)('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
+        model = eval(args.agent)(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
