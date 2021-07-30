@@ -162,6 +162,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
+        default="hyperparameter.yml",
         help="YML file with hyperparameter",
     )
 
@@ -206,7 +207,7 @@ if __name__ == '__main__':
     EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
     env = make_vec_env(EnvCls, n_envs=args.num_envs)
     eval_env = make_vec_env(EnvCls, n_envs=1)
-    log_path = f"{args.outdir}/{args.agent}_{args.seed}"
+    log_path = logger.logdir  # f"{args.outdir}/{args.agent}_{args.seed}"
     eval_callback = EvalCallback(eval_env, log_path=log_path, eval_freq=args.eval_freq,
                                  n_eval_episodes=args.num_contexts,
                                  deterministic=True, render=False)
