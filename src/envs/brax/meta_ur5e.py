@@ -20,6 +20,7 @@ DEFAULT_CONTEXT = {
     "joint_angular_damping": 50,
     "target_radius": 0.02,
     "target_distance": 0.5,
+    "torso_mass": 1.,
 }
 
 CONTEXT_BOUNDS = {
@@ -30,7 +31,8 @@ CONTEXT_BOUNDS = {
     "actuator_strength": (1, np.inf, float),
     "joint_angular_damping": (0, 360, float),
     "target_radius": (0.01, np.inf, float),
-    "target_distance": (0.01, np.inf, float)
+    "target_distance": (0.01, np.inf, float),
+    "torso_mass": (0, np.inf, float)
 }
 
 
