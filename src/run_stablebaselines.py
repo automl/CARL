@@ -1,20 +1,12 @@
 from functools import partial
-import gym
 import os
-
-# os.chdir(os.path.join(os.getcwd(), ".."))
-import sys
-import inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-print(os.getcwd())
-
+import gym
+import importlib
 import configargparse
 import yaml
 
 from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.ppo import PPO
+from stable_baselines3 import PPO
 from stable_baselines3.common.cmd_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback
 
@@ -25,13 +17,14 @@ from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
 from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
-#from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
+from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
 from src.trial_logger import TrialLogger
 
 from src.context_sampler import sample_contexts
+from utils.hyperparameter_processing import preprocess_hyperparams
 
 
 # TODO: what does this do? Do we even need it?
@@ -170,11 +163,6 @@ def get_parser() -> configargparse.ArgumentParser:
 
 
 if __name__ == '__main__':
-    from xvfbwrapper import Xvfb
-
-    vdisplay = Xvfb()
-    vdisplay.start()
-
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
 
@@ -188,12 +176,14 @@ if __name__ == '__main__':
     )
     logger.write_trial_setup()
 
-    hyperparams = {}
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
             hyperparams = hyperparams_dict[args.env]
+            env_wrappers = None
+            hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
 
+    print(env_wrappers)
     # sample contexts using unknown args
     # TODO find good sample std, make sure it is a good default
     contexts = sample_contexts(
@@ -205,9 +195,9 @@ if __name__ == '__main__':
 
     # make meta-env
     EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
-    env = make_vec_env(EnvCls, n_envs=args.num_envs)
-    eval_env = make_vec_env(EnvCls, n_envs=1)
-    log_path = logger.logdir  # f"{args.outdir}/{args.agent}_{args.seed}"
+    env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
+    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
+    log_path = f"{args.outdir}/{args.agent}_{args.seed}"
     eval_callback = EvalCallback(eval_env, log_path=log_path, eval_freq=args.eval_freq,
                                  n_eval_episodes=args.num_contexts,
                                  deterministic=True, render=False)
