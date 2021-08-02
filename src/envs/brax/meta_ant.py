@@ -74,7 +74,7 @@ class MetaAnt(MetaEnv):
         self.env.sys = brax.System(json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config()))
 
     def __getattr__(self, name):
-        if name in ["sys"]:
+        if name in ["sys", "__getstate__"]:
             return getattr(self.env._environment, name)
         else:
             return getattr(self, name)
