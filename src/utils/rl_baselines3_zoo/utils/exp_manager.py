@@ -31,10 +31,10 @@ from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecEnv,
 from torch import nn as nn  # noqa: F401
 
 # Register custom envs
-import utils.import_envs  # noqa: F401 pytype: disable=import-error
-from utils.callbacks import SaveVecNormalizeCallback, TrialEvalCallback
-from utils.hyperparams_opt import HYPERPARAMS_SAMPLER
-from utils.utils import ALGOS, get_callback_list, get_latest_run_id, get_wrapper_class, linear_schedule
+import src.utils.rl_baselines3_zoo.utils.import_envs  # noqa: F401 pytype: disable=import-error
+from src.utils.rl_baselines3_zoo.utils.callbacks import SaveVecNormalizeCallback, TrialEvalCallback
+from src.utils.rl_baselines3_zoo.utils.hyperparams_opt import HYPERPARAMS_SAMPLER
+from src.utils.rl_baselines3_zoo.utils.utils import ALGOS, get_callback_list, get_latest_run_id, get_wrapper_class, linear_schedule
 
 
 class ExperimentManager(object):

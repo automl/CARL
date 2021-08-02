@@ -5,7 +5,7 @@ import shutil
 import subprocess
 from copy import deepcopy
 
-from utils.utils import ALGOS, get_latest_run_id
+from src.utils.rl_baselines3_zoo.utils.utils import ALGOS, get_latest_run_id
 
 if __name__ == "__main__":  # noqa: C901
     parser = argparse.ArgumentParser()

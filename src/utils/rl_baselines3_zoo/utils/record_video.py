@@ -3,8 +3,8 @@ import os
 
 from stable_baselines3.common.vec_env import VecVideoRecorder
 
-from utils.exp_manager import ExperimentManager
-from utils.utils import ALGOS, create_test_env, get_latest_run_id, get_saved_hyperparams
+from src.utils.rl_baselines3_zoo.utils.exp_manager import ExperimentManager
+from src.utils.rl_baselines3_zoo.utils.utils import ALGOS, create_test_env, get_latest_run_id, get_saved_hyperparams
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

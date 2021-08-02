@@ -1,9 +1,8 @@
 # Preprocessing from stable baselines zoo
 # Source: https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/utils/exp_manager.py
 import sys
-sys.path.append("/home/eimer/Dokumente/git/rl_baselines_zoo/")
-from zoo_utils.utils import get_wrapper_class, linear_schedule
-from zoo_utils.exp_manager import ExperimentManager
+from src.utils.rl_baselines3_zoo.utils.utils import get_wrapper_class, linear_schedule
+from src.utils.rl_baselines3_zoo.utils.exp_manager import ExperimentManager
 from typing import Any, Dict
 from torch import nn as nn
 
