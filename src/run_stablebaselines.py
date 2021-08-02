@@ -9,6 +9,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import PPO
 from stable_baselines3.common.cmd_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback
+from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -176,12 +177,13 @@ if __name__ == '__main__':
     )
     logger.write_trial_setup()
 
+    hyperparams = {}
+    env_wrappers = None
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
-            hyperparams = hyperparams_dict[args.env]
-            env_wrappers = None
-            hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
+        hyperparams = hyperparams_dict[args.env]
+        hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
 
     print(env_wrappers)
     # sample contexts using unknown args
@@ -196,7 +198,9 @@ if __name__ == '__main__':
     # make meta-env
     EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
+    env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
+    eval_env = VecNormalize(venv=eval_env, norm_obs=True, norm_reward=False)
     log_path = f"{args.outdir}/{args.agent}_{args.seed}"
     eval_callback = EvalCallback(eval_env, log_path=log_path, eval_freq=args.eval_freq,
                                  n_eval_episodes=args.num_contexts,
