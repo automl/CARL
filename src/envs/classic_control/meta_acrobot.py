@@ -18,17 +18,17 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "link_length_1": (0.1, 10, float), # Links can be shrunken and grown by a factor of 10
+    "link_length_1": (0.1, 10, float),  # Links can be shrunken and grown by a factor of 10
     "link_length_2": (0.1, 10, float),
     "link_mass_1": (0.1, 10, float),  # Link mass can be shrunken and grown by a factor of 10
     "link_mass_2": (0.1, 10, float),
     "link_com_1": (0, 1, float),  # Center of mass can move from one end to the other
     "link_com_2": (0, 1, float),
-    "link_moi": (0.1, 10, float), # Moments on inertia can be shrunken and grown by a factor of 10
-    "max_velocity_1": (0.4*np.pi, 40*np.pi, float), # Velocity can vary by a factor of 10 in either direction
+    "link_moi": (0.1, 10, float),  # Moments on inertia can be shrunken and grown by a factor of 10
+    "max_velocity_1": (0.4*np.pi, 40*np.pi, float),  # Velocity can vary by a factor of 10 in either direction
     "max_velocity_2": (0.9*np.pi, 90*np.pi, float),
 }
-
+# TODO add torque_noise_max?
 
 class MetaAcrobotEnv(MetaEnv):
     def __init__(
