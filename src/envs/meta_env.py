@@ -24,9 +24,9 @@ class MetaEnv(Wrapper):
         self.contexts = contexts
         self.instance_mode = instance_mode
         self.hide_context = hide_context
-        context_keys = list(contexts.keys())
-        self.context = contexts[context_keys[0]]
         self.context_index = 0
+        context_keys = list(contexts.keys())
+        self.context = contexts[context_keys[self.context_index]]
         self.cutoff = max_episode_length
 
         self.logger = logger
