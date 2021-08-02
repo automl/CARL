@@ -62,7 +62,6 @@ class MetaMountainCarContinuousEnv(MetaEnv):
             add_gaussian_noise_to_context: bool = True,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
-            episode_length: int = 200
     ):
         """
 
@@ -84,7 +83,6 @@ class MetaMountainCarContinuousEnv(MetaEnv):
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
-            max_episode_length=episode_length
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()
