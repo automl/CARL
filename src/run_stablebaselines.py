@@ -200,11 +200,14 @@ if __name__ == '__main__':
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
     env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
-    eval_env = VecNormalize(venv=eval_env, norm_obs=True, norm_reward=False)
-    log_path = f"{args.outdir}/{args.agent}_{args.seed}"
-    eval_callback = EvalCallback(eval_env, log_path=log_path, eval_freq=args.eval_freq,
-                                 n_eval_episodes=args.num_contexts,
-                                 deterministic=True, render=False)
+    eval_callback = EvalCallback(
+        eval_env,
+        log_path=logger.logdir,
+        eval_freq=args.eval_freq,
+        n_eval_episodes=args.num_contexts,
+        deterministic=True,
+        render=False
+    )
 
     try:
         model = eval(args.agent)(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
