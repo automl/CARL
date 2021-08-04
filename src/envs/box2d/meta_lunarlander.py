@@ -262,6 +262,8 @@ class MetaLunarLanderEnv(MetaEnv):
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.05,
             logger: Optional[TrialLogger] = None,
+            scale_context_features: str = "no",
+            default_context: Optional[Dict] = DEFAULT_CONTEXT,
     ):
         """
 
@@ -274,7 +276,7 @@ class MetaLunarLanderEnv(MetaEnv):
         instance_mode: str, optional
         """
         if env is None:
-            env = CustomLunarLanderEnv()
+            env = lunar_lander.LunarLander()
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
@@ -284,7 +286,9 @@ class MetaLunarLanderEnv(MetaEnv):
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger
+            logger=logger,
+            scale_context_features=scale_context_features,
+            default_context=default_context,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()
@@ -344,7 +348,7 @@ def demo_heuristic_lander(env, seed=None, render=False):
 
 
 if __name__ == '__main__':
-    env = MetaLunarLanderEnv(hide_context=False)
+    env = MetaLunarLanderEnv(hide_context=False, add_gaussian_noise_to_context=True, gaussian_noise_std_percentage=0.1)
     # env.render()  # initialize viewer. otherwise weird bug.
     # env = ll.LunarLander()
     # env = CustomLunarLanderEnv()

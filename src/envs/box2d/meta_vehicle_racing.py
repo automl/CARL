@@ -200,6 +200,8 @@ class MetaVehicleRacingEnv(MetaEnv):
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
+            scale_context_features: str = "no",
+            default_context: Optional[Dict] = DEFAULT_CONTEXT,
     ):
         """
 
@@ -220,7 +222,9 @@ class MetaVehicleRacingEnv(MetaEnv):
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger
+            logger=logger,
+            scale_context_features=scale_context_features,
+            default_context=default_context,
         )
         self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
         self._update_context()

@@ -34,6 +34,8 @@ class MetaPendulumEnv(MetaEnv):
             add_gaussian_noise_to_context: bool = True,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
+            scale_context_features: str = "no",
+            default_context: Optional[Dict] = DEFAULT_CONTEXT,
     ):
         """
         Max torque is not a context feature because it changes the action space.
@@ -57,6 +59,8 @@ class MetaPendulumEnv(MetaEnv):
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
+            scale_context_features=scale_context_features,
+            default_context=default_context,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()    # TODO move this to MetaEnv as this is the same for each child meta env
