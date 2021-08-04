@@ -14,7 +14,7 @@ from stable_baselines3.common.cmd_util import make_vec_env
 from envs import *
 from utils.hyperparameter_processing import preprocess_hyperparams
 
-def setup_model(env, hp_file, num_envs, defaults):
+def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
     with open(hp_file, "r") as f:
         hyperparams_dict = yaml.safe_load(f)
         hyperparams = hyperparams_dict[env]
@@ -22,7 +22,12 @@ def setup_model(env, hp_file, num_envs, defaults):
 
     EnvCls = partial(eval(env), contexts=None)
     env = make_vec_env(EnvCls, n_envs=num_envs, wrapper_class=env_wrappers)
-    model = PPO('MlpPolicy', env=env, verbose=1, **defaults)
+
+    if checkpoint_dir:
+        checkpoint = os.path.join(checkpoint_dir, "checkpoint")
+        model = PPO.load(checkpoint, env=env)
+    else:
+        model = PPO('MlpPolicy', env, **config)
     return model
 
 def eval_model(model, eval_env):
@@ -37,7 +42,8 @@ def eval_model(model, eval_env):
     return tune.report(mean_accuray=np.mean(eval_reward),
                 current_config=config)
 
-def train_ppo(model, config):
+def train_ppo(env, hp_file, num_envs, config, checkpoint_dir=None):
+    model = setup_model(env, hp_file, num_envs, defaults, checkpoint_dir)
     model.clip_range = config["clip_range"]
     model.learning_rate = config["learning_rate"]
     model.gamma = config["gamma"]
@@ -48,6 +54,8 @@ def train_ppo(model, config):
 
     model.learn(2048)
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
+    path = os.path.join(checkpoint_dir, "checkpoint")
+    model.save(path)
     return eval_model(model, eval_env)
 
 if __name__ == "__main__":
@@ -99,10 +107,8 @@ if __name__ == "__main__":
             'clip_range': 0.3
         }
 
-    model = setup_model(args.env, args.hp_file, args.num_envs, defaults)
-
     analysis = tune.run(
-        partial(train_ppo, model),
+        partial(train_ppo, args.env, args.hp_file, args.num_envs, defaults),
         name="pb2",
         scheduler=pbt,
         metric="mean_accuracy",
