@@ -9,6 +9,8 @@ from src.trial_logger import TrialLogger
 
 
 class MetaEnv(Wrapper):
+    available_scale_methods = ["by_default", "by_mean", "no"]
+
     def __init__(
             self,
             env,
@@ -18,7 +20,9 @@ class MetaEnv(Wrapper):
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
-            max_episode_length: int = 1e6
+            max_episode_length: int = 1e6,
+            scale_context_features: str = "no",
+            default_context: Optional[Dict] = None,
     ):
         super().__init__(env=env)
         self.contexts = contexts
@@ -28,6 +32,22 @@ class MetaEnv(Wrapper):
         context_keys = list(contexts.keys())
         self.context = contexts[context_keys[self.context_index]]
         self.cutoff = max_episode_length
+
+        # Scale context features
+        if scale_context_features not in self.available_scale_methods:
+            raise ValueError(f"{scale_context_features} not in {self.available_scale_methods}.")
+        self.scale_context_features = scale_context_features
+        self.default_context = default_context
+        self.context_feature_scale_factors = None
+        if self.scale_context_features == "by_mean":
+            cfs_vals = np.concatenate([np.array(list(v.values()))[:, None] for v in self.contexts.values()], axis=-1)
+            self.context_feature_scale_factors = np.mean(cfs_vals, axis=-1)
+            self.context_feature_scale_factors[self.context_feature_scale_factors == 0] = 1  # otherwise value / scale_factor = nan
+        elif self.scale_context_features == "by_default":
+            if self.default_context is None:
+                raise ValueError("Please set default_context for scale_context_features='by_default'.")
+            self.context_feature_scale_factors = np.array(list(self.default_context.values()))
+            self.context_feature_scale_factors[self.context_feature_scale_factors == 0] = 1  # otherwise value / scale_factor = nan
 
         self.logger = logger
         self.step_counter = 0  # type: int # increased in/after step
@@ -57,9 +77,24 @@ class MetaEnv(Wrapper):
         return state
 
     def step(self, action):
+        # Step the environment
         state, reward, done, info = self.env.step(action)
+
         if not self.hide_context:
-            state = np.concatenate((state, np.array(list(self.context.values()))))
+            # Scale context features
+            context_feature_values = np.array(list(self.context.values()))
+            if self.scale_context_features == "by_default":
+                context_feature_values /= self.context_feature_scale_factors
+            elif self.scale_context_features == "by_mean":
+                context_feature_values /= self.context_feature_scale_factors
+            elif self.scale_context_features == "no":
+                pass
+            else:
+                raise ValueError(f"{self.scale_context_features} not in {self.available_scale_methods}.")
+
+            # Add context features to state
+            state = np.concatenate((state, context_feature_values))
+
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True

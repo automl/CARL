@@ -160,6 +160,17 @@ def get_parser() -> configargparse.ArgumentParser:
         help="YML file with hyperparameter",
     )
 
+    parser.add_argument(
+        "--scale_context_features",
+        type=str,
+        default="by_default",
+        choices=["no", "by_mean", "by_default"],
+        help="Scale context features before appending them to the observations. 'no' means no scaling. 'by_mean' scales"
+             " the context features by the mean of the training contexts features. 'by_default' scales the context "
+             "features by the default context features which are assumend to be the mean of the context feature "
+             "distribution."
+    )
+
     return parser
 
 
@@ -196,7 +207,13 @@ if __name__ == '__main__':
     )
 
     # make meta-env
-    EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
+    EnvCls = partial(
+        eval(args.env),
+        contexts=contexts,
+        logger=logger,
+        hide_context=args.hide_context,
+        scale_context_features=args.scale_context_features,
+    )
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
     env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
