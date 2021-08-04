@@ -64,7 +64,7 @@ class TrialLogger(object):
         self.context_history_fn = self.logdir / "context_history.csv"
         self.prepared_context_history_file = False
 
-        configure(str(self.logdir), ["stdout", "csv", "tensorboard"])
+        self.stable_baselines_logger = configure(str(self.logdir), ["stdout", "csv", "tensorboard"])
 
     def write_trial_setup(self):
         output_file_paths = [str(self.trial_setup_fn)]

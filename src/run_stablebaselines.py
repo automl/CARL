@@ -211,7 +211,7 @@ if __name__ == '__main__':
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
-    # model.set_logger(new_logger)
+    model.set_logger(logger.stable_baselines_logger)
     model.learn(total_timesteps=args.steps, callback=eval_callback)
 
     #obs = env.reset()
