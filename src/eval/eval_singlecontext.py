@@ -12,7 +12,9 @@ from typing import Union
 def collect_results(
         path: Union[str, Path],
         progress_fname: str = "progress.csv",
-        yname: str = "ep_rew_mean"
+        eval_fname: str = "evaluations.npz",
+        yname: str = "ep_rew_mean",
+        from_progress: bool = False,
 ):
     """
     Assumend folder structure:
@@ -48,18 +50,36 @@ def collect_results(
         for cf_dir in cf_dirs:
             cf_dir = Path(cf_dir)
             folder = cf_dir.stem
+            if folder == "evaluations":
+                continue
             agent, seed = folder.split("_")
             seed = int(seed)
 
-            progress_fn = cf_dir / progress_fname
-            df = pd.read_csv(progress_fn)
-            n = len(df['time/total_timesteps'])
-            D.append(pd.DataFrame({
-                "seed": [seed] * n,
-                "step": df['time/total_timesteps'].to_numpy(),
-                "iteration": df['time/iterations'].to_numpy(),
-                yname: df['rollout/ep_rew_mean'].to_numpy(),
-            }))
+            if from_progress:
+                progress_fn = cf_dir / progress_fname
+                df = pd.read_csv(progress_fn)
+                n = len(df['time/total_timesteps'])
+                D.append(pd.DataFrame({
+                    "seed": [seed] * n,
+                    "step": df['time/total_timesteps'].to_numpy(),
+                    "iteration": df['time/iterations'].to_numpy(),
+                    yname: df['rollout/ep_rew_mean'].to_numpy(),
+                }))
+            else:
+                eval_fn = cf_dir / eval_fname
+                eval_data = np.load(eval_fn)
+                timesteps = eval_data["timesteps"]
+                iteration = None
+                y = np.mean(eval_data["results"], axis=1)
+                n = len(timesteps)
+                D.append(pd.DataFrame({
+                    "seed": [seed] * n,
+                    "step": timesteps,
+                    "iteration": [iteration] * n,
+                    yname: y,
+                }))
+
+
         D = pd.concat(D)
         data[cf_name] = D
 
@@ -76,13 +96,15 @@ if __name__ == "__main__":
     path = "results/singlecontextfeature_0.25_hidecontext/box2d/MetaLunarLanderEnv"
     # path = "results/singlecontextfeature_0.1/box2d/MetaLunarLanderEnv"
     path = "results/singlecontextfeature_0.5_hidecontext/box2d/MetaLunarLanderEnv"
-    # path = "results/singlecontextfeature_0.5/box2d/MetaLunarLanderEnv"
+    path = "results/singlecontextfeature_0.1/box2d/MetaLunarLanderEnv"
+
+    path = Path(path)
 
     xname = "step"
     yname = "ep_rew_mean"
     default_name = "None"  # identifier for environment with standard context
 
-    data, metadata = collect_results(path, yname=yname)
+    data, metadata = collect_results(path, yname=yname, from_progress=False)
     env_name = metadata["env_name"]
 
     plot_comparison = True
