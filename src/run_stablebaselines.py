@@ -194,7 +194,7 @@ if __name__ == '__main__':
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
         hyperparams = hyperparams_dict[args.env]
-        hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
+        hyperparams, env_wrappers, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
 
     print(env_wrappers)
     # sample contexts using unknown args
@@ -215,7 +215,10 @@ if __name__ == '__main__':
         scale_context_features=args.scale_context_features,
     )
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
-    env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
+    if normalize:
+        env = VecNormalize(env, **normalize_kwargs)
+    else:
+        env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
     eval_callback = EvalCallback(
         eval_env,
