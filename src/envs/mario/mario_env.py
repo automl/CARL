@@ -1,3 +1,4 @@
+import os
 import random
 import socket
 from collections import deque
@@ -7,13 +8,17 @@ import cv2
 import gym
 import numpy as np
 from gym import spaces
+from gym.utils import seeding
 from py4j.java_gateway import GatewayParameters, JavaGateway
+from src.envs.mario.level_image_gen import LevelImageGen
 
 from .mario_game import MarioGame
 from .utils import get_port, load_level
 
 
 class MarioEnv(gym.Env):
+    metadata = {"render.modes": ["rgb_array"]}
+
     def __init__(
         self,
         levels: List[str],
@@ -25,8 +30,10 @@ class MarioEnv(gym.Env):
         frame_dim=64,
         hide_points_banner=False,
         sparse_rewards=False,
-        grayscale=False,
+        grayscale=True,
+        seed=0,
     ):
+        self.seed(seed)
         self.level_names = levels
         self.levels = [load_level(name) for name in levels]
         self.timer = timer
@@ -44,7 +51,7 @@ class MarioEnv(gym.Env):
             low=0,
             high=255,
             shape=[self.frame_stack if grayscale else 3, self.height, self.width],
-            dtype=int,
+            dtype=np.uint8,
         )
         self.original_obs = deque(maxlen=self.frame_skip)
         self.actions = [
@@ -172,6 +179,18 @@ class MarioEnv(gym.Env):
 
     def get_action_meanings(self):
         return ACTION_MEANING
+
+    def render_current_level(self):
+        img_gen = LevelImageGen(
+            sprite_path=os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "sprites")
+            )
+        )
+        return img_gen.render(self.levels[self.current_level_idx].split("\n"))
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
 
 
 ACTION_MEANING = [

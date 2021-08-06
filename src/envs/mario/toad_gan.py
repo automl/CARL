@@ -6,8 +6,7 @@ from typing import Optional
 
 import numpy as np
 import torch
-from src.envs.mario.generate_sample import (generate_sample,
-                                            generate_spatial_noise)
+from src.envs.mario.generate_sample import generate_sample, generate_spatial_noise
 from src.envs.mario.reachabillity import reachability_map
 
 
@@ -78,6 +77,7 @@ def generate_level(
     height: int,
     level_index: int,
     initial_noise: Optional[torch.Tensor] = None,
+    filter_unplayable: bool = False,
 ):
     toad_gan = load_generator(level_index)
     playable = False
@@ -89,7 +89,10 @@ def generate_level(
             scale_v=height / toad_gan.original_height,
             initial_noise=initial_noise
         )
-        _, playable = reachability_map(level, shape=(height, width))
+        if filter_unplayable:
+            _, playable = reachability_map(level, shape=(height, width))
+        else:
+            playable = True
     assert level
     return "".join(level)
 

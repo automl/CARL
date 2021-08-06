@@ -5,7 +5,7 @@ from torch.nn.functional import interpolate
 
 # Generates a noise tensor. Uses torch.randn.
 def generate_spatial_noise(size, device="cpu"):
-    return torch.randn(size, device=device)
+    return torch.randn(size, device=device, dtype=torch.float32)
 
 
 # Generate a sample given a TOAD-GAN and additional parameters
@@ -38,7 +38,7 @@ def generate_sample(
             break  # should not be reached
 
         # Zero Padding
-        n_pad = int(1 * num_layer)
+        n_pad = int(num_layer)
         m = nn.ZeroPad2d(int(n_pad))
 
         # Calculate actual shape
@@ -60,7 +60,7 @@ def generate_sample(
 
         if current_scale == 0:  # First step: Make base noise
             if initial_noise is not None:
-                z_curr = initial_noise.to(device)
+                z_curr = initial_noise.float().to(device)
             else:
                 z_curr =  generate_spatial_noise(
                     [1, channels, int(round(nzx)), int(round(nzy))], device=device
