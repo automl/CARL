@@ -57,8 +57,8 @@ class MetaMarioEnv(MetaEnv):
 
     def _update_context(self):
         level = generate_level(
-            width=200,
-            height=16,
+            width=INITIAL_WIDTH,
+            height=INITIAL_HEIGHT,
             level_index=int(self.context["level_index"]),
             initial_noise=self.context["noise"],
         )
@@ -73,11 +73,11 @@ if __name__ == "__main__":
         from gym.wrappers.monitor import Monitor
 
         env = Monitor(env, "/home/schubert/Dropbox/video-test", force=True, video_callable=lambda _: True)
-    env.reset()
-    total_reward = 0.0
     episode = 0
-    steps = 0
     while episode < max_episodes:
+        total_reward = 0.0
+        steps = 0
+        env.reset()
         level_img = env.unwrapped.render_current_level()
         level_img.save(f"/home/schubert/Dropbox/video-test/level_{episode}.png")
         while True:
@@ -89,6 +89,5 @@ if __name__ == "__main__":
             if done:
                 print("step {} total_reward {:+0.2f}".format(steps, total_reward))
                 episode += 1
-                env.reset()
                 break
     env.close()

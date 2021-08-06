@@ -2,14 +2,15 @@ import os
 import random
 import socket
 from collections import deque
-from src.envs.mario.level_image_gen import LevelImageGen
 from typing import Any, Dict, List, cast
 
 import cv2
 import gym
 import numpy as np
 from gym import spaces
+from gym.utils import seeding
 from py4j.java_gateway import GatewayParameters, JavaGateway
+from src.envs.mario.level_image_gen import LevelImageGen
 
 from .mario_game import MarioGame
 from .utils import get_port, load_level
@@ -29,8 +30,10 @@ class MarioEnv(gym.Env):
         frame_dim=64,
         hide_points_banner=False,
         sparse_rewards=False,
-        grayscale=False,
+        grayscale=True,
+        seed=0,
     ):
+        self.seed(seed)
         self.level_names = levels
         self.levels = [load_level(name) for name in levels]
         self.timer = timer
@@ -184,6 +187,10 @@ class MarioEnv(gym.Env):
             )
         )
         return img_gen.render(self.levels[self.current_level_idx].split("\n"))
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
 
 
 ACTION_MEANING = [
