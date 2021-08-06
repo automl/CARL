@@ -14,14 +14,16 @@ DEFAULT_CONTEXT = {
     "level_index": INITIAL_LEVEL_INDEX,
     # "width": INITIAL_WIDTH,
     "noise": generate_initial_noise(INITIAL_WIDTH, INITIAL_HEIGHT, INITIAL_LEVEL_INDEX),
+    "mario_state": 0
 }
 
 CONTEXT_BOUNDS = {
     "level_index": (None, None, "categorical", np.arange(0, 14)),
     # "width": (32, np.inf, int),
     "noise": (-1.0, 1.0, float),
+    "mario_state": (None, None, "categorical", [0, 1, 2]),
 }
-CATEGORICAL_CONTEXT_FEATURES = ["level_index"]
+CATEGORICAL_CONTEXT_FEATURES = ["level_index", "mario_state"]
 
 
 class MetaMarioEnv(MetaEnv):
@@ -59,9 +61,10 @@ class MetaMarioEnv(MetaEnv):
         level = generate_level(
             width=INITIAL_WIDTH,
             height=INITIAL_HEIGHT,
-            level_index=int(self.context["level_index"]),
+            level_index=self.context["level_index"],
             initial_noise=self.context["noise"],
         )
+        self.env.mario_state = self.context["mario_state"]
         self.env.levels = [level]
 
 

@@ -15,7 +15,7 @@ class MarioGame(ABC):
         pass
 
     @abstractmethod
-    def resetGame(self, level: str, timer: int):
+    def resetGame(self, level: str, timer: int, mario_state: int):
         pass
 
     @abstractmethod
