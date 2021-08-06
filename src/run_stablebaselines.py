@@ -7,7 +7,7 @@ import yaml
 
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import PPO
-from stable_baselines3.common.cmd_util import make_vec_env
+from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 
@@ -156,7 +156,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
-        default="hyperparameter.yml",
+        default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")),
         help="YML file with hyperparameter",
     )
 
@@ -194,7 +194,7 @@ if __name__ == '__main__':
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
         hyperparams = hyperparams_dict[args.env]
-        hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
+        hyperparams, env_wrappers, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
 
     print(env_wrappers)
     # sample contexts using unknown args
@@ -215,7 +215,8 @@ if __name__ == '__main__':
         scale_context_features=args.scale_context_features,
     )
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
-    env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
+    if normalize:
+        env = VecNormalize(env, **normalize_kwargs)
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
     eval_callback = EvalCallback(
         eval_env,

@@ -3,17 +3,25 @@ from typing import Dict, Optional
 import gym
 import numpy as np
 from src.envs.mario.mario_env import MarioEnv
-from src.envs.mario.toad_gan import generate_level
+from src.envs.mario.toad_gan import generate_initial_noise, generate_level
 from src.envs.meta_env import MetaEnv
 from src.trial_logger import TrialLogger
 
-DEFAULT_CONTEXT = {"level_index": 0, "width": 200, "height": 16}
+INITIAL_WIDTH = 200
+INITIAL_LEVEL_INDEX = 0
+INITIAL_HEIGHT = 16
+DEFAULT_CONTEXT = {
+    "level_index": INITIAL_LEVEL_INDEX,
+    "width": INITIAL_WIDTH,
+    "noise": generate_initial_noise(INITIAL_WIDTH, INITIAL_HEIGHT, INITIAL_LEVEL_INDEX),
+}
 
 CONTEXT_BOUNDS = {
-    "level_index": (0, 14, int),
+    "level_index": (None, None, "categorical", np.arange(0, 14)),
     "width": (16, np.inf, int),
-    "height": (8, 32, int),
+    "noise": (-1.0, 1.0, float),
 }
+CATEGORICAL_CONTEXT_FEATURES = ["level_index"]
 
 
 class MetaMarioEnv(MetaEnv):
@@ -39,18 +47,17 @@ class MetaMarioEnv(MetaEnv):
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
-            scale_context_features=scale_context_features,
+            scale_context_features="no",
             default_context=default_context,
         )
-        self.whitelist_gaussian_noise = list(
-            DEFAULT_CONTEXT.keys()
-        )  # allow to augment all values
+        self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
         self._update_context()
 
     def _update_context(self):
         level = generate_level(
-            int(self.context["width"]),
-            int(self.context["height"]),
-            int(self.context["level_index"]),
+            width=int(self.context["width"]),
+            height=16,
+            level_index=int(self.context["level_index"]),
+            initial_noise=self.context["noise"],
         )
         self.env.levels = [level]

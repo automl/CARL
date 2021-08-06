@@ -28,7 +28,7 @@ parentdir = os.path.dirname(currentdir)
 parentdir = os.path.dirname(parentdir)  # go up twice
 sys.path.insert(0, parentdir)
 print(os.getcwd())
-from stable_baselines3.common.cmd_util import make_vec_env
+from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.ppo import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from xvfbwrapper import Xvfb

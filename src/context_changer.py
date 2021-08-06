@@ -4,7 +4,7 @@ import numpy as np
 def add_gaussian_noise(
         default_value: float, percentage_std: float = 0.01, random_generator: np.random.Generator = None):
     std = percentage_std * np.abs(default_value)
-    mean = 0
+    mean = np.zeros_like(default_value)
     if not random_generator:
         random_generator = np.random.default_rng()
     value = default_value + random_generator.normal(loc=mean, scale=std)

@@ -1,11 +1,14 @@
 import functools
 import os
-from dataclasses import dataclass
-from src.envs.mario.reachabillity import reachability_map
 import sys
+from dataclasses import dataclass
+from typing import Optional
 
+import numpy as np
 import torch
-from src.envs.mario.generate_sample import generate_sample
+from src.envs.mario.generate_sample import (generate_sample,
+                                            generate_spatial_noise)
+from src.envs.mario.reachabillity import reachability_map
 
 
 @dataclass
@@ -39,6 +42,7 @@ GENERATOR_PATHS = sorted(
 @functools.lru_cache(maxsize=None)
 def load_generator(level_index: int):
     import src.envs.mario.models as models
+
     sys.modules["models"] = models
     gen_path = os.path.join(GENERATOR_DIR, GENERATOR_PATHS[level_index])
     reals = torch.load(
@@ -69,7 +73,12 @@ def load_generator(level_index: int):
     )
 
 
-def generate_level(width: int, height: int, level_index: int):
+def generate_level(
+    width: int,
+    height: int,
+    level_index: int,
+    initial_noise: Optional[torch.Tensor] = None,
+):
     toad_gan = load_generator(level_index)
     playable = False
     level = None
@@ -77,8 +86,27 @@ def generate_level(width: int, height: int, level_index: int):
         level = generate_sample(
             **vars(toad_gan),
             scale_h=width / toad_gan.original_width,
-            scale_v=height / toad_gan.original_height
+            scale_v=height / toad_gan.original_height,
+            initial_noise=initial_noise
         )
         _, playable = reachability_map(level, shape=(height, width))
     assert level
     return "".join(level)
+
+
+def generate_initial_noise(width: int, height: int, level_index: int):
+    toad_gan = load_generator(level_index)
+    base_noise_map = toad_gan.noise_maps[0]
+    nzx = (
+        (base_noise_map.shape[2] - 2 * toad_gan.num_layer)
+        * height
+        / toad_gan.original_height
+    )
+    nzy = (
+        (base_noise_map.shape[3] - 2 * toad_gan.num_layer)
+        * width
+        / toad_gan.original_width
+    )
+    noise_shape = (1, len(toad_gan.token_list), int(round(nzx)), int(round(nzy)))
+    noise = generate_spatial_noise(noise_shape)
+    return noise
