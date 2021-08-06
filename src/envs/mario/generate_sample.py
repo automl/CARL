@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch.nn.functional import interpolate
 
 # Generates a noise tensor. Uses torch.randn.
-def generate_spatial_noise(size, device):
+def generate_spatial_noise(size, device="cpu"):
     return torch.randn(size, device=device)
 
 
@@ -17,27 +17,17 @@ def generate_sample(
     noise_amplitudes,
     num_layer,
     token_list,
-    in_states=None,
     scale_v=1.0,
     scale_h=1.0,
     current_scale=0,
     gen_start_scale=0,
-    is_bboxed=False,
-    bbox=(0, 0, 0, 0),
+    initial_noise=None,
 ):
 
-    # in_states holds previously generated outputs for edit mode
-    if not in_states or gen_start_scale == 0:
-        in_s = None
-        images_cur = []
-        images = []
-        z_s = []
-    else:
-        images_cur = in_states[0][0:gen_start_scale]
-        z_s = in_states[1][0:gen_start_scale]
-
-        images = images_cur
-        in_s = None
+    in_s = None
+    images_cur = []
+    images = []
+    z_s = []
 
     # Generate on GPU if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -69,62 +59,21 @@ def generate_sample(
             in_s = torch.zeros(in_s.shape[0], channels, *in_s.shape[2:]).to(device)
 
         if current_scale == 0:  # First step: Make base noise
-            if is_bboxed:
-                if gen_start_scale == 0:
-                    z_noise = generate_spatial_noise(
-                        [1, channels, int(round(nzx)), int(round(nzy))], device=device
-                    )
-                    z_noise = m(z_noise)
-                    z_curr = in_states[1][current_scale]
-                    z_curr[
-                        0,
-                        :,
-                        bbox[0] + n_pad : bbox[1] + n_pad,
-                        bbox[2] + n_pad : bbox[3] + n_pad,
-                    ] = z_noise[
-                        0,
-                        :,
-                        bbox[0] + n_pad : bbox[1] + n_pad,
-                        bbox[2] + n_pad : bbox[3] + n_pad,
-                    ]
-                else:
-                    z_curr = in_states[1][current_scale]
+            if initial_noise is not None:
+                z_curr = initial_noise.to(device)
+            else:
+                z_curr =  generate_spatial_noise(
+                    [1, channels, int(round(nzx)), int(round(nzy))], device=device
+                )
+            z_curr = m(z_curr)
+        else:  # All other steps: Make added noise
+            if current_scale < gen_start_scale:
+                z_curr = z_s[current_scale]
             else:
                 z_curr = generate_spatial_noise(
                     [1, channels, int(round(nzx)), int(round(nzy))], device=device
                 )
                 z_curr = m(z_curr)
-        else:  # All other steps: Make added noise
-            if current_scale < gen_start_scale:
-                z_curr = z_s[current_scale]
-            else:
-                if is_bboxed:
-                    if current_scale == gen_start_scale:
-                        z_noise = generate_spatial_noise(
-                            [1, channels, int(round(nzx)), int(round(nzy))],
-                            device=device,
-                        )
-                        z_noise = m(z_noise)
-                        z_curr = in_states[1][current_scale]
-                        z_curr[
-                            0,
-                            :,
-                            bbox[0] + n_pad : bbox[1] + n_pad,
-                            bbox[2] + n_pad : bbox[3] + n_pad,
-                        ] = z_noise[
-                            0,
-                            :,
-                            bbox[0] + n_pad : bbox[1] + n_pad,
-                            bbox[2] + n_pad : bbox[3] + n_pad,
-                        ]
-                    else:
-                        z_curr = in_states[1][current_scale]
-                else:
-                    z_curr = generate_spatial_noise(
-                        [1, channels, int(round(nzx)), int(round(nzy))], device=device
-                    )
-                    z_curr = m(z_curr)
-
         if (not images_prev) or current_scale == 0:  # if there is no "previous" image
             I_prev = in_s
         else:
