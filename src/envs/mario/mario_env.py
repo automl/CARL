@@ -170,6 +170,9 @@ class MarioEnv(gym.Env):
             frameBuffer += self.socket.recv(self.frame_size)
         return frameBuffer
 
+    def get_action_meanings(self):
+        return ACTION_MEANING
+
 
 ACTION_MEANING = [
     "NOOP",
