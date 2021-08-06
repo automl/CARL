@@ -7,7 +7,7 @@ import yaml
 
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import PPO
-from stable_baselines3.common.cmd_util import make_vec_env
+from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 
@@ -156,7 +156,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
-        default="hyperparameter.yml",
+        default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")),
         help="YML file with hyperparameter",
     )
 
