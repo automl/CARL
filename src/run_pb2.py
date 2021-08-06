@@ -11,7 +11,6 @@ from ray.tune.schedulers.pb2 import PB2
 from stable_baselines3 import PPO
 from stable_baselines3.common.cmd_util import make_vec_env
 
-from envs import *
 from utils.hyperparameter_processing import preprocess_hyperparams
 
 def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
@@ -20,17 +19,20 @@ def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
         hyperparams = hyperparams_dict[env]
         hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
 
+    from src.envs import MetaAnt
     EnvCls = partial(eval(env), contexts=None)
     env = make_vec_env(EnvCls, n_envs=num_envs, wrapper_class=env_wrappers)
+    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
 
     if checkpoint_dir:
+        print(checkpoint_dir)
         checkpoint = os.path.join(checkpoint_dir, "checkpoint")
         model = PPO.load(checkpoint, env=env)
     else:
         model = PPO('MlpPolicy', env, **config)
-    return model
+    return model, eval_env
 
-def eval_model(model, eval_env):
+def eval_model(model, eval_env, config):
     eval_reward = []
     for i in range(100):
         done = False
@@ -39,12 +41,11 @@ def eval_model(model, eval_env):
             action, _ = model.predict(state)
             state, reward, done, _ = eval_env.step(action)
             eval_reward.append(reward)
-    return tune.report(mean_accuray=np.mean(eval_reward),
+    return tune.report(mean_accuracy=np.mean(eval_reward),
                 current_config=config)
 
 def train_ppo(env, hp_file, num_envs, config, checkpoint_dir=None):
-    model = setup_model(env, hp_file, num_envs, defaults, checkpoint_dir)
-    model.clip_range = config["clip_range"]
+    model, eval_env = setup_model(env, hp_file, num_envs, config, checkpoint_dir)
     model.learning_rate = config["learning_rate"]
     model.gamma = config["gamma"]
     model.ent_coef = config["ent_coef"]
@@ -53,15 +54,15 @@ def train_ppo(env, hp_file, num_envs, config, checkpoint_dir=None):
     model.max_grad_norm = config["max_grad_norm"]
 
     model.learn(2048)
-    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
-    path = os.path.join(checkpoint_dir, "checkpoint")
-    model.save(path)
-    return eval_model(model, eval_env)
+    if checkpoint_dir:
+        path = os.path.join(checkpoint_dir, "checkpoint")
+        model.save(path)
+    return eval_model(model, eval_env, config)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--env", type=str, default=MetaAnt, help="Environment to optimize hyperparameters for")
+        "--env", type=str, default="MetaAnt", help="Environment to optimize hyperparameters for")
     parser.add_argument(
         "--hp_file", default="hyperparameter.yml", type=str
     )
@@ -90,7 +91,6 @@ if __name__ == "__main__":
             'ent_coef': [0.0, 0.5],
             'max_grad_norm': [0.0, 1.0],
             'vf_coef': [0.0, 1.0],
-            'clip_range': [0.0, 0.8]
         })
 
     defaults = {
@@ -104,11 +104,10 @@ if __name__ == "__main__":
             'sde_sample_freq': 4,
             'max_grad_norm': 0.5,
             'vf_coef': 0.5,
-            'clip_range': 0.3
         }
 
     analysis = tune.run(
-        partial(train_ppo, args.env, args.hp_file, args.num_envs, defaults),
+        partial(train_ppo, args.env, args.hp_file, args.num_envs),
         name="pb2",
         scheduler=pbt,
         metric="mean_accuracy",
