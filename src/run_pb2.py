@@ -17,7 +17,7 @@ def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
     with open(hp_file, "r") as f:
         hyperparams_dict = yaml.safe_load(f)
         hyperparams = hyperparams_dict[env]
-        hyperparams, env_wrappers = preprocess_hyperparams(hyperparams)
+        hyperparams, env_wrappers, _, _ = preprocess_hyperparams(hyperparams)
 
     from src.envs import MetaAnt
     EnvCls = partial(eval(env), contexts=None)
