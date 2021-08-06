@@ -15,9 +15,9 @@ DEFAULT_CONTEXT = {
     "joint_stiffness": 5000,
     "gravity": -9.8,
     "friction": 0.6,
-    "angular_damping": -0.05,
+    "angular_damping": -0.05,  # Angular velocity damping applied to each body
     "actuator_strength": 300,
-    "joint_angular_damping": 35,
+    "joint_angular_damping": 35,  # Damps parent and child angular velocities to be equal
     "torso_mass": 1,
     "target_radius": 2,
     "target_distance": 15
