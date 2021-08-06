@@ -217,8 +217,6 @@ if __name__ == '__main__':
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
-    else:
-        env = VecNormalize(venv=env, norm_obs=True, norm_reward=False)  # normalize observations with running mean
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
     eval_callback = EvalCallback(
         eval_env,
