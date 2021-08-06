@@ -216,6 +216,7 @@ MetaHumanoid:
   clip_range: 0.2
 
 MetaMarioEnv:
+  normalize: false
   env_wrapper:
     - stable_baselines3.common.atari_wrappers.NoopResetEnv
   frame_stack: 4

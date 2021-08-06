@@ -1,6 +1,8 @@
+import os
 import random
 import socket
 from collections import deque
+from src.envs.mario.level_image_gen import LevelImageGen
 from typing import Any, Dict, List, cast
 
 import cv2
@@ -14,6 +16,8 @@ from .utils import get_port, load_level
 
 
 class MarioEnv(gym.Env):
+    metadata = {"render.modes": ["rgb_array"]}
+
     def __init__(
         self,
         levels: List[str],
@@ -44,7 +48,7 @@ class MarioEnv(gym.Env):
             low=0,
             high=255,
             shape=[self.frame_stack if grayscale else 3, self.height, self.width],
-            dtype=int,
+            dtype=np.uint8,
         )
         self.original_obs = deque(maxlen=self.frame_skip)
         self.actions = [
@@ -172,6 +176,14 @@ class MarioEnv(gym.Env):
 
     def get_action_meanings(self):
         return ACTION_MEANING
+
+    def render_current_level(self):
+        img_gen = LevelImageGen(
+            sprite_path=os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "sprites")
+            )
+        )
+        return img_gen.render(self.levels[self.current_level_idx].split("\n"))
 
 
 ACTION_MEANING = [

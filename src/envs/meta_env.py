@@ -130,6 +130,8 @@ class MetaEnv(Wrapper):
                         percentage_std=self.gaussian_noise_std_percentage,
                         random_generator=None,  # self.np_random TODO discuss this
                     )
+                else:
+                    context_augmented[key] = context[key] # TODO(frederik): sample from categorical?
             context = context_augmented
         self.context = context
 
