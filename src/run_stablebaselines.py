@@ -8,7 +8,7 @@ import yaml
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback
+from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 
 # from classic_control import MetaMountainCarEnv
@@ -217,9 +217,12 @@ if __name__ == '__main__':
         scale_context_features=args.scale_context_features,
     )
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
+    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
-    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
+        eval_normalize_kwargs = normalize_kwargs.copy()
+        eval_normalize_kwargs["norm_reward"] = False
+        eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
     eval_callback = EvalCallback(
         eval_env,
         log_path=logger.logdir,
@@ -228,6 +231,14 @@ if __name__ == '__main__':
         deterministic=True,
         render=False
     )
+    # save_freq = 5000
+    # checkpoint_callback = CheckpointCallback(
+    #     save_freq=max(save_freq // args.num_envs, 1),
+    #     save_path=logger.logdir,
+    #     name_prefix='rl_model'
+    # )
+
+    callbacks = [eval_callback]
 
     try:
         model = eval(args.agent)(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
@@ -235,14 +246,10 @@ if __name__ == '__main__':
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
     model.set_logger(logger.stable_baselines_logger)
-    model.learn(total_timesteps=args.steps, callback=eval_callback)
-
-    #obs = env.reset()
-    #for _ in range(1000):
-    #    action, _states = model.predict(obs)
-    #    obs, rewards, dones, info = env.step(action)
-    #    env.render()
-    #env.close()
+    model.learn(total_timesteps=args.steps, callback=callbacks)
+    model.save(os.path.join(logger.logdir, "model.zip"))
+    if normalize:
+        model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
 
     # TODO add more cmdline arguments
 
