@@ -65,7 +65,7 @@ You can use the plotting scripts in src/eval to view the results.
 ## Cite Us
 ```bibtex
 @misc{genRL,
-  author    = {C. Benjamin and 
+  author    = {C. Benjamins and 
                T. Eimer and 
                F. Schubert and 
                A. Biedenkapp and 
