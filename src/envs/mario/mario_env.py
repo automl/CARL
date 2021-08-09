@@ -2,7 +2,7 @@ import os
 import random
 import socket
 from collections import deque
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Literal, cast
 
 import cv2
 import gym
@@ -71,6 +71,7 @@ class MarioEnv(gym.Env):
         self.current_level_idx = 0
         self.frame_size = -1
         self.port = get_port()
+        self.mario_state: Literal[0, 1, 2] = 0 # normal, large, fire
         self._init_game()
 
     def reset(self):
@@ -79,7 +80,7 @@ class MarioEnv(gym.Env):
             self.game = self._init_game()
         self.current_level_idx = (self.current_level_idx + 1) % len(self.levels)
         level = self.levels[self.current_level_idx]
-        self.game.resetGame(level, self.timer)
+        self.game.resetGame(level, self.timer, self.mario_state)
         self.game.computeObservationRGB()
         buffer = self._receive()
         frame = self._read_frame(buffer)
