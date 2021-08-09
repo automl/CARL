@@ -163,7 +163,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--scale_context_features",
         type=str,
-        default="by_default",
+        default="no",
         choices=["no", "by_mean", "by_default"],
         help="Scale context features before appending them to the observations. 'no' means no scaling. 'by_mean' scales"
              " the context features by the mean of the training contexts features. 'by_default' scales the context "
