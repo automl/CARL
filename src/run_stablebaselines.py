@@ -190,6 +190,8 @@ if __name__ == '__main__':
 
     hyperparams = {}
     env_wrappers = None
+    normalize = False
+    normalize_kwargs = {}
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
