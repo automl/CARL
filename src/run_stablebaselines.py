@@ -256,11 +256,3 @@ if __name__ == '__main__':
     # TODO create requirements
 
     # TODO if a default context is 0, the sampled/altered context will be also zero (because of 0 std)
-
-    # ENVS
-    # TODO add continuous mountain car as env -> Carolin [DONE]
-    # TODO add lunar lander -> Carolin
-    # TODO maybe add bipedal -> Carolin
-    # TODO look at metacarracing -> Theresa, [Carolin]
-    # TODO add ToadGAN -> Frederik
-
