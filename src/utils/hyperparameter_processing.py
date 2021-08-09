@@ -40,11 +40,11 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
         del hyperparams["noise_type"]
         del hyperparams["noise_std"]
 
-    normalize_kwargs = None
+    normalize_kwargs = {}
     if "normalize" in hyperparams.keys():
         normalize = hyperparams["normalize"]
         if isinstance(normalize, str):
-            normalize_kwargs = eval(self.normalize)
+            normalize_kwargs = eval(normalize)
             normalize = True
 
         if "gamma" in hyperparams:
