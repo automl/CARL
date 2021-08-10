@@ -49,22 +49,7 @@ class MetaEnv(Wrapper):
             self.context_feature_scale_factors = np.array(list(self.default_context.values()))
             self.context_feature_scale_factors[self.context_feature_scale_factors == 0] = 1  # otherwise value / scale_factor = nan
 
-        self.logger = logger
-        self.step_counter = 0  # type: int # increased in/after step
-        self.episode_counter = -1  # type: int # increased during reset
-
-        self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
-        self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
-        self.whitelist_gaussian_noise = None  # type: list[str]
-        
-        if not self.hide_context:
-            context_dim = len(list(self.context.values()))
-            #TODO: extend this to non-Box obs spaces somehow
-            if not isinstance(self.observation_space, gym.spaces.Box):
-                raise ValueError("This environment does not yet support non-hidden contexts")
-            obs_dim = self.env.observation_space.low.shape[0]
-            self.env.observation_space = gym.spaces.Box(low=-np.inf*np.ones(context_dim+obs_dim), high=np.inf*np.ones(context_dim+obs_dim), dtype=np.float32)
-            self.observation_space = self.env.observation_space
+        self.build_observation_space()
 
     def reset(self):
         self.episode_counter += 1
@@ -137,22 +122,37 @@ class MetaEnv(Wrapper):
 
     def build_observation_space(
             self,
-            env_lower_bounds: Union[List, np.array],
-            env_upper_bounds: Union[List, np.array],
-            context_bounds: Dict[str, Tuple[float]]
+            env_lower_bounds: Optional[Union[List, np.array]] = None,
+            env_upper_bounds: Optional[Union[List, np.array]] = None,
+            context_bounds: Optional[Dict[str, Tuple[float]]] = None
     ):
+        if not isinstance(self.observation_space, spaces.Box):
+            raise ValueError("This environment does not yet support non-hidden contexts. Only supports "
+                             "Box observation spaces.")
+
+        if env_lower_bounds is None and env_upper_bounds is None:
+            obs_dim = self.env.observation_space.low.shape[0]
+            env_lower_bounds = - np.inf * np.ones(obs_dim)
+            env_upper_bounds = np.inf * np.ones(obs_dim)
+
         if self.hide_context:
             self.env.observation_space = spaces.Box(
                 env_lower_bounds, env_upper_bounds, dtype=np.float32,
             )
         else:
-            context_keys = list(self.context.keys())
-            context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
+            if context_bounds is None:
+                context_dim = len(list(self.context.keys()))
+                context_lower_bounds = - np.inf * np.ones(context_dim)
+                context_upper_bounds = np.inf * np.ones(context_dim)
+            else:
+                context_keys = list(self.context.keys())
+                context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
             low = np.concatenate((env_lower_bounds, context_lower_bounds))
             high = np.concatenate((env_upper_bounds, context_upper_bounds))
             self.env.observation_space = spaces.Box(
                 low=low,
-                high=high
+                high=high,
+                dtype=np.float32
             )
         self.observation_space = self.env.observation_space  # make sure it is the same object
 
