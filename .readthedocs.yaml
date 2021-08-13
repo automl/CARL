@@ -1,0 +1,20 @@
+#TODO: This is from DACBench and should work, but please check!
+# use version 2, which is now recommended
+version: 2
+
+# Build from the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py
+
+# build all
+formats: all
+
+# Explicitly set the version of Python and its requirements
+python:
+  version: 3.9
+  install:
+    - method: pip
+      path: .
+  #TODO: dacbench has extra requirements (e.g. sphinx) for docs, solve this somehow
+  #    extra_requirements:
+  #      - docs
