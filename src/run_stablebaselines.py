@@ -51,14 +51,6 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Number of episodes to evaluate policy on",
     )
 
-    # parser.add_argument(
-    #     "--seeds",
-    #     nargs="+",
-    #     type=int,
-    #     default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-    #     help="Seeds for evaluation",
-    # )
-
     parser.add_argument(
         "--seed",
         type=int,
