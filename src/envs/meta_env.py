@@ -85,6 +85,7 @@ class MetaEnv(Wrapper):
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
 
         self.step_counter = 0  # type: int # increased in/after step
+        self.total_timestep_counter = 0  # type: int
         self.episode_counter = -1  # type: int # increased during reset
         self.whitelist_gaussian_noise = None    # type: Optional[List[str]] # holds names of context features
                                                 # where it is allowed to add gaussian noise
@@ -128,6 +129,7 @@ class MetaEnv(Wrapper):
 
         """
         self.episode_counter += 1
+        self.step_counter = 0
         self._progress_instance()
         self._update_context()
         self._log_context()
@@ -175,7 +177,8 @@ class MetaEnv(Wrapper):
             # Add context features to state
             state = np.concatenate((state, context_feature_values))
 
-        self.step_counter += 1  # TODO do we need to reset the step counter?
+        self.total_timestep_counter += 1
+        self.step_counter += 1  # TODO do we need to reset the step counter? yes, we do
         if self.step_counter >= self.cutoff:
             done = True
         return state, reward, done, info
@@ -323,6 +326,6 @@ class MetaEnv(Wrapper):
 
         """
         if self.logger:
-            self.logger.write_context(self.episode_counter, self.step_counter, self.context)
+            self.logger.write_context(self.episode_counter, self.total_timestep_counter, self.context)
 
 
