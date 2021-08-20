@@ -9,7 +9,7 @@ import yaml
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
+from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback, EveryNTimesteps
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
@@ -169,7 +169,7 @@ def get_parser() -> configargparse.ArgumentParser:
     return parser
 
 
-def main(args, unknown_args):
+def main(args, unknown_args, parser):
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
         vec_env_cls = DummyVecEnv
@@ -191,7 +191,6 @@ def main(args, unknown_args):
         add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir,
         init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )
-    logger.write_trial_setup()
 
     hyperparams = {}
     env_wrapper = None
@@ -219,12 +218,12 @@ def main(args, unknown_args):
         with open(args.context_file, 'r') as file:
             contexts = json.load(file)
 
-
+    env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
     EnvCls = partial(
         eval(args.env),
         contexts=contexts,
-        logger=logger,
+        logger=env_logger,
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features,
     )
@@ -248,12 +247,14 @@ def main(args, unknown_args):
     eval_callback = EvalCallback(
         eval_env,
         log_path=logger.logdir,
-        eval_freq=args.eval_freq,
+        eval_freq=1, #args.eval_freq,
         n_eval_episodes=args.num_contexts,
         deterministic=True,
         render=False
     )
     callbacks = [eval_callback]
+    everynstep_callback = EveryNTimesteps(n_steps=args.eval_freq, callback=eval_callback)
+    callbacks = [everynstep_callback]
 
     try:
         model = eval(args.agent)(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
