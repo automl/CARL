@@ -271,31 +271,36 @@ class MetaEnv(Wrapper):
             raise ValueError("This environment does not yet support non-hidden contexts. Only supports "
                              "Box observation spaces.")
 
-        if env_lower_bounds is None and env_upper_bounds is None:
-            obs_dim = self.env.observation_space.low.shape[0]
-            env_lower_bounds = - np.inf * np.ones(obs_dim)
-            env_upper_bounds = np.inf * np.ones(obs_dim)
-
-        if self.hide_context:
-            self.env.observation_space = spaces.Box(
-                env_lower_bounds, env_upper_bounds, dtype=np.float32,
-            )
+        obs_shape = self.env.observation_space.low.shape
+        if len(obs_shape) == 3 and obs_shape[-1] == 3 and self.hide_context:
+            # do not touch pixel state
+            pass
         else:
-            if context_bounds is None:
-                context_dim = len(list(self.context.keys()))
-                context_lower_bounds = - np.inf * np.ones(context_dim)
-                context_upper_bounds = np.inf * np.ones(context_dim)
+            if env_lower_bounds is None and env_upper_bounds is None:
+                obs_dim = self.env.observation_space.low.shape[0]
+                env_lower_bounds = - np.inf * np.ones(obs_dim)
+                env_upper_bounds = np.inf * np.ones(obs_dim)
+
+            if self.hide_context:
+                self.env.observation_space = spaces.Box(
+                    env_lower_bounds, env_upper_bounds, dtype=np.float32,
+                )
             else:
-                context_keys = list(self.context.keys())
-                context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
-            low = np.concatenate((env_lower_bounds, context_lower_bounds))
-            high = np.concatenate((env_upper_bounds, context_upper_bounds))
-            self.env.observation_space = spaces.Box(
-                low=low,
-                high=high,
-                dtype=np.float32
-            )
-        self.observation_space = self.env.observation_space  # make sure it is the same object
+                if context_bounds is None:
+                    context_dim = len(list(self.context.keys()))
+                    context_lower_bounds = - np.inf * np.ones(context_dim)
+                    context_upper_bounds = np.inf * np.ones(context_dim)
+                else:
+                    context_keys = list(self.context.keys())
+                    context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
+                low = np.concatenate((env_lower_bounds, context_lower_bounds))
+                high = np.concatenate((env_upper_bounds, context_upper_bounds))
+                self.env.observation_space = spaces.Box(
+                    low=low,
+                    high=high,
+                    dtype=np.float32
+                )
+            self.observation_space = self.env.observation_space  # make sure it is the same object
 
     def _update_context(self):
         """
