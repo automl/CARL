@@ -29,7 +29,7 @@ install CARL and its dependencies.
 First, clone our repository and install the basic requirements:
 ```bash
 git clone https://github.com/automl/meta-gym --recursive
-cd genrl
+cd carl
 pip install -r requirements.txt
 ```
 
