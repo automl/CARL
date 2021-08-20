@@ -2,6 +2,7 @@ from functools import partial
 import os
 import gym
 import importlib
+from xvfbwrapper import Xvfb
 import configargparse
 import yaml
 
@@ -10,6 +11,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 # from classic_control import MetaMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -25,7 +27,7 @@ importlib.reload(src.trial_logger)
 from src.trial_logger import TrialLogger
 
 from src.context_sampler import sample_contexts
-from utils.hyperparameter_processing import preprocess_hyperparams
+from src.utils.hyperparameter_processing import preprocess_hyperparams
 
 
 def get_parser() -> configargparse.ArgumentParser:
@@ -89,7 +91,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--env",
         type=str,
-        default="MetaLunarLanderEnv",
+        default="MetaPendulumEnv",
         help="Environment",
     )
 
@@ -145,42 +147,78 @@ def get_parser() -> configargparse.ArgumentParser:
              "distribution."
     )
 
+    parser.add_argument(
+        "--context_file",
+        type=str,
+        default=None,
+        help="Context file(name) containing all train contexts in json format as Dict[int, Dict[str, Any]]."
+    )
+
+    parser.add_argument(
+        "--vec_env_cls",
+        type=str,
+        default="DummyVecEnv",
+        choices=["DummyVecEnv", "SubprocVecEnv"]
+    )
+
+    parser.add_argument(
+        "--use_xvfb",
+        action="store_true"
+    )
+
     return parser
 
 
-if __name__ == '__main__':
-    parser = get_parser()
-    args, unknown_args = parser.parse_known_args()
+def main(args, unknown_args):
+    vec_env_cls_str = args.vec_env_cls
+    if vec_env_cls_str == "DummyVecEnv":
+        vec_env_cls = DummyVecEnv
+    elif vec_env_cls_str == "SubprocVecEnv":
+        vec_env_cls = SubprocVecEnv
+    else:
+        raise ValueError(f"{vec_env_cls_str} not supported.")
+    use_xvfb = args.use_xvfb
 
-    num_cpu = 4  # Number of processes to use
+    if use_xvfb:
+        vdisplay = Xvfb()
+        vdisplay.start()
+
     # set up logger
     logger = TrialLogger(
         args.outdir,
         parser=parser,
         trial_setup_args=args,
-        add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir
+        add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir,
+        init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )
     logger.write_trial_setup()
 
     hyperparams = {}
-    env_wrappers = None
+    env_wrapper = None
     normalize = False
     normalize_kwargs = {}
     if args.hp_file is not None:
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
         hyperparams = hyperparams_dict[args.env]
-        hyperparams, env_wrappers, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+        if "n_envs" in hyperparams:
+            args.num_envs = hyperparams["n_envs"]
+        hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
 
-    print(env_wrappers)
+    logger.write_trial_setup()
+
     # sample contexts using unknown args
-    # TODO find good sample std, make sure it is a good default
-    contexts = sample_contexts(
-        args.env,
-        args.context_feature_args,
-        args.num_contexts,
-        default_sample_std_percentage=args.default_sample_std_percentage
-    )
+    if not args.context_file:
+        contexts = sample_contexts(
+            args.env,
+            args.context_feature_args,
+            args.num_contexts,
+            default_sample_std_percentage=args.default_sample_std_percentage
+        )
+    else:
+        with open(args.context_file, 'r') as file:
+            contexts = json.load(file)
+
 
     # make meta-env
     EnvCls = partial(
@@ -190,13 +228,23 @@ if __name__ == '__main__':
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features,
     )
-    env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrappers)
-    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
+    env_cls = eval(args.env)
+    env_kwargs = dict(
+        contexts=contexts,
+        # logger=logger,  # no logger because of SubprocVecEnv
+        hide_context=args.hide_context,
+        scale_context_features=args.scale_context_features
+    )
+    env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
+    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
         eval_normalize_kwargs = normalize_kwargs.copy()
         eval_normalize_kwargs["norm_reward"] = False
+        eval_normalize_kwargs["training"] = False
         eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
+
+    # Setup callbacks
     eval_callback = EvalCallback(
         eval_env,
         log_path=logger.logdir,
@@ -205,13 +253,6 @@ if __name__ == '__main__':
         deterministic=True,
         render=False
     )
-    # save_freq = 5000
-    # checkpoint_callback = CheckpointCallback(
-    #     save_freq=max(save_freq // args.num_envs, 1),
-    #     save_path=logger.logdir,
-    #     name_prefix='rl_model'
-    # )
-
     callbacks = [eval_callback]
 
     try:
@@ -224,6 +265,9 @@ if __name__ == '__main__':
     model.save(os.path.join(logger.logdir, "model.zip"))
     if normalize:
         model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
+
+    if use_xvfb:
+        vdisplay.stop()
 
     # TODO add more cmdline arguments
 
@@ -239,3 +283,9 @@ if __name__ == '__main__':
     # TODO create requirements
 
     # TODO if a default context is 0, the sampled/altered context will be also zero (because of 0 std)
+
+
+if __name__ == '__main__':
+    parser = get_parser()
+    args, unknown_args = parser.parse_known_args()
+    main(args, unknown_args)
