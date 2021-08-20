@@ -1,5 +1,5 @@
-# The GenRL Benchmark Library
-GenRL provides highly configurable contextual extensions
+# The CARL Benchmark Library
+CARL (context adaptive RL) provides highly configurable contextual extensions
 to several well-known RL environments. 
 It's designed to test your agent's generalization capabilities
 in all scenarios where intra-task generalization is important.
@@ -24,7 +24,7 @@ constraints with structures from different datasets to choose from
 
 ## Installation
 We recommend you use a virtual environment (e.g. Anaconda) to 
-install GenRL and its dependencies.
+install CARL and its dependencies.
 
 First, clone our repository and install the basic requirements:
 ```bash
@@ -46,7 +46,7 @@ make data
 ```
 
 ## Train an Agent
-To get started with GenRL, you can use our 'train.py' script.
+To get started with CARL, you can use our 'train.py' script.
 It will train a PPO agent on the environment of your choice
 with custom context variations that are sampled from a standard 
 deviation. 
@@ -64,7 +64,7 @@ You can use the plotting scripts in src/eval to view the results.
 
 ## Cite Us
 ```bibtex
-@misc{genRL,
+@misc{CARL,
   author    = {C. Benjamins and 
                T. Eimer and 
                F. Schubert and 
@@ -72,7 +72,7 @@ You can use the plotting scripts in src/eval to view the results.
                F. Hutter and 
                B. Rosenhahn and 
                M. Lindauer},
-  title     = {Benchmarking GenRL Reinforcement Learning},
+  title     = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
   howpublished = {https://github.com/automl/meta-gym},
   year      = {2021},
   month     = aug,
