@@ -47,6 +47,7 @@ class TrialLogger(object):
             parser: configargparse.ArgParser,
             trial_setup_args: argparse.Namespace,
             add_context_feature_names_to_logdir: bool = False,
+            init_sb3_tensorboard: bool = True,
     ):
         """
 
@@ -75,7 +76,7 @@ class TrialLogger(object):
         agent = trial_setup_args.agent
         if add_context_feature_names_to_logdir:
             context_feature_args = trial_setup_args.context_feature_args
-            names = [n for n in context_feature_args if "std" not in n and "mean" not in n]
+            names = [n for n in context_feature_args if "std" not in n and "mean" not in n]  # TODO make sure to exclude numbers
             context_feature_dirname = "default"
             if names:
                 context_feature_dirname = names[0] if len(names) == 1 else "__".join(names)
@@ -90,7 +91,10 @@ class TrialLogger(object):
         self.context_history_fn = self.logdir / "context_history.csv"
         self.prepared_context_history_file = False
 
-        self.stable_baselines_logger = configure(str(self.logdir), ["stdout", "csv", "tensorboard"])
+        sb_loggers = ["stdout", "csv"]
+        if init_sb3_tensorboard:
+            sb_loggers.append("tensorboard")
+        self.stable_baselines_logger = configure(str(self.logdir), sb_loggers)
 
     def write_trial_setup(self):
         """
