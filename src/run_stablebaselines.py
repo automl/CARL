@@ -196,13 +196,17 @@ def main(args, unknown_args, parser):
     env_wrapper = None
     normalize = False
     normalize_kwargs = {}
-    if args.hp_file is not None:
+    if args.hp_file is not None and args.agent == "PPO":
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
         hyperparams = hyperparams_dict[args.env]
         if "n_envs" in hyperparams:
             args.num_envs = hyperparams["n_envs"]
         hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+
+    if args.agent == "DDPG":
+        hyperparams["policy"] = "MlpPolicy"
+        args.num_envs = 1
 
     logger.write_trial_setup()
 
@@ -257,9 +261,10 @@ def main(args, unknown_args, parser):
     callbacks = [everynstep_callback]
 
     try:
-        model = eval(args.agent)(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
+        agent_cls = eval(args.agent)
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
+    model = agent_cls(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
 
     model.set_logger(logger.stable_baselines_logger)
     model.learn(total_timesteps=args.steps, callback=callbacks)
@@ -289,4 +294,4 @@ def main(args, unknown_args, parser):
 if __name__ == '__main__':
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
-    main(args, unknown_args)
+    main(args, unknown_args, parser)
