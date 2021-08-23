@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 import gym
 import gym.envs.classic_control as gccenvs
 
@@ -37,6 +37,7 @@ class MetaPendulumEnv(MetaEnv):
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
+            state_context_features: Optional[List[str]] = None,
     ):
         """
         Max torque is not a context feature because it changes the action space.
@@ -63,6 +64,7 @@ class MetaPendulumEnv(MetaEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             max_episode_length=max_episode_length,
+            state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()    # TODO move this to MetaEnv as this is the same for each child meta env

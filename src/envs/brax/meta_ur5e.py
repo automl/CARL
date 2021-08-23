@@ -7,7 +7,7 @@ from brax.envs.ur5e import Ur5e, _SYSTEM_CONFIG
 from src.envs.meta_env import MetaEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from numpyencoder import NumpyEncoder
 from src.trial_logger import TrialLogger
 
@@ -48,6 +48,7 @@ class MetaUr5e(MetaEnv):
             logger: Optional[TrialLogger] = None,
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
+            state_context_features: Optional[List[str]] = None,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(text_format.Parse(_SYSTEM_CONFIG, brax.Config()))
@@ -63,6 +64,7 @@ class MetaUr5e(MetaEnv):
             logger=logger,
             scale_context_features=scale_context_features,
             default_context=default_context,
+            state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()

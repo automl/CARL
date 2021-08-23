@@ -32,6 +32,7 @@ class MetaEnv(Wrapper):
             max_episode_length: int = 1e6,
             scale_context_features: str = "no",
             default_context: Optional[Dict] = None,
+            state_context_features: Optional[List[str]] = None,
     ):
         """
 
@@ -63,6 +64,10 @@ class MetaEnv(Wrapper):
             'by_default' scales the context features by their default values ('default_context').
         default_context: Dict
             The default context of the environment. Used for scaling the context features if applicable.
+        state_context_features: Optional[List[str]] = None
+            If the context is visible to the agent (hide_context=False), the context features are appended to the state.
+            state_context_features specifies which of the context features are appended to the state. The default is
+            appending all context features.
 
         Raises
         ------
@@ -83,6 +88,7 @@ class MetaEnv(Wrapper):
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
+        self.state_context_features = state_context_features
 
         self.step_counter = 0  # type: int # increased in/after step
         self.total_timestep_counter = 0  # type: int
@@ -134,9 +140,23 @@ class MetaEnv(Wrapper):
         self._update_context()
         self._log_context()
         state = self.env.reset(**kwargs)
+        state = self.build_context_adaptive_state(state)
+        print(state)
+        return state
+
+    def build_context_adaptive_state(self, state, context_feature_values=None):
         if not self.hide_context:
+            if context_feature_values is None:
+                # use current context
+                context_values = np.array(list(self.context.values()))
+            else:
+                # use potentially modified context
+                context_values = context_feature_values
             # Append context to state
-            state = np.concatenate((state, np.array(list(self.context.values()))))
+            if self.state_context_features is not None:
+                context_keys = list(self.context.keys())
+                context_values = np.array([context_values[context_keys.index(k)] for k in self.state_context_features])
+            state = np.concatenate((state, context_values))
         return state
 
     def step(self, action) -> (Any, Any, bool, Dict):
@@ -175,7 +195,7 @@ class MetaEnv(Wrapper):
                 raise ValueError(f"{self.scale_context_features} not in {self.available_scale_methods}.")
 
             # Add context features to state
-            state = np.concatenate((state, context_feature_values))
+            state = self.build_context_adaptive_state(state, context_feature_values)
 
         self.total_timestep_counter += 1
         self.step_counter += 1  # TODO do we need to reset the step counter? yes, we do
@@ -289,13 +309,17 @@ class MetaEnv(Wrapper):
                     env_lower_bounds, env_upper_bounds, dtype=np.float32,
                 )
             else:
+                context_keys = list(self.context.keys())
                 if context_bounds is None:
                     context_dim = len(list(self.context.keys()))
                     context_lower_bounds = - np.inf * np.ones(context_dim)
                     context_upper_bounds = np.inf * np.ones(context_dim)
                 else:
-                    context_keys = list(self.context.keys())
                     context_lower_bounds, context_upper_bounds = get_context_bounds(context_keys, context_bounds)
+                if self.state_context_features is not None:
+                    ids = np.array([context_keys.index(k) for k in self.state_context_features])
+                    context_lower_bounds = context_lower_bounds[ids]
+                    context_upper_bounds = context_upper_bounds[ids]
                 low = np.concatenate((env_lower_bounds, context_lower_bounds))
                 high = np.concatenate((env_upper_bounds, context_upper_bounds))
                 self.env.observation_space = spaces.Box(
