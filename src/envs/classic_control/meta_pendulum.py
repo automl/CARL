@@ -19,8 +19,8 @@ CONTEXT_BOUNDS = {
     "max_speed": (-np.inf, np.inf, float),  # TODO: discuss limits
     "dt": (0, np.inf, float),
     "g": (0, np.inf, float),
-    "m": (0, np.inf, float),
-    "l": (0, np.inf, float),
+    "m": (1e-6, np.inf, float),
+    "l": (1e-6, np.inf, float),
 }
 
 
