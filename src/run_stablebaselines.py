@@ -169,6 +169,9 @@ def get_parser() -> configargparse.ArgumentParser:
     return parser
 
 
+# test render 🥲
+
+
 def main(args, unknown_args, parser):
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
