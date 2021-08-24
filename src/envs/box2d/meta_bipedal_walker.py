@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 import numpy as np
 
 import Box2D
@@ -129,6 +129,7 @@ class MetaBipedalWalkerEnv(MetaEnv):
             logger: Optional[TrialLogger] = None,
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
+            state_context_features: Optional[List[str]] = None,
     ):
         """
 
@@ -154,6 +155,8 @@ class MetaBipedalWalkerEnv(MetaEnv):
             logger=logger,
             scale_context_features=scale_context_features,
             default_context=default_context,
+            state_context_features=state_context_features,
+
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()
