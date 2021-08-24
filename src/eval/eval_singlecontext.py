@@ -22,7 +22,6 @@ def collect_results(
     logdir / env_name / name of context feature / {agent}_{seed}
     """
     path = Path(path)
-    env_name = path.stem
 
     # context_dirs = [Path(x[0]) for x in os.walk(path)]
     context_dirs = [path / Path(p) for p in os.listdir(path)]
@@ -59,34 +58,45 @@ def collect_results(
                 progress_fn = cf_dir / progress_fname
                 df = pd.read_csv(progress_fn)
                 n = len(df['time/total_timesteps'])
+                mean_reward_key = 'rollout/ep_rew_mean'
+                time_key = 'time/total_timesteps'
+                if mean_reward_key not in df:
+                    mean_reward_key = 'eval/mean_reward'
+                    time_key = 'time/total timesteps'
                 D.append(pd.DataFrame({
                     "seed": [seed] * n,
-                    "step": df['time/total_timesteps'].to_numpy(),
+                    "step": df[time_key].to_numpy(),
                     "iteration": df['time/iterations'].to_numpy(),
-                    yname: df['rollout/ep_rew_mean'].to_numpy(),
+                    yname: df[mean_reward_key].to_numpy(),
                 }))
             else:
                 eval_fn = cf_dir / eval_fname
-                eval_data = np.load(eval_fn)
-                timesteps = eval_data["timesteps"]
-                iteration = None
-                y = np.mean(eval_data["results"], axis=1)
-                n = len(timesteps)
-                D.append(pd.DataFrame({
-                    "seed": [seed] * n,
-                    "step": timesteps,
-                    "iteration": [iteration] * n,
-                    yname: y,
-                }))
+                try:
+                    eval_data = np.load(str(eval_fn))
+                    timesteps = eval_data["timesteps"]
+                    ep_lengths = eval_data["ep_lengths"]
+                    mean_ep_length = np.mean(ep_lengths, axis=1)
+                    iteration = None
+                    y = np.mean(eval_data["results"], axis=1)
+                    n = len(timesteps)
+                    D.append(pd.DataFrame({
+                        "seed": [seed] * n,
+                        "step": timesteps,
+                        "iteration": [iteration] * n,
+                        yname: y,
+                        "mean_ep_length": mean_ep_length
+                    }))
+                except Exception as e:
+                    print(e)
 
+        if D:
+            D = pd.concat(D)
+            data[cf_name] = D
 
-        D = pd.concat(D)
-        data[cf_name] = D
-
-    metadata = {
-        "env_name": env_name,
-    }
-    return data, metadata
+    # metadata = {
+    #     "env_name": env_name,
+    # }
+    return data
 
 
 if __name__ == "__main__":
@@ -97,90 +107,245 @@ if __name__ == "__main__":
     # path = "results/singlecontextfeature_0.1/box2d/MetaLunarLanderEnv"
     path = "results/singlecontextfeature_0.5_hidecontext/box2d/MetaLunarLanderEnv"
     path = "results/singlecontextfeature_0.1/box2d/MetaLunarLanderEnv"
+    path = "results/singlecontextfeature_0.0_hidecontext/box2d/MetaBipedalWalkerEnv"
 
-    path = Path(path)
+    path = "results/singlecontextfeature_0.1/classic_control/MetaAcrobotEnv"
+    path = "results/singlecontextfeature_0.1/classic_control/MetaPendulumEnv"
+    path = "results/singlecontextfeature_0.25/classic_control/MetaPendulumEnv"
+    # path = "results/singlecontextfeature_0.1/brax/MetaFetch"
+    path = "results/singlecontextfeature_0.1_hidecontext/brax/MetaFetch"
+    path = "results/singlecontextfeature_0.1_hidecontext/brax/MetaAnt"
+    path = "results/singlecontextfeature_0.25_hidecontext/classic_control/MetaPendulumEnv"
+    path = "results/singlecontextfeature_0.5/classic_control/MetaPendulumEnv"
+    path = "results/singlecontextfeature_0.1/classic_control/MetaPendulumEnv"
+    path = "results/singlecontextfeature_0.75/classic_control/MetaPendulumEnv"
 
-    xname = "step"
-    yname = "ep_rew_mean"
-    default_name = "None"  # identifier for environment with standard context
+    path = "results/singlecontextfeature_0.25_hidecontext/box2d/MetaBipedalWalkerEnv"
+    # path = "results/singlecontextfeature_0.25/box2d/MetaBipedalWalkerEnv"
+    # path = "results/singlecontextfeature_0.1_hidecontext/box2d/MetaBipedalWalkerEnv"
+    # path = "results/singlecontextfeature_0.1/box2d/MetaBipedalWalkerEnv"
 
-    data, metadata = collect_results(path, yname=yname, from_progress=False)
-    env_name = metadata["env_name"]
+    # path = "/home/eimer/Dokumente/git/meta-gym/src/results/classic_control/std_0.1/MetaCartPoleEnv"
+    # path = "/home/eimer/Dokumente/git/meta-gym/src/results/brax/std_0.25/MetaAnt"
 
+    paths = [
+        # "results/singlecontextfeature_0.25_hidecontext/box2d/MetaBipedalWalkerEnv",
+        # "results/singlecontextfeature_0.25/box2d/MetaBipedalWalkerEnv",
+        # "results/singlecontextfeature_0.1_hidecontext/box2d/MetaBipedalWalkerEnv",
+        # "results/singlecontextfeature_0.1/box2d/MetaBipedalWalkerEnv",
+        # "results/singlecontextfeature_0.5_hidecontext/box2d/MetaBipedalWalkerEnv",
+        # "results/singlecontextfeature_0.05_hidecontext/box2d/MetaBipedalWalkerEnv",  # probably solved but before cutoff bugfix
+        # "results/singlecontextfeature_0.15_hidecontext/box2d/MetaBipedalWalkerEnv",  # not finished, not solved
+
+        # "results/singlecontextfeature_0.15_hidecontext/classic_control/MetaPendulumEnv",  # not solved
+        # "results/singlecontextfeature_0.1_hidecontext/classic_control/MetaPendulumEnv",  # not solved
+        # "results/singlecontextfeature_0.125_hidecontext/classic_control/MetaPendulumEnv",  # not solved
+        # "results/singlecontextfeature_0.075_hidecontext/classic_control/MetaPendulumEnv",  # not solved
+
+        # "results/singlecontextfeature_0.1_hidecontext/box2d/MetaLunarLanderEnv",  # SOLVED
+
+        # "results/singlecontextfeature_0.1_hidecontext/brax/MetaHalfcheetah",  # solved?
+
+        # "results/singlecontextfeature_0.1_hidecontext/brax/MetaGrasp",  # ?? needs 5e6 steps in brax paper
+
+        # "results/singlecontextfeature_0.1_hidecontext/classic_control/MetaMountainCarEnv",  # wtf, constant
+
+        # "results/singlecontextfeature_0.1_hidecontext/classic_control/MetaAcrobotEnv",  # runs long, no evals/progress
+
+        # "results/base_vs_context/classic_control/MetaMountainCarEnv/contexthidden_0.1",
+
+        # with gaussian noise 1%
+        # "results/base_vs_context/classic_control/MetaPendulumEnv_withnoise/0.1_contexthidden",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv_withnoise/0.25_contexthidden",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv_withnoise/0.5_contexthidden",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv_withnoise/0.25_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv_withnoise/0.1_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv_withnoise/0.5_contextvisible",  # DDPG
+
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_contexthidden",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_contexthidden",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",  # DDPG
+        "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_contextvisible",  # DDPG
+        "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_contextvisible",  # DDPG
+        "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_changingcontextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_changingcontextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_changingcontextvisible",  # DDPG
+
+        # "results/base_vs_context/classic_control/MetaAcrobotEnv/0.1_contexthidden",
+
+        # "results/base_vs_context/brax/MetaAnt/0.25_contexthidden",
+    ]
+
+    from_progress = False
     plot_comparison = True
-    plot_mean_performance = True
+    plot_mean_performance = False
+    plot_ep_lengths = True
+    paperversion = True
+    libname = "CA"
+    plot_combined = True
+    if len(paths) == 1:
+        plot_combined = False
 
-    color_palette_name = "husl"  # TODO find palette with enough individual colors or use linestyles
-    color_default_context = "black"
-    if plot_mean_performance:
-        means = []
-        for cf_name, df in data.items():
-            mean = df[yname].mean()
-            std = df[yname].std()
-            means.append({"context_feature": cf_name, "mean": mean, "std": std})
-        means = pd.DataFrame(means)
-
-        n = len(means)
-        colors = np.array(sns.color_palette(color_palette_name, n))
-        idx = means["context_feature"] == default_name
-        colors[idx] = mpl.colors.to_rgb(color_default_context)
-
+    fig = None
+    if plot_combined:
         figsize = (8, 6)
         dpi = 200
-        fig = plt.figure(figsize=figsize, dpi=200)
-        axes = fig.subplots(nrows=2, ncols=1, sharex=True)
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ncols = len(paths)
+        axes = fig.subplots(nrows=1, ncols=ncols, sharey=True)
+    for idx_plot, path in enumerate(paths):
+        path = Path(path)
+        print(path)
 
-        ax = axes[0]
-        ax = sns.barplot(data=means, x="context_feature", y="mean", ax=ax, palette=colors)
-        ax.set_xlabel("")
-        ax = axes[1]
-        ax = sns.barplot(data=means, x="context_feature", y="std", ax=ax, palette=colors)
-        xticklabels = means["context_feature"]
-        ax.set_xticklabels(xticklabels, rotation=30, fontsize=9, ha="right")
-        title = f"{env_name}\n{str(path)}"
-        fig.suptitle(title)
-        fig.set_tight_layout(True)
-        fname = path / f"ep_rew_mean_mean_std.png"
-        fig.savefig(fname, bbox_inches="tight")
+
+        xname = "step"
+        yname = "ep_rew_mean"
+        default_name = "None"  # identifier for environment with standard context
+        savepath = path
+        if "singlecontext" in str(path):
+            std = path.parts[-3].split("_")[1]
+            envtype = path.parts[-2]
+            envname = path.parts[-1]
+        else:
+            std = path.parts[-1].split("_")[0]
+            envtype = path.parts[-3]
+            envname = path.parts[-2]
+        hc = "cv"
+        if np.any(["hidecontext" in p for p in path.parts]) or np.any(["contexthidden" in p for p in path.parts]):
+            hc = "ch"
+
+        if "eimer" in path.parts:
+            default_name = "vanilla"
+            parts = path.parts
+            std = parts[-2].split("_")[-1]
+            envtype = parts[-3]
+            envname = parts[-1]
+            savepath = Path(f"results/singlecontextfeature_{std}/{envtype}/{envname}")
+            savepath.mkdir(parents=True, exist_ok=True)
+
+        fromprogressstr = "" if not from_progress else "_fromprogress"
+        fname_comparison = savepath / f"{envname}_{std}_{hc}_ep_rew_mean_over_{xname}{fromprogressstr}.png"
+        fname_comparison2 = Path(f"results/base_vs_context/{envtype}/{envname}")
+        fname_comparison2.mkdir(parents=True, exist_ok=True)
+        fname_comparison2 /= f"reward_over_time_{std}_{hc}.png"
+        fname_reward = savepath / f"{envname}_ep_rew_mean_mean_std.png"
+
+        data = collect_results(path, yname=yname, from_progress=from_progress)
+        env_name = envname
+        if "Meta" in env_name:
+            env_name = env_name.replace("Meta", libname)
+
+        ylims = None
+        xlims = (5e3, 2e6)
+        if "Bipedal" in env_name:
+            ylims = (-200, 50)
+            ylims = None
+        elif "Pendulum" in env_name:
+            if paperversion:
+                ylims = (-1500, -100)
+            # ylims = None
+
+        if "hidden" in str(path) or "hide" in str(path):
+            contextvisiblity_str = "hidden"
+        else:
+            contextvisiblity_str = "visible"
+
+        color_palette_name = "colorblind"  # TODO find palette with enough individual colors or use linestyles
+        color_default_context = "black"
+
+        if plot_comparison:
+            sns.set_style("whitegrid")
+            sns.set_context("paper")
+
+            if fig is None:
+                figsize = (8, 6) if not paperversion else (4, 3)
+                dpi = 200
+                fig = plt.figure(figsize=figsize, dpi=dpi)
+                ax = fig.add_subplot(111)
+            else:
+                ax = axes[idx_plot]
+            n = len(data)
+            # n_colors_in_palette = n
+            # if color_palette_name in sns.palettes.SEABORN_PALETTES:
+            #     n_colors_in_palette = sns.palettes.SEABORN_PALETTES[color_palette_name]
+            colors = sns.color_palette(color_palette_name, n)
+            legend_handles = []
+            labels = []
+            for i, (cf_name, df) in enumerate(data.items()):
+                color = colors[i]
+                if cf_name == default_name:
+                    color = color_default_context
+                ax = sns.lineplot(data=df, x=xname, y=yname, ax=ax, color=color, marker='')
+                legend_handles.append(Line2D([0], [0], color=color))
+                labels.append(cf_name)
+            if ylims:
+                ax.set_ylim(*ylims)
+            ax.set_xlim(*xlims)
+            ax.set_xscale("log")
+            # ax.set_yscale("log")
+            title = f"{env_name}, $\sigma_{{rel}}={std}$, context {contextvisiblity_str} \n{str(path)}"
+            if paperversion:
+                title = f"{env_name}\n$\sigma_{{rel}}={std}$, context {contextvisiblity_str}"
+            ax.set_title(title)
+            ax.set_ylabel("mean reward across instances $\mathcal{I}_{train}$")
+
+            # Sort labels, put default name at front
+            if default_name in labels:
+                idx = labels.index(default_name)
+                name_item = labels.pop(idx)
+                labels.insert(0, name_item)
+                handle_item = legend_handles.pop(idx)
+                legend_handles.insert(0, handle_item)
+
+            ax.legend(handles=legend_handles, labels=labels)
+            fig.set_tight_layout(True)
+
+            if not plot_combined:
+                plt.show()
+                fig.savefig(fname_comparison, bbox_inches="tight")
+                if not from_progress:
+                    fig.savefig(fname_comparison2, bbox_inches="tight")
+    if plot_combined:
         plt.show()
-
-    if plot_comparison:
-        sns.set_style("white")
-
-        figsize = (8, 6)
-        dpi = 200
-        fig = plt.figure(figsize=figsize, dpi=200)
-        ax = fig.add_subplot(111)
-        n = len(data)
-        # n_colors_in_palette = n
-        # if color_palette_name in sns.palettes.SEABORN_PALETTES:
-        #     n_colors_in_palette = sns.palettes.SEABORN_PALETTES[color_palette_name]
-        colors = sns.color_palette(color_palette_name, n)
-        legend_handles = []
-        labels = []
-        for i, (cf_name, df) in enumerate(data.items()):
-            color = colors[i]
-            if cf_name == default_name:
-                color = color_default_context
-            ax = sns.lineplot(data=df, x=xname, y=yname, ax=ax, color=color)
-            legend_handles.append(Line2D([0], [0], color=color))
-            labels.append(cf_name)
-        title = f"{env_name}"
-        ax.set_title(title)
-
-        # Sort labels, put default name at front
-        idx = labels.index(default_name)
-        name_item = labels.pop(idx)
-        labels.insert(0, name_item)
-        handle_item = legend_handles.pop(idx)
-        legend_handles.insert(0, handle_item)
-
-        ax.legend(handles=legend_handles, labels=labels)
-        fig.set_tight_layout(True)
-        plt.show()
-
-        fname = path / f"ep_rew_mean_over_{xname}.png"
+        fname = os.path.join(os.path.commonpath(paths), "mean_ep_rew_over_step.png")
         fig.savefig(fname, bbox_inches="tight")
+
+        # if plot_ep_lengths and "mean_ep_length" in data:
+        #     pass
+
+        # if plot_mean_performance:
+        #     sns.set_style("darkgrid")
+        #     means = []
+        #     for cf_name, df in data.items():
+        #         mean = df[yname].mean()
+        #         std = df[yname].std()
+        #         means.append({"context_feature": cf_name, "mean": mean, "std": std})
+        #     means = pd.DataFrame(means)
+        #
+        #     n = len(means)
+        #     colors = np.array(sns.color_palette(color_palette_name, n))
+        #     idx = means["context_feature"] == default_name
+        #     colors[idx] = mpl.colors.to_rgb(color_default_context)
+        #
+        #     figsize = (8, 6)
+        #     dpi = 200
+        #     fig = plt.figure(figsize=figsize, dpi=200)
+        #     axes = fig.subplots(nrows=2, ncols=1, sharex=True)
+        #
+        #     ax = axes[0]
+        #     ax = sns.barplot(data=means, x="context_feature", y="mean", ax=ax, palette=colors)
+        #     ax.set_xlabel("")
+        #     ax = axes[1]
+        #     ax = sns.barplot(data=means, x="context_feature", y="std", ax=ax, palette=colors)
+        #     xticklabels = means["context_feature"]
+        #     ax.set_xticklabels(xticklabels, rotation=30, fontsize=9, ha="right")
+        #     title = f"{env_name}\n{str(path)}"
+        #     fig.suptitle(title)
+        #     fig.set_tight_layout(True)
+        #     fig.savefig(fname_reward, bbox_inches="tight")
+        #     plt.show()
+
 
 
 
