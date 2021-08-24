@@ -71,7 +71,7 @@ def load_generator(level_index: int):
         token_list=token_list,
     )
 
-
+@functools.lru_cache(maxsize=None)
 def generate_level(
     width: int,
     height: int,
