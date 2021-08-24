@@ -166,6 +166,11 @@ def get_parser() -> configargparse.ArgumentParser:
         action="store_true"
     )
 
+    parser.add_argument(
+        "--no_eval_callback",
+        action="store_true"
+    )
+
     return parser
 
 
@@ -251,6 +256,9 @@ def main(args, unknown_args, parser):
         eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
 
     # Setup callbacks
+
+    # eval callback actually records performance over all instances while progress writes performance of the last episode(s)
+    # which can be a random set of instances
     eval_callback = EvalCallback(
         eval_env,
         log_path=logger.logdir,
@@ -262,6 +270,8 @@ def main(args, unknown_args, parser):
     callbacks = [eval_callback]
     everynstep_callback = EveryNTimesteps(n_steps=args.eval_freq, callback=eval_callback)
     callbacks = [everynstep_callback]
+    if args.no_eval_callback:
+        callbacks = None
 
     try:
         agent_cls = eval(args.agent)
