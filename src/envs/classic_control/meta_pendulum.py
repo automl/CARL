@@ -3,7 +3,7 @@ from typing import Dict, Optional, List
 import gym
 import gym.envs.classic_control as gccenvs
 
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 
 
@@ -24,7 +24,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class MetaPendulumEnv(MetaEnv):
+class CARLPendulumEnv(CARLEnv):
     def __init__(
             self,
             env: gym.Env = gccenvs.pendulum.PendulumEnv(),
@@ -67,7 +67,7 @@ class MetaPendulumEnv(MetaEnv):
             state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self._update_context()    # TODO move this to MetaEnv as this is the same for each child meta env
+        self._update_context()    # TODO move this to CARLEnv as this is the same for each child meta env
 
     def _update_context(self):
         self.env.max_speed = self.context["max_speed"]

@@ -3,7 +3,7 @@ from typing import Optional, List
 import gym
 import gym.envs.classic_control as gccenvs
 from typing import Dict
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 
 
@@ -74,7 +74,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         return state.squeeze(), reward, done, info  # TODO something weird is happening such that the state gets shape (2,1) instead of (2,)
 
 
-class MetaMountainCarEnv(MetaEnv):
+class CARLMountainCarEnv(CARLEnv):
     def __init__(
             self,
             env: gym.Env = CustomMountainCarEnv(),

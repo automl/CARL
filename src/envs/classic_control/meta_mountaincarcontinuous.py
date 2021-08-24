@@ -4,7 +4,7 @@ from typing import Optional, Dict, List
 import gym
 import gym.envs.classic_control as gccenvs
 
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
@@ -52,7 +52,7 @@ class CustomMountainCarContinuousEnv(gccenvs.continuous_mountain_car.Continuous_
         ])
 
 
-class MetaMountainCarContinuousEnv(MetaEnv):
+class CARLMountainCarContinuousEnv(CARLEnv):
     def __init__(
             self,
             env: gym.Env = CustomMountainCarContinuousEnv(),

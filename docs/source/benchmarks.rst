@@ -29,9 +29,9 @@ The context are to train on are given upon initialization and can be accessed vi
 
 .. code-block:: python
 
-    from src.envs import MetaCartPoleEnv
+    from src.envs import CARLCartPoleEnv
     context = TODO
-    env = MetaCartPoleEnv(contexts = context)
+    env = CARLCartPoleEnv(contexts = context)
     print(env.contexts)
 
 .. automodule:: src.envs

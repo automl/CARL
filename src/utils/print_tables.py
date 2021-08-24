@@ -201,7 +201,7 @@ if calc_new:
         action_space_sizes.append(action_space.shape)
         print(env_name, state.shape)
 else:
-    env_names = ['MetaMountainCarEnv', 'MetaPendulumEnv', 'MetaAcrobotEnv', 'MetaCartPoleEnv', 'MetaMountainCarContinuousEnv', 'MetaLunarLanderEnv', 'MetaVehicleRacingEnv', 'MetaBipedalWalkerEnv', 'MetaAnt', 'MetaHalfcheetah', 'MetaHumanoid', 'MetaFetch', 'MetaGrasp', 'MetaUr5e']
+    env_names = ['CARLMountainCarEnv', 'CARLPendulumEnv', 'CARLAcrobotEnv', 'CARLCartPoleEnv', 'CARLMountainCarContinuousEnv', 'CARLLunarLanderEnv', 'CARLVehicleRacingEnv', 'CARLBipedalWalkerEnv', 'CARLAnt', 'CARLHalfcheetah', 'CARLHumanoid', 'CARLFetch', 'CARLGrasp', 'CARLUr5E']
 
     # hide_context = False
     state_space_sizes = [(13,), (8,),  (15,),  (10,),  (12,), (24,), (96, 96, 3), (44,), (94,), (29,), (304,), (110,), (141,), (75,)]
@@ -212,17 +212,17 @@ else:
 
 fname = "utils/env_statistics.png"
 
-env_names.append("MetaRnaDesignEnvironment")
+env_names.append("CARLRnaDesignEnvironment")
 n_context_features.append(5)
 state_space_sizes.append((11,))
 action_space_sizes.append((8,))  # 2 types with 4 actions
-env_context_feature_names["MetaRnaDesignEnvironment"] = ['mutation_threshold', 'reward_exponent', 'state_radius', 'dataset', 'target_structure_ids']
+env_context_feature_names["CARLRnaDesignEnvironment"] = ['mutation_threshold', 'reward_exponent', 'state_radius', 'dataset', 'target_structure_ids']
 
-env_names.append("MetaMarioEnv")
+env_names.append("CARLMarioEnv")
 n_context_features.append(3)
 state_space_sizes.append((64, 64, 3))
 action_space_sizes.append((10,))
-env_context_feature_names["MetaMarioEnv"] = ["level_index", "noise", "mario_state"]
+env_context_feature_names["CARLMarioEnv"] = ["level_index", "noise", "mario_state"]
 # plot_statistics(env_names, n_context_features, fname=fname)
 
 s_sizes = [s[0] for s in state_space_sizes if len(s) == 1]
@@ -254,10 +254,10 @@ fig.set_tight_layout(True)
 plt.show()
 
 env_types = {
-    "brax": ["MetaAnt", "MetaFetch", "MetaGrasp", "MetaHumanoid", "MetaUr5e"],
-    "box2d": ["MetaBipedalWalkerEnv", "MetaLunarLanderEnv", "MetaVehicleRacingEnv"],
-    "classic_control": ["MetaAcrobotEnv", "MetaCartPoleEnv", "MetaMountainCarEnv", "MetaMountainCarContinuousEnv", "MetaPendulumEnv"],
-    "misc": ["MetaMarioEnv", "MetaRnaDesignEnvironment"]
+    "brax": ["CARLAnt", "CARLFetch", "CARLGrasp", "CARLHumanoid", "CARLUr5E"],
+    "box2d": ["CARLBipedalWalkerEnv", "CARLLunarLanderEnv", "CARLVehicleRacingEnv"],
+    "classic_control": ["CARLAcrobotEnv", "CARLCartPoleEnv", "CARLMountainCarEnv", "CARLMountainCarContinuousEnv", "CARLPendulumEnv"],
+    "misc": ["CARLMarioEnv", "CARLRnaDesignEnvironment"]
 }
 
 

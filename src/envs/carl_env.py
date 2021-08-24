@@ -10,7 +10,7 @@ from src.context_utils import get_context_bounds
 from src.trial_logger import TrialLogger
 
 
-class MetaEnv(Wrapper):
+class CARLEnv(Wrapper):
     """
     Meta-environment formulating the original environments as cMDPs.
 
@@ -221,7 +221,7 @@ class MetaEnv(Wrapper):
 
     def __getattr__(self, name):
         # TODO: does this work with activated noise? I think we need to update it
-        # We need this because our MetaEnv has underscore class methods which would
+        # We need this because our CARLEnv has underscore class methods which would
         # through an error otherwise
         if name in ["_progress_instance", "_update_context", "_log_context"]:
             return getattr(self, name)

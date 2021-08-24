@@ -1,4 +1,4 @@
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
 from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
@@ -22,7 +22,7 @@ CONTEXT_BOUNDS = {
     "target_structure_ids": (0, np.inf, [list, int]) #This is conditional on the dataset (and also a list)
 }
 
-class MetaRnaDesignEnvironment(MetaEnv):
+class CARLRnaDesignEnvironment(CARLEnv):
     def __init__(
             self,
             env = None,

@@ -24,7 +24,7 @@ def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
         hyperparams = hyperparams_dict[env]
         hyperparams, env_wrappers, _, _ = preprocess_hyperparams(hyperparams)
 
-    from src.envs import MetaAnt
+    from src.envs import CARLAnt
     EnvCls = partial(eval(env), contexts=None)
     env = make_vec_env(EnvCls, n_envs=num_envs, wrapper_class=env_wrappers)
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
@@ -70,7 +70,7 @@ def train_ppo(env, hp_file, num_envs, config, checkpoint_dir=None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--env", type=str, default="MetaAnt", help="Environment to optimize hyperparameters for")
+        "--env", type=str, default="CARLAnt", help="Environment to optimize hyperparameters for")
     parser.add_argument(
         "--hp_file", default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")), type=str
     )

@@ -12,7 +12,7 @@ def get_default_context_and_bounds(env_name: str) -> Tuple[Dict[Any, Any], Dict[
     Parameters
     ----------
     env_name: str
-        Name of MetaEnv.
+        Name of CARLEnv.
 
     Returns
     -------
@@ -62,8 +62,8 @@ def sample_contexts(
 
     Examples
     --------
-    Sampling two contexts for the MetaAcrobotEnv and changing only the context feature link_length_2.
-    >>> sample_contexts("MetaAcrobotEnv", ["link_length_2"], 2)
+    Sampling two contexts for the CARLAcrobotEnv and changing only the context feature link_length_2.
+    >>> sample_contexts("CARLAcrobotEnv", ["link_length_2"], 2)
     {0: {'link_length_1': 1,
       'link_length_2': 1.0645201049835367,
       'link_mass_1': 1,

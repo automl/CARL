@@ -4,7 +4,7 @@ import json
 import brax
 from brax.envs.wrappers import GymWrapper
 from brax.envs.ur5e import Ur5e, _SYSTEM_CONFIG
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from typing import Optional, Dict, List
@@ -36,7 +36,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class MetaUr5e(MetaEnv):
+class CARLUr5E(CARLEnv):
     def __init__(
             self,
             env: Ur5e = Ur5e(),

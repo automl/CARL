@@ -14,7 +14,7 @@ from gym.envs.box2d.lunar_lander import heuristic
 from gym import spaces
 from gym.utils import seeding, EzPickle
 
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 from src.envs.box2d.utils import safe_destroy
 
@@ -252,7 +252,7 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
     #     return self.viewer.render(return_rgb_array=mode == 'rgb_array')
 
 
-class MetaLunarLanderEnv(MetaEnv):
+class CARLLunarLanderEnv(CARLEnv):
     def __init__(
             self,
             env: Optional[CustomLunarLanderEnv] = None,
@@ -350,7 +350,7 @@ def demo_heuristic_lander(env, seed=None, render=False):
 
 
 if __name__ == '__main__':
-    env = MetaLunarLanderEnv(hide_context=False, add_gaussian_noise_to_context=True, gaussian_noise_std_percentage=0.1)
+    env = CARLLunarLanderEnv(hide_context=False, add_gaussian_noise_to_context=True, gaussian_noise_std_percentage=0.1)
     # env.render()  # initialize viewer. otherwise weird bug.
     # env = ll.LunarLander()
     # env = CustomLunarLanderEnv()

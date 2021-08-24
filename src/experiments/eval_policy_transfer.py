@@ -10,7 +10,7 @@ from src.eval.eval_models import load_model, setup_env
 from src.experiments.policy_transfer import get_train_contexts_ll, gravities
 from src.context_sampler import get_default_context_and_bounds
 
-envname = "MetaLunarLanderEnv"
+envname = "CARLLunarLanderEnv"
 outdir = "results/experiments/policytransfer"
 outdir = os.path.join(outdir, envname)
 eval_data_fname = Path(outdir) / "eval_data.csv"

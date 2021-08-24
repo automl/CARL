@@ -3,7 +3,7 @@ import src.envs as envs
 
 ######################################
 job_name = "genRL"
-env = "MetaPendulumEnv"
+env = "CARLPendulumEnv"
 envtype = "classic_control"
 default_sample_std_percentage = 0.5
 hide_context = False

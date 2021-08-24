@@ -4,7 +4,7 @@ from typing import Dict, Optional, Union, List
 import pyglet
 pyglet.options["debug_gl"] = False
 from pyglet import gl
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 
 from gym.envs.box2d.car_dynamics import Car
@@ -190,7 +190,7 @@ class CustomCarRacingEnv(CarRacing):
         self.score_label.draw()
 
 
-class MetaVehicleRacingEnv(MetaEnv):
+class CARLVehicleRacingEnv(CARLEnv):
     def __init__(
             self,
             env: CustomCarRacingEnv = CustomCarRacingEnv(),
@@ -269,7 +269,7 @@ if __name__ == '__main__':
             a[2] = 0
 
 
-    env = MetaVehicleRacingEnv()
+    env = CARLVehicleRacingEnv()
     env.render()
     env.viewer.window.on_key_press = key_press
     env.viewer.window.on_key_release = key_release

@@ -1,9 +1,9 @@
-from src.envs.brax.meta_ant import MetaAnt
-from src.envs.brax.meta_halfcheetah import MetaHalfcheetah
-from src.envs.brax.meta_humanoid import MetaHumanoid
-from src.envs.brax.meta_fetch import MetaFetch
-from src.envs.brax.meta_grasp import MetaGrasp
-from src.envs.brax.meta_ur5e import MetaUr5e
+from src.envs.brax.meta_ant import CARLAnt
+from src.envs.brax.meta_halfcheetah import CARLHalfcheetah
+from src.envs.brax.meta_humanoid import CARLHumanoid
+from src.envs.brax.meta_fetch import CARLFetch
+from src.envs.brax.meta_grasp import CARLGrasp
+from src.envs.brax.meta_ur5e import CARLUr5E
 
 # Contexts and bounds by name
 from src.envs.brax.meta_ant import DEFAULT_CONTEXT as MetaAnt_defaults

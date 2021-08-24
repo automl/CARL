@@ -44,7 +44,7 @@ from collections import OrderedDict
 from src.run_stablebaselines import get_parser, main
 from src.trial_logger import TrialLogger
 from src.context_sampler import get_default_context_and_bounds
-from src.envs import MetaVehicleRacingEnv, MetaLunarLanderEnv
+from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv
 from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
 
 # Experiment 1: LunarLander
@@ -66,7 +66,7 @@ planets_test_out = ["Jupiter", "Neptune"]
 
 outdir = "results/experiments/policytransfer"
 
-# Experiment 2: MetaVehicleRacingEnv
+# Experiment 2: CARLVehicleRacingEnv
 vehicle_train = "RaceCar"
 vehicles = {
     "RaceCar": PARKING_GARAGE.index(RaceCar),
@@ -99,14 +99,14 @@ def get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_defaul
 def define_setting(args):
     args.steps = 5e5
     # args.steps = 1000
-    args.env = "MetaLunarLanderEnv"
+    args.env = "CARLLunarLanderEnv"
     args.agent = "DQN"
     args.outdir = os.path.join(outdir, args.env)
-    if args.env == "MetaLunarLanderEnv":
+    if args.env == "CARLLunarLanderEnv":
         context_feature_key = "GRAVITY_Y"
         context_feature_id = planet_train
         context_feature_mapping = gravities
-    elif args.env == "MetaVehicleRacingEnv":
+    elif args.env == "CARLVehicleRacingEnv":
         context_feature_key = "VEHICLE"
         context_feature_id = vehicle_train
         context_feature_mapping = vehicles
@@ -118,7 +118,7 @@ def define_setting(args):
     env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
     contexts_train = {context_feature_key: env_default_context}
 
-    if args.env == "MetaLunarLanderEnv":
+    if args.env == "CARLLunarLanderEnv":
         n_contexts = 100
 
         # # uniform interval [0.1, 0.5]
@@ -169,19 +169,19 @@ if __name__ == '__main__':
     args, unknown_args = parser.parse_known_args()
     args, contexts_train = define_setting(args)
 
-    env_name = "MetaLunarLanderEnv"
+    env_name = "CARLLunarLanderEnv"
     model_fnames = glob.glob(os.path.join(outdir, env_name, "*", "model.zip"))
     # model_fnames = ["tmp/test_logs/PPO_123456/model"]
 
-    if env_name == "MetaLunarLanderEnv":
-        env_class = MetaLunarLanderEnv
+    if env_name == "CARLLunarLanderEnv":
+        env_class = CARLLunarLanderEnv
         context_feature_key = "GRAVITY"
         context_feature_id_train = planet_train
         planets_test = [planet_train] + planets_test_in + planets_test_out
         context_feature_ids = planets_test
         context_feature_mapping = gravities
-    elif env_name == "MetaVehicleRacingEnv":
-        env_class = MetaVehicleRacingEnv
+    elif env_name == "CARLVehicleRacingEnv":
+        env_class = CARLVehicleRacingEnv
         context_feature_key = "VEHICLE"
         context_feature_id_train = vehicle_train
         context_feature_ids = list(vehicles.keys())

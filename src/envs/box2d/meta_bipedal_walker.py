@@ -8,7 +8,7 @@ from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
 from Box2D.b2 import (edgeShape, fixtureDef, polygonShape)
 
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 
 
@@ -117,7 +117,7 @@ class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
         self.observation_space = spaces.Box(-high, high, dtype=np.float32)
 
 
-class MetaBipedalWalkerEnv(MetaEnv):
+class CARLBipedalWalkerEnv(CARLEnv):
     def __init__(
             self,
             env: Optional[CustomBipedalWalkerEnv] = None,
@@ -308,7 +308,7 @@ def demo_heuristic(env):
 if __name__=="__main__":
     # Heurisic: suboptimal, have no notion of balance.
     import numpy as np
-    env = MetaBipedalWalkerEnv(add_gaussian_noise_to_context=True)
+    env = CARLBipedalWalkerEnv(add_gaussian_noise_to_context=True)
     for i in range(3):
         demo_heuristic(env)
     env.close()

@@ -35,7 +35,7 @@ n_context_features = np.sum(n_context_features_per_env)
 n_reward_changing = 7
 n_dynami_changing = 129
 
-env_names.append(["MetaMarioEnv", "MetaRnaDesignEnvironment"])
+env_names.append(["CARLMarioEnv", "CARLRnaDesignEnvironment"])
 n_context_features += (3 + 5)
 n_float_cfs += (0 + 0)  # integers == continuous?
 

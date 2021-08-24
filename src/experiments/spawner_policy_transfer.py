@@ -3,13 +3,13 @@ import src.envs as envs
 
 ######################################
 job_name = "poltra"
-env = "MetaLunarLanderEnv"
+env = "CARLLunarLanderEnv"
 ######################################
 
 mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
 time = "24:00:00"
-mem_per_cpu = "1000M" if env != "MetaVehicleRacingEnv" else "16000M"
+mem_per_cpu = "1000M" if env != "CARLVehicleRacingEnv" else "16000M"
 basecommand = 'python experiments/run_policy_transfer.py'
 outdir = f"results/experiments/policytransfer/{env}"
 basecommand += f" --outdir {outdir}  "

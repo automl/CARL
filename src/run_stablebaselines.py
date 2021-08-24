@@ -5,6 +5,14 @@ import importlib
 from xvfbwrapper import Xvfb
 import configargparse
 import yaml
+import json
+
+import sys
+import inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+print(os.getcwd())
 
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import PPO, DDPG, A2C, DQN
@@ -13,7 +21,7 @@ from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback,
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
-# from classic_control import MetaMountainCarEnv
+# from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
 from gym.envs.box2d.lunar_lander import LunarLander
 from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
@@ -91,7 +99,7 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--env",
         type=str,
-        default="MetaPendulumEnv",
+        default="CARLPendulumEnv",
         help="Environment",
     )
 
@@ -230,7 +238,7 @@ def main(args, unknown_args, parser):
         hyperparams["policy"] = "MlpPolicy"
         args.num_envs = 1
 
-        if args.env == "MetaLunarLanderEnv":
+        if args.env == "CARLLunarLanderEnv":
             hyperparams = {
                 #"n_timesteps": 1e5,
                 "policy": 'MlpPolicy',

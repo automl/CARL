@@ -1,6 +1,6 @@
-from src.envs.box2d.meta_lunarlander import MetaLunarLanderEnv
-from src.envs.box2d.meta_vehicle_racing import MetaVehicleRacingEnv
-from src.envs.box2d.meta_bipedal_walker import MetaBipedalWalkerEnv
+from src.envs.box2d.meta_lunarlander import CARLLunarLanderEnv
+from src.envs.box2d.meta_vehicle_racing import CARLVehicleRacingEnv
+from src.envs.box2d.meta_bipedal_walker import CARLBipedalWalkerEnv
 
 # Contextenvs.s and bounds by name
 from src.envs.box2d.meta_lunarlander import DEFAULT_CONTEXT as MetaLunarLanderEnv_defaults

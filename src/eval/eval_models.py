@@ -27,7 +27,7 @@ import configparser
 from src.run_stablebaselines import get_parser, main
 from src.trial_logger import TrialLogger
 from src.context_sampler import get_default_context_and_bounds
-from src.envs import MetaVehicleRacingEnv, MetaLunarLanderEnv, MetaBipedalWalkerEnv
+from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv, CARLBipedalWalkerEnv
 from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
 from src.context_sampler import sample_contexts
 
@@ -139,7 +139,7 @@ def setup_env(path, contexts=None):
 if __name__ == '__main__':
     parser = get_parser()
 
-    env_name = "MetaLunarLanderEnv"
+    env_name = "CARLLunarLanderEnv"
     outdir = "results/experiments/policytransfer"
     outdir = os.path.join(outdir, env_name)
     outdir = "results/singlecontextfeature_0.5_hidecontext/box2d/MetaBipedalWalkerEnv"

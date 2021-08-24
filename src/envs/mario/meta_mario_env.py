@@ -4,7 +4,7 @@ import gym
 import numpy as np
 from src.envs.mario.mario_env import MarioEnv
 from src.envs.mario.toad_gan import generate_initial_noise, generate_level
-from src.envs.carl_env import MetaEnv
+from src.envs.carl_env import CARLEnv
 from src.trial_logger import TrialLogger
 
 INITIAL_WIDTH = 200
@@ -26,7 +26,7 @@ CONTEXT_BOUNDS = {
 CATEGORICAL_CONTEXT_FEATURES = ["level_index", "mario_state"]
 
 
-class MetaMarioEnv(MetaEnv):
+class CARLMarioEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = MarioEnv(levels=[]),
@@ -70,7 +70,7 @@ class MetaMarioEnv(MetaEnv):
 
 
 if __name__ == "__main__":
-    env = MetaMarioEnv(env=MarioEnv(levels=[], visual=True))
+    env = CARLMarioEnv(env=MarioEnv(levels=[], visual=True))
     max_episodes = 3
     record_video = True
     if record_video:

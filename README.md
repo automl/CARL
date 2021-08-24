@@ -55,7 +55,7 @@ To use MetaCartPole with variations in gravity and friction by 20%
 compared to the default, run:
 ```bash
 python train.py 
---env MetaCartPoleEnv 
+--env CARLCartPoleEnv 
 --context_args gravity friction
 --default_sample_std_percentage 0.2
 --outdir <result_location>
