@@ -41,6 +41,7 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
         del hyperparams["noise_std"]
 
     normalize_kwargs = {}
+    normalize = False
     if "normalize" in hyperparams.keys():
         normalize = hyperparams["normalize"]
         if isinstance(normalize, str):
