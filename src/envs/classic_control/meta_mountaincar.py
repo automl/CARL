@@ -15,10 +15,14 @@ DEFAULT_CONTEXT = {
     "goal_velocity": 0,  # unit?
     "force": 0.001,  # unit?
     "gravity": 0.0025,  # unit?
-    "min_position_start": -0.6,
-    "max_position_start": -0.4,
-    "min_velocity_start": 0.,
-    "max_velocity_start": 0.,
+    "start_position": -0.5,
+    "start_position_std": 0.1,
+    "start_velocity": 0.,
+    "start_velocity_std": 0.,
+    # "min_position_start": -0.6,
+    # "max_position_start": -0.4,
+    # "min_velocity_start": 0.,
+    # "max_velocity_start": 0.,
 }
 
 CONTEXT_BOUNDS = {
@@ -29,10 +33,14 @@ CONTEXT_BOUNDS = {
     "goal_velocity": (-np.inf, np.inf, float),
     "force": (-np.inf, np.inf, float),
     "gravity": (0, np.inf, float),
-    "min_position_start": (-np.inf, np.inf, float),  # TODO need to check these
-    "max_position_start": (-np.inf, np.inf, float),
-    "min_velocity_start": (-np.inf, np.inf, float),
-    "max_velocity_start": (-np.inf, np.inf, float),
+    "start_position": (-1.5, 0.5, float),  # start position inbetween hilltops
+    "start_position_std": (0., np.inf, float),
+    "start_velocity": (-np.inf, np.inf, float),
+    "start_velocity_std": (0., np.inf, float)
+    # "min_position_start": (-np.inf, np.inf, float),  # TODO need to check these!!!
+    # "max_position_start": (-np.inf, np.inf, float),
+    # "min_velocity_start": (-np.inf, np.inf, float),
+    # "max_velocity_start": (-np.inf, np.inf, float),
     # TODO add bounds for each env
 }
 
@@ -40,15 +48,21 @@ CONTEXT_BOUNDS = {
 class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
     def __init__(self, goal_velocity: float = 0.):
         super(CustomMountainCarEnv, self).__init__(goal_velocity=goal_velocity)
-        self.min_position_start = -0.6
-        self.max_position_start = -0.4
-        self.min_velocity_start = 0.
-        self.max_velocity_start = 0.
+        # self.min_position_start = -0.6
+        # self.max_position_start = -0.4
+        # self.min_velocity_start = 0.
+        # self.max_velocity_start = 0.
+        self.position_start = -0.5
+        self.position_start_std = 0.1
+        self.velocity_start = 0.
+        self.velocity_start_std = 0.
         
     def reset_state(self):
         return np.array([
-            self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),  # sample start position
-            self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)   # sample start velocity
+            self.np_random.normal(self.position_start, self.position_start_std),
+            self.np_random.normal(self.velocity_start, self.velocity_start_std)
+            # self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),  # sample start position
+            # self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)   # sample start velocity
         ])
 
     def reset(self):
@@ -109,10 +123,14 @@ class MetaMountainCarEnv(MetaEnv):
         self.env.max_speed = self.context["max_speed"]
         self.env.goal_position = self.context["goal_position"]
         self.env.goal_velocity = self.context["goal_velocity"]
-        self.env.min_position_start = self.context["min_position_start"]
-        self.env.max_position_start = self.context["max_position_start"]
-        self.env.min_velocity_start = self.context["min_velocity_start"]
-        self.env.max_velocity_start = self.context["max_velocity_start"]
+        self.env.position_start = self.context["start_position"]
+        self.env.position_start_std = self.context["start_position_std"]
+        self.env.velocity_start = self.context["start_velocity"]
+        self.env.velocity_start_std = self.context["start_velocity_std"]
+        # self.env.min_position_start = self.context["min_position_start"]
+        # self.env.max_position_start = self.context["max_position_start"]
+        # self.env.min_velocity_start = self.context["min_velocity_start"]
+        # self.env.max_velocity_start = self.context["max_velocity_start"]
         self.env.force = self.context["force"]
         self.env.gravity = self.context["gravity"]
 

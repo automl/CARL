@@ -1,6 +1,6 @@
 import numpy as np
 from gym.envs.box2d import CarRacing
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 import pyglet
 pyglet.options["debug_gl"] = False
 from pyglet import gl
@@ -202,6 +202,7 @@ class MetaVehicleRacingEnv(MetaEnv):
             logger: Optional[TrialLogger] = None,
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
+            state_context_features: Optional[List[str]] = None,
     ):
         """
 
@@ -225,6 +226,7 @@ class MetaVehicleRacingEnv(MetaEnv):
             logger=logger,
             scale_context_features=scale_context_features,
             default_context=default_context,
+            state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
         self._update_context()
