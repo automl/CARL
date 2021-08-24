@@ -63,6 +63,7 @@ class MetaMarioEnv(MetaEnv):
             height=INITIAL_HEIGHT,
             level_index=self.context["level_index"],
             initial_noise=self.context["noise"],
+            filter_unplayable=False
         )
         self.env.mario_state = self.context["mario_state"]
         self.env.levels = [level]

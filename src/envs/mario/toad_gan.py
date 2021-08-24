@@ -77,7 +77,7 @@ def generate_level(
     height: int,
     level_index: int,
     initial_noise: Optional[torch.Tensor] = None,
-    filter_unplayable: bool = False,
+    filter_unplayable: bool = True,
 ):
     toad_gan = load_generator(level_index)
     playable = False

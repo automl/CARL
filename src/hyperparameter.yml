@@ -219,7 +219,6 @@ MetaMarioEnv:
   normalize: false
   env_wrapper:
     - stable_baselines3.common.atari_wrappers.NoopResetEnv
-  frame_stack: 4
   policy: 'CnnPolicy'
   n_envs: 8
   n_steps: 128
