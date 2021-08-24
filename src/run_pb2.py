@@ -1,8 +1,12 @@
 import os
+import sys
+# sys.path.append(os.path.dirname(os.getcwd()))
+# sys.path.append(os.getcwd())
 import argparse
 from functools import partial
 import numpy as np
 import yaml
+from pathlib import Path
 
 import ray
 from ray import tune
@@ -11,7 +15,8 @@ from ray.tune.schedulers.pb2 import PB2
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
-from utils.hyperparameter_processing import preprocess_hyperparams
+from src.utils.hyperparameter_processing import preprocess_hyperparams
+
 
 def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
     with open(hp_file, "r") as f:
@@ -32,6 +37,7 @@ def setup_model(env, hp_file, num_envs, config, checkpoint_dir):
         model = PPO('MlpPolicy', env, **config)
     return model, eval_env
 
+
 def eval_model(model, eval_env, config):
     eval_reward = []
     for i in range(100):
@@ -43,6 +49,7 @@ def eval_model(model, eval_env, config):
             eval_reward.append(reward)
     return tune.report(mean_accuracy=np.mean(eval_reward),
                 current_config=config)
+
 
 def train_ppo(env, hp_file, num_envs, config, checkpoint_dir=None):
     model, eval_env = setup_model(env, hp_file, num_envs, config, checkpoint_dir)
@@ -59,15 +66,22 @@ def train_ppo(env, hp_file, num_envs, config, checkpoint_dir=None):
         model.save(path)
     return eval_model(model, eval_env, config)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--env", type=str, default="MetaAnt", help="Environment to optimize hyperparameters for")
     parser.add_argument(
-        "--hp_file", default="hyperparameter.yml", type=str
+        "--hp_file", default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")), type=str
     )
     parser.add_argument(
         "--num_envs", type=int, default=os.cpu_count() or 1
+    )
+    parser.add_argument(
+        "--checkpoint_dir", type=str, default="results/experiments/pb2"
+    )
+    parser.add_argument(
+        "--output_dir", type=str, default="results/experiments/pb2/default"
     )
     parser.add_argument(
         "--server-address",
@@ -77,10 +91,15 @@ if __name__ == "__main__":
         help="The address of server to connect to if using "
         "Ray Client.")
     args, _ = parser.parse_known_args()
+    checkpoint_dir = Path(args.checkpoint_dir)
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    # args.num_envs = 1
     if args.server_address:
         ray.util.connect(args.server_address)
     else:
         ray.init()
+
+    print(os.getcwd())
 
     pbt = PB2(
         perturbation_interval=20,
@@ -107,7 +126,7 @@ if __name__ == "__main__":
         }
 
     analysis = tune.run(
-        partial(train_ppo, args.env, args.hp_file, args.num_envs),
+        partial(train_ppo, args.env, args.hp_file, args.num_envs),  #, args.checkpoint_dir),
         name="pb2",
         scheduler=pbt,
         metric="mean_accuracy",
@@ -119,6 +138,7 @@ if __name__ == "__main__":
         num_samples=8,
         fail_fast=True,
         # Search defaults from zoo overwritten with brax demo
-        config=defaults)
+        config=defaults
+    )
 
     print("Best hyperparameters found were: ", analysis.best_config)
