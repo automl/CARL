@@ -2,7 +2,7 @@ from slurmbuilder.slurmbuilder import SlurmBuilder
 import src.envs as envs
 
 ######################################
-job_name = "policytransfer"
+job_name = "poltra"
 env = "MetaLunarLanderEnv"
 ######################################
 
@@ -15,21 +15,20 @@ outdir = f"results/experiments/policytransfer/{env}"
 basecommand += f" --outdir {outdir}  "
 cpus_per_task = "1"
 
+seeds = [0, 1, 2, 3, 4]
+array = f"{min(seeds)}-{max(seeds)}"
+
 
 sbuilder = SlurmBuilder(
     job_name=job_name,
     mail_user=mail_user,
     base_command=basecommand,
     time=time,
+    array=array,
     cpus_per_task=cpus_per_task,
     mem_per_cpu=mem_per_cpu,
     output_filename=output_filename,
     iteration_list=[
-        {
-            "name": "seed",
-            "id": "s",
-            "values": [0, 1, 2, 3, 4],
-        },
         {
             "name": "env",
             "id": "env",
