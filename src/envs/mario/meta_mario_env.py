@@ -4,7 +4,7 @@ import gym
 import numpy as np
 from src.envs.mario.mario_env import MarioEnv
 from src.envs.mario.toad_gan import generate_initial_noise, generate_level
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 INITIAL_WIDTH = 200

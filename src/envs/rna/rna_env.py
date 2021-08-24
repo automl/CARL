@@ -1,4 +1,4 @@
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from src.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
 from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np

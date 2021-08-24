@@ -4,7 +4,7 @@ from typing import Dict, Optional, Union, List
 import pyglet
 pyglet.options["debug_gl"] = False
 from pyglet import gl
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 from gym.envs.box2d.car_dynamics import Car

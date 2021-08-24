@@ -8,7 +8,7 @@ from brax.physics.base import take
 from brax.envs.wrappers import GymWrapper
 from brax.envs.humanoid import Humanoid, _SYSTEM_CONFIG
 
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from typing import Optional, Dict, List

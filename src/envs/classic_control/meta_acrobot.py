@@ -2,7 +2,7 @@ import gym
 import numpy as np
 from typing import Optional, Dict, List
 from gym.envs.classic_control import AcrobotEnv
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {

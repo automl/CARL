@@ -8,7 +8,7 @@ from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
 from Box2D.b2 import (edgeShape, fixtureDef, polygonShape)
 
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from src.trial_logger import TrialLogger
 
 

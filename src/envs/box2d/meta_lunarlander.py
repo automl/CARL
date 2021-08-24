@@ -14,7 +14,7 @@ from gym.envs.box2d.lunar_lander import heuristic
 from gym import spaces
 from gym.utils import seeding, EzPickle
 
-from src.envs.meta_env import MetaEnv
+from src.envs.carl_env import MetaEnv
 from src.trial_logger import TrialLogger
 from src.envs.box2d.utils import safe_destroy
 
