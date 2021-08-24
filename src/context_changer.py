@@ -28,7 +28,7 @@ def add_gaussian_noise(
         Default value with gaussian noise. If input was list (or array) with length n, output is also list (or array)
         with length n.
     """
-    if default_value != 0:
+    if type(default_value) in [int, float] and default_value != 0:
         std = percentage_std * np.abs(default_value)
     else:
         std = percentage_std

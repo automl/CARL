@@ -30,7 +30,7 @@ class MarioEnv(gym.Env):
         frame_dim=64,
         hide_points_banner=False,
         sparse_rewards=False,
-        grayscale=True,
+        grayscale=False,
         seed=0,
     ):
         self.seed(seed)
