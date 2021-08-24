@@ -33,8 +33,15 @@ from stable_baselines3.ppo import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from xvfbwrapper import Xvfb
 import pandas as pd
+import json
+from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from functools import partial
+import configparser
+import configargparse
+from collections import OrderedDict
 
-from src.run_stablebaselines import get_parser
+from src.run_stablebaselines import get_parser, main
 from src.trial_logger import TrialLogger
 from src.context_sampler import get_default_context_and_bounds
 from src.envs import MetaVehicleRacingEnv, MetaLunarLanderEnv
@@ -77,12 +84,26 @@ def get_contexts(env_name, context_feature_key, context_feature_mapping, context
     return contexts
 
 
+def get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context):
+    mean = gravities["Mars"]
+    std = 1.45
+    random_gravities = np.random.normal(loc=mean, scale=std, size=n_contexts)
+
+    contexts_train = {i: env_default_context.copy() for i in range(n_contexts)}
+    for i, (key, context) in enumerate(contexts_train.items()):
+        context[context_feature_key] = random_gravities[i] * g_earth
+        contexts_train[key] = context
+    return contexts_train
+
+
 def define_setting(args):
-    args.steps = 1e6
-    args.steps = 1000
-    args.env = "MetaVehicleRacingEnv"
+    args.steps = 5e5
+    # args.steps = 1000
+    args.env = "MetaLunarLanderEnv"
+    args.agent = "DQN"
+    args.outdir = os.path.join(outdir, args.env)
     if args.env == "MetaLunarLanderEnv":
-        context_feature_key = "GRAVITY"
+        context_feature_key = "GRAVITY_Y"
         context_feature_id = planet_train
         context_feature_mapping = gravities
     elif args.env == "MetaVehicleRacingEnv":
@@ -97,43 +118,44 @@ def define_setting(args):
     env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
     contexts_train = {context_feature_key: env_default_context}
 
-    print(contexts_train)
+    if args.env == "MetaLunarLanderEnv":
+        n_contexts = 100
 
-    return args, contexts_train
+        # # uniform interval [0.1, 0.5]
+        # interval = (0.1, 0.5)
+        # random_gravities = np.random.uniform(*interval, size=n_contexts)
+
+        # normal distribution gMars, 1.45
+        contexts_train = get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context)
+
+    contexts_train_fn = Path(os.path.join(args.outdir), f"{args.agent}_{args.seed}", "contexts_train.json")  # sorry hacky
+    contexts_train_fn = Path(os.path.join(args.outdir), "contexts_train.json")
+    contexts_train_fn.parent.mkdir(parents=True, exist_ok=True)
+    with open(contexts_train_fn, 'w') as file:
+        json.dump(contexts_train, file, indent="\t")
+
+    args.context_file = str(contexts_train_fn)
+    args.hide_context = True
+    args.no_eval_callback = True
+
+    return args
 
 
 def train_env():
-    vdisplay = Xvfb()
-    vdisplay.start()
-
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
 
     # ==========================================================
     # experiment specific settings
-    args, contexts = define_setting(args)
+    args = define_setting(args)
+    # parser._source_to_settings = OrderedDict()
+    # a_v_pair = (None, list(args))  # copy args list to isolate changes
+    # parser._source_to_settings[configargparse._COMMAND_LINE_SOURCE_KEY] = {'': a_v_pair}
     # ==========================================================
-
-    logger = TrialLogger(
-        args.outdir,
-        parser=parser,
-        trial_setup_args=args,
-        add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir
-    )
-    logger.write_trial_setup()
-
-    # make meta-env
-    EnvCls = partial(eval(args.env), contexts=contexts, logger=logger, hide_context=args.hide_context)
-    env = make_vec_env(EnvCls, n_envs=args.num_envs)
-
-    try:
-        model = eval(args.agent)('MlpPolicy', env, verbose=1)  # TODO add agent_kwargs
-    except ValueError:
-        print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
-
-    # model.set_logger(new_logger)
-    model.learn(total_timesteps=args.steps)
-    model.save(os.path.join(args.outdir, f"{args.agent}_{args.seed}", "model"))
+    seeds = [0, 1, 2, 3, 4]
+    for seed in seeds:
+        args.seed = seed
+        main(args, unknown_args, parser)
 
 
 if __name__ == '__main__':
@@ -147,9 +169,9 @@ if __name__ == '__main__':
     args, unknown_args = parser.parse_known_args()
     args, contexts_train = define_setting(args)
 
-    env_name = "MetaVehicleRacingEnv"
+    env_name = "MetaLunarLanderEnv"
     model_fnames = glob.glob(os.path.join(outdir, env_name, "*", "model.zip"))
-    model_fnames = ["tmp/test_logs/PPO_123456/model"]
+    # model_fnames = ["tmp/test_logs/PPO_123456/model"]
 
     if env_name == "MetaLunarLanderEnv":
         env_class = MetaLunarLanderEnv
@@ -177,6 +199,10 @@ if __name__ == '__main__':
         agenttype_seed_str = model_fname.parent.stem
         train_seed = int(agenttype_seed_str.split("_")[-1])
 
+        config = configparser.ConfigParser()
+        config.read(str(model_fname.parent / "trial_setup.ini"))
+        hide_context = config['DEFAULT'].get("hide_context", False)
+
         for context_feature_id in context_feature_ids:
             print(f">> Evaluating {env_name} trained on/with {context_feature_id_train} on/with {context_feature_id} (train seed {train_seed}).")
 
@@ -184,7 +210,16 @@ if __name__ == '__main__':
             env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
             contexts = {context_feature_key: env_default_context}
 
-            env = env_class(contexts=contexts)
+            EnvCls = partial(
+                env_class,
+                contexts=contexts,
+                hide_context=hide_context,
+            )
+            # env = env_class(contexts=contexts)
+            env = DummyVecEnv([EnvCls])
+            vecnormstatefile = model_fname.parent / "vecnormalize.pkl"
+            if vecnormstatefile.is_file():
+                env = VecNormalize.load(str(vecnormstatefile), env)
             model = PPO.load(path=model_fname, env=env)
             mean_reward, std_reward = evaluate_policy(
                 model,
