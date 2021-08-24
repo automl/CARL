@@ -111,6 +111,16 @@ def get_parser() -> configargparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--state_context_features",
+        default=None,
+        nargs="+",
+        help="Specifiy which context features should be added to state if hide_context is False. "
+             "None: Add all context features to state. "
+             "'changing_context_features' (str): Add only the ones changing in the contexts to state. "
+             "List[str]: Add those to the state."
+    )
+
+    parser.add_argument(
         "--add_context_feature_names_to_logdir",
         action="store_true",
         help="Creates logdir in following way: {logdir}/{context_feature_name_0}__{context_feature_name_1}/{agent}_{seed}"
@@ -239,6 +249,11 @@ def main(args, unknown_args, parser):
 
     logger.write_trial_setup()
 
+    # TODO make less hacky
+    train_args_fname = os.path.join(logger.logdir, "trial_setup.json")
+    with open(train_args_fname, 'w') as file:
+        json.dump(args.__dict__, file, indent="\t")
+
     # sample contexts using unknown args
     if not args.context_file:
         contexts = sample_contexts(
@@ -259,6 +274,8 @@ def main(args, unknown_args, parser):
         logger=env_logger,
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features,
+        state_context_features=args.state_context_features
+        # max_episode_length=1000   # set in meta env
     )
     env_cls = eval(args.env)
     env_kwargs = dict(
