@@ -3,7 +3,7 @@ from src.envs.brax.meta_halfcheetah import CARLHalfcheetah
 from src.envs.brax.meta_humanoid import CARLHumanoid
 from src.envs.brax.meta_fetch import CARLFetch
 from src.envs.brax.meta_grasp import CARLGrasp
-from src.envs.brax.meta_ur5e import CARLUr5E
+from src.envs.brax.meta_ur5e import CARLUr5e
 
 # Contexts and bounds by name
 from src.envs.brax.meta_ant import DEFAULT_CONTEXT as CARLAnt_defaults

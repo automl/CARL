@@ -36,7 +36,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLUr5E(CARLEnv):
+class CARLUr5e(CARLEnv):
     def __init__(
             self,
             env: Ur5e = Ur5e(),
