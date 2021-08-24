@@ -2,6 +2,8 @@ import gym
 from gym import Wrapper
 from gym import spaces
 import numpy as np
+import os
+import json
 from typing import Dict, Tuple, Union, List, Optional, Any
 from src.context_changer import add_gaussian_noise
 from src.context_utils import get_context_bounds
@@ -88,6 +90,21 @@ class MetaEnv(Wrapper):
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
+        if state_context_features == "changing_context_features":
+            # detect which context feature changes
+            context_array = np.array([np.array(list(c.values())) for c in self.contexts.values()])
+            which_cf_changes = ~np.all(context_array == context_array[0, :], axis=0)
+            context_keys = np.array(list(self.contexts[list(self.contexts.keys())[0]].keys()))
+            state_context_features = context_keys[which_cf_changes]
+            # TODO properly record which are appended to state
+            if logger is not None:
+                fname = os.path.join(logger.logdir, "env_info.json")
+                with open(fname, 'w') as file:
+                    data = {
+                        "state_context_features": list(state_context_features)
+                    }
+                    json.dump(data, file, indent="\t")
+            # print(which_cf_changes, state_context_features)
         self.state_context_features = state_context_features
 
         self.step_counter = 0  # type: int # increased in/after step
@@ -141,7 +158,6 @@ class MetaEnv(Wrapper):
         self._log_context()
         state = self.env.reset(**kwargs)
         state = self.build_context_adaptive_state(state)
-        print(state)
         return state
 
     def build_context_adaptive_state(self, state, context_feature_values=None):
