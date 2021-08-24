@@ -7,7 +7,7 @@ import configargparse
 import yaml
 
 from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, DDPG, A2C, DQN
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback, EveryNTimesteps
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
@@ -174,9 +174,6 @@ def get_parser() -> configargparse.ArgumentParser:
     return parser
 
 
-# test render 🥲
-
-
 def main(args, unknown_args, parser):
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
@@ -215,6 +212,30 @@ def main(args, unknown_args, parser):
     if args.agent == "DDPG":
         hyperparams["policy"] = "MlpPolicy"
         args.num_envs = 1
+
+    if args.agent == "A2C":
+        hyperparams["policy"] = "MlpPolicy"
+
+    if args.agent == "DQN":
+        hyperparams["policy"] = "MlpPolicy"
+        args.num_envs = 1
+
+        if args.env == "MetaLunarLanderEnv":
+            hyperparams = {
+                #"n_timesteps": 1e5,
+                "policy": 'MlpPolicy',
+                "learning_rate": 6.3e-4,
+                "batch_size": 128,
+                "buffer_size": 50000,
+                "learning_starts": 0,
+                "gamma": 0.99,
+                "target_update_interval": 250,
+                "train_freq": 4,
+                "gradient_steps": -1,
+                "exploration_fraction": 0.12,
+                "exploration_final_eps": 0.1,
+                "policy_kwargs": dict(net_arch=[256, 256])
+            }
 
     logger.write_trial_setup()
 
