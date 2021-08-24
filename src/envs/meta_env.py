@@ -311,7 +311,7 @@ class MetaEnv(Wrapper):
                              "Box observation spaces.")
 
         obs_shape = self.env.observation_space.low.shape
-        if len(obs_shape) == 3 and obs_shape[-1] == 3 and self.hide_context:
+        if len(obs_shape) == 3 and self.hide_context:
             # do not touch pixel state
             pass
         else:
