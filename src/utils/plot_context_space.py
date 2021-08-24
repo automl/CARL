@@ -54,7 +54,7 @@ labels = dfp.index
 
 fontsize = 15
 sns.set_style("whitegrid")
-figsize = (3, 2)
+figsize = (2.5, 2)
 dpi = 200
 fname = "plots/context_feature_statistics.png"
 p = Path(fname)
@@ -72,8 +72,9 @@ ax.axes.get_yaxis().set_visible(False)
 
 for i, label in enumerate(labels):
     x = 10
-    y = i + 0.1
-    ax.text(x, y, label, fontsize=fontsize)
+    y = i + 0.2
+    text = f"{label} = {vals[i]:.0f}"
+    ax.text(x, y, text, fontsize=fontsize)
 
 fig.set_tight_layout(True)
 plt.show()
