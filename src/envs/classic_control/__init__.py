@@ -5,17 +5,17 @@ from src.envs.classic_control.meta_cartpole import CARLCartPoleEnv
 from src.envs.classic_control.meta_mountaincarcontinuous import CARLMountainCarContinuousEnv
 
 # Contexts and bounds by name
-from src.envs.classic_control.meta_acrobot import DEFAULT_CONTEXT as MetaAcrobotEnv_defaults
-from src.envs.classic_control.meta_acrobot import CONTEXT_BOUNDS as MetaAcrobotEnv_bounds
+from src.envs.classic_control.meta_acrobot import DEFAULT_CONTEXT as CARLAcrobotEnv_defaults
+from src.envs.classic_control.meta_acrobot import CONTEXT_BOUNDS as CARLAcrobotEnv_bounds
 
-from src.envs.classic_control.meta_cartpole import DEFAULT_CONTEXT as MetaCartPoleEnv_defaults
-from src.envs.classic_control.meta_cartpole import CONTEXT_BOUNDS as MetaCartPoleEnv_bounds
+from src.envs.classic_control.meta_cartpole import DEFAULT_CONTEXT as CARLCartPoleEnv_defaults
+from src.envs.classic_control.meta_cartpole import CONTEXT_BOUNDS as CARLCartPoleEnv_bounds
 
-from src.envs.classic_control.meta_pendulum import DEFAULT_CONTEXT as MetaPendulumEnv_defaults
-from src.envs.classic_control.meta_pendulum import CONTEXT_BOUNDS as MetaPendulumEnv_bounds
+from src.envs.classic_control.meta_pendulum import DEFAULT_CONTEXT as CARLPendulumEnv_defaults
+from src.envs.classic_control.meta_pendulum import CONTEXT_BOUNDS as CARLPendulumEnv_bounds
 
-from src.envs.classic_control.meta_mountaincar import DEFAULT_CONTEXT as MetaMountainCarEnv_defaults
-from src.envs.classic_control.meta_mountaincar import CONTEXT_BOUNDS as MetaMountainCarEnv_bounds
+from src.envs.classic_control.meta_mountaincar import DEFAULT_CONTEXT as CARLMountainCarEnv_defaults
+from src.envs.classic_control.meta_mountaincar import CONTEXT_BOUNDS as CARLMountainCarEnv_bounds
 
-from src.envs.classic_control.meta_mountaincarcontinuous import DEFAULT_CONTEXT as MetaMountainCarContinuousEnv_defaults
-from src.envs.classic_control.meta_mountaincarcontinuous import CONTEXT_BOUNDS as MetaMountainCarContinuousEnv_bounds
+from src.envs.classic_control.meta_mountaincarcontinuous import DEFAULT_CONTEXT as CARLMountainCarContinuousEnv_defaults
+from src.envs.classic_control.meta_mountaincarcontinuous import CONTEXT_BOUNDS as CARLMountainCarContinuousEnv_bounds
