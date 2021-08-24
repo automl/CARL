@@ -8,5 +8,4 @@
 /dataSources.local.xml
 /httpRequests/
 tmp/
-slurm_logs
 slurm.sh
