@@ -1,7 +1,7 @@
 #Hyperparameters for Classic Control, Box2D and walker tasks from baselines zoo
 #Source: https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/hyperparams/ppo.yml
 
-MetaPendulumEnv:
+CARLPendulumEnv:
   n_envs: 8
   n_timesteps: !!float 2e6
   policy: 'MlpPolicy'
@@ -14,7 +14,7 @@ MetaPendulumEnv:
   learning_rate: !!float 3e-4
   clip_range: 0.2
 
-MetaCartPoleEnv:
+CARLCartPoleEnv:
   n_envs: 8
   n_timesteps: !!float 1e5
   policy: 'MlpPolicy'
@@ -27,7 +27,7 @@ MetaCartPoleEnv:
   learning_rate: lin_0.001
   clip_range: lin_0.2
 
-MetaMountainCarEnv:
+CARLMountainCarEnv:
   normalize: true
   n_envs: 16
   n_timesteps: !!float 1e6
@@ -38,7 +38,7 @@ MetaMountainCarEnv:
   n_epochs: 4
   ent_coef: 0.0
 
-MetaMountainCarContinuousEnv:
+CARLMountainCarContinuousEnv:
   normalize: true
   n_envs: 1
   n_timesteps: !!float 20000
@@ -56,7 +56,7 @@ MetaMountainCarContinuousEnv:
   use_sde: True
   policy_kwargs: "dict(log_std_init=-3.29, ortho_init=False)"
 
-MetaAcrobotEnv:
+CARLAcrobotEnv:
   normalize: true
   n_envs: 16
   n_timesteps: !!float 1e6
@@ -67,7 +67,7 @@ MetaAcrobotEnv:
   n_epochs: 4
   ent_coef: 0.0
 
-MetaBipedalWalkerEnv:
+CARLBipedalWalkerEnv:
   normalize: true
   n_envs: 16
   n_timesteps: !!float 5e6
@@ -81,7 +81,7 @@ MetaBipedalWalkerEnv:
   learning_rate: !!float 2.5e-4
   clip_range: 0.2
 
-MetaLunarLanderEnv:
+CARLLunarLanderEnv:
   n_envs: 16
   n_timesteps: !!float 1e6
   policy: 'MlpPolicy'
@@ -93,7 +93,7 @@ MetaLunarLanderEnv:
   ent_coef: 0.01
 
 
-MetaVehicleRacingEnv:
+CARLVehicleRacingEnv:
   env_wrapper:
     - gym.wrappers.resize_observation.ResizeObservation:
         shape: 64
@@ -119,7 +119,7 @@ MetaVehicleRacingEnv:
                        ortho_init=False,
                        )"
 
-MetaHalfcheetah: &pybullet-defaults
+CARLHalfcheetah: &pybullet-defaults
   env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
   normalize: true
   n_envs: 16
@@ -143,7 +143,7 @@ MetaHalfcheetah: &pybullet-defaults
                        net_arch=[dict(pi=[256, 256], vf=[256, 256])]
                        )"
 
-MetaAnt:
+CARLAnt:
   <<: *pybullet-defaults
   env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
   learning_rate: !!float 3e-5
@@ -153,7 +153,7 @@ MetaAnt:
                        net_arch=[dict(pi=[256, 256], vf=[256, 256])]
                        )"
 
-MetaGrasp:
+CARLGrasp:
   env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
   normalize: true
   n_envs: 8
@@ -177,7 +177,7 @@ MetaGrasp:
                        net_arch=[dict(pi=[256, 256], vf=[256, 256])]
                        )"
 
-MetaFetch:
+CARLFetch:
     env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
     normalize: true
     n_envs: 8
@@ -201,7 +201,7 @@ MetaFetch:
                          net_arch=[dict(pi=[256, 256], vf=[256, 256])]
                          )"
 
-MetaHumanoid:
+CARLHumanoid:
   normalize: true
   n_envs: 8
   n_timesteps: !!float 1e7
@@ -215,7 +215,7 @@ MetaHumanoid:
   learning_rate: 2.5e-4
   clip_range: 0.2
 
-MetaMarioEnv:
+CARLMarioEnv:
   normalize: false
   env_wrapper:
     - stable_baselines3.common.atari_wrappers.NoopResetEnv
