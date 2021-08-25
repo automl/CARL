@@ -15,14 +15,14 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "mutation_threshold": (0.1, np.inf, int),
-    "reward_exponent": (0.1, np.inf, int),
-    "state_radius": (1, np.inf, int),
+    "mutation_threshold": (0.1, np.inf, float),
+    "reward_exponent": (0.1, np.inf, float),
+    "state_radius": (1, np.inf, float),
     "dataset": ("eterna", "rfam_taneda", None),
     "target_structure_ids": (0, np.inf, [list, int]) #This is conditional on the dataset (and also a list)
 }
 
-class CARLRnaDesignEnvironment(CARLEnv):
+class CARLRnaDesignEnv(CARLEnv):
     def __init__(
             self,
             env = None,

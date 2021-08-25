@@ -212,11 +212,11 @@ else:
 
 fname = "utils/env_statistics.png"
 
-env_names.append("CARLRnaDesignEnvironment")
+env_names.append("CARLRnaDesignEnv")
 n_context_features.append(5)
 state_space_sizes.append((11,))
 action_space_sizes.append((8,))  # 2 types with 4 actions
-env_context_feature_names["CARLRnaDesignEnvironment"] = ['mutation_threshold', 'reward_exponent', 'state_radius', 'dataset', 'target_structure_ids']
+env_context_feature_names["CARLRnaDesignEnv"] = ['mutation_threshold', 'reward_exponent', 'state_radius', 'dataset', 'target_structure_ids']
 
 env_names.append("CARLMarioEnv")
 n_context_features.append(3)
@@ -254,10 +254,10 @@ fig.set_tight_layout(True)
 plt.show()
 
 env_types = {
-    "brax": ["CARLAnt", "CARLFetch", "CARLGrasp", "CARLHumanoid", "CARLUr5E"],
+    "brax": ["CARLAnt", "CARLFetch", "CARLGrasp", "CARLHumanoid", "CARLUr5e"],
     "box2d": ["CARLBipedalWalkerEnv", "CARLLunarLanderEnv", "CARLVehicleRacingEnv"],
     "classic_control": ["CARLAcrobotEnv", "CARLCartPoleEnv", "CARLMountainCarEnv", "CARLMountainCarContinuousEnv", "CARLPendulumEnv"],
-    "misc": ["CARLMarioEnv", "CARLRnaDesignEnvironment"]
+    "misc": ["CARLMarioEnv", "CARLRnaDesignEnv"]
 }
 
 
