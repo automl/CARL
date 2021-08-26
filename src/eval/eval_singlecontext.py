@@ -183,27 +183,27 @@ if __name__ == "__main__":
 
         # "results/base_vs_context/classic_control/MetaAcrobotEnv/0.1_contexthidden",
 
-        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.1_changingcontextvisible",
-        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.25_changingcontextvisible",
-        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        "results/base_vs_context/classic_control/CARLPendulumEnv/0.1_changingcontextvisible",
+        "results/base_vs_context/classic_control/CARLPendulumEnv/0.25_changingcontextvisible",
+        "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
 
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",  # DDPG
         # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_contextvisible",  # DDPG
         # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
 
         # "results/base_vs_context/brax/MetaAnt/0.25_contexthidden",
-        "results/base_vs_context/brax/CARLAnt/0.25_contexthidden",
+        # "results/base_vs_context/brax/CARLAnt/0.25_contexthidden",
 
         # "results/experiments/policytransfer/new/CARLLunarLanderEnv"
     ]
 
-    fname_id = "_comparevisibility"
+    fname_id = "" # "_comparevisibility"
 
     from_progress = False
     plot_comparison = True
     plot_mean_performance = False
     plot_ep_lengths = True
-    paperversion = False
+    paperversion = True
     libname = "CARL"
     hue = None #"seed"
     plot_combined = True
@@ -211,6 +211,16 @@ if __name__ == "__main__":
         plot_combined = False
 
     sns.set_context("paper")
+    labelfontsize = None
+    titlefontsize = None
+    ticklabelsize = None
+    legendfontsize = None
+    if paperversion:
+        sns.set_context("paper")
+        labelfontsize = 12
+        titlefontsize = 12
+        ticklabelsize = 10
+        legendfontsize = 10
     sns.set_style("whitegrid")
     fig = None
     if plot_combined:
@@ -219,7 +229,10 @@ if __name__ == "__main__":
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ncols = len(paths)
         axes = fig.subplots(nrows=1, ncols=ncols, sharey=True)
+        fig.subplots_adjust(wspace=0.01, left=0.01, right=0.99, bottom=0.01, top=0.99)
     for idx_plot, path in enumerate(paths):
+        # if idx_plot != 1:
+        #     continue
         path = Path(path)
         print(path)
 
@@ -291,6 +304,9 @@ if __name__ == "__main__":
                 ax = fig.add_subplot(111)
             else:
                 ax = axes[idx_plot]
+            delete_keys = [k for k in data.keys() if "ignore" in k]
+            for k in delete_keys:
+                del data[k]
             n = len(data)
             # n_colors_in_palette = n
             # if color_palette_name in sns.palettes.SEABORN_PALETTES:
@@ -313,9 +329,11 @@ if __name__ == "__main__":
             title = f"{env_name}, $\sigma_{{rel}}={std}$, context {contextvisiblity_str} \n{str(path)}"
             if paperversion or True:
                 title = f"{env_name}\n$\sigma_{{rel}}={std}$, {contextchanging_str}context {contextvisiblity_str}"
-                # title = f"$\sigma_{{rel}}={std}$"
-            ax.set_title(title)
-            ax.set_ylabel("mean reward across instances $\mathcal{I}_{train}$")
+                title = f"$\sigma_{{rel}}={std}$"
+            ax.set_title(title, fontsize=titlefontsize)
+            ax.set_xlabel("step", fontsize=labelfontsize)
+            ax.set_ylabel("mean reward\nacross instances $\mathcal{I}_{train}$", fontsize=labelfontsize)
+            ax.tick_params(labelsize=ticklabelsize)
 
             # Sort labels, put default name at front
             if default_name in labels:
@@ -325,8 +343,20 @@ if __name__ == "__main__":
                 handle_item = legend_handles.pop(idx)
                 legend_handles.insert(0, handle_item)
 
-            if idx_plot == 1 or not plot_combined:
-                ax.legend(handles=legend_handles, labels=labels, loc='lower right', title="varying context feature")
+            if (idx_plot == 1 and contextvisiblity_str == "hidden") or not plot_combined:
+                ncols = len(legend_handles)
+                legend = fig.legend(
+                    handles=legend_handles,
+                    labels=labels,
+                    loc='lower center',
+                    title="varying context feature",
+                    ncol=ncols,
+                    fontsize=legendfontsize,
+                    columnspacing=0.5,
+                    handletextpad=0.5,
+                    handlelength=1.5,
+                    bbox_to_anchor=(0.5, 0.205)
+                )
             fig.set_tight_layout(True)
 
             if not plot_combined:
