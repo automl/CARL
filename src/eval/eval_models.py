@@ -14,6 +14,7 @@ sys.path.insert(0, parentdir)
 print(os.getcwd())
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.ppo import PPO
+from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 from xvfbwrapper import Xvfb
 import pandas as pd
@@ -87,7 +88,7 @@ def load_model(model_fname):
     return model, info
 
 
-def setup_env(path, contexts=None):
+def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs={}):
     config_fname = Path(path) / "trial_setup.ini"
 
     config = configparser.ConfigParser()
@@ -126,8 +127,19 @@ def setup_env(path, contexts=None):
         env_class,
         contexts=contexts,
         hide_context=hide_context,
+        **env_kwargs
     )
-    env = DummyVecEnv([EnvCls])
+    def create_env_fn():
+        env = EnvCls()
+        if wrappers is not None:
+            for wrapper in wrappers:
+                env = wrapper(env)
+        return env
+
+    if vec_env_class is not None:
+        env = vec_env_class([create_env_fn])
+    else:
+        env = create_env_fn()
 
     vecnormstatefile = Path(path) / "vecnormalize.pkl"
     if vecnormstatefile.is_file():
