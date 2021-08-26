@@ -207,6 +207,8 @@ def get_contexts(args):
 
 
 def main(args, unknown_args, parser):
+    # set_random_seed(args.seed)  # TODO discuss seeding!! 🥶
+
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
         vec_env_cls = DummyVecEnv
