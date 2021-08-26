@@ -35,6 +35,7 @@ mean = gravities["Mars"]
 std = 1.45
 n_contexts = 1000
 sampled_gravities = norm.rvs(loc=mean, scale=std, size=n_contexts)
+figname = "gravity_distribution.png"
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -50,5 +51,6 @@ ax.set_title(title)
 plot_gravities_vlines(ax, gravities, ylims[1], mean, std)
 ax.set_xlabel("gravity [m/s²]")
 fig.set_tight_layout(True)
+fig.savefig(figname, bbox_inches="tight")
 plt.show()
 
