@@ -192,6 +192,20 @@ def get_parser() -> configargparse.ArgumentParser:
     return parser
 
 
+def get_contexts(args):
+    if not args.context_file:
+        contexts = sample_contexts(
+            args.env,
+            args.context_feature_args,
+            args.num_contexts,
+            default_sample_std_percentage=args.default_sample_std_percentage
+        )
+    else:
+        with open(args.context_file, 'r') as file:
+            contexts = json.load(file)
+    return contexts
+
+
 def main(args, unknown_args, parser):
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
@@ -262,17 +276,7 @@ def main(args, unknown_args, parser):
     with open(train_args_fname, 'w') as file:
         json.dump(args.__dict__, file, indent="\t")
 
-    # sample contexts using unknown args
-    if not args.context_file:
-        contexts = sample_contexts(
-            args.env,
-            args.context_feature_args,
-            args.num_contexts,
-            default_sample_std_percentage=args.default_sample_std_percentage
-        )
-    else:
-        with open(args.context_file, 'r') as file:
-            contexts = json.load(file)
+    contexts = get_contexts(args)
 
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
