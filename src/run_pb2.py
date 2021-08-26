@@ -150,8 +150,8 @@ if __name__ == "__main__":
         perturbation_interval=20,
         hyperparam_bounds={
             'learning_rate': [0.0001, 0.02],
-            'gamma': [0.8, 0.99],
-            'gae_lambda': [0.8, 0.99],
+            'gamma': [0.8, 0.999],
+            'gae_lambda': [0.8, 0.999],
             'ent_coef': [0.0, 0.5],
             'max_grad_norm': [0.0, 1.0],
             'vf_coef': [0.0, 1.0],
