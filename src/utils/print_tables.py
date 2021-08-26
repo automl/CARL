@@ -79,7 +79,7 @@ def plot_context_feature_freq(context_feature_names: List[str], fname: str =""):
 
 
 global_vars = vars()
-vars = {k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k}
+vars = {k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k}
 env_names = [n for n in vars.keys() if "bounds" not in n and "defaults" not in n]
 env_context_feature_names = {}
 
@@ -201,7 +201,7 @@ if calc_new:
         action_space_sizes.append(action_space.shape)
         print(env_name, state.shape)
 else:
-    env_names = ['CARLMountainCarEnv', 'CARLPendulumEnv', 'CARLAcrobotEnv', 'CARLCartPoleEnv', 'CARLMountainCarContinuousEnv', 'CARLLunarLanderEnv', 'CARLVehicleRacingEnv', 'CARLBipedalWalkerEnv', 'CARLAnt', 'CARLHalfcheetah', 'CARLHumanoid', 'CARLFetch', 'CARLGrasp', 'CARLUr5E']
+    env_names = ['CARLMountainCarEnv', 'CARLPendulumEnv', 'CARLAcrobotEnv', 'CARLCartPoleEnv', 'CARLMountainCarContinuousEnv', 'CARLLunarLanderEnv', 'CARLVehicleRacingEnv', 'CARLBipedalWalkerEnv', 'CARLAnt', 'CARLHalfcheetah', 'CARLHumanoid', 'CARLFetch', 'CARLGrasp', 'CARLUr5e']
 
     # hide_context = False
     state_space_sizes = [(13,), (8,),  (15,),  (10,),  (12,), (24,), (96, 96, 3), (44,), (94,), (29,), (304,), (110,), (141,), (75,)]
