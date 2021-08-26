@@ -77,9 +77,10 @@ CONTEXT_BOUNDS = {
 
 
 class CustomLunarLanderEnv(lunar_lander.LunarLander):
-    def __init__(self, gravity: (float, float) = (0, -10)):
+    def __init__(self, gravity: (float, float) = (0, -10), high_gameover_penalty: bool = False):
         EzPickle.__init__(self)
-        self.seed()
+        self.high_gameover_penalty = high_gameover_penalty
+        self.active_seed = self.seed()
         self.viewer = None
 
         self.world = Box2D.b2World(gravity=gravity)
@@ -103,153 +104,31 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
 
         self.reset()
 
-    def _destroy(self):
-        if not self.moon: return
-        self.world.contactListener = None
-        self._clean_particles(True)
-        bodies = [self.moon, self.lander] + self.legs
-        # safe destroy because before calling destroy we already created a new world
-        # which does not have the bodies anymore
-        safe_destroy(self.world, bodies)
-        self.moon = None
-        self.lander = None
+    def step(self, action):
+        state, reward, done, info = super().step(action)
+        if self.game_over and self.high_gameover_penalty:
+            reward = -10000
+        return state, reward, done, info
 
-    def _clean_particles(self, all):
-        while self.particles and (all or self.particles[0].ttl < 0):
-            safe_destroy(self.world, [self.particles.pop(0)])
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        self.active_seed = seed
+        return [seed]
 
-    # def reset(self):
-    #     self._destroy()
-    #     self.world.contactListener_keepref = ll.ContactDetector(self)
-    #     self.world.contactListener = self.world.contactListener_keepref
-    #     self.game_over = False
-    #     self.prev_shaping = None
+    # def _destroy(self):
+    #     if not self.moon: return
+    #     self.world.contactListener = None
+    #     self._clean_particles(True)
+    #     bodies = [self.moon, self.lander] + self.legs
+    #     # safe destroy because before calling destroy we already created a new world
+    #     # which does not have the bodies anymore
+    #     safe_destroy(self.world, bodies)
+    #     self.moon = None
+    #     self.lander = None
     #
-    #     W = ll.VIEWPORT_W/ll.SCALE
-    #     H = ll.VIEWPORT_H/ll.SCALE
-    #
-    #     # terrain
-    #     CHUNKS = 11
-    #     height = self.np_random.uniform(0, H/2, size=(CHUNKS+1,))
-    #     chunk_x = [W/(CHUNKS-1)*i for i in range(CHUNKS)]
-    #     self.helipad_x1 = chunk_x[CHUNKS//2-1]
-    #     self.helipad_x2 = chunk_x[CHUNKS//2+1]
-    #     self.helipad_y = H/4
-    #     height[CHUNKS//2-2] = self.helipad_y
-    #     height[CHUNKS//2-1] = self.helipad_y
-    #     height[CHUNKS//2+0] = self.helipad_y
-    #     height[CHUNKS//2+1] = self.helipad_y
-    #     height[CHUNKS//2+2] = self.helipad_y
-    #     smooth_y = [0.33*(height[i-1] + height[i+0] + height[i+1]) for i in range(CHUNKS)]
-    #
-    #     self.moon = self.world.CreateStaticBody(shapes=edgeShape(vertices=[(0, 0), (W, 0)]))
-    #     self.sky_polys = []
-    #     for i in range(CHUNKS-1):
-    #         p1 = (chunk_x[i], smooth_y[i])
-    #         p2 = (chunk_x[i+1], smooth_y[i+1])
-    #         self.moon.CreateEdgeFixture(
-    #             vertices=[p1,p2],
-    #             density=0,
-    #             friction=0.1)
-    #         self.sky_polys.append([p1, p2, (p2[0], H), (p1[0], H)])
-    #
-    #     self.moon.color1 = (0.5, 0.5, 0.5)
-    #     self.moon.color2 = (0.0, 1, 0.0)
-    #
-    #     initial_y = ll.VIEWPORT_H/ll.SCALE
-    #     self.lander = self.world.CreateDynamicBody(
-    #         position=(ll.VIEWPORT_W/ll.SCALE/2, initial_y),
-    #         angle=0.0,
-    #         fixtures = fixtureDef(
-    #             shape=polygonShape(vertices=[(x/ll.SCALE, y/ll.SCALE) for x, y in ll.LANDER_POLY]),
-    #             density=5.0,
-    #             friction=0.1,
-    #             categoryBits=0x0010,
-    #             maskBits=0x001,   # collide only with ground
-    #             restitution=0.0)  # 0.99 bouncy
-    #             )
-    #     self.lander.color1 = (0.5, 0.4, 0.9)
-    #     self.lander.color2 = (0.3, 0.3, 0.5)
-    #     self.lander.ApplyForceToCenter( (
-    #         self.np_random.uniform(-ll.INITIAL_RANDOM, ll.INITIAL_RANDOM),
-    #         self.np_random.uniform(-ll.INITIAL_RANDOM, ll.INITIAL_RANDOM)
-    #         ), True)
-    #
-    #     self.legs = []
-    #     for i in [-1, +1]:
-    #         leg = self.world.CreateDynamicBody(
-    #             position=(ll.VIEWPORT_W/ll.SCALE/2 - i*ll.LEG_AWAY/ll.SCALE, initial_y),
-    #             angle=(i * 0.05),
-    #             fixtures=fixtureDef(
-    #                 shape=polygonShape(box=(ll.LEG_W/ll.SCALE, ll.LEG_H/ll.SCALE)),
-    #                 density=1.0,
-    #                 restitution=0.0,
-    #                 categoryBits=0x0020,
-    #                 maskBits=0x001)
-    #             )
-    #         leg.ground_contact = False
-    #         leg.color1 = (0.5, 0.4, 0.9)
-    #         leg.color2 = (0.3, 0.3, 0.5)
-    #         rjd = revoluteJointDef(
-    #             bodyA=self.lander,
-    #             bodyB=leg,
-    #             localAnchorA=(0, 0),
-    #             localAnchorB=(i * ll.LEG_AWAY/ll.SCALE, ll.LEG_DOWN/ll.SCALE),
-    #             enableMotor=True,
-    #             enableLimit=True,
-    #             maxMotorTorque=ll.LEG_SPRING_TORQUE,
-    #             motorSpeed=+0.3 * i  # low enough not to jump back into the sky
-    #             )
-    #         if i == -1:
-    #             rjd.lowerAngle = +0.9 - 0.5  # The most esoteric numbers here, angled legs have freedom to travel within
-    #             rjd.upperAngle = +0.9
-    #         else:
-    #             rjd.lowerAngle = -0.9
-    #             rjd.upperAngle = -0.9 + 0.5
-    #         leg.joint = self.world.CreateJoint(rjd)
-    #         self.legs.append(leg)
-    #
-    #     self.drawlist = [self.lander] + self.legs
-    #
-    #     return self.step(np.array([0, 0]) if self.continuous else 0)[0]
-    #
-    # def render(self, mode='human'):
-    #     from gym.envs.classic_control import rendering
-    #     if self.viewer is None:
-    #         self.viewer = rendering.Viewer(ll.VIEWPORT_W, ll.VIEWPORT_H)
-    #         self.viewer.set_bounds(0, ll.VIEWPORT_W/ll.SCALE, 0, ll.VIEWPORT_H/ll.SCALE)
-    #
-    #     for obj in self.particles:
-    #         obj.ttl -= 0.15
-    #         obj.color1 = (max(0.2, 0.2+obj.ttl), max(0.2, 0.5*obj.ttl), max(0.2, 0.5*obj.ttl))
-    #         obj.color2 = (max(0.2, 0.2+obj.ttl), max(0.2, 0.5*obj.ttl), max(0.2, 0.5*obj.ttl))
-    #
-    #     self._clean_particles(False)
-    #
-    #     for p in self.sky_polys:
-    #         self.viewer.draw_polygon(p, color=(0, 0, 0))
-    #
-    #     for obj in self.particles + self.drawlist:
-    #         for f in obj.fixtures:
-    #             trans = f.body.transform
-    #             if type(f.shape) is circleShape:
-    #                 t = rendering.Transform(translation=trans*f.shape.pos)
-    #                 self.viewer.draw_circle(f.shape.radius, 20, color=obj.color1).add_attr(t)
-    #                 self.viewer.draw_circle(f.shape.radius, 20, color=obj.color2, filled=False, linewidth=2).add_attr(t)
-    #             else:
-    #                 path = [trans*v for v in f.shape.vertices]
-    #                 self.viewer.draw_polygon(path, color=obj.color1)
-    #                 path.append(path[0])
-    #                 self.viewer.draw_polyline(path, color=obj.color2, linewidth=2)
-    #
-    #     for x in [self.helipad_x1, self.helipad_x2]:
-    #         flagy1 = self.helipad_y
-    #         flagy2 = flagy1 + 50/ll.SCALE
-    #         self.viewer.draw_polyline([(x, flagy1), (x, flagy2)], color=(1, 1, 1))
-    #         self.viewer.draw_polygon([(x, flagy2), (x, flagy2-10/ll.SCALE), (x + 25/ll.SCALE, flagy2 - 5/ll.SCALE)],
-    #                                  color=(0.8, 0.8, 0))
-    #
-    #     return self.viewer.render(return_rgb_array=mode == 'rgb_array')
+    # def _clean_particles(self, all):
+    #     while self.particles and (all or self.particles[0].ttl < 0):
+    #         safe_destroy(self.world, [self.particles.pop(0)])
 
 
 class CARLLunarLanderEnv(CARLEnv):
@@ -265,6 +144,8 @@ class CARLLunarLanderEnv(CARLEnv):
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
+            max_episode_length: int = 1e6,
+            high_gameover_penalty: bool = False
     ):
         """
 
@@ -277,7 +158,8 @@ class CARLLunarLanderEnv(CARLEnv):
         instance_mode: str, optional
         """
         if env is None:
-            env = lunar_lander.LunarLander()
+            # env = lunar_lander.LunarLander()
+            env = CustomLunarLanderEnv(high_gameover_penalty=high_gameover_penalty)
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
@@ -291,6 +173,7 @@ class CARLLunarLanderEnv(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
+            max_episode_length=max_episode_length,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
         self._update_context()
