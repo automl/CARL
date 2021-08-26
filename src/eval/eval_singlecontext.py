@@ -41,6 +41,7 @@ def collect_results(
         cf_dir = context_dirs[i]
         agent_seed_dirs = os.listdir(cf_dir)
         agent_seed_dirs = [os.path.join(cf_dir, p) for p in agent_seed_dirs]
+        agent_seed_dirs = [p for p in agent_seed_dirs if os.path.isdir(p)]
         dirs_per_cf[cf_name] = agent_seed_dirs
 
     data = {}
@@ -57,16 +58,20 @@ def collect_results(
             if from_progress:
                 progress_fn = cf_dir / progress_fname
                 df = pd.read_csv(progress_fn)
-                n = len(df['time/total_timesteps'])
                 mean_reward_key = 'rollout/ep_rew_mean'
                 time_key = 'time/total_timesteps'
-                if mean_reward_key not in df:
-                    mean_reward_key = 'eval/mean_reward'
+                iteration_key = 'time/iterations'
+                if time_key not in df:
                     time_key = 'time/total timesteps'
+                if mean_reward_key not in df or time_key not in df:
+                    mean_reward_key = 'eval/mean_reward'
+                if iteration_key not in df:
+                    iteration_key = 'time/episodes'
+                n = len(df[time_key])
                 D.append(pd.DataFrame({
                     "seed": [seed] * n,
                     "step": df[time_key].to_numpy(),
-                    "iteration": df['time/iterations'].to_numpy(),
+                    iteration_key: df[iteration_key].to_numpy(),
                     yname: df[mean_reward_key].to_numpy(),
                 }))
             else:
@@ -165,31 +170,51 @@ if __name__ == "__main__":
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_contexthidden",  # DDPG
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_contexthidden",  # DDPG
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",  # DDPG
-        "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_contextvisible",  # DDPG
-        "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_contextvisible",  # DDPG
-        "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contextvisible",  # DDPG
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.1_changingcontextvisible",  # DDPG
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.25_changingcontextvisible",  # DDPG
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_changingcontextvisible",  # DDPG
 
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.1_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.25_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_contextvisible",  # DDPG
+
         # "results/base_vs_context/classic_control/MetaAcrobotEnv/0.1_contexthidden",
 
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.1_changingcontextvisible",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.25_changingcontextvisible",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",  # DDPG
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_contextvisible",  # DDPG
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+
         # "results/base_vs_context/brax/MetaAnt/0.25_contexthidden",
+        "results/base_vs_context/brax/CARLAnt/0.25_contexthidden",
+
+        # "results/experiments/policytransfer/new/CARLLunarLanderEnv"
     ]
+
+    fname_id = "_comparevisibility"
 
     from_progress = False
     plot_comparison = True
     plot_mean_performance = False
     plot_ep_lengths = True
-    paperversion = True
-    libname = "CA"
+    paperversion = False
+    libname = "CARL"
+    hue = None #"seed"
     plot_combined = True
     if len(paths) == 1:
         plot_combined = False
 
+    sns.set_context("paper")
+    sns.set_style("whitegrid")
     fig = None
     if plot_combined:
-        figsize = (8, 6)
+        figsize = (8, 6) if not paperversion else (6, 3)
         dpi = 200
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ncols = len(paths)
@@ -215,6 +240,10 @@ if __name__ == "__main__":
         if np.any(["hidecontext" in p for p in path.parts]) or np.any(["contexthidden" in p for p in path.parts]):
             hc = "ch"
 
+        contextchanging_str = ""
+        if np.any(["changing" in p for p in path.parts]):
+            contextchanging_str = "changing "
+
         if "eimer" in path.parts:
             default_name = "vanilla"
             parts = path.parts
@@ -237,7 +266,7 @@ if __name__ == "__main__":
             env_name = env_name.replace("Meta", libname)
 
         ylims = None
-        xlims = (5e3, 2e6)
+        xlims = (5e3, 1e6)
         if "Bipedal" in env_name:
             ylims = (-200, 50)
             ylims = None
@@ -255,9 +284,6 @@ if __name__ == "__main__":
         color_default_context = "black"
 
         if plot_comparison:
-            sns.set_style("whitegrid")
-            sns.set_context("paper")
-
             if fig is None:
                 figsize = (8, 6) if not paperversion else (4, 3)
                 dpi = 200
@@ -276,7 +302,7 @@ if __name__ == "__main__":
                 color = colors[i]
                 if cf_name == default_name:
                     color = color_default_context
-                ax = sns.lineplot(data=df, x=xname, y=yname, ax=ax, color=color, marker='')
+                ax = sns.lineplot(data=df, x=xname, y=yname, ax=ax, color=color, marker='', hue=hue)
                 legend_handles.append(Line2D([0], [0], color=color))
                 labels.append(cf_name)
             if ylims:
@@ -285,8 +311,9 @@ if __name__ == "__main__":
             ax.set_xscale("log")
             # ax.set_yscale("log")
             title = f"{env_name}, $\sigma_{{rel}}={std}$, context {contextvisiblity_str} \n{str(path)}"
-            if paperversion:
-                title = f"{env_name}\n$\sigma_{{rel}}={std}$, context {contextvisiblity_str}"
+            if paperversion or True:
+                title = f"{env_name}\n$\sigma_{{rel}}={std}$, {contextchanging_str}context {contextvisiblity_str}"
+                # title = f"$\sigma_{{rel}}={std}$"
             ax.set_title(title)
             ax.set_ylabel("mean reward across instances $\mathcal{I}_{train}$")
 
@@ -298,7 +325,8 @@ if __name__ == "__main__":
                 handle_item = legend_handles.pop(idx)
                 legend_handles.insert(0, handle_item)
 
-            ax.legend(handles=legend_handles, labels=labels)
+            if idx_plot == 1 or not plot_combined:
+                ax.legend(handles=legend_handles, labels=labels, loc='lower right', title="varying context feature")
             fig.set_tight_layout(True)
 
             if not plot_combined:
@@ -307,8 +335,9 @@ if __name__ == "__main__":
                 if not from_progress:
                     fig.savefig(fname_comparison2, bbox_inches="tight")
     if plot_combined:
+        fig.set_tight_layout(True)
         plt.show()
-        fname = os.path.join(os.path.commonpath(paths), "mean_ep_rew_over_step.png")
+        fname = os.path.join(os.path.commonpath(paths), f"{env_name}_mean_ep_rew_over_step_{contextvisiblity_str}{fname_id}.png")
         fig.savefig(fname, bbox_inches="tight")
 
         # if plot_ep_lengths and "mean_ep_length" in data:
