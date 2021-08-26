@@ -51,12 +51,12 @@ from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, T
 g_earth = - 9.80665  # m/s², beware of coordinate systems
 
 gravities = {
-    "Earth": g_earth * 1,
-    "Moon": g_earth * 0.166,
-    "Mars": g_earth * 0.377,
-    "Pluto": g_earth * 0.071,
     "Jupiter": g_earth * 2.36,
     "Neptune": g_earth * 1.12,
+    "Earth": g_earth * 1,
+    "Mars": g_earth * 0.377,
+    "Moon": g_earth * 0.166,
+    "Pluto": g_earth * 0.071,
 }
 
 planets_train = ["Moon"]
@@ -86,22 +86,21 @@ def get_contexts(env_name, context_feature_key, context_feature_mapping, context
 
 def get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context):
     mean = gravities["Mars"]
-    std = 1.45
+    std = 1.45  # m/s²
     random_gravities = np.random.normal(loc=mean, scale=std, size=n_contexts)
 
     contexts_train = {i: env_default_context.copy() for i in range(n_contexts)}
     for i, (key, context) in enumerate(contexts_train.items()):
-        context[context_feature_key] = random_gravities[i] * g_earth
+        context[context_feature_key] = random_gravities[i]
         contexts_train[key] = context
     return contexts_train
 
 
 def define_setting(args):
-    args.steps = 5e5
+    args.steps = 1e6  # use 1M steps
     # args.steps = 1000
     args.env = "CARLLunarLanderEnv"
     args.agent = "DQN"
-    args.outdir = os.path.join(outdir, args.env)
     if args.env == "CARLLunarLanderEnv":
         context_feature_key = "GRAVITY_Y"
         context_feature_id = planet_train
@@ -113,6 +112,7 @@ def define_setting(args):
         args.hide_context = True
     else:
         raise NotImplementedError
+    args.outdir = os.path.join(outdir, "new", args.env, context_feature_key)
 
     env_default_context, env_bounds = get_default_context_and_bounds(env_name=args.env)
     env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
