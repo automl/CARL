@@ -69,11 +69,11 @@ You can use the plotting scripts in src/eval to view the results.
                T. Eimer and 
                F. Schubert and 
                A. Biedenkapp and 
-               F. Hutter and 
                B. Rosenhahn and 
+               F. Hutter and 
                M. Lindauer},
   title     = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
-  howpublished = {https://github.com/automl/meta-gym},
+  howpublished = {https://github.com/automl/CARL},
   year      = {2021},
   month     = aug,
 }
