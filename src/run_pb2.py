@@ -149,18 +149,20 @@ if __name__ == "__main__":
         require_attrs=True,
     )
 
+    # default hyperparameters from hyperparameter.yml
+    # HPs found for stable baselines' PPO on pybullet Ant
     defaults = {
-            'batch_size': 1024,
-            'learning_rate': 3e-4,
-            'n_steps': args.num_envs*1024,
-            'gamma': 0.95,
-            'gae_lambda': 0.95,
-            'n_epochs': 4,
-            'ent_coef': 0.01,
-            'sde_sample_freq': 4,
-            'max_grad_norm': 0.5,
-            'vf_coef': 0.5,
-        }
+        'batch_size': 128,  # 1024,
+        'learning_rate': 3e-5,
+        'n_steps': 512,  # args.num_envs*1024,
+        'gamma': 0.99,  # 0.95,
+        'gae_lambda': 0.9,  # 0.95,
+        'n_epochs': 20,  # 4,
+        'ent_coef': 0.0,  # 0.01,
+        'sde_sample_freq': 4,
+        'max_grad_norm': 0.5,
+        'vf_coef': 0.5,
+    }
 
     analysis = tune.run(
         partial(
