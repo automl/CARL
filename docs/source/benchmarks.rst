@@ -28,6 +28,10 @@ CARL currently contains the following benchmarks which are contextually extended
 .. image:: figures/envs_overview.png
   :width: 400
   :alt: Screenshot of each environment included in CARL.
+  
+  
+Interface and Context Sampling
+==============================
 
 Our benchmarks are based on OpenAI's gym interface, so they can be used like any other
 standard RL environment.
@@ -50,7 +54,9 @@ The train contexts are passed upon initialization of the CARL environment and ca
     
     
     
-## CARL's Contextual Extension
+CARL's Contextual Extension
+===========================
+
 CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
 
 .. image:: figures/concept.png
