@@ -98,7 +98,9 @@ def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, defaul
     if checkpoint_dir:
         path = os.path.join(checkpoint_dir, "checkpoint")
         model.save(path)
-    return eval_model(model, eval_env, config)
+    ret = eval_model(model, eval_env, config)
+    print(ret)
+    return ret
 
 
 if __name__ == "__main__":
