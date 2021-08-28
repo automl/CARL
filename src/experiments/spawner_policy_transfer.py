@@ -4,6 +4,7 @@ import src.envs as envs
 ######################################
 job_name = "poltra"
 env = "CARLLunarLanderEnv"
+context_file = "results/experiments/policytransfer/new/CARLLunarLanderEnv/hidden/GRAVITY_Y/contexts_train.json"
 ######################################
 
 mail_user = "benjamin@tnt.uni-hannover.de"
@@ -11,8 +12,10 @@ output_filename = "slurmout/slurm-%j.out"
 time = "24:00:00"
 mem_per_cpu = "1000M" if env != "CARLVehicleRacingEnv" else "16000M"
 basecommand = 'python experiments/run_policy_transfer.py'
-outdir = f"results/experiments/policytransfer/{env}"
-basecommand += f" --outdir {outdir}  "
+# outdir = f"results/experiments/policytransfer/{env}"
+# basecommand += f" --outdir {outdir}  "
+basecommand += " --seed $SLURM_ARRAY_TASK_ID "
+basecommand += f" --context_file {context_file}"
 cpus_per_task = "1"
 
 seeds = [0, 1, 2, 3, 4]
