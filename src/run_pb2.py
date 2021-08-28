@@ -118,7 +118,8 @@ if __name__ == "__main__":
 
     args, unknown_args = parser.parse_known_args()
     args.env = "CARLAnt"
-    args.outdir = os.path.join("results/experiments/pb2", args.env)
+    args.outdir = os.path.join(os.getcwd(), "results/experiments/pb2", args.env)
+    local_dir = os.path.join(args.outdir, "ray")
     args.hide_context = True
     args.default_sample_std_percentage = 0.25
     args.context_feature_args = ['friction']
@@ -143,7 +144,10 @@ if __name__ == "__main__":
             'ent_coef': [0.0, 0.5],
             'max_grad_norm': [0.0, 1.0],
             'vf_coef': [0.0, 1.0],
-        })
+        },
+        log_config=True,
+        require_attrs=True,
+    )
 
     defaults = {
             'batch_size': 1024,
@@ -179,7 +183,9 @@ if __name__ == "__main__":
         num_samples=8,
         fail_fast=True,
         # Search defaults from zoo overwritten with brax demo
-        config=defaults
+        config=defaults,
+        local_dir=local_dir,
+        log_to_file=True,
     )
 
     print("Best hyperparameters found were: ", analysis.best_config)
