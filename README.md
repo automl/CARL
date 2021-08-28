@@ -20,6 +20,10 @@ over level similarity
   
 - [RNADesign](https://github.com/automl/learna/), an environment for RNA design given structure
 constraints with structures from different datasets to choose from
+
+.. image:: docs/source/figures/envs_overview.png
+  :width: 400
+  :alt: Screenshot of each environment included in CARL.
     
 
 ## Installation
