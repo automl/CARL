@@ -9,6 +9,7 @@ from matplotlib.lines import Line2D
 from typing import Union
 
 
+# TODO move this into seperate module
 def collect_results(
         path: Union[str, Path],
         progress_fname: str = "progress.csv",
