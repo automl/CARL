@@ -5,21 +5,21 @@ It's designed to test your agent's generalization capabilities
 in all scenarios where intra-task generalization is important.
 
 Benchmarks include:
-- [OpenAI's classic control suite](https://gym.openai.com/envs/#classic_control) extended with several physics 
+- [OpenAI gym classic control suite](https://gym.openai.com/envs/#classic_control) extended with several physics 
   context features like gravity or friction
     
-- The OpenAI gym [Box2D environments](https://gym.openai.com/envs/#box2d) BipedalWalker, LunarLander and
-CarRacing, each with their own modification possibilities like
+- [OpenAI gym Box2D](https://gym.openai.com/envs/#box2d) BipedalWalker, LunarLander and
+  CarRacing, each with their own modification possibilities like
   new vehicles to race
   
 - All [Brax locomotion environments](https://github.com/google/brax) with exposed internal features
-like joint strength or torso mass
+  like joint strength or torso mass
   
-- [ToadGAN](https://github.com/Mawiszus/TOAD-GAN), a procedurally generated jump'n'run game with control
-over level similarity
+- [Super Mario (TOAD-GAN)](https://github.com/Mawiszus/TOAD-GAN), a procedurally generated jump'n'run game with control
+  over level similarity
   
 - [RNADesign](https://github.com/automl/learna/), an environment for RNA design given structure
-constraints with structures from different datasets to choose from
+  constraints with structures from different datasets to choose from
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
    
