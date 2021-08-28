@@ -9,38 +9,38 @@ from src.trial_logger import TrialLogger
 
 from gym.envs.box2d.car_dynamics import Car
 
-from src.envs.box2d.car_racing.parking_garage.race_car import RaceCar
-from src.envs.box2d.car_racing.parking_garage.race_car import FWDRaceCar  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import AWDRaceCar  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import RaceCarSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import RaceCarLargeTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.race_car import AWDRaceCarLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.race_car import RaceCar
+from src.envs.box2d.parking_garage.race_car import FWDRaceCar  # as Car
+from src.envs.box2d.parking_garage.race_car import AWDRaceCar  # as Car
+from src.envs.box2d.parking_garage.race_car import RaceCarSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.race_car import RaceCarLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.race_car import AWDRaceCarLargeTrailer  # as Car
 
-from src.envs.box2d.car_racing.parking_garage.street_car import StreetCar  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import FWDStreetCar  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import AWDStreetCar  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import StreetCarSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import StreetCarLargeTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.street_car import AWDStreetCarLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.street_car import StreetCar  # as Car
+from src.envs.box2d.parking_garage.street_car import FWDStreetCar  # as Car
+from src.envs.box2d.parking_garage.street_car import AWDStreetCar  # as Car
+from src.envs.box2d.parking_garage.street_car import StreetCarSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.street_car import StreetCarLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.street_car import AWDStreetCarLargeTrailer  # as Car
 
-from src.envs.box2d.car_racing.parking_garage.trike import TukTuk  # as Car
-from src.envs.box2d.car_racing.parking_garage.trike import TukTukSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.trike import TukTuk  # as Car
+from src.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 
-from src.envs.box2d.car_racing.parking_garage.bus import Bus  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import FWDBus  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import AWDBus  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import BusSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import FWDBusSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import AWDBusSmallTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import BusLargeTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import FWDBusLargeTrailer  # as Car
-from src.envs.box2d.car_racing.parking_garage.bus import AWDBusLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.bus import Bus  # as Car
+from src.envs.box2d.parking_garage.bus import FWDBus  # as Car
+from src.envs.box2d.parking_garage.bus import AWDBus  # as Car
+from src.envs.box2d.parking_garage.bus import BusSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.bus import FWDBusSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.bus import AWDBusSmallTrailer  # as Car
+from src.envs.box2d.parking_garage.bus import BusLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.bus import FWDBusLargeTrailer  # as Car
+from src.envs.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
 
 PARKING_GARAGE_DICT = {
     # Racing car
