@@ -1,7 +1,7 @@
 .. _installation:
 
 =======================
-How to Install GenRL
+How to Install CARL
 =======================
 
 .. role:: bash(code)
@@ -18,10 +18,10 @@ We recommend installing within a virtual environment:
 
 .. code-block:: bash
 
-    conda create -n genrl python=3.9
-    conda activate genrl
+    conda create -n carl python=3.9
+    conda activate carl
 
 TODO
 
-You should now have GenRL installed.
+You should now have CARL installed.
 The code itself can be found in the 'src' folder.
