@@ -180,7 +180,7 @@ if __name__ == "__main__":
         scheduler=pbt,
         metric="mean_accuracy",
         mode="max",
-        verbose=False,
+        verbose=3,
         stop={
             "training_iteration": 1e5,
             # "timesteps_total": 1e6,
