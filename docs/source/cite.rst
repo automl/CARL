@@ -2,23 +2,23 @@
 
     <br />
 
-Citing GenRL
+Citing CARL
 =================
 
 If you use GenRL your research, please cite us with the following Bibtex file:
 
 .. code:: bash
 
-        @misc{genRL,
-  author    = {C. Benjamin and
+@misc{CARL,
+  author    = {C. Benjamins and
                T. Eimer and
                F. Schubert and
                A. Biedenkapp and
-               F. Hutter and
                B. Rosenhahn and
+               F. Hutter and
                M. Lindauer},
-  title     = {Benchmarking GenRL Reinforcement Learning},
-  howpublished = {https://github.com/automl/meta-gym},
+  title     = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
+  howpublished = {https://github.com/automl/CARL},
   year      = {2021},
   month     = aug,
 }
