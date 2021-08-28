@@ -21,10 +21,8 @@ over level similarity
 - [RNADesign](https://github.com/automl/learna/), an environment for RNA design given structure
 constraints with structures from different datasets to choose from
 
-.. image:: docs/source/figures/envs_overview.png
-  :width: 400
-  :alt: Screenshot of each environment included in CARL.
-    
+![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
+   
 
 ## Installation
 We recommend you use a virtual environment (e.g. Anaconda) to 
@@ -65,6 +63,11 @@ python train.py
 --outdir <result_location>
 ```
 You can use the plotting scripts in src/eval to view the results.
+
+## CARL's Contextual Extension
+CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
+
+![CARL contextually extends Brax' Fetch.](./docs/source/figures/concept.png)
 
 ## Cite Us
 ```bibtex
