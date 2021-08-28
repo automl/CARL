@@ -5,7 +5,7 @@
 Citing CARL
 =================
 
-If you use GenRL your research, please cite us with the following Bibtex file:
+If you use CARL your research, please cite us with the following Bibtex entry:
 
 .. code:: bash
 
