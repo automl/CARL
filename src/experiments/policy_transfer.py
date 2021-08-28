@@ -141,21 +141,10 @@ def define_setting(args):
     return args
 
 
-def train_env():
-    parser = get_parser()
-    args, unknown_args = parser.parse_known_args()
-
-    # ==========================================================
+def train_env(args, unknown_args, parser):
     # experiment specific settings
     args = define_setting(args)
-    # parser._source_to_settings = OrderedDict()
-    # a_v_pair = (None, list(args))  # copy args list to isolate changes
-    # parser._source_to_settings[configargparse._COMMAND_LINE_SOURCE_KEY] = {'': a_v_pair}
-    # ==========================================================
-    seeds = [0, 1, 2, 3, 4]
-    for seed in seeds:
-        args.seed = seed
-        main(args, unknown_args, parser)
+    main(args, unknown_args, parser)
 
 
 if __name__ == '__main__':
