@@ -37,13 +37,15 @@ class ChangeSeedCallback(object):
 
 
 envname = "CARLLunarLanderEnv"
-outdir = "results/experiments/policytransfer/new"
+outdir_orig = "results/experiments/policytransfer/new"
 context_feature_name = "GRAVITY_Y"
-outdir = os.path.join(outdir, envname, context_feature_name)
+visibility_str = "visible"
+outdir = os.path.join(outdir_orig, envname, visibility_str, context_feature_name)
+contexts_train_fname = os.path.join(outdir_orig, envname, "hidden", context_feature_name, "contexts_train.json")
 eval_data_fname = Path(outdir) / "eval_data.csv"
 figfname = Path(outdir) / "policy_transfer_lunar_lander_eval_comparison.png"
 collect_data = False if eval_data_fname.is_file() else True
-collect_data = False
+collect_data = True
 
 # create test contexts (train distribution)
 context_feature_key = "GRAVITY_Y"
@@ -51,7 +53,6 @@ n_contexts = 100
 n_eval_eps = n_contexts
 eval_seeds = np.arange(0, n_eval_eps, dtype=int) + 13000
 env_default_context, env_bounds = get_default_context_and_bounds(env_name=envname)
-contexts_train_fname = "results/experiments/policytransfer/new/CARLLunarLanderEnv/GRAVITY_Y/contexts_train.json"
 with open(contexts_train_fname, 'r') as file:
     contexts_train = json.load(file)
 contexts_test = get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context)
@@ -107,6 +108,7 @@ if collect_data:
     data = pd.concat(data)
     data.to_csv(eval_data_fname, sep=";")
 
+sns.set_context("paper")
 data = pd.read_csv(eval_data_fname, sep=";")
 train_contexts_key = '$\mathcal{I}_{train}$'
 data['planet'][data['planet'] == 'train\ncontexts'] = train_contexts_key
@@ -131,7 +133,7 @@ if filter_by_ep_length:
 palette = "colorblind"
 hue = 'train_seed'
 hue = None
-figsize = (6, 4)
+figsize = (5, 3)
 dpi = 250
 fig = plt.figure(figsize=figsize, dpi=dpi)
 # ax = fig.add_subplot(111)
@@ -142,16 +144,41 @@ else:
 
 if plot_ep_length:
     ax = axes[0]
-ax = sns.violinplot(data=data, x="planet", y="ep_rew_mean", ax=ax, hue=hue, cut=0, scale='width')
-ax = sns.swarmplot(data=data, x="planet", y="ep_rew_mean", ax=ax, hue=hue, size=2, color='black')
+ax = sns.violinplot(
+    data=data,
+    x="planet",
+    y="ep_rew_mean",
+    ax=ax,
+    hue=hue,
+    cut=0,
+    scale='width',
+    inner=None,
+    split=True,
+    linewidth=0.1,
+    saturation=0.8,
+    palette=palette
+)
+ax = sns.stripplot(
+    data=data,
+    x="planet",
+    y="ep_rew_mean",
+    ax=ax,
+    hue=hue,
+    size=1.5,
+    edgecolors=[0.,0.,0.],
+    linewidths=0,
+    color='black',
+    # palette=palette
+)
 ax.set_ylim(-10000, 500)
-ax.set_ylabel("mean reward$")
+ax.set_ylabel("mean reward")
 
 if plot_ep_length:
     ax.set_xlabel("")
     ax = axes[1]
-    ax = sns.violinplot(data=data, x="planet", y="ep_length", ax=ax, hue=hue, cut=0, palette=palette)
-    ax = sns.swarmplot(data=data, x="planet", y="ep_length", ax=ax, hue=hue, size=2, palette=palette)
+    ax = sns.violinplot(
+        data=data, x="planet", y="ep_length", ax=ax, hue=hue, cut=0, palette=palette, )
+    # ax = sns.swarmplot(data=data, x="planet", y="ep_length", ax=ax, hue=hue, size=2, palette=palette)
 
 fig.set_tight_layout(True)
 fig.savefig(figfname, bbox_inches="tight")
