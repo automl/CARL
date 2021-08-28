@@ -1,4 +1,4 @@
-Welcome to the GenRL documentation!
+Welcome to the CARL documentation!
 ====================================
 .. toctree::
  :maxdepth: 1
