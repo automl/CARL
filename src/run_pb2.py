@@ -22,20 +22,6 @@ from src.context_sampler import sample_contexts
 
 
 def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
-    # with open(hp_file, "r") as f:
-    #     hyperparams_dict = yaml.safe_load(f)
-    #     hyperparams = hyperparams_dict[env]
-    #     hyperparams, env_wrappers, _, _ = preprocess_hyperparams(hyperparams)
-    #
-    # from src.envs import CARLAnt
-    # EnvCls = partial(eval(env), contexts=None)
-    # env = make_vec_env(EnvCls, n_envs=num_envs, wrapper_class=env_wrappers)
-    # eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrappers)
-
-    # hyperparams = {}
-    # env_wrapper = None
-    # normalize = False
-    # normalize_kwargs = {}
     with open(hp_file, "r") as f:
         hyperparams_dict = yaml.safe_load(f)
     hyperparams = hyperparams_dict[env]
