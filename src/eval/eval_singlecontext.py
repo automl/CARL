@@ -184,9 +184,9 @@ if __name__ == "__main__":
 
         # "results/base_vs_context/classic_control/MetaAcrobotEnv/0.1_contexthidden",
 
-        "results/base_vs_context/classic_control/CARLPendulumEnv/0.1_changingcontextvisible",
-        "results/base_vs_context/classic_control/CARLPendulumEnv/0.25_changingcontextvisible",
-        "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.1_changingcontextvisible",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.25_changingcontextvisible",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
 
         # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",  # DDPG
         # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_contextvisible",  # DDPG
@@ -196,6 +196,9 @@ if __name__ == "__main__":
         # "results/base_vs_context/brax/CARLAnt/0.25_contexthidden",
 
         # "results/experiments/policytransfer/new/CARLLunarLanderEnv"
+
+        "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
+        "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
     ]
 
     fname_id = "" # "_comparevisibility"
