@@ -7,6 +7,3 @@
 [submodule "src/envs/mario/Mario-AI-Framework"]
 	path = src/envs/mario/Mario-AI-Framework
 	url = https://github.com/frederikschubert/Mario-AI-Framework
-[submodule "src/envs/box2d/car_racing"]
-	path = src/envs/box2d/car_racing
-	url = https://github.com/AndreBiedenkapp/meta-car-racing.git
