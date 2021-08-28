@@ -112,7 +112,10 @@ def define_setting(args):
         args.hide_context = True
     else:
         raise NotImplementedError
-    args.outdir = os.path.join(outdir, "new", args.env, context_feature_key)
+    args.outdir = os.path.join(outdir, "new", args.env, "visible", context_feature_key)
+    args.hide_context = False  # for hidden: set to true and set "visible" from string above to "hidden"
+    args.state_context_features = ["GRAVITY_Y"]
+    args.no_eval_callback = True
 
     env_default_context, env_bounds = get_default_context_and_bounds(env_name=args.env)
     env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
@@ -131,12 +134,13 @@ def define_setting(args):
     contexts_train_fn = Path(os.path.join(args.outdir), f"{args.agent}_{args.seed}", "contexts_train.json")  # sorry hacky
     contexts_train_fn = Path(os.path.join(args.outdir), "contexts_train.json")
     contexts_train_fn.parent.mkdir(parents=True, exist_ok=True)
-    with open(contexts_train_fn, 'w') as file:
-        json.dump(contexts_train, file, indent="\t")
+    if args.context_file:
+        with open(args.context_file, 'r') as file:
+            contexts_train = json.load(file)
 
     args.context_file = str(contexts_train_fn)
-    args.hide_context = True
-    args.no_eval_callback = True
+    with open(contexts_train_fn, 'w') as file:
+        json.dump(contexts_train, file, indent="\t")
 
     return args
 
