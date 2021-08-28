@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 global_vars = vars()
-vars = {k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k}
+vars = {k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k}
 env_names = [n for n in vars.keys() if "bounds" not in n and "defaults" not in n]
 
 env_context_feature_names = {}
