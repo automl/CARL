@@ -47,6 +47,15 @@ The train contexts are passed upon initialization of the CARL environment and ca
     )
     env = CARLCartPoleEnv(contexts = contexts)
     print(env.contexts)
+    
+    
+    
+## CARL's Contextual Extension
+CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
+
+.. image:: figures/concept.png
+  :width: 200
+  :alt: CARL contextually extends Brax' Fetch.
 
 .. automodule:: src.envs
     :members:
