@@ -193,4 +193,9 @@ if __name__ == "__main__":
         log_to_file=True,
     )
 
+    all_dfs = analysis.trial_dataframes
+    for i, (name, df) in enumerate(all_dfs.items()):
+        fname = Path(os.path.join(args.outdir, f"trail_df_{i}_{name.strip('_')}.csv"))
+        fname.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(fname)
     print("Best hyperparameters found were: ", analysis.best_config)
