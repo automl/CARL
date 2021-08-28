@@ -138,7 +138,7 @@ if __name__ == "__main__":
     pbt = PB2(
         perturbation_interval=20,
         hyperparam_bounds={
-            'learning_rate': [0.0001, 0.02],
+            'learning_rate': [0.00001, 0.02],
             'gamma': [0.8, 0.999],
             'gae_lambda': [0.8, 0.999],
             'ent_coef': [0.0, 0.5],
