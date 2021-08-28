@@ -9,20 +9,20 @@ The Benchmarks
 
 CARL currently contains the following benchmarks which are contextually extended:
 
-- [OpenAI's classic control suite](https://gym.openai.com/envs/#classic_control) extended with several physics 
+- `OpenAI gym classic control suite <https://gym.openai.com/envs/#classic_control>`_ extended with several physics 
   context features like gravity or friction
     
-- The OpenAI gym [Box2D environments](https://gym.openai.com/envs/#box2d) BipedalWalker, LunarLander and
+- `OpenAI gym Box2D <https://gym.openai.com/envs/#box2d>`_ BipedalWalker, LunarLander and
   CarRacing, each with their own modification possibilities like
   new vehicles to race
   
-- All [Brax locomotion environments](https://github.com/google/brax) with exposed internal features
+- All `Brax locomotion environments <https://github.com/google/brax>`_ with exposed internal features
   like joint strength or torso mass
   
-- [ToadGAN](https://github.com/Mawiszus/TOAD-GAN), a procedurally generated jump'n'run game with control
+- `Super Mario (TOAD-GAN) <https://github.com/Mawiszus/TOAD-GAN>`_, a procedurally generated jump'n'run game with control
   over level similarity
   
-- [RNADesign](https://github.com/automl/learna/), an environment for RNA design given structure
+- `RNADesign <https://github.com/automl/learna/>`_, an environment for RNA design given structure
   constraints with structures from different datasets to choose from
   
 .. image:: figures/envs_overview.png
