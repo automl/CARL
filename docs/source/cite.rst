@@ -9,7 +9,7 @@ If you use GenRL your research, please cite us with the following Bibtex file:
 
 .. code:: bash
 
-@misc{CARL,
+    @misc{CARL,
   author    = {C. Benjamins and
                T. Eimer and
                F. Schubert and
