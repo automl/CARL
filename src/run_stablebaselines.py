@@ -207,7 +207,7 @@ def get_contexts(args):
 
 
 def main(args, unknown_args, parser):
-    # set_random_seed(args.seed)  # TODO discuss seeding!! 🥶
+    # set_random_seed(args.seed)  # TODO discuss seeding
 
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
@@ -235,6 +235,7 @@ def main(args, unknown_args, parser):
     env_wrapper = None
     normalize = False
     normalize_kwargs = {}
+    # TODO create hyperparameter files for other agents as well, no hardcoding here
     if args.hp_file is not None and args.agent == "PPO":
         with open(args.hp_file, "r") as f:
             hyperparams_dict = yaml.safe_load(f)
@@ -339,21 +340,6 @@ def main(args, unknown_args, parser):
 
     if use_xvfb:
         vdisplay.stop()
-
-    # TODO add more cmdline arguments
-
-    # TODO check logging of stable baselines
-    # TODO check if every env properly rebuilds the observation space in _update_context
-
-    # TODO create context changer for each method
-    # TODO check if observation space is set correctly for every env (".env."):
-    #   this is fine for acrobot/cartpole, but the other two change their obs spaces.
-    #   I think this shouldn't happen --> let's dicuss
-    # TODO put config into info object ?
-
-    # TODO create requirements
-
-    # TODO if a default context is 0, the sampled/altered context will be also zero (because of 0 std)
 
 
 if __name__ == '__main__':
