@@ -94,7 +94,7 @@ def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, defaul
     model.gae_lambda = config["gae_lambda"]
     model.max_grad_norm = config["max_grad_norm"]
 
-    model.learn(2048)
+    model.learn(4096)
     if checkpoint_dir:
         path = os.path.join(checkpoint_dir, "checkpoint")
         model.save(path)
