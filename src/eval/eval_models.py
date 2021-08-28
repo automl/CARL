@@ -109,6 +109,7 @@ def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs
         with open(config_fname_json, 'r') as file:
             config_json = json.load(file)
         hide_context = config_json["hide_context"]
+        state_context_features = config_json["state_context_features"]
 
     if contexts is None:
         if context_file is None:
@@ -127,6 +128,7 @@ def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs
         env_class,
         contexts=contexts,
         hide_context=hide_context,
+        state_context_features=state_context_features,
         **env_kwargs
     )
     def create_env_fn():
