@@ -25,7 +25,7 @@ from functools import partial
 import configargparse
 import configparser
 
-from src.run_stablebaselines import get_parser, main
+from src.train import get_parser, main
 from src.trial_logger import TrialLogger
 from src.context_sampler import get_default_context_and_bounds
 from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv, CARLBipedalWalkerEnv

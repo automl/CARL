@@ -7,7 +7,7 @@ parentdir = os.path.dirname(parentdir)  # go up twice
 sys.path.insert(0, parentdir)
 print(os.getcwd())
 from src.experiments.policy_transfer import train_env
-from src.run_stablebaselines import get_parser
+from src.train import get_parser
 
 if __name__ == "__main__":
     parser = get_parser()

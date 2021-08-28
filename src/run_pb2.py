@@ -17,7 +17,7 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import VecNormalize
 
 from src.utils.hyperparameter_processing import preprocess_hyperparams
-from src.run_stablebaselines import main, get_parser
+from src.train import main, get_parser
 from src.context_sampler import sample_contexts
 
 
