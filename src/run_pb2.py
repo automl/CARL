@@ -137,6 +137,8 @@ if __name__ == "__main__":
 
     pbt = PB2(
         perturbation_interval=20,
+        # time_attr="timesteps_total",
+        # perturbation_interval=4096,
         hyperparam_bounds={
             'learning_rate': [0.00001, 0.02],
             'gamma': [0.8, 0.999],
@@ -180,7 +182,8 @@ if __name__ == "__main__":
         mode="max",
         verbose=False,
         stop={
-            "training_iteration": 5e3,
+            "training_iteration": 1e5,
+            # "timesteps_total": 1e6,
         },
         num_samples=8,
         fail_fast=True,
