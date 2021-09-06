@@ -99,9 +99,6 @@ class CARLEnv(Wrapper):
                     which_cf_changes = ~np.all(context_array == context_array[0, :], axis=0)
                     context_keys = np.array(list(self.contexts[list(self.contexts.keys())[0]].keys()))
                     state_context_features = context_keys[which_cf_changes]
-                    # print(which_cf_changes, state_context_features)
-                    if len(state_context_features) == 0:
-                        state_context_features = None
                     # TODO properly record which are appended to state
                     if logger is not None:
                         fname = os.path.join(logger.logdir, "env_info.json")
@@ -181,6 +178,8 @@ class CARLEnv(Wrapper):
                 context_values = context_feature_values
             # Append context to state
             if self.state_context_features is not None:
+                # if self.state_context_features is an empty list, the context values will also be empty and we
+                # get the correct state
                 context_keys = list(self.context.keys())
                 context_values = np.array([context_values[context_keys.index(k)] for k in self.state_context_features])
             state = np.concatenate((state, context_values))
@@ -331,7 +330,8 @@ class CARLEnv(Wrapper):
                 env_lower_bounds = - np.inf * np.ones(obs_dim)
                 env_upper_bounds = np.inf * np.ones(obs_dim)
 
-            if self.hide_context or (type(self.state_context_features) == list and len(self.state_context_features) == 0):
+            if self.hide_context or \
+                    (self.state_context_features is not None and len(self.state_context_features) == 0):
                 self.env.observation_space = spaces.Box(
                     env_lower_bounds, env_upper_bounds, dtype=np.float32,
                 )
