@@ -35,9 +35,10 @@ def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, defa
             default_sample_std_percentage=default_sample_std_percentage
         )
     env_logger = None
-    from src.envs import CARLAnt
+    from src.envs import CARLPendulumEnv
     EnvCls = partial(
-        eval(env),
+        #eval(env),
+        CARLPendulumEnv,
         contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
@@ -70,7 +71,7 @@ def eval_model(model, eval_env, config):
             action, _ = model.predict(state)
             state, reward, done, _ = eval_env.step(action)
             eval_reward.append(reward)
-    return tune.report(
+    tune.report(
         mean_accuracy=np.mean(eval_reward),
         current_config=config
     )
@@ -94,16 +95,15 @@ def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, defaul
     model.gae_lambda = config["gae_lambda"]
     model.max_grad_norm = config["max_grad_norm"]
 
-    model.learn(4096)
-    if checkpoint_dir:
-        path = os.path.join(checkpoint_dir, "checkpoint")
-        model.save(path)
-    ret = eval_model(model, eval_env, config)
-    print(ret)
-    return ret
+    for _ in range(250):
+        model.learn(4096)
+        if checkpoint_dir:
+            path = os.path.join(checkpoint_dir, "checkpoint")
+            model.save(path)
+        eval_model(model, eval_env, config)
 
 
-if __name__ == "__main__":
+def run_experiment(args):
     parser = get_parser()
     parser.add_argument(
         "--server-address",
@@ -117,12 +117,12 @@ if __name__ == "__main__":
     )
 
     args, unknown_args = parser.parse_known_args()
-    args.env = "CARLAnt"
+    args.env = "CARLPendulumEnv"
     args.outdir = os.path.join(os.getcwd(), "results/experiments/pb2", args.env)
     local_dir = os.path.join(args.outdir, "ray")
     args.hide_context = True
-    args.default_sample_std_percentage = 0.25
-    args.context_feature_args = ['friction']
+    args.default_sample_std_percentage = 0.1
+    args.context_feature_args = ['g']
     checkpoint_dir = args.checkpoint_dir
 
     # checkpoint_dir = Path(checkpoint_dir)
@@ -199,3 +199,7 @@ if __name__ == "__main__":
         fname.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(fname)
     print("Best hyperparameters found were: ", analysis.best_config)
+    ray.shutdown()
+
+if __name__ == '__main__':
+    run_experiment(sys.argv[1:])
