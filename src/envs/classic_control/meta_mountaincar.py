@@ -41,7 +41,6 @@ CONTEXT_BOUNDS = {
     # "max_position_start": (-np.inf, np.inf, float),
     # "min_velocity_start": (-np.inf, np.inf, float),
     # "max_velocity_start": (-np.inf, np.inf, float),
-    # TODO add bounds for each env
 }
 
 
