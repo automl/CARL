@@ -7,7 +7,7 @@ import seaborn as sns
 import numpy as np
 from matplotlib.lines import Line2D
 from typing import Union
-from src.eval.eval_singlecontext import collect_results
+from src.eval.gather_data import collect_results
 
 if __name__ == "__main__":
     paths = [
