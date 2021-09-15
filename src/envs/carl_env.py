@@ -224,7 +224,7 @@ class CARLEnv(Wrapper):
             state = self.build_context_adaptive_state(state, context_feature_values)
 
         self.total_timestep_counter += 1
-        self.step_counter += 1  # TODO do we need to reset the step counter? yes, we do
+        self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True
         return state, reward, done, info
