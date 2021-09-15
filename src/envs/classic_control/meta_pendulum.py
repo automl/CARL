@@ -67,7 +67,6 @@ class CARLPendulumEnv(CARLEnv):
             state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self._update_context()    # TODO move this to CARLEnv as this is the same for each child meta env
 
     def _update_context(self):
         self.env.max_speed = self.context["max_speed"]

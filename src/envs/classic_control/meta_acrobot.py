@@ -63,7 +63,6 @@ class CARLAcrobotEnv(CARLEnv):
             state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self._update_context()
 
     def _update_context(self):
         self.env.LINK_LENGTH_1 = self.context["link_length_1"]
