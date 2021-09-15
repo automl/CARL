@@ -64,7 +64,7 @@ class CARLRnaDesignEnv(CARLEnv):
         env.observation_space = spaces.Box(low=-np.inf*np.ones(11), high=np.inf*np.ones(11))
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
-        env.data_location = data_location
+        env.data_location = data_location  # TODO does this also belong in _update_context?
         super().__init__(
             env=env,
             contexts=contexts,
