@@ -107,8 +107,13 @@ def collect_results(
 
 if __name__ == "__main__":
     paths = [
-        "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
-        "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+
+        # bipedal
+        "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.1_contexthidden",
+        "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.25_contexthidden",
+        "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.5_contexthidden"
     ]
 
     fname_id = "" # "_comparevisibility"
@@ -195,8 +200,8 @@ if __name__ == "__main__":
         ylims = None
         xlims = (5e3, 1e6)
         if "Bipedal" in env_name:
-            ylims = (-200, 50)
-            ylims = None
+            ylims = (-1000, 500)
+            # ylims = None
         elif "Pendulum" in env_name:
             if paperversion:
                 ylims = (-1500, -100)
@@ -207,7 +212,7 @@ if __name__ == "__main__":
         else:
             contextvisiblity_str = "visible"
 
-        color_palette_name = "colorblind"  # TODO find palette with enough individual colors or use linestyles
+        color_palette_name = "colorblind"
         color_default_context = "black"
 
         if plot_comparison:
@@ -232,6 +237,7 @@ if __name__ == "__main__":
                 color = colors[i]
                 if cf_name == default_name:
                     color = color_default_context
+                print(df[yname].min(), df[yname].max())
                 ax = sns.lineplot(data=df, x=xname, y=yname, ax=ax, color=color, marker='', hue=hue)
                 legend_handles.append(Line2D([0], [0], color=color))
                 labels.append(cf_name)
