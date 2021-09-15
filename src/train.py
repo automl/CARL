@@ -24,11 +24,11 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
 from gym.envs.box2d.lunar_lander import LunarLander
-from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
-from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
+from src.envs.classic_control.carl_mountaincar import CustomMountainCarEnv
+from src.envs.classic_control.carl_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
-from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
+from src.envs.box2d.carl_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)

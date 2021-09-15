@@ -29,7 +29,7 @@ from src.train import get_parser, main
 from src.trial_logger import TrialLogger
 from src.context_sampler import get_default_context_and_bounds
 from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv, CARLBipedalWalkerEnv
-from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
+from src.envs.box2d.carl_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
 from src.context_sampler import sample_contexts
 
 
