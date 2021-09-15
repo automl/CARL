@@ -17,7 +17,7 @@ from functools import partial
 import configparser
 
 from src.train import get_parser
-from src.context.context_sampler import sample_contexts
+from src.context.sampling import sample_contexts
 
 
 def cf_args_str_to_list(context_feature_args):

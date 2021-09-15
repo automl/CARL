@@ -17,7 +17,7 @@ from stable_baselines3.common.vec_env import VecNormalize
 
 from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.train import get_parser
-from src.context.context_sampler import sample_contexts
+from src.context.sampling import sample_contexts
 
 
 def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
