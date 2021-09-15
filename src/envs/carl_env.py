@@ -261,7 +261,6 @@ class CARLEnv(Wrapper):
             self.context_index = (self.context_index + 1) % len(self.contexts.keys())
         else:
             raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
-        # TODO add the case that instance_mode is a function or a class
         contexts_keys = list(self.contexts.keys())
         context = self.contexts[contexts_keys[self.context_index]]
 
