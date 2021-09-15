@@ -6,7 +6,7 @@ import os
 import json
 from typing import Dict, Tuple, Union, List, Optional, Any
 from src.context_changer import add_gaussian_noise
-from src.context_utils import get_context_bounds
+from src.context.context_utils import get_context_bounds
 from src.trial_logger import TrialLogger
 
 
