@@ -151,7 +151,7 @@ def get_parser() -> configargparse.ArgumentParser:
         "--hp_file",
         type=str,
         default=os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             "train/hyperparameters/hyperparameters_ppo.yml")),
+                                             "training/hyperparameters/hyperparameters_ppo.yml")),
         help="YML file with hyperparameter",
     )
 
