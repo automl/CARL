@@ -77,7 +77,6 @@ class CARLAcrobotEnv(CARLEnv):
         self.env.MAX_VEL_2 = self.context["max_velocity_2"]
         self.env.torque_noise_max = self.context["torque_noise_max"]
 
-        # TODO: check if MAX_VEL_1 and MAX_VEL_2 are in bounds
         high = np.array([1.0, 1.0, 1.0, 1.0, self.env.MAX_VEL_1, self.env.MAX_VEL_2], dtype=np.float32)
         low = -high
         self.build_observation_space(low, high, CONTEXT_BOUNDS)
