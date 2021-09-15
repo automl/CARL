@@ -2,9 +2,9 @@ from src.envs.carl_env import CARLEnv
 from src.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
 from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
-from typing import Optional, Dict, List
+from typing import Optional, Dict
 from gym import spaces
-from src.trial_logger import TrialLogger
+from src.training.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "mutation_threshold": 5,

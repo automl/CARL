@@ -1,35 +1,22 @@
-from functools import partial
 from pathlib import Path
 import os
 import glob
 import sys
 import inspect
-from typing import Any
-import numpy as np
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 parentdir = os.path.dirname(parentdir)  # go up twice
 sys.path.insert(0, parentdir)
 print(os.getcwd())
-from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.ppo import PPO
-from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
-from xvfbwrapper import Xvfb
 import pandas as pd
 import json
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
-from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 from functools import partial
-import configargparse
 import configparser
 
-from src.train import get_parser, main
-from src.trial_logger import TrialLogger
-from src.context_sampler import get_default_context_and_bounds
-from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv, CARLBipedalWalkerEnv
-from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
+from src.train import get_parser
 from src.context_sampler import sample_contexts
 
 

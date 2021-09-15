@@ -5,7 +5,7 @@ import numpy as np
 from src.envs.mario.mario_env import MarioEnv
 from src.envs.mario.toad_gan import generate_initial_noise, generate_level
 from src.envs.carl_env import CARLEnv
-from src.trial_logger import TrialLogger
+from src.training.trial_logger import TrialLogger
 
 INITIAL_WIDTH = 100
 INITIAL_LEVEL_INDEX = 0
