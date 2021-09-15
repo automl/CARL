@@ -12,7 +12,7 @@ from stable_baselines3.common.vec_env.dummy_vec_env import DummyVecEnv
 
 from src.eval.eval_models import load_model, setup_env
 from src.experiments.policy_transfer import get_train_contexts_ll, gravities
-from src.context_sampler import get_default_context_and_bounds
+from src.context.context_sampler import get_default_context_and_bounds
 
 
 class ChangeSeedCallback(object):
