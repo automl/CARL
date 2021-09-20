@@ -6,4 +6,4 @@
 #SBATCH --nodes=1
 #SBATCH --mem=80G
 
-python experiments/run_pb2.py 
+python run_pb2.py --seed $1

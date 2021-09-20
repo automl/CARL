@@ -91,9 +91,6 @@ CONTEXT_BOUNDS = {
 }
 CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
-# TODO add wind to world
-# TODO add different aerodynamic drags (Luftwiederstand)
-
 
 class CustomCarRacingEnv(CarRacing):
     def __init__(self, vehicle_class: type(Car) = Car, verbose=1):
@@ -196,7 +193,7 @@ class CARLVehicleRacingEnv(CARLEnv):
             env: CustomCarRacingEnv = CustomCarRacingEnv(),
             contexts: Optional[Dict[Union[str, int], Dict]] = None,
             instance_mode: str = "random",
-            hide_context: bool = True,  # TODO the context is already coded in the pixel state, the context cannot be hidden that easily
+            hide_context: bool = True,
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
@@ -214,6 +211,13 @@ class CARLVehicleRacingEnv(CARLEnv):
             Different contexts / different environment parameter settings.
         instance_mode: str, optional
         """
+        if not hide_context:
+            raise NotImplementedError(
+                "The context is already coded in the pixel state, the context cannot be hidden that easily. "
+                "Due to the pixel state we cannot easily concatenate the context to the state, therefore "
+                "hide_context must be True but at the same time the context is visible via the pixel state."
+            )
+
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(

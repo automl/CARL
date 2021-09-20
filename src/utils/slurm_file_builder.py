@@ -3,14 +3,14 @@ import src.envs as envs
 
 ######################################
 job_name = "genRL"
-env = "CARLPendulumEnv"
-envtype = "classic_control"
+env = "CARLBipedalWalkerEnv"
+envtype = "box2d"
 default_sample_std_percentage = 0.5
 hide_context = False
 vec_env_cls = "DummyVecEnv"
 agent = "DDPG"
 n_timesteps = 1000000
-state_context_features = None #"changing_context_features"
+state_context_features = "changing_context_features"
 ######################################
 
 print(env)
@@ -19,6 +19,7 @@ hide_context_cmd_str = "--hide_context" if hide_context else ""
 eval_freq = 10000 if "Racing" in env else 5000
 xvfb_str = "" if not "Racing" in env else "xvfb-run "
 eval_freq = 5000 if envtype == "classic_control" else eval_freq
+eval_freq = 50000
 
 mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"

@@ -224,7 +224,7 @@ class CARLEnv(Wrapper):
             state = self.build_context_adaptive_state(state, context_feature_values)
 
         self.total_timestep_counter += 1
-        self.step_counter += 1  # TODO do we need to reset the step counter? yes, we do
+        self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True
         return state, reward, done, info
@@ -261,11 +261,9 @@ class CARLEnv(Wrapper):
             self.context_index = (self.context_index + 1) % len(self.contexts.keys())
         else:
             raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
-        # TODO add the case that instance_mode is a function or a class
         contexts_keys = list(self.contexts.keys())
         context = self.contexts[contexts_keys[self.context_index]]
 
-        # TODO use class for context changing / value augmentation
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
             for key, value in context.items():

@@ -12,9 +12,10 @@ DEFAULT_CONTEXT = {
     "link_mass_2": 1,  # should be seen as 100% default and scaled
     "link_com_1": 0.5,  # Percentage of the length of link one
     "link_com_2": 0.5,  # Percentage of the length of link one
-    "link_moi": 1, # should be seen as 100% default and scaled
+    "link_moi": 1,  # should be seen as 100% default and scaled
     "max_velocity_1": 4*np.pi,
     "max_velocity_2": 9*np.pi,
+    "torque_noise_max": 0.,  # optional noise on torque, sampled uniformly from [-torque_noise_max, torque_noise_max]
 }
 
 CONTEXT_BOUNDS = {
@@ -27,8 +28,8 @@ CONTEXT_BOUNDS = {
     "link_moi": (0.1, 10, float),  # Moments on inertia can be shrunken and grown by a factor of 10
     "max_velocity_1": (0.4*np.pi, 40*np.pi, float),  # Velocity can vary by a factor of 10 in either direction
     "max_velocity_2": (0.9*np.pi, 90*np.pi, float),
+    "torque_noise_max": (-1., 1., float)  # torque is either {-1., 0., 1}. Applying noise of 1. would be quite extreme
 }
-# TODO add torque_noise_max?
 
 
 class CARLAcrobotEnv(CARLEnv):
@@ -74,8 +75,8 @@ class CARLAcrobotEnv(CARLEnv):
         self.env.LINK_MOI = self.context["link_moi"]
         self.env.MAX_VEL_1 = self.context["max_velocity_1"]
         self.env.MAX_VEL_2 = self.context["max_velocity_2"]
+        self.env.torque_noise_max = self.context["torque_noise_max"]
 
-        # TODO: check if MAX_VEL_1 and MAX_VEL_2 are in bounds
         high = np.array([1.0, 1.0, 1.0, 1.0, self.env.MAX_VEL_1, self.env.MAX_VEL_2], dtype=np.float32)
         low = -high
         self.build_observation_space(low, high, CONTEXT_BOUNDS)
