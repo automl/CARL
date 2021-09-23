@@ -64,7 +64,9 @@ class CARLRnaDesignEnv(CARLEnv):
         env.observation_space = spaces.Box(low=-np.inf*np.ones(11), high=np.inf*np.ones(11))
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
-        env.data_location = data_location  # TODO does this also belong in _update_context?
+        # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
+        # with the context.
+        env.data_location = data_location
         super().__init__(
             env=env,
             contexts=contexts,
