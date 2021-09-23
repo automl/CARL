@@ -39,7 +39,7 @@ import configparser
 from src.train import get_parser, main
 from src.context.sampling import get_default_context_and_bounds
 from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv
-from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
+from src.envs.box2d.carl_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
 
 # Experiment 1: LunarLander
 g_earth = - 9.80665  # m/s², beware of coordinate systems
