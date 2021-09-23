@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from src.eval.eval_singlecontext import collect_results
+from src.eval.gather_data import collect_results
 
 paths = [
     "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_contextvisible",  # DDPG

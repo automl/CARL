@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from src.envs.classic_control.meta_pendulum import CARLPendulumEnv
+from src.envs.classic_control.carl_pendulum import CARLPendulumEnv
 
 
 class TestStateConstruction(unittest.TestCase):
