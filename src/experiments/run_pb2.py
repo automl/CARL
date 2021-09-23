@@ -151,7 +151,7 @@ def run_experiment(args):
         require_attrs=True,
     )
 
-    # default hyperparameters from hyperparameter.yml
+    # default hyperparameters from hyperparameters_ppo.yml
     # HPs found for stable baselines' PPO on pybullet Ant
     defaults = {
         'batch_size': 128,  # 1024,

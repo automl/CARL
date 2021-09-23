@@ -1,15 +1,14 @@
 from typing import Dict, Optional, List
-import numpy as np
 
 import Box2D
 from gym import spaces
-from gym.utils import seeding, EzPickle
+from gym.utils import EzPickle
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
 from Box2D.b2 import (edgeShape, fixtureDef, polygonShape)
 
 from src.envs.carl_env import CARLEnv
-from src.trial_logger import TrialLogger
+from src.training.trial_logger import TrialLogger
 
 
 DEFAULT_CONTEXT = {
