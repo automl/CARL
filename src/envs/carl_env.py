@@ -143,6 +143,7 @@ class CARLEnv(Wrapper):
             self.context_feature_scale_factors[self.context_feature_scale_factors == 0] = 1  # otherwise value / scale_factor = nan
 
         self.build_observation_space()
+        self._update_context()
 
     def reset(self, **kwargs):
         """

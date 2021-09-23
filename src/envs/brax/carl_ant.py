@@ -64,7 +64,6 @@ class CARLAnt(CARLEnv):
             state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self._update_context()
 
     def _update_context(self):
         config = copy.deepcopy(self.base_config)

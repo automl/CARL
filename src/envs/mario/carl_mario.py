@@ -51,7 +51,6 @@ class CARLMarioEnv(CARLEnv):
             scale_context_features="no",
             default_context=default_context,
         )
-        self._update_context()
 
     def _update_context(self):
         level = generate_level(

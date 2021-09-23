@@ -233,7 +233,6 @@ class CARLVehicleRacingEnv(CARLEnv):
             state_context_features=state_context_features,
         )
         self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
-        self._update_context()
 
     def _update_context(self):
         vehicle_class_index = self.context["VEHICLE"]

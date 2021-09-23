@@ -172,7 +172,6 @@ class CARLLunarLanderEnv(CARLEnv):
             max_episode_length=max_episode_length,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
-        self._update_context()
 
     def _update_context(self):
         lunar_lander.FPS = self.context["FPS"]
