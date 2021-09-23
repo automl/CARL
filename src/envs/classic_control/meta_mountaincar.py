@@ -4,7 +4,7 @@ import gym
 import gym.envs.classic_control as gccenvs
 from typing import Dict
 from src.envs.carl_env import CARLEnv
-from src.trial_logger import TrialLogger
+from src.training.trial_logger import TrialLogger
 
 
 DEFAULT_CONTEXT = {

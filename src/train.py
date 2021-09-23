@@ -22,9 +22,9 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 from src.envs import *
 
-import src.trial_logger
-importlib.reload(src.trial_logger)
-from src.trial_logger import TrialLogger
+import src.training.trial_logger
+importlib.reload(src.training.trial_logger)
+from src.training.trial_logger import TrialLogger
 
 from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
@@ -142,7 +142,8 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
-        default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")),
+        default=os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             "training/hyperparameters/hyperparameters_ppo.yml")),
         help="YML file with hyperparameter",
     )
 
