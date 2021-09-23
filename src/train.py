@@ -26,7 +26,7 @@ import src.training.trial_logger
 importlib.reload(src.training.trial_logger)
 from src.training.trial_logger import TrialLogger
 
-from src.context_sampler import sample_contexts
+from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
 
 
