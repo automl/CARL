@@ -1,7 +1,5 @@
 from functools import partial
 import os
-import gym
-import importlib
 from xvfbwrapper import Xvfb
 import configargparse
 import yaml
@@ -14,27 +12,21 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 print(os.getcwd())
 
-from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3 import PPO, DDPG, A2C, DQN
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback, EveryNTimesteps
+from stable_baselines3.common.callbacks import EvalCallback, EveryNTimesteps
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
-from gym.envs.box2d.lunar_lander import LunarLander
-from src.envs.classic_control.carl_mountaincar import CustomMountainCarEnv
-from src.envs.classic_control.carl_mountaincarcontinuous import CustomMountainCarContinuousEnv
 
 from src.envs import *
-from src.envs.box2d.carl_vehicle_racing import PARKING_GARAGE
 
-import src.trial_logger
-importlib.reload(src.trial_logger)
-from src.trial_logger import TrialLogger
+import src.training.trial_logger
+importlib.reload(src.training.trial_logger)
+from src.training.trial_logger import TrialLogger
 
-from src.context_sampler import sample_contexts
+from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
 
 
@@ -150,7 +142,8 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
-        default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")),
+        default=os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             "training/hyperparameters/hyperparameters_ppo.yml")),
         help="YML file with hyperparameter",
     )
 

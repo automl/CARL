@@ -1,22 +1,18 @@
 import numpy as np
-import math
-from typing import Dict, Optional, Type, List
+from typing import Dict, Optional, List
 
 # import pyglet
 # pyglet.options["shadow_window"] = False
 
-import gym
 import Box2D
 # from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revoluteJointDef, contactListener)
 from gym.envs.box2d import lunar_lander
-from gym.envs.box2d import lunar_lander as ll
 from gym.envs.box2d.lunar_lander import heuristic
 from gym import spaces
 from gym.utils import seeding, EzPickle
 
 from src.envs.carl_env import CARLEnv
-from src.trial_logger import TrialLogger
-from src.envs.box2d.utils import safe_destroy
+from src.training.trial_logger import TrialLogger
 
 # TODO debug/test this environment by looking at rendering!
 

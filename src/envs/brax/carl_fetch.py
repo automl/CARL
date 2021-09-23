@@ -9,7 +9,7 @@ from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from typing import Optional, Dict, List
 from numpyencoder import NumpyEncoder
-from src.trial_logger import TrialLogger
+from src.training.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 5000,
