@@ -10,8 +10,7 @@ How to Install CARL
 First clone our GitHub repository:
 
 .. code-block:: bash
-    #TODO: adapt link
-    git clone https://github.com/automl/GenRL.git
+    git clone https://github.com/automl/CARL.git
     cd clone
 
 We recommend installing within a virtual environment:
@@ -21,7 +20,21 @@ We recommend installing within a virtual environment:
     conda create -n carl python=3.9
     conda activate carl
 
-TODO
+Then you may install the base version:
+.. code-block:: bash
+
+    cd carl
+    pip install
+
+Alternatively, you can also include more environments in your installation:
+.. code-block:: bash
+
+    pip install -e [box2d, brax, rna, mario]
+
+Or the dependencies for our experiments:
+.. code-block:: bash
+
+    pip install -e [experiments]
 
 You should now have CARL installed.
 The code itself can be found in the 'src' folder.

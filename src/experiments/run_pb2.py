@@ -2,7 +2,6 @@ import os
 import sys
 # sys.path.append(os.path.dirname(os.getcwd()))
 # sys.path.append(os.getcwd())
-import argparse
 from functools import partial
 import numpy as np
 import yaml
@@ -12,13 +11,13 @@ import ray
 from ray import tune
 from ray.tune.schedulers.pb2 import PB2
 
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, DDPG
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import VecNormalize
 
 from src.utils.hyperparameter_processing import preprocess_hyperparams
-from src.train import main, get_parser
-from src.context_sampler import sample_contexts
+from src.train import get_parser
+from src.context.sampling import sample_contexts
 
 
 def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
@@ -26,6 +25,7 @@ def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, defa
         hyperparams_dict = yaml.safe_load(f)
     hyperparams = hyperparams_dict[env]
     hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+    hyperparams = {}
 
     num_contexts = 100
     contexts = sample_contexts(
@@ -35,24 +35,24 @@ def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, defa
             default_sample_std_percentage=default_sample_std_percentage
         )
     env_logger = None
-    from src.envs import CARLAnt
+    from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLAnt
     EnvCls = partial(
-        eval(env),
+        #eval(env),
+        CARLAnt,
         contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
     )
-    env = make_vec_env(EnvCls, n_envs=num_envs, wrapper_class=env_wrapper)
+    env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
-    if normalize:
-        env = VecNormalize(env, **normalize_kwargs)
-        eval_normalize_kwargs = normalize_kwargs.copy()
-        eval_normalize_kwargs["norm_reward"] = False
-        eval_normalize_kwargs["training"] = False
-        eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
+    #if normalize:
+    #    env = VecNormalize(env, **normalize_kwargs)
+    #    eval_normalize_kwargs = normalize_kwargs.copy()
+    #    eval_normalize_kwargs["norm_reward"] = False
+    #    eval_normalize_kwargs["training"] = False
+    #    eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
 
     if checkpoint_dir:
-        print(checkpoint_dir)
         checkpoint_dir = str(checkpoint_dir)
         checkpoint = os.path.join(checkpoint_dir, "checkpoint")
         model = PPO.load(checkpoint, env=env)
@@ -62,18 +62,15 @@ def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, defa
 
 
 def eval_model(model, eval_env, config):
-    eval_reward = []
+    eval_reward = 0
     for i in range(100):
         done = False
         state = eval_env.reset()
         while not done:
             action, _ = model.predict(state)
             state, reward, done, _ = eval_env.step(action)
-            eval_reward.append(reward)
-    return tune.report(
-        mean_accuracy=np.mean(eval_reward),
-        current_config=config
-    )
+            eval_reward += reward
+    return eval_reward / 100
 
 
 def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir=None):
@@ -89,21 +86,25 @@ def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, defaul
     )
     model.learning_rate = config["learning_rate"]
     model.gamma = config["gamma"]
+    #model.tau = config["tau"]
     model.ent_coef = config["ent_coef"]
     model.vf_coef = config["vf_coef"]
     model.gae_lambda = config["gae_lambda"]
     model.max_grad_norm = config["max_grad_norm"]
 
-    model.learn(4096)
-    if checkpoint_dir:
-        path = os.path.join(checkpoint_dir, "checkpoint")
-        model.save(path)
-    ret = eval_model(model, eval_env, config)
-    print(ret)
-    return ret
+    for _ in range(100):
+        model.learn(1e6)
+        if checkpoint_dir:
+            path = os.path.join(checkpoint_dir, "checkpoint")
+            model.save(path)
+        eval_reward = eval_model(model, eval_env, config)
+        tune.report(
+        mean_accuracy=eval_reward,
+        current_config=config
+    )
 
 
-if __name__ == "__main__":
+def run_experiment(args):
     parser = get_parser()
     parser.add_argument(
         "--server-address",
@@ -120,9 +121,9 @@ if __name__ == "__main__":
     args.env = "CARLAnt"
     args.outdir = os.path.join(os.getcwd(), "results/experiments/pb2", args.env)
     local_dir = os.path.join(args.outdir, "ray")
-    args.hide_context = True
-    args.default_sample_std_percentage = 0.25
-    args.context_feature_args = ['friction']
+    args.hide_context = False
+    args.default_sample_std_percentage = 0.1
+    args.context_feature_args = ["friction"]
     checkpoint_dir = args.checkpoint_dir
 
     # checkpoint_dir = Path(checkpoint_dir)
@@ -136,7 +137,7 @@ if __name__ == "__main__":
     print("current workdir:", os.getcwd())
 
     pbt = PB2(
-        perturbation_interval=20,
+        perturbation_interval=1,
         # time_attr="timesteps_total",
         # perturbation_interval=4096,
         hyperparam_bounds={
@@ -146,24 +147,25 @@ if __name__ == "__main__":
             'ent_coef': [0.0, 0.5],
             'max_grad_norm': [0.0, 1.0],
             'vf_coef': [0.0, 1.0],
+            #'tau': [0.0, 0.99]
         },
         log_config=True,
         require_attrs=True,
     )
 
-    # default hyperparameters from hyperparameter.yml
+    # default hyperparameters from hyperparameters_ppo.yml
     # HPs found for stable baselines' PPO on pybullet Ant
     defaults = {
         'batch_size': 128,  # 1024,
         'learning_rate': 3e-5,
-        'n_steps': 512,  # args.num_envs*1024,
+        #'n_steps': 512,  # args.num_envs*1024,
         'gamma': 0.99,  # 0.95,
-        'gae_lambda': 0.9,  # 0.95,
-        'n_epochs': 20,  # 4,
-        'ent_coef': 0.0,  # 0.01,
-        'sde_sample_freq': 4,
-        'max_grad_norm': 0.5,
-        'vf_coef': 0.5,
+        #'gae_lambda': 0.9,  # 0.95,
+        #'n_epochs': 20,  # 4,
+        #'ent_coef': 0.0,  # 0.01,
+        #'sde_sample_freq': 4,
+        #'max_grad_norm': 0.5,
+        #'vf_coef': 0.5,
     }
 
     analysis = tune.run(
@@ -176,13 +178,13 @@ if __name__ == "__main__":
             args.context_feature_args,
             args.default_sample_std_percentage
         ),
-        name="pb2",
+        name="pb2_ant_friction",
         scheduler=pbt,
         metric="mean_accuracy",
         mode="max",
         verbose=3,
         stop={
-            "training_iteration": 1e5,
+            "training_iteration": 100,
             # "timesteps_total": 1e6,
         },
         num_samples=8,
@@ -199,3 +201,7 @@ if __name__ == "__main__":
         fname.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(fname)
     print("Best hyperparameters found were: ", analysis.best_config)
+    ray.shutdown()
+
+if __name__ == '__main__':
+    run_experiment(sys.argv[1:])
