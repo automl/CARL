@@ -36,13 +36,14 @@ pip install .
 ```
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
-pip install -e [box2d, brax, rna, mario]
+pip install -e .[box2d, brax, rna, mario]
 ```
 These may not be compatible with Windows systems. Box2D environment may need to be installed via conda on MacOS systems:
 ```bash
 conda install -c conda-forge gym-box2d
 ```
-In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
+In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible. 
+Mario at this point, however, will not run on any operation system besides Linux
 
 To install the additional requirements for ToadGAN:
 ```bash
@@ -57,7 +58,7 @@ make data
 ```
 In case you want to run our experiments or use our training files, also install the experiment dependencies:
 ```bash
-pip install -e [experiments]
+pip install -e .[experiments]
 ```
 ## Train an Agent
 To get started with CARL, you can use our 'train.py' script.

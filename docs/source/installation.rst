@@ -24,17 +24,17 @@ Then you may install the base version:
 .. code-block:: bash
 
     cd carl
-    pip install
+    pip install .
 
 Alternatively, you can also include more environments in your installation:
 .. code-block:: bash
 
-    pip install -e [box2d, brax, rna, mario]
+    pip install -e .[box2d, brax, rna, mario]
 
 Or the dependencies for our experiments:
 .. code-block:: bash
 
-    pip install -e [experiments]
+    pip install -e .[experiments]
 
 You should now have CARL installed.
 The code itself can be found in the 'src' folder.
