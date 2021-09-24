@@ -30,9 +30,9 @@ install CARL and its dependencies.
 
 First, clone our repository and install the basic requirements:
 ```bash
-git clone https://github.com/automl/meta-gym --recursive
+git clone https://github.com/automl/CARL.git --recursive
 cd carl
-pip install
+pip install .
 ```
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
