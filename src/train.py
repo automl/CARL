@@ -22,11 +22,6 @@ from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 from src.envs import *
-import importlib
-box2D_spec = importlib.util.find_spec("Box2D")
-found = box2d_spec is not None
-if found:
-    from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
@@ -244,88 +239,6 @@ def main(args, unknown_args, parser):
 
     if args.agent == "DDPG":
         args.num_envs = 1
-        if args.env == "CARLPendulumEnv":
-            #visible overall best
-            hyperparams["learning_rate"] = 9.999999747378752e-06
-            hyperparams["gamma"] = 0.9900000095367432
-            hyperparams["tau"] = 0.9900000095367432 
-            hyperparams["batch_size"] = 128
-            #visible policy 0
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9900000095367432, "tau": 0.06706158816814423}
-            #visible policy 1
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9900000095367432, "tau": 0.11328816413879395}
-            #visible policy 2
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.8763588070869446, "tau": 0.5207583904266357} 
-            #visible policy 3
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9900000095367432, "tau": 0.06706158816814423} 
-            #visible policy 4
-            #hyperparams = {"batch_size": 128, "learning_rate": 0.019999999552965164, "gamma": 0.8800404071807861, "tau": 0.9900000095367432} 
-            #visible policy 5
-            #hyperparams = {"batch_size": 128, "learning_rate": 0.008874671533703804, "gamma": 0.8717287182807922, "tau": 0.9900000095367432} 
-            #visible policy 6
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9900000095367432, "tau": 0.9900000095367432} 
-            #visible policy 7
-            #hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.99} 
-
-
-            #hidden policy 0
-            hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9287932515144348, "tau": 0.9900000095367432}
-            #hidden policy 1
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9332823157310486, "tau": 0.9900000095367432} 
-            #hidden policy 2
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9393365979194641, "tau": 0.9900000095367432}
-            #hidden policy 3
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9320021271705627, "tau": 0.9900000095367432}
-            #hidden policy 4
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9291895627975464, "tau": 0.9900000095367432} 
-            #hidden policy 5
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.929961085319519, "tau": 0.9900000095367432} 
-            #hidden policy 6
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9448675513267517, "tau": 0.9900000095367432}
-            #hidden policy 7
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9351255297660828, "tau": 0.9900000095367432} 
-        elif args.env == "CARLBipedalWalkerEnv":
-            #visible overall best
-            hyperparams["learning_rate"] = 3e-5
-            hyperparams["gamma"] = 0.99
-            hyperparams["tau"] = 0.0
-            hyperparams["batch_size"] = 128
-
-            #visible p0
-            #hyperparams = 
-            #visible p1
-            #hyperparams =
-            #visible p2
-            #hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.0}
-            #visible p3
-            #hyperparams =
-            #visible p4
-            #hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.0}
-            #visible p5
-            #hyperparams =
-            #visible p6
-            #hyperparams =
-            #visible p7
-            #hyperparams =
-
-            #hidden overall best
-            hyperparams = {"batch_size": 128, "learning_rate": 0.019999999552965164, "gamma": 0.9900000095367432, "tau": 0.9900000095367432}
-            #hidden p0
-            #hyperparams = {"batch_size": 128, "learning_rate": 0.019999999552965164, "gamma": 0.800000011920929, "tau": 0.9900000095367432}
-            #hidden p1
-            #hyperparams =
-            #hidden p2
-            #hyperparams = {"batch_size": 128, "learning_rate": 0.019999999552965164, "gamma": 0.800000011920929, "tau": 0.9900000095367432} 
-            #hidden p3
-            #hyperparams =
-            #hidden p4
-            #hyperparams = {"batch_size": 128, "learning_rate": 0.019999999552965164, "gamma": 0.9900000095367432, "tau": 0.9900000095367432}
-            #hidden p5
-            #hyperparams = {"batch_size": 128, "learning_rate": 0.019999999552965164, "gamma": 0.9900000095367432, "tau": 0.9900000095367432}
-            #hidden p6
-            #hyperparams =
-            #hidden p7
-            #hyperparams = {"batch_size": 128, "learning_rate": 9.999999747378752e-06, "gamma": 0.9900000095367432, "tau": 0.9900000095367432} 
         hyperparams["policy"] = "MlpPolicy"
 
     if args.agent == "A2C":
@@ -337,7 +250,6 @@ def main(args, unknown_args, parser):
 
         if args.env == "CARLLunarLanderEnv":
             hyperparams = {
-                #"n_timesteps": 1e5,
                 "policy": 'MlpPolicy',
                 "learning_rate": 6.3e-4,
                 "batch_size": 128,
