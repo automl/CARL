@@ -21,14 +21,12 @@ from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback,
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
-# from classic_control import CARLMountainCarEnv
-# importlib.reload(classic_control.meta_mountaincar)
-from gym.envs.box2d.lunar_lander import LunarLander
-from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
-from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
-
 from src.envs import *
-from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
+import importlib
+box2D_spec = importlib.util.find_spec("Box2D")
+found = box2d_spec is not None
+if found:
+    from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
