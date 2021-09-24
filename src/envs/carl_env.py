@@ -5,8 +5,8 @@ import numpy as np
 import os
 import json
 from typing import Dict, Tuple, Union, List, Optional, Any
-from src.context_changer import add_gaussian_noise
-from src.context_utils import get_context_bounds
+from src.context.augmentation import add_gaussian_noise
+from src.context.utils import get_context_bounds
 from src.training.trial_logger import TrialLogger
 
 
