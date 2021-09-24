@@ -6,7 +6,7 @@ import warnings
 from src.envs.classic_control import *
 
 #Environment loading
-box2D_spec = importlib.util.find_spec("Box2D")
+box2d_spec = importlib.util.find_spec("Box2D")
 found = box2d_spec is not None
 if found:
     from src.envs.box2d import *
