@@ -26,7 +26,7 @@ Benchmarks include:
 
 ## Installation
 We recommend you use a virtual environment (e.g. Anaconda) to 
-install CARL and its dependencies.
+install CARL and its dependencies. We recommend and test with python 3.9 and on.
 
 First, clone our repository and install the basic requirements:
 ```bash
