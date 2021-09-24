@@ -274,6 +274,9 @@ def main(args, unknown_args, parser):
         json.dump(args.__dict__, file, indent="\t")
 
     contexts = get_contexts(args)
+    contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
+    with open(contexts_fname, 'w') as file:
+        json.dump(contexts, file, indent="\t")
 
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
