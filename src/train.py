@@ -21,14 +21,7 @@ from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback,
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
-# from classic_control import CARLMountainCarEnv
-# importlib.reload(classic_control.meta_mountaincar)
-from gym.envs.box2d.lunar_lander import LunarLander
-from src.envs.classic_control.meta_mountaincar import CustomMountainCarEnv
-from src.envs.classic_control.meta_mountaincarcontinuous import CustomMountainCarContinuousEnv
-
 from src.envs import *
-from src.envs.box2d.meta_vehicle_racing import PARKING_GARAGE
 
 import src.trial_logger
 importlib.reload(src.trial_logger)
@@ -245,8 +238,8 @@ def main(args, unknown_args, parser):
         hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
 
     if args.agent == "DDPG":
-        hyperparams["policy"] = "MlpPolicy"
         args.num_envs = 1
+        hyperparams["policy"] = "MlpPolicy"
 
     if args.agent == "A2C":
         hyperparams["policy"] = "MlpPolicy"
@@ -257,7 +250,6 @@ def main(args, unknown_args, parser):
 
         if args.env == "CARLLunarLanderEnv":
             hyperparams = {
-                #"n_timesteps": 1e5,
                 "policy": 'MlpPolicy',
                 "learning_rate": 6.3e-4,
                 "batch_size": 128,
