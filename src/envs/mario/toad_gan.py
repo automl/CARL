@@ -71,7 +71,6 @@ def load_generator(level_index: int):
         token_list=token_list,
     )
 
-@functools.lru_cache(maxsize=None)
 def generate_level(
     width: int,
     height: int,
@@ -82,15 +81,17 @@ def generate_level(
     toad_gan = load_generator(level_index)
     playable = False
     level = None
+    tries = 0
     while not playable:
+        tries += 1
         level = generate_sample(
             **vars(toad_gan),
             scale_h=width / toad_gan.original_width,
             scale_v=height / toad_gan.original_height,
             initial_noise=initial_noise
         )
-        if filter_unplayable:
-            _, playable = reachability_map(level, shape=(height, width))
+        if filter_unplayable and tries < 100:
+            _, playable = reachability_map(level, shape=(height, width), check_outside=True)
         else:
             playable = True
     assert level
