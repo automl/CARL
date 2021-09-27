@@ -241,6 +241,14 @@ def main(args, unknown_args, parser):
         hyperparams["policy"] = "MlpPolicy"
         args.num_envs = 1
 
+        schedule = False
+        if args.env == "CARLAnt":
+            schedule = True
+            switching_point = 4
+            hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
+            post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147, "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
+            hyperparams["policy"] = "MlpPolicy"
+
     if args.agent == "A2C":
         hyperparams["policy"] = "MlpPolicy"
 
@@ -326,7 +334,20 @@ def main(args, unknown_args, parser):
     model = agent_cls(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
 
     model.set_logger(logger.stable_baselines_logger)
-    model.learn(total_timesteps=args.steps, callback=callbacks)
+    if schedule:
+        for it in range(100)
+            model.learn(1e6)
+            switched = False
+            if it >= switching_point and not switched:
+                model.learning_rate = post["learning_rate"]
+                model.gamma = post["gamma"]
+                model.ent_coef = post["ent_coef"]
+                model.vf_coef = post["vf_coef"]
+                model.gae_lambda = post["gae_lambda"]
+                model.max_grad_norm = post["max_grad_norm"]
+                switched = True
+    else:
+        model.learn(total_timesteps=args.steps, callback=callbacks)
     model.save(os.path.join(logger.logdir, "model.zip"))
     if normalize:
         model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
