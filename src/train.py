@@ -16,6 +16,7 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, EveryNTimesteps
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3 import DDPG, PPO, A2C, DQN
 
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -281,6 +282,9 @@ def main(args, unknown_args, parser):
         json.dump(args.__dict__, file, indent="\t")
 
     contexts = get_contexts(args)
+    contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
+    with open(contexts_fname, 'w') as file:
+        json.dump(contexts, file, indent="\t")
 
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
