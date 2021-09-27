@@ -13,7 +13,7 @@ sys.path.insert(0, parentdir)
 print(os.getcwd())
 
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback, EveryNTimesteps
+from stable_baselines3.common.callbacks import EvalCallback, EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 from stable_baselines3 import DDPG, PPO, A2C, DQN
@@ -322,6 +322,12 @@ def main(args, unknown_args, parser):
     callbacks = [everynstep_callback]
     if args.no_eval_callback:
         callbacks = None
+
+    chkp_cb = CheckpointCallback(save_freq=args.eval_freq, save_path=os.path.join(logger.logdir, "models"))
+    if callbacks is None:
+        callbacks = [chkp_cb]
+    else:
+        callbacks.append(chkp_cb)
 
     try:
         agent_cls = eval(args.agent)
