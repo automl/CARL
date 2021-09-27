@@ -6,11 +6,12 @@ job_name = "genRL"
 env = "CARLLunarLanderEnv"
 envtype = "box2d"
 default_sample_std_percentage = 0.5
-hide_context = False
+hide_context = True
 vec_env_cls = "DummyVecEnv"
 agent = "DQN"
 n_timesteps = 1000000
-state_context_features = "changing_context_features"
+state_context_features = None  # "changing_context_features"
+no_eval = True
 ######################################
 
 print(env)
@@ -20,6 +21,7 @@ eval_freq = 10000 if "Racing" in env else 5000
 xvfb_str = "" if not "Racing" in env else "xvfb-run "
 eval_freq = 5000 if envtype == "classic_control" else eval_freq
 eval_freq = 50000
+eval_cb = "" if not no_eval else " --no_eval_callback"
 
 mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
@@ -36,6 +38,7 @@ outdir = f"results/base_vs_context/{envtype}/{env}/{default_sample_std_percentag
 basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --default_sample_std_percentage {default_sample_std_percentage}"
 basecommand += f" {hide_context_cmd_str} --eval_freq {eval_freq} --seed $SLURM_ARRAY_TASK_ID " \
                f"--scale_context_features no  --vec_env_cls {vec_env_cls}  --agent {agent} "
+basecommand += eval_cb
 if state_context_features is not None:
     basecommand += f"--state_context_features {state_context_features}"
 context_features = list(env_defaults.keys())
@@ -60,7 +63,7 @@ sbuilder = SlurmBuilder(
         {
             "name": "context_feature_args",
             "id": "cfargs",
-            "values": ['None', 'GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
+            "values": ['GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
         }
     ]
 )
