@@ -2,15 +2,15 @@ from slurmbuilder.slurmbuilder import SlurmBuilder
 import src.envs as envs
 
 ######################################
-job_name = "genRL"
+job_name = "CARL"
 env = "CARLLunarLanderEnv"
 envtype = "box2d"
-default_sample_std_percentage = 0.5
-hide_context = True
+default_sample_std_percentage = 0.1
+hide_context = False
 vec_env_cls = "DummyVecEnv"
 agent = "DQN"
 n_timesteps = 1000000
-state_context_features = None  # "changing_context_features"
+state_context_features = "changing_context_features"
 no_eval = True
 ######################################
 
@@ -23,9 +23,10 @@ eval_freq = 5000 if envtype == "classic_control" else eval_freq
 eval_freq = 50000
 eval_cb = "" if not no_eval else " --no_eval_callback"
 
+partition = "gpu_normal"
 mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
-time = "48:00:00"
+time = "06:00:00"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
 basecommand = f"{xvfb_str}python train.py --num_contexts 100 --steps {n_timesteps} --add_context_feature_names_to_logdir --hp_file hyperparameter.yml"
 cpus_per_task = "1"
@@ -50,6 +51,7 @@ sbuilder = SlurmBuilder(
     mail_user=mail_user,
     base_command=basecommand,
     time=time,
+    partition=partition,
     cpus_per_task=cpus_per_task,
     mem_per_cpu=mem_per_cpu,
     array=array,
@@ -63,7 +65,7 @@ sbuilder = SlurmBuilder(
         {
             "name": "context_feature_args",
             "id": "cfargs",
-            "values": ['GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
+            "values": ['None', 'GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
         }
     ]
 )
