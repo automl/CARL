@@ -49,7 +49,7 @@ def mark_interval(ax, mean, std, fontsize, ci=0.95):
     conf_interval = norm.interval(ci, loc=mean, scale=std)
     X = np.linspace(*conf_interval, 1000)
     Y = norm.pdf(X, loc=mean, scale=std)
-    ax.fill_between(X, Y, alpha=0.5)
+    ax.fill_between(X, Y, alpha=0.3)
 
     y = norm.pdf(mean, loc=mean, scale=std)
 
@@ -79,7 +79,7 @@ def mark_interval(ax, mean, std, fontsize, ci=0.95):
 mean = gravities["Mars"]
 std = 1.45
 n_contexts = 100000
-sampled_gravities = norm.rvs(loc=mean, scale=std, size=n_contexts)
+sampled_gravities = norm.rvs(loc=mean, scale=std, size=100)
 figname = "gravity_distribution.png"
 
 figsize = (5, 3)
@@ -99,6 +99,7 @@ Y = norm.pdf(X, loc=mean, scale=std)
 
 ax = mark_interval(ax, mean, std, annofontsize, ci=0.95)
 ax.plot(X, Y)
+#ax = sns.histplot(x=sampled_gravities,kde=False,ax=ax,stat="density",cumulative=False,fill=True,color="black",bins=100)
 ylims = ax.get_ylim()
 ax = plot_gravities_vlines(ax, gravities, ylims[1], mean, std, annofontsize, shortanno)
 
