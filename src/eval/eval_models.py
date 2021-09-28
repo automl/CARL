@@ -13,11 +13,14 @@ from stable_baselines3.common.evaluation import evaluate_policy
 import pandas as pd
 import json
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
+from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3 import DQN
 from functools import partial
 import configparser
 
 from src.train import get_parser
 from src.context.sampling import sample_contexts
+from src.envs import *
 
 
 def cf_args_str_to_list(context_feature_args):
@@ -89,6 +92,8 @@ def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs
     context_features = [n for n in context_feature_args if "std" not in n and "mean" not in n]
     default_sample_std_percentage = config['DEFAULT'].getfloat('default_sample_std_percentage')
     context_file = config['DEFAULT'].get('context_file')
+    if context_file is None:
+        context_file = "contexts_train.json"
     env_class = eval(env_str)
 
     config_fname_json = Path(path) / "trial_setup.json"
@@ -108,6 +113,7 @@ def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs
             )
         else:
             context_file = Path(path) / context_file
+            print(context_file)
             with open(context_file, 'r') as file:
                 contexts = json.load(file)
 
@@ -126,7 +132,7 @@ def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs
         return env
 
     if vec_env_class is not None:
-        env = vec_env_class([create_env_fn])
+        env = vec_env_class([lambda: create_env_fn()])
     else:
         env = create_env_fn()
 
@@ -144,23 +150,30 @@ if __name__ == '__main__':
     outdir = "results/experiments/policytransfer"
     outdir = os.path.join(outdir, env_name)
     outdir = "results/singlecontextfeature_0.5_hidecontext/box2d/MetaBipedalWalkerEnv"
+    outdir = "results/base_vs_context/box2d/CARLLunarLanderEnv/0.5_changingcontextvisible"
     n_eval_eps = 10
     num_contexts = 100
-    model_fnames = glob.glob(os.path.join(outdir, "*", "*", "model.zip"))
+    model_fnames = glob.glob(os.path.join(outdir, "*", "*", "*.zip"))
+    model_fnames = [m for m in model_fnames if "model" in m]
 
     k_ep_rew_mean = "ep_rew_mean"
     k_ep_rew_std = "ep_rew_std"
 
     data = []
-    for model_fname in model_fnames:
+    for i, model_fname in enumerate(model_fnames):
+        msg = f"Eval {i+1}/{len(model_fnames)}: {model_fname}."
+        print(msg)
         model_fname = Path(model_fname)
-        env = setup_env(path=model_fname.parent, contexts=None)
+        step = -1
+        if "rl_model" in model_fname.stem:
+            step = int(model_fname.stem.split("_")[-2])
+        env = setup_env(path=model_fname.parent, contexts=None, vec_env_class=DummyVecEnv)
         model, info = load_model(model_fname)
         train_seed = info['seed']
         context_features = info['context_features']
         mean_reward, std_reward = evaluate_policy(
             model,
-            model.get_env(),
+            env,  # model.get_env(),
             n_eval_episodes=n_eval_eps,
             return_episode_rewards=True
         )
@@ -170,8 +183,12 @@ if __name__ == '__main__':
             "train_seed": [train_seed] * n_eval_eps,
             "model_fname": model_fname,
             "context_features": context_features,
+            "step": [step] * n_eval_eps,
         })
         data.append(D)
 
-        if len(data) == 5:
-            break
+    save_path = os.path.commonpath(model_fnames)
+    save_path = Path(save_path) / "eval_train.csv"
+    df = pd.DataFrame(data)
+    df.to_csv(save_path)
+
