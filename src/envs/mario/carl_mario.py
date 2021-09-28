@@ -13,13 +13,15 @@ INITIAL_HEIGHT = 16
 DEFAULT_CONTEXT = {
     "level_index": INITIAL_LEVEL_INDEX,
     "noise": generate_initial_noise(INITIAL_WIDTH, INITIAL_HEIGHT, INITIAL_LEVEL_INDEX),
-    "mario_state": 0
+    "mario_state": 0,
+    "mario_inertia": 0.89
 }
 
 CONTEXT_BOUNDS = {
     "level_index": (None, None, "categorical", np.arange(0, 14)),
     "noise": (-1.0, 1.0, float),
     "mario_state": (None, None, "categorical", [0, 1, 2]),
+    "mario_inertia": (0.5, 1.5, float)
 }
 CATEGORICAL_CONTEXT_FEATURES = ["level_index", "mario_state"]
 
@@ -51,42 +53,26 @@ class CARLMarioEnv(CARLEnv):
             scale_context_features="no",
             default_context=default_context,
         )
+        self.levels = []
+        for context in contexts.values():
+            level = generate_level(
+                width=INITIAL_WIDTH,
+                height=INITIAL_HEIGHT,
+                level_index=context["level_index"],
+                initial_noise=context["noise"],
+                filter_unplayable=True,
+            )
+            self.levels.append(level)
+        self._update_context()
 
     def _update_context(self):
-        level = generate_level(
-            width=INITIAL_WIDTH,
-            height=INITIAL_HEIGHT,
-            level_index=self.context["level_index"],
-            initial_noise=self.context["noise"],
-            filter_unplayable=False
-        )
         self.env.mario_state = self.context["mario_state"]
-        self.env.levels = [level]
+        self.env.levels = [self.levels[self.context_index]]
 
+    def _log_context(self):
+        if self.logger:
+            loggable_context = {k: v for k, v in self.context.items() if k != "noise"}
+            self.logger.write_context(
+                self.episode_counter, self.total_timestep_counter, loggable_context
+            )
 
-if __name__ == "__main__":
-    env = CARLMarioEnv(env=MarioEnv(levels=[], visual=True))
-    max_episodes = 3
-    record_video = True
-    if record_video:
-        from gym.wrappers.monitor import Monitor
-
-        env = Monitor(env, "/home/schubert/Dropbox/video-test", force=True, video_callable=lambda _: True)
-    episode = 0
-    while episode < max_episodes:
-        total_reward = 0.0
-        steps = 0
-        env.reset()
-        level_img = env.unwrapped.render_current_level()
-        level_img.save(f"/home/schubert/Dropbox/video-test/level_{episode}.png")
-        while True:
-            a = env.action_space.sample()
-            s, r, done, info = env.step(a)
-            total_reward += r
-            env.render()
-            steps += 1
-            if done:
-                print("step {} total_reward {:+0.2f}".format(steps, total_reward))
-                episode += 1
-                break
-    env.close()
