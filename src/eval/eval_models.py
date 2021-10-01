@@ -119,7 +119,6 @@ def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs
             )
         else:
             context_file = Path(path) / context_file
-            print(context_file)
             with open(context_file, 'r') as file:
                 contexts = json.load(file)
 
