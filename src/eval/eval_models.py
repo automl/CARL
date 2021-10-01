@@ -188,12 +188,13 @@ if __name__ == '__main__':
             return_episode_rewards=True
         )
         D = pd.Series({
-            k_ep_rew_mean: mean_reward,
-            k_ep_rew_std: std_reward,
-            "train_seed": [train_seed] * n_eval_eps,
+            k_ep_rew_mean: np.mean(mean_reward),
+            k_ep_rew_std: np.mean(std_reward),
+            "train_seed": train_seed,  # [train_seed] * n_eval_eps,
             "model_fname": model_fname,
-            "context_features": context_features,
-            "step": [step] * n_eval_eps,
+            # "context_features": context_features,
+            "step": step,  # [step] * n_eval_eps,
+            "n_episodes": n_eval_eps,
         })
         data.append(D)
 
