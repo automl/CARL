@@ -158,7 +158,12 @@ if __name__ == '__main__':
     outdir = "results/base_vs_context/box2d/CARLLunarLanderEnv/0.5_changingcontextvisible"
     n_eval_eps = 10
     num_contexts = 100
-    model_fnames = glob.glob(os.path.join(outdir, "*", "*", "*.zip"))
+    model_fnames = glob.glob(os.path.join(outdir, "*", "*", "models", "*.zip"))
+    model_fnames = []
+    for root, dirs, filenames in os.walk(outdir):
+        for filename in filenames:
+            if "rl_model" in filename:
+                model_fnames.append(os.path.join(root, filename))
     model_fnames = [m for m in model_fnames if "model" in m]
 
     k_ep_rew_mean = "ep_rew_mean"
