@@ -140,7 +140,7 @@ class CARLLunarLanderEnv(CARLEnv):
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
-            max_episode_length: int = 1e6,
+            max_episode_length: int = 1000,
             high_gameover_penalty: bool = False
     ):
         """
