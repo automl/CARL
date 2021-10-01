@@ -90,6 +90,24 @@ def get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_defaul
     return contexts_train
 
 
+def get_uniform_intervals_exp1():
+    return [(-20, -15), (-5, -1e-3)]
+
+
+def get_train_contexts_ll_exp1(n_contexts, env_default_context):
+    intervals = get_uniform_intervals_exp1()
+    n_c_per_interval = n_contexts // len(intervals)
+
+    contexts = {}
+    for interval_idx, interval in enumerate(intervals):
+        gravities = np.random.uniform(*interval, size=n_c_per_interval)
+        for i in range(n_c_per_interval):
+            context = env_default_context.copy()
+            context["GRAVITY_Y"] = gravities[i]
+            contexts[i + interval_idx * n_c_per_interval] = context
+    return contexts
+
+
 def define_setting(args):
     args.steps = 1e6  # use 1M steps
     # args.steps = 1000
@@ -106,8 +124,8 @@ def define_setting(args):
         args.hide_context = True
     else:
         raise NotImplementedError
-    args.outdir = os.path.join(outdir, "new", args.env, "visible", context_feature_key)
-    args.hide_context = False  # for hidden: set to true and set "visible" from string above to "hidden"
+    args.outdir = os.path.join(outdir, "new", args.env, "hidden", context_feature_key)
+    args.hide_context = True  # for hidden: set to true and set "visible" from string above to "hidden"
     args.state_context_features = ["GRAVITY_Y"]
     args.no_eval_callback = True
 
