@@ -198,7 +198,11 @@ if __name__ == '__main__':
         })
         data.append(D)
 
-    save_path = os.path.commonpath(model_fnames)
+    if len(model_fnames) > 1:
+        save_path = os.path.commonpath(model_fnames)
+    else:
+        p = model_fnames[0]
+        save_path = p.split("DQN")[0]  # TODO make dynamic
     save_path = Path(save_path) / "eval_train.csv"
     df = pd.DataFrame(data)
     df.to_csv(save_path)
