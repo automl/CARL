@@ -1,13 +1,19 @@
 import pandas as pd
 import seaborn as sns
 import os
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import FancyBboxPatch
+from matplotlib.patches import FancyBboxPatch, Rectangle
+from src.experiments.policy_transfer import get_uniform_intervals_exp1
+from matplotlib.transforms import (
+    Bbox, TransformedBbox, blended_transform_factory)
+from mpl_toolkits.axes_grid1.inset_locator import (
+    BboxPatch, BboxConnector, BboxConnectorPatch)
 
 eval_data_fnames = [
-    "results/experiments/policytransfer/new/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data.csv",
-    "results/experiments/policytransfer/new/CARLLunarLanderEnv/visible/GRAVITY_Y/eval_data.csv",
+     "results/experiments/policytransfer/new/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data_10test.csv",
+    "results/experiments/policytransfer/new/CARLLunarLanderEnv/visible/GRAVITY_Y/eval_data_10test.csv",
 ]
 figfname = os.path.join(os.path.commonpath(eval_data_fnames), "policytransfer_hiddenvisible.png")
 sns.set_context("paper")
@@ -31,6 +37,7 @@ custom_dict = {
 }
 data = data.sort_values(by=['planet'], key=lambda x: x.map(custom_dict))
 data = data[data['planet'] != 'train\ndistribution']
+is_exp0 = np.any('m/s²' in data['planet'])
 
 filter_by_ep_length = False
 plot_ep_length = False
@@ -40,7 +47,7 @@ if filter_by_ep_length:
 palette = "colorblind"
 hue = 'train_seed'
 hue = 'visibility'
-figsize = (5, 3)
+figsize = (5, 3) if is_exp0 else (5, 3)
 dpi = 250
 fig = plt.figure(figsize=figsize, dpi=dpi)
 # ax = fig.add_subplot(111)
@@ -51,6 +58,7 @@ else:
 
 if plot_ep_length:
     ax = axes[0]
+
 ax = sns.violinplot(
     data=data,
     x="planet",
@@ -80,6 +88,41 @@ ax = sns.stripplot(
 )
 ax.set_ylim(-10000, 500)
 ax.set_ylabel("mean reward")
+xticklabels = list(data['planet'].unique())
+xticklabels = [x.replace(" ", "\n") for x in xticklabels]
+ax.set_xticklabels(xticklabels)
+if not is_exp0:
+    # ticklabels
+    newlabels = []
+    for x in xticklabels:
+        if "m/s²" in x:
+            x = x.split("\n")[0]
+        newlabels.append(x)
+    ax.set_xticklabels(newlabels)
+    ax.set_xlabel("gravity [m/s²]")
+
+    # train intervals
+    intervals = get_uniform_intervals_exp1()
+    for interval in intervals:
+        ylims = ax.get_ylim()
+        xmin, xmax = interval
+        ymin, ymax = ylims
+
+        xticks = ax.get_xticks()
+        tested_gravities = np.array([float(x) for x in newlabels[1:]])  # first belongs to train distribution
+        xmin_plot = min(tested_gravities, key=lambda x:abs(x-xmin))
+        greater_than_lower = interval[0] <= tested_gravities
+        lower_than_upper = tested_gravities <= interval[1]
+        ids = np.equal(greater_than_lower, lower_than_upper)
+        in_interval = tested_gravities[ids]
+        ids_ax = np.array([False] + list(ids))
+        in_interval_ax = xticks[ids_ax]
+        xmin_plot, xmax_plot = min(in_interval_ax) - 0.3, max(in_interval_ax) + 0.3
+        rectangle = Rectangle(
+            xy=(xmin_plot, ymin), width=xmax_plot-xmin_plot, height=ymax-ymin,zorder=0,
+            color="black", alpha=0.25
+        )
+        ax.add_patch(rectangle)
 
 # create legend
 labels = ["hidden", "visible"]
@@ -106,6 +149,7 @@ legend = ax.legend(
     borderpad=0.25
     # bbox_to_anchor=(0.5, 0.205)
 )
+
 
 if plot_ep_length:
     ax.set_xlabel("")
