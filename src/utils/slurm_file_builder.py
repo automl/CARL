@@ -6,11 +6,11 @@ job_name = "CARL"
 env = "CARLLunarLanderEnv"
 envtype = "box2d"
 default_sample_std_percentage = 0.1
-hide_context = False
+hide_context = True
 vec_env_cls = "DummyVecEnv"
 agent = "DQN"
 n_timesteps = 1000000
-state_context_features = "changing_context_features"
+state_context_features = None  # "changing_context_features"
 no_eval = True
 ######################################
 
@@ -26,7 +26,7 @@ eval_cb = "" if not no_eval else " --no_eval_callback"
 partition = "gpu_normal"
 mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
-time = "06:00:00"
+time = "24:00:00"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
 basecommand = f"{xvfb_str}python train.py --num_contexts 100 --steps {n_timesteps} --add_context_feature_names_to_logdir --hp_file hyperparameter.yml"
 cpus_per_task = "1"
@@ -65,7 +65,7 @@ sbuilder = SlurmBuilder(
         {
             "name": "context_feature_args",
             "id": "cfargs",
-            "values": ['None', 'GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
+            "values": ['GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
         }
     ]
 )
