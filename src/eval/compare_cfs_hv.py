@@ -48,7 +48,10 @@ if __name__ == "__main__":
         dpi = 200
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ncols = len(cfs_toplot)
-        axes = fig.subplots(nrows=1, ncols=ncols, sharey=True)
+        if ncols > 1:
+            axes = fig.subplots(nrows=1, ncols=ncols, sharey=True)
+        else:
+            axes = [fig.add_subplot(111)]
         fig.subplots_adjust(wspace=0.01, left=0.01, right=0.99, bottom=0.01, top=0.99)
 
     results = []
