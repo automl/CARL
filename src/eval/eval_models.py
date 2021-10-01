@@ -37,7 +37,10 @@ def load_model(model_fname):
     # parser = configargparse.ArgParser(
     #     config_file_parser_class=configargparse.ConfigparserConfigFileParser
     # )
-    config_fname = model_fname.parent / "trial_setup.ini"
+    path = model_fname.parent
+    if "models" in str(path):
+        path = Path(path).parent
+    config_fname = path / "trial_setup.ini"
 
     # parser._config_file_parser = configargparse.ConfigparserConfigFileParser()
     # with open(config_fname, 'r') as file:
@@ -79,6 +82,8 @@ def load_model(model_fname):
 
 
 def setup_env(path, contexts=None, wrappers=None, vec_env_class=None, env_kwargs={}):
+    if "models" in str(path):
+        path = Path(path).parent
     config_fname = Path(path) / "trial_setup.ini"
 
     config = configparser.ConfigParser()
