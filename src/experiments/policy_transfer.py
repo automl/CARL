@@ -124,7 +124,7 @@ def define_setting(args):
         args.hide_context = True
     else:
         raise NotImplementedError
-    args.outdir = os.path.join(outdir, "new", args.env, "hidden", context_feature_key)
+    args.outdir = os.path.join(outdir, "exp0", args.env, "hidden", context_feature_key)
     args.hide_context = True  # for hidden: set to true and set "visible" from string above to "hidden"
     args.state_context_features = ["GRAVITY_Y"]
     args.no_eval_callback = True
