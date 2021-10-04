@@ -20,7 +20,7 @@ This effect can be explained by the influence of Mario's inertia on the explorat
 Policy Transfer for LunarLander (Two-Interval Distribution)
 ===========================================================
 In the main paper we analyzed acting on in-distribution and out-of-distribution instances.
-For this we vary the context feature 'gravity' for CARLLunarLanderEnv which extends `gym's <https://gym.openai.com/envs/#box2d>`_'s LunarLander. In the first experiment we defined our training distribution as a Gaussian distribution, see Figure below for the actual gravity values used for training.
+For this we vary the context feature 'gravity' for CARLLunarLanderEnv which extends `gym <https://gym.openai.com/envs/#box2d>`_'s LunarLander. In the first experiment we defined our training distribution as a Gaussian distribution, see Figure below for the actual gravity values used for training.
 
 .. image:: figures/experiments/gravity_sampled_gravities.png
   :width: 400
