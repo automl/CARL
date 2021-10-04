@@ -6,4 +6,5 @@ Welcome to the CARL documentation!
 
  source/installation
  source/benchmarks
+ source/experiments
  source/cite
