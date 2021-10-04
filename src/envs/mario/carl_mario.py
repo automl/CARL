@@ -54,19 +54,21 @@ class CARLMarioEnv(CARLEnv):
             default_context=default_context,
         )
         self.levels = []
-        for context in contexts.values():
-            level = generate_level(
-                width=INITIAL_WIDTH,
-                height=INITIAL_HEIGHT,
-                level_index=context["level_index"],
-                initial_noise=context["noise"],
-                filter_unplayable=True,
-            )
-            self.levels.append(level)
         self._update_context()
 
     def _update_context(self):
+        if not self.levels:
+            for context in self.contexts.values():
+                level = generate_level(
+                    width=INITIAL_WIDTH,
+                    height=INITIAL_HEIGHT,
+                    level_index=context["level_index"],
+                    initial_noise=context["noise"],
+                    filter_unplayable=True,
+                )
+                self.levels.append(level)
         self.env.mario_state = self.context["mario_state"]
+        self.env.mario_inertia = self.context["mario_inertia"]
         self.env.levels = [self.levels[self.context_index]]
 
     def _log_context(self):
