@@ -4,12 +4,14 @@ import src.envs as envs
 ######################################
 job_name = "poltra"
 env = "CARLLunarLanderEnv"
-context_file = "results/experiments/policytransfer/new/CARLLunarLanderEnv/hidden/GRAVITY_Y/contexts_train.json"
+context_file = "experiments/lunarLander_contexts_train_2intervals.json"
+context_file = "experiments/lunarLander_contexts_train_Gaussian.json"
 ######################################
 
 mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
-time = "24:00:00"
+partition = "gpu_normal"
+time = "03:00:00"
 mem_per_cpu = "1000M" if env != "CARLVehicleRacingEnv" else "16000M"
 basecommand = 'python experiments/run_policy_transfer.py'
 # outdir = f"results/experiments/policytransfer/{env}"
@@ -27,6 +29,7 @@ sbuilder = SlurmBuilder(
     mail_user=mail_user,
     base_command=basecommand,
     time=time,
+    partition=partition,
     array=array,
     cpus_per_task=cpus_per_task,
     mem_per_cpu=mem_per_cpu,

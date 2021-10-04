@@ -7,19 +7,22 @@ import seaborn as sns
 import numpy as np
 from matplotlib.lines import Line2D
 from typing import Union
-from src.eval.eval_singlecontext import collect_results
+from src.eval.gather_data import collect_results
 
 if __name__ == "__main__":
     paths = [
-        "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
-        "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.1_contexthidden",
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.1_changingcontextvisible",
     ]
     cfs_toplot = ["dt", "g", "l", "m", "max_speed"]
+    cfs_toplot = ["GRAVITY_Y"]
     fname_id = ""
 
     if cfs_toplot:
         fname_id += "".join(cfs_toplot)
-    from_progress = False
+    from_progress = True
     paperversion = True
     libname = "CARL"
     xname = "step"
@@ -48,7 +51,10 @@ if __name__ == "__main__":
         dpi = 200
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ncols = len(cfs_toplot)
-        axes = fig.subplots(nrows=1, ncols=ncols, sharey=True)
+        if ncols > 1:
+            axes = fig.subplots(nrows=1, ncols=ncols, sharey=True)
+        else:
+            axes = [fig.add_subplot(111)]
         fig.subplots_adjust(wspace=0.01, left=0.01, right=0.99, bottom=0.01, top=0.99)
 
     results = []

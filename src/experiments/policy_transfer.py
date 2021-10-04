@@ -15,37 +15,31 @@ test policy transfer:
 
 https://nssdc.gsfc.nasa.gov/planetary/factsheet/planet_table_ratio.html
 """
-from functools import partial
 from pathlib import Path
 import os
 import glob
 import sys
 import inspect
-from typing import Any
 import numpy as np
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 parentdir = os.path.dirname(parentdir)  # go up twice
 sys.path.insert(0, parentdir)
 print(os.getcwd())
-from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.ppo import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from xvfbwrapper import Xvfb
 import pandas as pd
 import json
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
-from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.common.vec_env import DummyVecEnv
 from functools import partial
 import configparser
-import configargparse
-from collections import OrderedDict
 
 from src.train import get_parser, main
-from src.trial_logger import TrialLogger
-from src.context_sampler import get_default_context_and_bounds
+from src.context.sampling import get_default_context_and_bounds
 from src.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv
-from src.envs.box2d.meta_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
+from src.envs.box2d.carl_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
 
 # Experiment 1: LunarLander
 g_earth = - 9.80665  # m/s², beware of coordinate systems
@@ -96,6 +90,24 @@ def get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_defaul
     return contexts_train
 
 
+def get_uniform_intervals_exp1():
+    return [(-20, -15), (-5, -1e-3)]
+
+
+def get_train_contexts_ll_exp1(n_contexts, env_default_context):
+    intervals = get_uniform_intervals_exp1()
+    n_c_per_interval = n_contexts // len(intervals)
+
+    contexts = {}
+    for interval_idx, interval in enumerate(intervals):
+        gravities = np.random.uniform(*interval, size=n_c_per_interval)
+        for i in range(n_c_per_interval):
+            context = env_default_context.copy()
+            context["GRAVITY_Y"] = gravities[i]
+            contexts[i + interval_idx * n_c_per_interval] = context
+    return contexts
+
+
 def define_setting(args):
     args.steps = 1e6  # use 1M steps
     # args.steps = 1000
@@ -112,8 +124,8 @@ def define_setting(args):
         args.hide_context = True
     else:
         raise NotImplementedError
-    args.outdir = os.path.join(outdir, "new", args.env, "visible", context_feature_key)
-    args.hide_context = False  # for hidden: set to true and set "visible" from string above to "hidden"
+    args.outdir = os.path.join(outdir, "exp0", args.env, "hidden", context_feature_key)
+    args.hide_context = True  # for hidden: set to true and set "visible" from string above to "hidden"
     args.state_context_features = ["GRAVITY_Y"]
     args.no_eval_callback = True
 

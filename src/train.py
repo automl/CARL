@@ -1,7 +1,5 @@
 from functools import partial
 import os
-import gym
-import importlib
 from xvfbwrapper import Xvfb
 import configargparse
 import yaml
@@ -14,20 +12,22 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 print(os.getcwd())
 
-from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3 import PPO, DDPG, A2C, DQN
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback, EveryNTimesteps
+from stable_baselines3.common.callbacks import EvalCallback, EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3 import DDPG, PPO, A2C, DQN
+
+# from classic_control import CARLMountainCarEnv
+# importlib.reload(classic_control.meta_mountaincar)
 
 from src.envs import *
 
-import src.trial_logger
-importlib.reload(src.trial_logger)
-from src.trial_logger import TrialLogger
+import src.training.trial_logger
+importlib.reload(src.training.trial_logger)
+from src.training.trial_logger import TrialLogger
 
-from src.context_sampler import sample_contexts
+from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
 
 
@@ -143,7 +143,8 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
-        default=os.path.abspath(os.path.join(os.path.dirname(__file__), "hyperparameter.yml")),
+        default=os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             "training/hyperparameters/hyperparameters_ppo.yml")),
         help="YML file with hyperparameter",
     )
 
@@ -237,9 +238,19 @@ def main(args, unknown_args, parser):
             args.num_envs = hyperparams["n_envs"]
         hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
 
+    schedule = False
+    switching_point = None
+    post = None
     if args.agent == "DDPG":
-        args.num_envs = 1
         hyperparams["policy"] = "MlpPolicy"
+        args.num_envs = 1
+
+        if args.env == "CARLAnt":
+            schedule = True
+            switching_point = 4
+            hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
+            post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147, "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
+            hyperparams["policy"] = "MlpPolicy"
 
     if args.agent == "A2C":
         hyperparams["policy"] = "MlpPolicy"
@@ -250,6 +261,7 @@ def main(args, unknown_args, parser):
 
         if args.env == "CARLLunarLanderEnv":
             hyperparams = {
+                #"n_timesteps": 1e5,
                 "policy": 'MlpPolicy',
                 "learning_rate": 6.3e-4,
                 "batch_size": 128,
@@ -272,6 +284,9 @@ def main(args, unknown_args, parser):
         json.dump(args.__dict__, file, indent="\t")
 
     contexts = get_contexts(args)
+    contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
+    with open(contexts_fname, 'w') as file:
+        json.dump(contexts, file, indent="\t")
 
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
@@ -318,6 +333,12 @@ def main(args, unknown_args, parser):
     if args.no_eval_callback:
         callbacks = None
 
+    chkp_cb = CheckpointCallback(save_freq=args.eval_freq, save_path=os.path.join(logger.logdir, "models"))
+    if callbacks is None:
+        callbacks = [chkp_cb]
+    else:
+        callbacks.append(chkp_cb)
+
     try:
         agent_cls = eval(args.agent)
     except ValueError:
@@ -325,7 +346,20 @@ def main(args, unknown_args, parser):
     model = agent_cls(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
 
     model.set_logger(logger.stable_baselines_logger)
-    model.learn(total_timesteps=args.steps, callback=callbacks)
+    if schedule:
+        for it in range(100):
+            model.learn(1e6)
+            switched = False
+            if it >= switching_point and not switched:
+                model.learning_rate = post["learning_rate"]
+                model.gamma = post["gamma"]
+                model.ent_coef = post["ent_coef"]
+                model.vf_coef = post["vf_coef"]
+                model.gae_lambda = post["gae_lambda"]
+                model.max_grad_norm = post["max_grad_norm"]
+                switched = True
+    else:
+        model.learn(total_timesteps=args.steps, callback=callbacks)
     model.save(os.path.join(logger.logdir, "model.zip"))
     if normalize:
         model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
