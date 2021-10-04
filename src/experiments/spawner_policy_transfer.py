@@ -4,8 +4,8 @@ import src.envs as envs
 ######################################
 job_name = "poltra"
 env = "CARLLunarLanderEnv"
-context_file = "results/experiments/policytransfer/new/CARLLunarLanderEnv/hidden/GRAVITY_Y/contexts_train.json"
 context_file = "experiments/lunarLander_contexts_train_2intervals.json"
+context_file = "experiments/lunarLander_contexts_train_Gaussian.json"
 ######################################
 
 mail_user = "benjamin@tnt.uni-hannover.de"
