@@ -5,9 +5,9 @@ import numpy as np
 import os
 import json
 from typing import Dict, Tuple, Union, List, Optional, Any
-from src.context_changer import add_gaussian_noise
-from src.context_utils import get_context_bounds
-from src.trial_logger import TrialLogger
+from src.context.augmentation import add_gaussian_noise
+from src.context.utils import get_context_bounds
+from src.training.trial_logger import TrialLogger
 
 
 class CARLEnv(Wrapper):
@@ -92,26 +92,27 @@ class CARLEnv(Wrapper):
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
         if state_context_features is not None:
             if state_context_features == "changing_context_features" or state_context_features[0] == "changing_context_features":
-                # detect which context feature changes
-                context_array = np.array([np.array(list(c.values())) for c in self.contexts.values()])
-                which_cf_changes = ~np.all(context_array == context_array[0, :], axis=0)
-                context_keys = np.array(list(self.contexts[list(self.contexts.keys())[0]].keys()))
-                state_context_features = context_keys[which_cf_changes]
-                # print(which_cf_changes, state_context_features)
-                if len(state_context_features) == 0:
-                    state_context_features = None
-                # TODO properly record which are appended to state
-                if logger is not None:
-                    fname = os.path.join(logger.logdir, "env_info.json")
-                    if state_context_features is not None:
-                        save_val = list(state_context_features)  # please json
-                    else:
-                        save_val = state_context_features
-                    with open(fname, 'w') as file:
-                        data = {
-                            "state_context_features": save_val
-                        }
-                        json.dump(data, file, indent="\t")
+                # if we have only one context the context features do not change during training
+                if len(self.contexts) > 1:
+                    # detect which context feature changes
+                    context_array = np.array([np.array(list(c.values())) for c in self.contexts.values()])
+                    which_cf_changes = ~np.all(context_array == context_array[0, :], axis=0)
+                    context_keys = np.array(list(self.contexts[list(self.contexts.keys())[0]].keys()))
+                    state_context_features = context_keys[which_cf_changes]
+                    # TODO properly record which are appended to state
+                    if logger is not None:
+                        fname = os.path.join(logger.logdir, "env_info.json")
+                        if state_context_features is not None:
+                            save_val = list(state_context_features)  # please json
+                        else:
+                            save_val = state_context_features
+                        with open(fname, 'w') as file:
+                            data = {
+                                "state_context_features": save_val
+                            }
+                            json.dump(data, file, indent="\t")
+                else:
+                    state_context_features = []
         self.state_context_features = state_context_features
 
         self.step_counter = 0  # type: int # increased in/after step
@@ -142,6 +143,7 @@ class CARLEnv(Wrapper):
             self.context_feature_scale_factors[self.context_feature_scale_factors == 0] = 1  # otherwise value / scale_factor = nan
 
         self.build_observation_space()
+        self._update_context()
 
     def reset(self, **kwargs):
         """
@@ -177,6 +179,8 @@ class CARLEnv(Wrapper):
                 context_values = context_feature_values
             # Append context to state
             if self.state_context_features is not None:
+                # if self.state_context_features is an empty list, the context values will also be empty and we
+                # get the correct state
                 context_keys = list(self.context.keys())
                 context_values = np.array([context_values[context_keys.index(k)] for k in self.state_context_features])
             state = np.concatenate((state, context_values))
@@ -221,7 +225,7 @@ class CARLEnv(Wrapper):
             state = self.build_context_adaptive_state(state, context_feature_values)
 
         self.total_timestep_counter += 1
-        self.step_counter += 1  # TODO do we need to reset the step counter? yes, we do
+        self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True
         return state, reward, done, info
@@ -258,11 +262,9 @@ class CARLEnv(Wrapper):
             self.context_index = (self.context_index + 1) % len(self.contexts.keys())
         else:
             raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
-        # TODO add the case that instance_mode is a function or a class
         contexts_keys = list(self.contexts.keys())
         context = self.contexts[contexts_keys[self.context_index]]
 
-        # TODO use class for context changing / value augmentation
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
             for key, value in context.items():
@@ -327,7 +329,8 @@ class CARLEnv(Wrapper):
                 env_lower_bounds = - np.inf * np.ones(obs_dim)
                 env_upper_bounds = np.inf * np.ones(obs_dim)
 
-            if self.hide_context:
+            if self.hide_context or \
+                    (self.state_context_features is not None and len(self.state_context_features) == 0):
                 self.env.observation_space = spaces.Box(
                     env_lower_bounds, env_upper_bounds, dtype=np.float32,
                 )

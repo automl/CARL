@@ -9,3 +9,4 @@
 /httpRequests/
 tmp/
 slurm.sh
+src/runscripts/generated
