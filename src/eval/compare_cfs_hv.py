@@ -11,15 +11,18 @@ from src.eval.gather_data import collect_results
 
 if __name__ == "__main__":
     paths = [
-        "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
-        "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        # "results/base_vs_context/classic_control/MetaPendulumEnv/0.5_contexthidden",
+        # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.1_contexthidden",
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.1_changingcontextvisible",
     ]
     cfs_toplot = ["dt", "g", "l", "m", "max_speed"]
+    cfs_toplot = ["GRAVITY_Y"]
     fname_id = ""
 
     if cfs_toplot:
         fname_id += "".join(cfs_toplot)
-    from_progress = False
+    from_progress = True
     paperversion = True
     libname = "CARL"
     xname = "step"
