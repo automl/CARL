@@ -238,11 +238,13 @@ def main(args, unknown_args, parser):
             args.num_envs = hyperparams["n_envs"]
         hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
 
+    schedule = False
+    switching_point = None
+    post = None
     if args.agent == "DDPG":
         hyperparams["policy"] = "MlpPolicy"
         args.num_envs = 1
 
-        schedule = False
         if args.env == "CARLAnt":
             schedule = True
             switching_point = 4
@@ -345,7 +347,7 @@ def main(args, unknown_args, parser):
 
     model.set_logger(logger.stable_baselines_logger)
     if schedule:
-        for it in range(100)
+        for it in range(100):
             model.learn(1e6)
             switched = False
             if it >= switching_point and not switched:
