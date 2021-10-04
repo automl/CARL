@@ -34,9 +34,9 @@ CONTEXT_BOUNDS = {
     "force": (-np.inf, np.inf, float),
     "gravity": (0, np.inf, float),
     "start_position": (-1.5, 0.5, float),  # start position inbetween hilltops
-    "start_position_std": (0., np.inf, float),
+    "start_position_std": (0.1, np.inf, float),
     "start_velocity": (-np.inf, np.inf, float),
-    "start_velocity_std": (0., np.inf, float)
+    "start_velocity_std": (0.1, np.inf, float)
     # "min_position_start": (-np.inf, np.inf, float),  # TODO need to check these!!!
     # "max_position_start": (-np.inf, np.inf, float),
     # "min_velocity_start": (-np.inf, np.inf, float),
