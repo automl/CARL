@@ -26,7 +26,7 @@ For this we vary the context feature 'gravity' for CARLLunarLanderEnv which exte
   :width: 400
   :alt: The sampled gravities used for training in Q3.
 
-Now, we trained our agent on 5 random seeds on 100 contexts distributed on two gravity intervals, :math:`[-15m/s², -10m/s²]` and :math:`[-5m/s², -0.001m/s²]`. In the Figure, the magenta vertical lines mark the test gravities
+Now, we trained our agent on 5 random seeds on 100 contexts distributed on two gravity intervals, :math:`[-15m/s², -10m/s²]` and :math:`[-5m/s², -0.001m/s²]`. In the Figure, the magenta vertical lines mark the test gravities.
 
 .. image:: figures/experiments/gravity_distribution_exp1.png
   :width: 400
