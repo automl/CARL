@@ -26,7 +26,7 @@ For this we vary the context feature 'gravity' for CARLLunarLanderEnv which exte
   :width: 400
   :alt: The sampled gravities used for training in Q3.
 
-Now, we trained our agent on 5 random seeds on 100 contexts distributed on two gravity intervals, :math:`[\SI{-15}{\metre\per\second^2}, \SI{-10}{\metre\per\second^2}]` and :math:`[\SI{-5}{\metre\per\second^2}, \SI{-0.001}{\metre\per\second^2}`.
+Now, we trained our agent on 5 random seeds on 100 contexts distributed on two gravity intervals, :math:`[-15m/s², -10m/s²]` and :math:`[-5m/s², -0.001m/s²]`.
 
 .. image:: figures/experiments/gravity_distribution_exp1.png
   :width: 400
@@ -42,5 +42,5 @@ In general, providing the context shows a clear benefit: The agent reaches a hig
 
 Furthermore, we can observe that with an higher magnitude of gravity the difficulty also increases.
 That is the case because the agent has less time to act before reaching the ground if the gravity increases.
-In addition, if we compare the performance on the gravities :math:`\{\SI{-14}{\metre\per\second^2}, \SI{-11}{\metre\per\second^2}\}` (in-distribution) to the performance on :math:`\{\SI{-8}{\metre\per\second^2}, \SI{-6}{\metre\per\second^2}\}` (out-of-distribution) we notice more crashes on the out-of-distribution case.
+In addition, if we compare the performance on the gravities :math:`[-14m/s², -11m/s²]` (in-distribution) to the performance on :math:`[-8m/s², -6m/s²]` (out-of-distribution) we notice more crashes on the out-of-distribution case.
 
