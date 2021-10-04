@@ -32,6 +32,7 @@ Now, we trained our agent on 5 random seeds on 100 contexts distributed on two g
   :width: 400
   :alt: The two training gravity intervals. The magenta vertical lines mark the test gravities.
 
+To capture crashes and to distinguish them from successful but suboptimal landings, we increase the game over penalty from -100 to -10000 during testing. 
 In one case we hid the context from the agent, in the other case the context was visible.
 For the latter, we only added the changing context feature, i.e. the gravity, to the state.
 In general, providing the context shows a clear benefit: The agent reaches a higher reward in all cases, see Figure below.
