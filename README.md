@@ -31,7 +31,7 @@ install CARL and its dependencies. We recommend and test with python 3.9 under L
 First, clone our repository and install the basic requirements:
 ```bash
 git clone https://github.com/automl/CARL.git --recursive
-cd carl
+cd CARL
 pip install .
 ```
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
