@@ -21,14 +21,18 @@ class PPOTrainable(tune.Trainable):
         #hyperparams, self.env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
         hyperparams = {}
         self.env_wrapper = None
-        self.env = "CARLAcrobotEnv"
-        config["seed"] = 0
+        self.env = config["env_config"]["env"]
+        config["seed"] = config["env_config"]["seed"]
+        self.seed = config["seed"]
+        self.hide_context = config["env_config"]["hide_context"]
+        self.context_args = config["env_config"]["context_args"]
+        del config["env_config"]
         self.timesteps = 0
 
         num_contexts = 100
         contexts = sample_contexts(
             self.env,
-            "friction",
+            self.context_args,
             num_contexts,
             default_sample_std_percentage=0.1
         )
@@ -38,7 +42,7 @@ class PPOTrainable(tune.Trainable):
             eval(self.env),
             contexts=contexts,
             logger=env_logger,
-            hide_context=False,
+            hide_context=self.hide_context,
         )
         env = make_vec_env(EnvCls, n_envs=1, wrapper_class=self.env_wrapper) 
 
@@ -61,7 +65,7 @@ class PPOTrainable(tune.Trainable):
         num_contexts = 100
         contexts = sample_contexts(
             self.env,
-            "friction",
+            self.context_args,
             num_contexts,
             default_sample_std_percentage=0.1
             )
@@ -71,7 +75,7 @@ class PPOTrainable(tune.Trainable):
             eval(self.env),
             contexts=contexts,
             logger=env_logger,
-            hide_context=False,
+            hide_context=self.hide_context,
         )
         eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=self.env_wrapper)
         eval_reward = self.eval_model(eval_env)
@@ -86,7 +90,7 @@ class PPOTrainable(tune.Trainable):
         num_contexts = 100
         contexts = sample_contexts(
                 self.env,
-                "friction",
+                self.context_args,
                 num_contexts,
                 default_sample_std_percentage=0.1
             )
@@ -96,11 +100,11 @@ class PPOTrainable(tune.Trainable):
             eval(self.env),
             contexts=contexts,
             logger=env_logger,
-            hide_context=False,
+            hide_context=self.hide_context,
         )
         env = make_vec_env(EnvCls, n_envs=1, wrapper_class=self.env_wrapper)
         
-        checkpoint_dir = str(checkpoint_dir)
+        checkpoint_dir = str(checkpoint_path)
         checkpoint = os.path.join(checkpoint_dir, "checkpoint")
         self.model = PPO.load(checkpoint, env=env)
 
@@ -122,19 +126,31 @@ class PPOTrainable(tune.Trainable):
         self.config = new_config
         return True
 
+class PBReplay(PopulationBasedTrainingReplay):
+    def __init__(self, policy_path, env_config):
+        super().__init__(policy_path)
+        self.config["env_config"] = env_config
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
         "--policy_path", help="Path to PBT policy")
 parser.add_argument("--seed", type=int)
+parser.add_argument("--env", type=str)
+parser.add_argument("--hide_context", action='store_true')
+parser.add_argument("--name", type=str)
+parser.add_argument("--context_args", type=str)
 args, _ = parser.parse_known_args()
 
-replay = PopulationBasedTrainingReplay(args.policy_path)
+pbt_folder = "pbt_hps"
+if args.hide_context:
+    pbt_folder = "pbt_hps_hidden"
+env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_context, "context_args": args.context_args}
+replay = PBReplay(args.policy_path, env_config)
 
 tune.run(
     PPOTrainable,
-    name="p7_s0",
+    name=args.name,
     scheduler=replay,
     stop={"training_iteration": 250},
-    local_dir=f"/home/eimer/Dokumente/git/meta-gym/src/results/classic_control/pbt_hps/CARLAcrobotEnv/",
+    local_dir=f"/home/eimer/Dokumente/git/meta-gym/src/results/classic_control/{pbt_folder}/{args.env}/",
     log_to_file=True)
