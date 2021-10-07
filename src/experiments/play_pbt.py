@@ -141,10 +141,10 @@ for i in range(250):
     reward, model, timesteps = step(model, timesteps, args.env, context_args, hide_context)
     print(f"Step: {i*4096}, reward: {reward}")
     if i == change_at:
-        model.learning_rate = new_config["learning_rate"]
-        model.gamma = new_config["gamma"]
-        model.ent_coef = new_config["ent_coef"]
-        model.vf_coef = new_config["vf_coef"]
-        model.gae_lambda = new_config["gae_lambda"]
-        model.max_grad_norm = new_config["max_grad_norm"]
+        model.learning_rate = next_config["learning_rate"]
+        model.gamma = next_config["gamma"]
+        model.ent_coef = next_config["ent_coef"]
+        model.vf_coef = next_config["vf_coef"]
+        model.gae_lambda = next_config["gae_lambda"]
+        model.max_grad_norm = next_config["max_grad_norm"]
         change_at, next_config = next(hp_schedule, None)
