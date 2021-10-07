@@ -1,17 +1,18 @@
-from ray import tune
-from ray.tune.schedulers import PopulationBasedTrainingReplay
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import VecNormalize
 
 import os
-import yaml
+import json
 import argparse
 from functools import partial
-
-from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.train import get_parser
 from src.context.sampling import sample_contexts
+
+import importlib
+import src.training.trial_logger
+importlib.reload(src.training.trial_logger)
+from src.training.trial_logger import TrialLogger
 
 def setup_agent(config, outdir, parser, args):
     env_wrapper = None
@@ -31,7 +32,8 @@ def setup_agent(config, outdir, parser, args):
         num_contexts,
         default_sample_std_percentage=0.1
     )
-
+    
+    args.agent = "PPO"
     logger = TrialLogger(
         outdir,
         parser=parser,
@@ -40,21 +42,18 @@ def setup_agent(config, outdir, parser, args):
         init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )
 
-    logger.write_trial_setup()
-
     train_args_fname = os.path.join(logger.logdir, "trial_setup.json")
     with open(train_args_fname, 'w') as file:
         json.dump(args.__dict__, file, indent="\t")
 
-    contexts = get_contexts(args)
     contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
     with open(contexts_fname, 'w') as file:
         json.dump(contexts, file, indent="\t")
 
-    env_logger = logger if vec_env_cls is not SubprocVecEnv else None
+    env_logger = logger
     from src.envs import CARLAcrobotEnv
     EnvCls = partial(
-        eval(self.env),
+        eval(env),
         contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
@@ -62,7 +61,7 @@ def setup_agent(config, outdir, parser, args):
     env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
 
     model = PPO('MlpPolicy', env, **config)
-    return model, timesteps, env, context_args, hide_context
+    return model, timesteps, context_args, hide_context
 
 def eval_model(model, eval_env):
     eval_reward = 0
@@ -88,13 +87,13 @@ def step(model, timesteps, env, context_args, hide_context):
     env_logger = None
     from src.envs import CARLAcrobotEnv
     EnvCls = partial(
-        eval(self.env),
+        eval(env),
         contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
     )
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=None)
-    eval_reward = self.eval_model(eval_env)
+    eval_reward = eval_model(model, eval_env)
     return eval_reward, model, timesteps
 
 def update_config(model, new_config):
@@ -144,8 +143,11 @@ env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_cont
 
 config, hp_schedule = load_hps(args.policy_path)
 config["env_config"] = env_config
-model, timesteps, env, context_args, hide_context = setup_agent(config, outdir, parser, args)
+model, timesteps, context_args, hide_context = setup_agent(config, outdir, parser, args)
+change_at, next_config = next(hp_schedule, None)
 for i in range(250):
-    config = next(hp_schedule, None)
-    model = update_config(mode, config)
-    reward, model, timesteps = step(model, timesteps, env, context_args, hide_context)
+    reward, model, timesteps = step(model, timesteps, args.env, context_args, hide_context)
+    print(f"Step: {i*4096}, reward: {reward}")
+    if i == change_at:
+        model = update_config(model, next_config)
+        change_at, next_config = next(hp_schedule, None)
