@@ -11,7 +11,7 @@
 #SBATCH --mem=80G
 #SBATCH --array=0-4
 
-python experiments/play_pbt.py --env $1 --context_args $2 --policy_path $3 --name p$4 --seed $SLURM_ARRAY_TASK_ID
+python experiments/play_pbt.py --env $1 --context_args $2 --policy_path $3 --name p$4 --seed $SLURM_ARRAY_TASK_ID  $5
 
 # visible
 # sbatch runscripts/run_pb2.sh CARLAcrobotEnv link_length_1 /home/eimer/Dokumente/git/meta-gym/src/results/experiments/pb2/CARLAcrobotEnv/ray/pb2_mountaincar_gravity/pbt_policy_4943b_00000.txt 0
