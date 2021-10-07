@@ -1,5 +1,3 @@
-import sys
-sys.path.append("..")
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import VecNormalize
@@ -131,7 +129,7 @@ args, _ = parser.parse_known_args()
 pbt_folder = "pbt_hps"
 if args.hide_context:
     pbt_folder = "pbt_hps_hidden"
-outdir = f"/home/benjamin/Dokumente/code/tmp/CARL/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}"
+outdir = f"/home/eimer/Dokumente/git/meta-gym/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}"
 
 env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_context, "context_args": args.context_args}
 
