@@ -147,4 +147,7 @@ for i in range(250):
         model.vf_coef = next_config["vf_coef"]
         model.gae_lambda = next_config["gae_lambda"]
         model.max_grad_norm = next_config["max_grad_norm"]
-        change_at, next_config = next(hp_schedule, None)
+        try:
+            change_at, next_config = next(hp_schedule, None)
+        except:
+            pass
