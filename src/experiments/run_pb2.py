@@ -20,37 +20,27 @@ from src.train import get_parser
 from src.context.sampling import sample_contexts
 
 
-def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
-    with open(hp_file, "r") as f:
-        hyperparams_dict = yaml.safe_load(f)
-    hyperparams = hyperparams_dict[env]
-    hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+def setup_model(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
     hyperparams = {}
-
-    num_contexts = 100
-    contexts = sample_contexts(
-            env,
-            context_feature_args,
-            num_contexts,
-            default_sample_std_percentage=default_sample_std_percentage
-        )
+    env_wrapper = None
+    #num_contexts = 100
+    #contexts = sample_contexts(
+    #        env,
+    #        context_feature_args,
+    #        num_contexts,
+    #        default_sample_std_percentage=default_sample_std_percentage
+    #    )
     env_logger = None
     from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLAnt
     EnvCls = partial(
         #eval(env),
         CARLAnt,
-        contexts=contexts,
+    #    contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
     )
     env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
-    #if normalize:
-    #    env = VecNormalize(env, **normalize_kwargs)
-    #    eval_normalize_kwargs = normalize_kwargs.copy()
-    #    eval_normalize_kwargs["norm_reward"] = False
-    #    eval_normalize_kwargs["training"] = False
-    #    eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
 
     if checkpoint_dir:
         checkpoint_dir = str(checkpoint_dir)
@@ -73,10 +63,9 @@ def eval_model(model, eval_env, config):
     return eval_reward / 100
 
 
-def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir=None):
+def train_ppo(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir=None):
     model, eval_env = setup_model(
         env=env,
-        hp_file=hp_file,
         num_envs=num_envs,
         config=config,
         checkpoint_dir=checkpoint_dir,
@@ -172,7 +161,6 @@ def run_experiment(args):
         partial(
             train_ppo,
             args.env,
-            args.hp_file,
             args.num_envs,
             args.hide_context,
             args.context_feature_args,
