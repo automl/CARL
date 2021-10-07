@@ -12,8 +12,8 @@ from mpl_toolkits.axes_grid1.inset_locator import (
     BboxPatch, BboxConnector, BboxConnectorPatch)
 
 eval_data_fnames = [
-     "results/experiments/policytransfer/new/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data_10test.csv",
-    "results/experiments/policytransfer/new/CARLLunarLanderEnv/visible/GRAVITY_Y/eval_data_10test.csv",
+     "results/experiments/policytransfer/exp0/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data.csv",
+    "results/experiments/policytransfer/exp0/CARLLunarLanderEnv/visible/GRAVITY_Y/eval_data.csv",
 ]
 figfname = os.path.join(os.path.commonpath(eval_data_fnames), "policytransfer_hiddenvisible.png")
 sns.set_context("paper")
@@ -37,7 +37,7 @@ custom_dict = {
 }
 data = data.sort_values(by=['planet'], key=lambda x: x.map(custom_dict))
 data = data[data['planet'] != 'train\ndistribution']
-is_exp0 = np.any('m/s²' in data['planet'])
+is_exp0 = np.any('m/s²' in p for p in data['planet'])
 
 filter_by_ep_length = False
 plot_ep_length = False
