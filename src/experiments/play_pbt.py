@@ -51,7 +51,7 @@ def setup_agent(config, outdir, parser, args):
         json.dump(contexts, file, indent="\t")
 
     env_logger = logger
-    from src.envs import CARLAcrobotEnv
+    from src.envs import CARLAcrobotEnv, CARLLunarLanderEnv
     EnvCls = partial(
         eval(env),
         contexts=contexts,
@@ -86,7 +86,7 @@ def step(model, timesteps, env, context_args, hide_context):
         default_sample_std_percentage=0.1
     )
     env_logger = None
-    from src.envs import CARLAcrobotEnv
+    from src.envs import CARLAcrobotEnv, CARLLunarLanderEnv
     EnvCls = partial(
         eval(env),
         contexts=contexts,
