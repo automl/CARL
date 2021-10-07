@@ -61,6 +61,7 @@ def setup_agent(config, outdir, parser, args):
     env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
 
     model = PPO('MlpPolicy', env, **config)
+    model.set_logger(logger.stable_baselines_logger)
     return model, timesteps, context_args, hide_context
 
 def eval_model(model, eval_env):
