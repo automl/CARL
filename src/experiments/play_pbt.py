@@ -76,7 +76,7 @@ def eval_model(model, eval_env):
     return eval_reward/100
 
 def step(model, timesteps, env, context_args, hide_context):
-    model.learn(4096)
+    model.learn(4096, reset_num_timesteps=False)
     timesteps += 4096
     num_contexts = 100
     contexts = sample_contexts(
@@ -96,15 +96,6 @@ def step(model, timesteps, env, context_args, hide_context):
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=None)
     eval_reward = eval_model(model, eval_env)
     return eval_reward, model, timesteps
-
-def update_config(model, new_config):
-    model.learning_rate = new_config["learning_rate"]
-    model.gamma = new_config["gamma"]
-    model.ent_coef = new_config["ent_coef"]
-    model.vf_coef = new_config["vf_coef"]
-    model.gae_lambda = new_config["gae_lambda"]
-    model.max_grad_norm = new_config["max_grad_norm"]
-    return model
 
 def load_hps(policy_file):
     raw_policy = []
@@ -150,5 +141,10 @@ for i in range(250):
     reward, model, timesteps = step(model, timesteps, args.env, context_args, hide_context)
     print(f"Step: {i*4096}, reward: {reward}")
     if i == change_at:
-        model = update_config(model, next_config)
+        model.learning_rate = new_config["learning_rate"]
+        model.gamma = new_config["gamma"]
+        model.ent_coef = new_config["ent_coef"]
+        model.vf_coef = new_config["vf_coef"]
+        model.gae_lambda = new_config["gae_lambda"]
+        model.max_grad_norm = new_config["max_grad_norm"]
         change_at, next_config = next(hp_schedule, None)
