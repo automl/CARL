@@ -35,11 +35,11 @@ def setup_model(env, num_envs, hide_context, context_feature_args, default_sampl
     #        default_sample_std_percentage=default_sample_std_percentage
     #    )
     env_logger = None
-    from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLAnt
+    from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLAnt, CARLAcrobotEnv
     EnvCls = partial(
         #eval(env),
-        CARLAnt,
-    #    contexts=contexts,
+        CARLAcrobotEnv,
+        # contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
     )
@@ -111,12 +111,12 @@ def run_experiment(args):
     )
 
     args, unknown_args = parser.parse_known_args()
-    args.env = "CARLAnt"
+    args.env = "CARLAcrobotEnv"
     args.outdir = os.path.join(os.getcwd(), "results/experiments/pb2", args.env)
     local_dir = os.path.join(args.outdir, "ray")
-    args.hide_context = False
+    args.hide_context = True
     args.default_sample_std_percentage = 0.1
-    args.context_feature_args = ["friction"]
+    args.context_feature_args = ["link_length_1"]
     checkpoint_dir = args.checkpoint_dir
 
     # checkpoint_dir = Path(checkpoint_dir)
@@ -170,7 +170,7 @@ def run_experiment(args):
             args.context_feature_args,
             args.default_sample_std_percentage
         ),
-        name="pb2_ant_friction",
+        name="pb2_acro_ll1_hidden",
         scheduler=pbt,
         metric="mean_accuracy",
         mode="max",
@@ -194,6 +194,7 @@ def run_experiment(args):
         df.to_csv(fname)
     print("Best hyperparameters found were: ", analysis.best_config)
     ray.shutdown()
+
 
 if __name__ == '__main__':
     run_experiment(sys.argv[1:])
