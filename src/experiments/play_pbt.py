@@ -129,7 +129,8 @@ args, _ = parser.parse_known_args()
 pbt_folder = "pbt_hps"
 if args.hide_context:
     pbt_folder = "pbt_hps_hidden"
-outdir = f"/home/eimer/Dokumente/git/meta-gym/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}"
+context_feature_str = "".join(args.context_args)
+outdir = f"/home/benjamin/Dokumente/code/tmp/CARL/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}/{context_feature_str}"
 
 env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_context, "context_args": args.context_args}
 
