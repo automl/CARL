@@ -1,5 +1,6 @@
 import os
 import sys
+sys.path.append("..")
 # sys.path.append(os.path.dirname(os.getcwd()))
 # sys.path.append(os.getcwd())
 from functools import partial
@@ -21,6 +22,9 @@ from src.context.sampling import sample_contexts
 
 
 def setup_model(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
+    import sys
+    sys.path.append("..")
+    sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL")
     hyperparams = {}
     env_wrapper = None
     #num_contexts = 100
