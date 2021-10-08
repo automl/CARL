@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union
+from typing import Union, Dict
 
 import numpy as np
 import pandas as pd
@@ -12,6 +12,7 @@ def collect_results(
         eval_fname: str = "evaluations.npz",
         yname: str = "ep_rew_mean",
         from_progress: bool = False,
+        dirs_per_cf: Dict = None,
 ):
     """
     Assumend folder structure:
@@ -33,13 +34,14 @@ def collect_results(
     # if where_baseline:
     #     idx = where_baseline[0]
 
-    dirs_per_cf = {}
-    for i, cf_name in enumerate(cf_names):
-        cf_dir = context_dirs[i]
-        agent_seed_dirs = os.listdir(cf_dir)
-        agent_seed_dirs = [os.path.join(cf_dir, p) for p in agent_seed_dirs]
-        agent_seed_dirs = [p for p in agent_seed_dirs if os.path.isdir(p)]
-        dirs_per_cf[cf_name] = agent_seed_dirs
+    if dirs_per_cf is None:
+        dirs_per_cf = {}
+        for i, cf_name in enumerate(cf_names):
+            cf_dir = context_dirs[i]
+            agent_seed_dirs = os.listdir(cf_dir)
+            agent_seed_dirs = [os.path.join(cf_dir, p) for p in agent_seed_dirs]
+            agent_seed_dirs = [p for p in agent_seed_dirs if os.path.isdir(p)]
+            dirs_per_cf[cf_name] = agent_seed_dirs
 
     data = {}
     for cf_name, cf_dirs in dirs_per_cf.items():
