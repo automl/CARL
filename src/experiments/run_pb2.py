@@ -1,6 +1,5 @@
 import os
 import sys
-sys.path.append("..")
 # sys.path.append(os.path.dirname(os.getcwd()))
 # sys.path.append(os.getcwd())
 from functools import partial
@@ -28,17 +27,16 @@ def setup_model(env, num_envs, hide_context, context_feature_args, default_sampl
     hyperparams = {}
     env_wrapper = None
     #num_contexts = 100
-    #contexts = sample_contexts(
+    # contexts = sample_contexts(
     #        env,
     #        context_feature_args,
     #        num_contexts,
     #        default_sample_std_percentage=default_sample_std_percentage
     #    )
     env_logger = None
-    from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLAnt, CARLAcrobotEnv
+    from src.envs import *
     EnvCls = partial(
-        #eval(env),
-        CARLAcrobotEnv,
+        eval(env),
         # contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
@@ -109,14 +107,18 @@ def run_experiment(args):
     parser.add_argument(
         "--checkpoint_dir", type=str, default="results/experiments/pb2"
     )
+    parser.add_argument("--name", type=str, help="Experiment name")
+    parser.add_argument("--outdir", type=str, help="Result directory")
+    parser.add_argument("--env", type=str, help="Environment to optimize for")
+    parser.add_argument("--hide_context", action="store_true")
+    parser.add_argument("--default_sample_std_percentage", type=float, default=0.1)
+    parser.add_argument("--context_feature", type=str, help="Context feature to adapt")
 
     args, unknown_args = parser.parse_known_args()
-    args.env = "CARLAcrobotEnv"
     args.outdir = os.path.join(os.getcwd(), "results/experiments/pb2", args.env)
     local_dir = os.path.join(args.outdir, "ray")
-    args.hide_context = True
     args.default_sample_std_percentage = 0.1
-    args.context_feature_args = ["link_length_1"]
+    args.context_feature_args = [args.context_feature]
     checkpoint_dir = args.checkpoint_dir
 
     # checkpoint_dir = Path(checkpoint_dir)
@@ -131,8 +133,6 @@ def run_experiment(args):
 
     pbt = PB2(
         perturbation_interval=1,
-        # time_attr="timesteps_total",
-        # perturbation_interval=4096,
         hyperparam_bounds={
             'learning_rate': [0.00001, 0.02],
             'gamma': [0.8, 0.999],
@@ -146,19 +146,10 @@ def run_experiment(args):
         require_attrs=True,
     )
 
-    # default hyperparameters from hyperparameters_ppo.yml
-    # HPs found for stable baselines' PPO on pybullet Ant
     defaults = {
         'batch_size': 128,  # 1024,
         'learning_rate': 3e-5,
-        #'n_steps': 512,  # args.num_envs*1024,
         'gamma': 0.99,  # 0.95,
-        #'gae_lambda': 0.9,  # 0.95,
-        #'n_epochs': 20,  # 4,
-        #'ent_coef': 0.0,  # 0.01,
-        #'sde_sample_freq': 4,
-        #'max_grad_norm': 0.5,
-        #'vf_coef': 0.5,
     }
 
     analysis = tune.run(
@@ -170,13 +161,13 @@ def run_experiment(args):
             args.context_feature_args,
             args.default_sample_std_percentage
         ),
-        name="pb2_acro_ll1_hidden",
+        name=args.name,
         scheduler=pbt,
         metric="mean_accuracy",
         mode="max",
         verbose=3,
         stop={
-            "training_iteration": 100,
+            "training_iteration": 250,
             # "timesteps_total": 1e6,
         },
         num_samples=8,
