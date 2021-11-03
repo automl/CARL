@@ -3,7 +3,7 @@
 #SBATCH --mail-user=benjamin@tnt.uni-hannover.de
 #SBATCH --mail-type=ALL
 #SBATCH --partition=gpu_normal
-#SBATCH --job-name=pb2
+#SBATCH --job-name=pb2eval
 #SBATCH --output=slurmout/slurm-%j.out
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1

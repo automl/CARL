@@ -118,7 +118,7 @@ if __name__ == "__main__":
     path = Path(outdir)
     env_name = "CARLLunarLanderEnv"
     env_name = "CARLAcrobotEnv"
-    context_feature_name = "GRAVITY_Y"
+    context_feature_name = "link_length_1"
     p_id_visible = "pbt_hps"
     p_id_hidden = "pbt_hps_hidden"
     from_progress = True
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     if structure_0:
         data = get_data_0(path, env_name, p_id_visible, from_progress, p_id_hidden)
     else:
-        data = get_data_1(path, env_name, p_id_visible, p_id_hidden, from_progress, no_cf_dir=True, cf_name="link_length_1")
+        data = get_data_1(path, env_name, p_id_visible, p_id_hidden, from_progress, no_cf_dir=True, cf_name=context_feature_name)
 
 
     # data contains:
@@ -149,8 +149,8 @@ if __name__ == "__main__":
     data_h = data[data["visibility"] == "hidden"]
     data_v = data[data["visibility"] == "visible"]
 
-    ax_h = sns.lineplot(data=data_h, x="step", y="ep_rew_mean", hue="worker_id", ax=ax_h, palette=palette)
-    ax_v = sns.lineplot(data=data_v, x="step", y="ep_rew_mean", hue="worker_id", ax=ax_v, palette=palette)
+    ax_h = sns.lineplot(data=data_h, x="step", y="ep_rew_mean", hue="worker_id", style="seed", ax=ax_h, palette=palette)
+    ax_v = sns.lineplot(data=data_v, x="step", y="ep_rew_mean", hue="worker_id", style="seed", ax=ax_v, palette=palette)
 
     ax_h.set_title("hidden")
     ax_v.set_title("visible")
@@ -168,4 +168,3 @@ if __name__ == "__main__":
     figfname = Path(os.getcwd()) / "results" / f"pb2workers_{env_name}_hidden_vs_visible.png"
     fig.savefig(figfname, bbox_inches="tight")
     plt.show()
-

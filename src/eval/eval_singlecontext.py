@@ -14,9 +14,18 @@ if __name__ == "__main__":
         # "results/base_vs_context/classic_control/CARLPendulumEnv/0.5_changingcontextvisible",
 
         # bipedal
-        "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.1_contexthidden",
-        "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.25_contexthidden",
-        "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.5_contexthidden"
+        # "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.1_contexthidden",
+        # "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.25_contexthidden",
+        # "results/base_vs_context/box2d/CARLBipedalWalkerEnv/0.5_contexthidden"
+
+        # lunar lander
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.1_contexthidden",
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.25_contexthidden",
+        "results/base_vs_context/box2d/CARLLunarLanderEnv/0.5_contexthidden"
+
+        # "results/base_vs_context/box2d/CARLLunarLanderEnv/0.1_changingcontextvisible",
+        # "results/base_vs_context/box2d/CARLLunarLanderEnv/0.25_changingcontextvisible",
+        # "results/base_vs_context/box2d/CARLLunarLanderEnv/0.5_changingcontextvisible"
     ]
 
     fname_id = "" # "_comparevisibility"
@@ -102,6 +111,9 @@ if __name__ == "__main__":
 
         ylims = None
         xlims = (5e3, 1e6)
+        xmins = [x['step'].min() for x in data.values()]
+        xmaxs = [x['step'].max() for x in data.values()]
+        xlims = (min(xmins), max(xmaxs))
         if "Bipedal" in env_name:
             ylims = (-1000, 500)
             # ylims = None

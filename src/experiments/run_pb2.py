@@ -20,37 +20,29 @@ from src.train import get_parser
 from src.context.sampling import sample_contexts
 
 
-def setup_model(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
-    with open(hp_file, "r") as f:
-        hyperparams_dict = yaml.safe_load(f)
-    hyperparams = hyperparams_dict[env]
-    hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+def setup_model(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
+    import sys
+    sys.path.append("..")
+    sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL")
     hyperparams = {}
-
-    num_contexts = 100
-    contexts = sample_contexts(
-            env,
-            context_feature_args,
-            num_contexts,
-            default_sample_std_percentage=default_sample_std_percentage
-        )
+    env_wrapper = None
+    #num_contexts = 100
+    # contexts = sample_contexts(
+    #        env,
+    #        context_feature_args,
+    #        num_contexts,
+    #        default_sample_std_percentage=default_sample_std_percentage
+    #    )
     env_logger = None
-    from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLAnt
+    from src.envs import *
     EnvCls = partial(
-        #eval(env),
-        CARLAnt,
-        contexts=contexts,
+        eval(env),
+        # contexts=contexts,
         logger=env_logger,
         hide_context=hide_context,
     )
     env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
     eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
-    #if normalize:
-    #    env = VecNormalize(env, **normalize_kwargs)
-    #    eval_normalize_kwargs = normalize_kwargs.copy()
-    #    eval_normalize_kwargs["norm_reward"] = False
-    #    eval_normalize_kwargs["training"] = False
-    #    eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
 
     if checkpoint_dir:
         checkpoint_dir = str(checkpoint_dir)
@@ -73,10 +65,9 @@ def eval_model(model, eval_env, config):
     return eval_reward / 100
 
 
-def train_ppo(env, hp_file, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir=None):
+def train_ppo(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir=None):
     model, eval_env = setup_model(
         env=env,
-        hp_file=hp_file,
         num_envs=num_envs,
         config=config,
         checkpoint_dir=checkpoint_dir,
@@ -116,14 +107,18 @@ def run_experiment(args):
     parser.add_argument(
         "--checkpoint_dir", type=str, default="results/experiments/pb2"
     )
+    parser.add_argument("--name", type=str, help="Experiment name")
+    parser.add_argument("--outdir", type=str, help="Result directory")
+    parser.add_argument("--env", type=str, help="Environment to optimize for")
+    parser.add_argument("--hide_context", action="store_true")
+    parser.add_argument("--default_sample_std_percentage", type=float, default=0.1)
+    parser.add_argument("--context_feature", type=str, help="Context feature to adapt")
 
     args, unknown_args = parser.parse_known_args()
-    args.env = "CARLAnt"
     args.outdir = os.path.join(os.getcwd(), "results/experiments/pb2", args.env)
     local_dir = os.path.join(args.outdir, "ray")
-    args.hide_context = False
     args.default_sample_std_percentage = 0.1
-    args.context_feature_args = ["friction"]
+    args.context_feature_args = [args.context_feature]
     checkpoint_dir = args.checkpoint_dir
 
     # checkpoint_dir = Path(checkpoint_dir)
@@ -138,8 +133,6 @@ def run_experiment(args):
 
     pbt = PB2(
         perturbation_interval=1,
-        # time_attr="timesteps_total",
-        # perturbation_interval=4096,
         hyperparam_bounds={
             'learning_rate': [0.00001, 0.02],
             'gamma': [0.8, 0.999],
@@ -153,38 +146,28 @@ def run_experiment(args):
         require_attrs=True,
     )
 
-    # default hyperparameters from hyperparameters_ppo.yml
-    # HPs found for stable baselines' PPO on pybullet Ant
     defaults = {
         'batch_size': 128,  # 1024,
         'learning_rate': 3e-5,
-        #'n_steps': 512,  # args.num_envs*1024,
         'gamma': 0.99,  # 0.95,
-        #'gae_lambda': 0.9,  # 0.95,
-        #'n_epochs': 20,  # 4,
-        #'ent_coef': 0.0,  # 0.01,
-        #'sde_sample_freq': 4,
-        #'max_grad_norm': 0.5,
-        #'vf_coef': 0.5,
     }
 
     analysis = tune.run(
         partial(
             train_ppo,
             args.env,
-            args.hp_file,
             args.num_envs,
             args.hide_context,
             args.context_feature_args,
             args.default_sample_std_percentage
         ),
-        name="pb2_ant_friction",
+        name=args.name,
         scheduler=pbt,
         metric="mean_accuracy",
         mode="max",
         verbose=3,
         stop={
-            "training_iteration": 100,
+            "training_iteration": 250,
             # "timesteps_total": 1e6,
         },
         num_samples=8,
@@ -202,6 +185,7 @@ def run_experiment(args):
         df.to_csv(fname)
     print("Best hyperparameters found were: ", analysis.best_config)
     ray.shutdown()
+
 
 if __name__ == '__main__':
     run_experiment(sys.argv[1:])

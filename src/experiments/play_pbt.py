@@ -1,8 +1,4 @@
 import sys
-
-import numpy as np
-import pandas as pd
-
 sys.path.append("..")
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
@@ -19,7 +15,6 @@ import importlib
 import src.training.trial_logger
 importlib.reload(src.training.trial_logger)
 from src.training.trial_logger import TrialLogger
-
 
 def setup_agent(config, outdir, parser, args):
     env_wrapper = None
@@ -69,9 +64,7 @@ def setup_agent(config, outdir, parser, args):
 
     model = PPO('MlpPolicy', env, **config)
     model.set_logger(logger.stable_baselines_logger)
-
     return model, timesteps, context_args, hide_context
-
 
 def eval_model(model, eval_env):
     eval_reward = 0
@@ -83,7 +76,6 @@ def eval_model(model, eval_env):
             state, reward, done, _ = eval_env.step(action)
             eval_reward += reward
     return eval_reward/100
-
 
 def step(model, timesteps, env, context_args, hide_context):
     model.learn(4096, reset_num_timesteps=False)
@@ -107,7 +99,6 @@ def step(model, timesteps, env, context_args, hide_context):
     eval_reward = eval_model(model, eval_env)
     return eval_reward, model, timesteps
 
-
 def load_hps(policy_file):
     raw_policy = []
     with open(policy_file, "rt") as fp:
@@ -127,7 +118,6 @@ def load_hps(policy_file):
 
     return last_old_conf, iter(list(reversed(policy)))
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument(
         "--policy_path", help="Path to PBT policy")
@@ -141,8 +131,8 @@ args, _ = parser.parse_known_args()
 pbt_folder = "pbt_hps"
 if args.hide_context:
     pbt_folder = "pbt_hps_hidden"
-context_feature_name = "".join(args.context_args)
-outdir = f"/home/benjamin/Dokumente/code/tmp/CARL/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}/{context_feature_name}"
+context_feature_str = "".join(args.context_args)
+outdir = f"/home/benjamin/Dokumente/code/tmp/CARL/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}/{context_feature_str}"
 
 env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_context, "context_args": args.context_args}
 
@@ -150,12 +140,8 @@ config, hp_schedule = load_hps(args.policy_path)
 config["env_config"] = env_config
 model, timesteps, context_args, hide_context = setup_agent(config, outdir, parser, args)
 change_at, next_config = next(hp_schedule, None)
-rewards = []
-step_list = []
 for i in range(250):
     reward, model, timesteps = step(model, timesteps, args.env, context_args, hide_context)
-    rewards.append(reward)
-    step_list.append(i*4096)
     print(f"Step: {i*4096}, reward: {reward}")
     if i == change_at:
         model.learning_rate = next_config["learning_rate"]
@@ -168,8 +154,3 @@ for i in range(250):
             change_at, next_config = next(hp_schedule, None)
         except:
             pass
-
-performance_track = np.concatenate((np.array(step_list)[:, None], np.array(rewards)[:, None]), axis=1)
-performance_track = pd.DataFrame(performance_track, columns=["step", "reward"])
-performance_track_fname = os.path.join(outdir, "performance_log.csv")
-performance_track.to_csv(performance_track_fname, index=False)
