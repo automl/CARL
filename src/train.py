@@ -4,6 +4,8 @@ from xvfbwrapper import Xvfb
 import configargparse
 import yaml
 import json
+from typing import Dict
+import pandas as pd
 
 import sys
 import inspect
@@ -200,7 +202,7 @@ def get_contexts(args):
     return contexts
 
 
-def main(args, unknown_args, parser):
+def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
     # set_random_seed(args.seed)  # TODO discuss seeding
 
     vec_env_cls_str = args.vec_env_cls
@@ -276,6 +278,10 @@ def main(args, unknown_args, parser):
                 "policy_kwargs": dict(net_arch=[256, 256])
             }
 
+    if opt_hyperparams is not None:
+        for k, v in opt_hyperparams:
+            hyperparams[k] = v
+
     logger.write_trial_setup()
 
     # TODO make less hacky
@@ -346,6 +352,7 @@ def main(args, unknown_args, parser):
     model = agent_cls(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
 
     model.set_logger(logger.stable_baselines_logger)
+    final_ep_mean_reward = None
     if schedule:
         for it in range(100):
             model.learn(1e6)
@@ -360,12 +367,27 @@ def main(args, unknown_args, parser):
                 switched = True
     else:
         model.learn(total_timesteps=args.steps, callback=callbacks)
+        logdir = model.logger.get_dir()
+        logfile = os.path.join(logdir, "progress.csv")
+        try:
+            df = pd.read_csv(logfile)
+            mean_reward_key = 'rollout/ep_rew_mean'
+            time_key = 'time/total_timesteps'
+            if time_key not in df:
+                time_key = 'time/total timesteps'
+            if mean_reward_key not in df or time_key not in df:
+                mean_reward_key = 'eval/mean_reward'
+            final_ep_mean_reward = df[mean_reward_key][-1]
+        except Exception as e:
+            print(e)
     model.save(os.path.join(logger.logdir, "model.zip"))
     if normalize:
         model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
 
     if use_xvfb:
         vdisplay.stop()
+
+    return final_ep_mean_reward
 
 
 if __name__ == '__main__':
