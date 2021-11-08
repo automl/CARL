@@ -3,12 +3,12 @@ import src.envs as envs
 
 ######################################
 job_name = "CARL"
-env = "CARLLunarLanderEnv"
-envtype = "box2d"
-default_sample_std_percentage = 0.1
+env = "CARLPendulumEnv"
+envtype = "classic_control"
+default_sample_std_percentage = 0.25
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DQN"
+agent = "DDPG"
 n_timesteps = 1000000
 state_context_features = None  # "changing_context_features"
 no_eval = True
@@ -28,7 +28,8 @@ mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
 time = "24:00:00"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
-basecommand = f"{xvfb_str}python train.py --num_contexts 100 --steps {n_timesteps} --add_context_feature_names_to_logdir --hp_file hyperparameter.yml"
+basecommand = f"{xvfb_str}python train.py --num_contexts 100 --steps {n_timesteps} " \
+              f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
 cpus_per_task = "1"
 
 env_defaults = getattr(envs, f"{env}_defaults")
@@ -65,7 +66,7 @@ sbuilder = SlurmBuilder(
         {
             "name": "context_feature_args",
             "id": "cfargs",
-            "values": ['GRAVITY_Y']  # list(env_defaults.keys())  # None trains only with the default context
+            "values": ['g']  # list(env_defaults.keys())  # None trains only with the default context
         }
     ]
 )
