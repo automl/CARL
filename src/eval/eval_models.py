@@ -15,7 +15,7 @@ import pandas as pd
 import json
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3 import DQN
+from stable_baselines3 import DDPG, PPO, A2C, DQN
 from functools import partial
 import configparser
 
