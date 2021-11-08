@@ -1,3 +1,8 @@
+import sys
+sys.path.append("..")
+import matplotlib
+matplotlib.use('TkAgg')
+
 import glob
 import os
 from pathlib import Path
