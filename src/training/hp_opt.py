@@ -20,8 +20,8 @@ from smac.scenario.scenario import Scenario
 
 from src.train import get_parser, main
 
-# Target Algorithm
-def carl_from_cfg(cfg, seed, budget, args):
+
+def carl_from_cfg(cfg, seed, budget, parser, args):
     """
     Creates a MLP classifier from sklearn and fits the given data on it.
 
@@ -30,38 +30,37 @@ def carl_from_cfg(cfg, seed, budget, args):
     cfg: Configuration
         configuration chosen by smac
     seed: int or RandomState
-        used to initialize the rf's random generator
+        seeeeed
     budget: float
-        used to set max iterations for the MLP
+        used to set max steps for the agent
 
     Returns
     -------
     float
     """
-
-
     opt_hyperparams = cfg
     args.budget = budget
     args.seed = seed
+    unknown_args = []
 
     # in CARL we try to maximize the reward
-    final_ep_mean_reward = main(args=args, unknown_args=unknown_args, opt_hyperparams=opt_hyperparams)
+    final_ep_mean_reward = main(args=args, parser=parser, unknown_args=unknown_args, opt_hyperparams=opt_hyperparams)
 
     return -final_ep_mean_reward
 
 
 if __name__ == '__main__':
+    # TODO fix output dir
     limit_mem_mb = 1e5
     t_limit_ta = 3 * 3600  # runtime limit for target algorithm [seconds]
     wallclock_limit_s = 2*24*3600
 
     parser = get_parser()
 
-    budget_init = 1000  # TODO find values for environment families
-
     args, unknown_args = parser.parse_known_args()
 
-    budget_max = args.steps
+    budget_init = int(1000)  # TODO find values for environment families
+    budget_max = int(args.steps)
 
     # main(args, unknown_args, parser)
     # DDPG: learning rate, gamma, tau
@@ -119,7 +118,7 @@ if __name__ == '__main__':
     # SMAC scenario object
     scenario = Scenario({
         'run_obj': 'quality',  # we optimize quality (alternative to runtime)
-        'wallclock-limit': wallclock_limit_s,  # max duration to run the optimization (in seconds)
+        # 'wallclock-limit': wallclock_limit_s,  # max duration to run the optimization (in seconds)
         'cs': cs,  # configuration space
         'deterministic': 'true',
         'limit_resources': True,  # Uses pynisher to limit memory and runtime
@@ -132,9 +131,17 @@ if __name__ == '__main__':
     # Intensifier parameters
     intensifier_kwargs = {'initial_budget': budget_init, 'max_budget': budget_max, 'eta': 3}
 
+    # Initial design parameters
+    initial_design_kwargs = {  # static
+        "n_configs_x_params": 2,
+        "max_config_fracs": 0.05,
+        "init_budget": 1,
+    }
+
     # To optimize, we pass the function to the SMAC-object
     carl_from_cfg_helper = partial(
         carl_from_cfg,
+        parser=parser,
         args=args
     )
 
@@ -142,6 +149,7 @@ if __name__ == '__main__':
         scenario=scenario,
         rng=np.random.RandomState(args.seed),
         tae_runner=carl_from_cfg_helper,
+        # tae_runner_kwargs={'num_workers': 4},
         intensifier_kwargs=intensifier_kwargs,
     )
 
@@ -160,9 +168,11 @@ if __name__ == '__main__':
     finally:
         incumbent = smac.solver.incumbent
 
-    inc_value = smac.get_tae_runner().run(
-        config=incumbent,
-        budget=budget_max,
-        seed=0)[1]
+    # inc_value = smac.get_tae_runner().run(
+    #     config=incumbent,
+    #     budget=budget_max,
+    #     seed=0)[1]
+    #
+    # print('Optimized Value: %.4f' % inc_value)
 
-    print('Optimized Value: %.4f' % inc_value)
+    print(incumbent)
