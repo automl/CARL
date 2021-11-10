@@ -279,8 +279,8 @@ def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
             }
 
     if opt_hyperparams is not None:
-        for k, v in opt_hyperparams:
-            hyperparams[k] = v
+        for k in opt_hyperparams:
+            hyperparams[k] = opt_hyperparams[k]
 
     logger.write_trial_setup()
 
