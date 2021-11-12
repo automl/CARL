@@ -5,14 +5,18 @@ import src.envs as envs
 job_name = "CARL"
 env = "CARLPendulumEnv"
 envtype = "classic_control"
-default_sample_std_percentage = 0.25
+default_sample_std_percentage = 0.75
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DDPG"
+agent = "PPO"
 n_timesteps = 1000000
 state_context_features = None  # "changing_context_features"
 no_eval = True
+hp_opt = True
 ######################################
+
+runfile = "train.py" if not hp_opt else "training/hp_opt.py"
+exptype = "base_vs_context" if not hp_opt else "optimized"
 
 print(env)
 hide_context_dir_str = "_hidecontext" if hide_context else ""
@@ -28,7 +32,7 @@ mail_user = "benjamin@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
 time = "24:00:00"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
-basecommand = f"{xvfb_str}python train.py --num_contexts 100 --steps {n_timesteps} " \
+basecommand = f"{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
               f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
 cpus_per_task = "1"
 
@@ -36,7 +40,7 @@ env_defaults = getattr(envs, f"{env}_defaults")
 outdir = f"results/singlecontextfeature_{default_sample_std_percentage}{hide_context_dir_str}/{envtype}/{env}"
 hide_context_dir_str = "contexthidden" if hide_context else "contextvisible"
 state_context_features_str = "changing" if state_context_features is not None else ""
-outdir = f"results/base_vs_context/{envtype}/{env}/{default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
+outdir = f"results/{exptype}/{envtype}/{env}/{default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
 basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --default_sample_std_percentage {default_sample_std_percentage}"
 basecommand += f" {hide_context_cmd_str} --eval_freq {eval_freq} --seed $SLURM_ARRAY_TASK_ID " \
                f"--scale_context_features no  --vec_env_cls {vec_env_cls}  --agent {agent} "
