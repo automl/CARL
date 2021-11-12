@@ -1,5 +1,11 @@
 import logging
 logging.basicConfig(level=logging.INFO)
+import os
+from pathlib import Path
+
+import sys
+sys.path.append("..")
+sys.path.append("../..")
 
 import warnings
 import numpy as np
@@ -14,11 +20,12 @@ from sklearn.exceptions import ConvergenceWarning
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 from sklearn.neural_network import MLPClassifier
 
-from smac.configspace import ConfigurationSpace
+from smac.configspace import ConfigurationSpace, Configuration
 from smac.facade.smac_mf_facade import SMAC4MF
 from smac.scenario.scenario import Scenario
 
 from src.train import get_parser, main
+from src.training.trial_logger import TrialLogger
 
 
 def carl_from_cfg(cfg, seed, budget, parser, args):
@@ -40,7 +47,7 @@ def carl_from_cfg(cfg, seed, budget, parser, args):
     """
     opt_hyperparams = cfg
     args.budget = budget
-    args.seed = seed
+    # args.seed = seed
     unknown_args = []
 
     # in CARL we try to maximize the reward
@@ -49,17 +56,49 @@ def carl_from_cfg(cfg, seed, budget, parser, args):
     return -final_ep_mean_reward
 
 
+def test_carl_from_cfg(carl_from_cfg_helper, cs):
+    values = {
+        "ent_coef": 0.3639574736567951,
+        "gae_lambda": 0.9920997843658639,
+        "gamma": 0.9066381701127927,
+        "learning_rate": 5.043346488136671e-05,
+        "max_grad_norm": 0.9484371657462239,
+        "vf_coef": 0.1854654290187061,
+    }
+    configuration = Configuration(
+        configuration_space=cs,
+        values=values,
+    )
+
+    carl_from_cfg_helper(configuration, 123, 2000)
+
+
 if __name__ == '__main__':
     # TODO fix output dir
+    cwd = os.getcwd()
+    if "training" in cwd:
+        os.chdir(str(Path(cwd).parent))
+    print(os.getcwd())
     limit_mem_mb = 1e5
-    t_limit_ta = 3 * 3600  # runtime limit for target algorithm [seconds]
-    wallclock_limit_s = 2*24*3600
+    t_limit_ta = 0.01 * 3600  # runtime limit for target algorithm [seconds]
+    wallclock_limit_s = 0.5 * 1 * 3600
 
     parser = get_parser()
 
     args, unknown_args = parser.parse_known_args()
 
-    budget_init = int(1000)  # TODO find values for environment families
+    logger = TrialLogger(
+        args.outdir,
+        parser=parser,
+        trial_setup_args=args,
+        add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir,
+        init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
+    )
+
+    smac_outdir = Path(logger.logdir) / "smac_logs"
+    del logger
+
+    budget_init = int(5000)  # TODO find values for environment families
     budget_max = int(args.steps)
 
     # main(args, unknown_args, parser)
@@ -124,8 +163,10 @@ if __name__ == '__main__':
         'limit_resources': True,  # Uses pynisher to limit memory and runtime
                                   # Alternatively, you can also disable this.
                                   # Then you should handle runtime and memory yourself in the TA
-        'cutoff': t_limit_ta,  # runtime limit for target algorithm
+        # 'cutoff': t_limit_ta,  # runtime limit for target algorithm
         'memory_limit': limit_mem_mb,  # adapt this to reasonable value for your hardware
+        'output_dir': smac_outdir,
+        'save_instantly': True,
     })
 
     # Intensifier parameters
@@ -144,6 +185,8 @@ if __name__ == '__main__':
         parser=parser,
         args=args
     )
+    
+    # test_carl_from_cfg(carl_from_cfg_helper, cs)
 
     smac = SMAC4MF(
         scenario=scenario,
