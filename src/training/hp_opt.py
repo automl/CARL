@@ -74,7 +74,6 @@ def test_carl_from_cfg(carl_from_cfg_helper, cs):
 
 
 if __name__ == '__main__':
-    # TODO fix output dir
     cwd = os.getcwd()
     if "training" in cwd:
         os.chdir(str(Path(cwd).parent))
