@@ -377,7 +377,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
                 time_key = 'time/total timesteps'
             if mean_reward_key not in df or time_key not in df:
                 mean_reward_key = 'eval/mean_reward'
-            final_ep_mean_reward = df[mean_reward_key][-1]
+            final_ep_mean_reward = df[mean_reward_key].iloc[-1]
         except Exception as e:
             print(e)
     model.save(os.path.join(logger.logdir, "model.zip"))
