@@ -54,9 +54,9 @@ if __name__ == '__main__':
     outdir / smag_logs / run_runid / traj.json
     outdir / trial_setup.json
     """
-    fname = "/home/benjamin/Dokumente/code/tmp/CARL/src/training/smac3-output_2021-11-12_10:59:28_979602/run_1593118232/traj.json"
     outdir = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/optimized/classic_control/CARLPendulumEnv/0.75_contexthidden/g/"
 
+    convert_sec_to_hours = True
     key_time = "wallclock_time"
     key_performance = "cost"
 
@@ -96,13 +96,22 @@ if __name__ == '__main__':
 
     data_filled.index.name = key_time
     data_filled.rename(columns={'list_index': 'seed', 'performance': key_performance}, inplace=True)
+    data_filled.reset_index(level=0, inplace=True)
 
     del_ids = data['evaluations'] == 0
     data.drop(data.index[del_ids], inplace=True)
 
+    plot_data = data_filled
+    time_unit = "s" if not convert_sec_to_hours else "h"
+    new_time_key = f"{key_time} [{time_unit}]"
+    plot_data.rename(columns={key_time: new_time_key}, inplace=True)
+    key_time = new_time_key
+    if convert_sec_to_hours:
+        plot_data[key_time] /= 3600
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax = sns.lineplot(data=data_filled, x=key_time, y=key_performance, ax=ax, marker='o')
+    ax = sns.lineplot(data=plot_data, x=key_time, y=key_performance, ax=ax, marker='o')
     ax.set_yscale('log')
     fig.set_tight_layout(True)
     plt.show()
