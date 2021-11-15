@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -283,7 +285,7 @@ for ax, env_type in zip(axs.flat, env_types):
 #          size='large')
 fig.set_tight_layout(True)
 
-figfname = "utils/radar_env_space.png"
+figfname = "src/utils/radar_env_space.png"
 fig.savefig(figfname, bbox_inches="tight")
 plt.show()
 
