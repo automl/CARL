@@ -5,6 +5,7 @@ REPO_DIR=$HOME/repos
 BRANCH_NAME={branch_name}
 
 # setup environment
+cd $HOME
 module load Miniconda2/4.7.10
 conda activate $CONDA_ENV_NAME
 
