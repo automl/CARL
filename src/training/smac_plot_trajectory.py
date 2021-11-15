@@ -82,6 +82,7 @@ def plot_smac_trajectory(data, key_time, key_performance, key_group):
     ax = fig.add_subplot(111)
     ax = sns.lineplot(data=plot_data, x=key_time, y=key_performance, ax=ax, marker='o')
     ax.set_yscale('log')
+    ax.set_title("SMAC Trajectory")
     fig.set_tight_layout(True)
     plt.show()
 
@@ -144,6 +145,8 @@ def plot_parallel_coordinates(data, key_hps='incumbent', class_column='seed'):
     ax = fig.add_subplot(111)
     ax = parallel_coordinates(frame=plot_data, class_column=class_column, ax=ax)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=15)
+    ax.legend(title=class_column)
+    ax.set_title("Incumbents")
     fig.set_tight_layout(True)
     plt.show()
 
@@ -163,7 +166,7 @@ if __name__ == '__main__':
     key_group = "exp_source"
 
     data = gather_smac_data(outdir=outdir, key_group=key_group)
-    # plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group)
+    plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group)
     plot_parallel_coordinates(data=data, key_hps="incumbent", class_column='seed')
 
 
