@@ -115,6 +115,39 @@ def gather_smac_data(outdir, key_group="exp_source"):
     return data
 
 
+def plot_parallel_coordinates(data, key_hps='incumbent', class_column='seed'):
+    data.reset_index(drop=True, inplace=True)
+    df = pd.json_normalize(data[key_hps])
+    hp_names = list(df.columns)
+    df = pd.concat([data, df], axis=1)
+    # var_name = "hyperparameter"
+    # value_name = "hyperparameter_value"
+    # id_vars = [c for c in df.columns if c not in hp_names]
+    # df = pd.melt(
+    #     df, ignore_index=False, id_vars=id_vars, value_vars=hp_names,
+    #     var_name=var_name, value_name=value_name)
+
+    keep_cols = [class_column] + hp_names
+    plot_data = df[keep_cols]
+    # only plot last incumbent
+    groups = plot_data.groupby(class_column)
+    new_data = []
+    for group_id, group_df in groups:
+        if len(group_df) > 1:
+            smalldf = pd.DataFrame(group_df.iloc[-1]).T
+            new_data.append(smalldf)
+    plot_data = pd.concat(new_data)
+    plot_data = plot_data.sort_values(class_column)
+    figsize = (6, 4)
+    dpi = 200
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.add_subplot(111)
+    ax = parallel_coordinates(frame=plot_data, class_column=class_column, ax=ax)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=15)
+    fig.set_tight_layout(True)
+    plt.show()
+
+
 if __name__ == '__main__':
     """
     Assumed folder structure:
@@ -131,31 +164,9 @@ if __name__ == '__main__':
 
     data = gather_smac_data(outdir=outdir, key_group=key_group)
     # plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group)
+    plot_parallel_coordinates(data=data, key_hps="incumbent", class_column='seed')
 
-    key_hps = 'incumbent'
 
-    data.reset_index(drop=True, inplace=True)
-    df = pd.json_normalize(data['incumbent'])
-    hp_names = list(df.columns)
-    df = pd.concat([data, df], axis=1)
-    # var_name = "hyperparameter"
-    # value_name = "hyperparameter_value"
-    # id_vars = [c for c in df.columns if c not in hp_names]
-    # df = pd.melt(
-    #     df, ignore_index=False, id_vars=id_vars, value_vars=hp_names,
-    #     var_name=var_name, value_name=value_name)
-
-    class_column = 'seed'
-    keep_cols = [class_column] + hp_names
-    plot_data = df[keep_cols]
-    plot_data = plot_data.sort_values(class_column)
-    figsize = (6, 4)
-    dpi = 200
-    fig = plt.figure(figsize=figsize, dpi=dpi)
-    ax = fig.add_subplot(111)
-    ax = parallel_coordinates(frame=plot_data, class_column=class_column, ax=ax)
-    fig.set_tight_layout(True)
-    plt.show()
 
 
 
