@@ -4,14 +4,14 @@ import src.envs as envs
 
 ######################################
 job_name = "CARL"
-env = "CARLPendulumEnv"
+env = "CARLCartPoleEnv"
 envtype = "classic_control"
-default_sample_std_percentage = 0.75
+default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
 agent = "PPO"
 n_timesteps = 1000000
-state_context_features = None  # "changing_context_features"
+state_context_features = "changing_context_features"
 no_eval = True
 hp_opt = True
 on_luis = True
@@ -30,15 +30,15 @@ eval_freq = 5000 if envtype == "classic_control" else eval_freq
 eval_freq = 50000
 eval_cb = "" if not no_eval else " --no_eval_callback"
 
-partition = "gpu_normal" if not on_luis else "gpu"
+partition = "gpu_normal" if not on_luis else "amo"
 gres = "gpu:1"
 mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
-time = "24:00:00"
+time = "72:00:00"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
 basecommand = f"cd src\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
               f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
-cpus_per_task = "1"
+cpus_per_task = "8"
 pre_command = ""
 post_command = ""
 runcommands_file_precommand = ""
@@ -56,10 +56,10 @@ env_defaults = getattr(envs, f"{env}_defaults")
 outdir = f"results/singlecontextfeature_{default_sample_std_percentage}{hide_context_dir_str}/{envtype}/{env}"
 hide_context_dir_str = "contexthidden" if hide_context else "contextvisible"
 state_context_features_str = "changing" if state_context_features is not None else ""
-outdir = f"results/{exptype}/{envtype}/{env}/{default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
+outdir = f"results/{exptype}/{envtype}"
 if on_luis:
     outdir = os.path.join("$WORKING_DIR", outdir)
-basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --default_sample_std_percentage {default_sample_std_percentage}"
+basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --build_outdir_from_args"
 basecommand += f" {hide_context_cmd_str} --eval_freq {eval_freq} --seed $SLURM_ARRAY_TASK_ID " \
                f"--scale_context_features no  --vec_env_cls {vec_env_cls}  --agent {agent} "
 basecommand += eval_cb
@@ -69,8 +69,7 @@ context_features = list(env_defaults.keys())
 seeds = [0, 1, 2, 3, 4]
 array = f"{min(seeds)}-{max(seeds)}"
 
-sbuilder = SlurmBuilder(
-    slurm_config={
+slurm_config = {
         "mail-user": mail_user,
         "mail-type": 'ALL',
         "partition": partition,
@@ -85,7 +84,12 @@ sbuilder = SlurmBuilder(
         "cpus-per-task": cpus_per_task,
         "mem-per-cpu": mem_per_cpu,
         "gres": gres,
-    },
+    }
+if on_luis and partition == "amo":
+    del slurm_config["gres"]
+
+sbuilder = SlurmBuilder(
+    slurm_config=slurm_config,
     pre_command=pre_command,
     base_command=basecommand,
     post_command=post_command,
@@ -98,9 +102,19 @@ sbuilder = SlurmBuilder(
             "values": [env]
         },
         {
+            "name": "default_sample_std_percentage",
+            "id": "std",
+            "values": [0.1, 0.25, 0.5],
+        },
+        {
+            "name": "hide_context",
+            "id": "vis",
+            "values": [True, False]
+        },
+        {
             "name": "context_feature_args",
             "id": "cfargs",
-            "values": ['l']  # list(env_defaults.keys())  # None trains only with the default context
+            "values": ['None'] + list(env_defaults.keys())  # None trains only with the default context
         }
     ]
 )
