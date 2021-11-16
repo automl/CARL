@@ -7,6 +7,8 @@ import sys
 sys.path.append("..")
 sys.path.append("../..")
 
+print(os.system('python --version'))
+
 import warnings
 import numpy as np
 from functools import partial
