@@ -41,6 +41,7 @@ basecommand = f"cd src\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n
 cpus_per_task = "1"
 pre_command = ""
 post_command = ""
+runcommands_file_precommand = ""
 if on_luis:
     luis_template_fn = "utils/LUIS_template.sh"
     conda_env_name = "py39"
@@ -48,6 +49,7 @@ if on_luis:
     with open(luis_template_fn, 'r') as file:
         content = file.read()
     pre_command = content.format(conda_env_name=conda_env_name, project_name=project_name, branch_name=branch_name)
+    runcommands_file_precommand = "git pull\n"
 
 
 env_defaults = getattr(envs, f"{env}_defaults")
@@ -88,6 +90,7 @@ sbuilder = SlurmBuilder(
     base_command=basecommand,
     post_command=post_command,
     output_filename=output_filename,
+    runcommands_file_precommand=runcommands_file_precommand,
     iteration_list=[
         {
             "name": "env",
