@@ -1,3 +1,5 @@
+# in order to run this, on the LUIS cluster in the home directory navigate to src and do not have any conda environment activated
+
 # project info
 CONDA_ENV_NAME={conda_env_name}
 PROJECT_NAME={project_name}
