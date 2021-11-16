@@ -185,6 +185,12 @@ def get_parser() -> configargparse.ArgumentParser:
         action="store_true"
     )
 
+    parser.add_argument(
+        "--build_outdir_from_args",
+        action="store_true",
+        help="If set, build output directory based on env name, default sample perecentage and visibility."
+    )
+
     return parser
 
 
@@ -217,6 +223,12 @@ def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
     if use_xvfb:
         vdisplay = Xvfb()
         vdisplay.start()
+
+    if args.build_outdir_from_args:
+        hide_context_dir_str = "contexthidden" if args.hide_context else "contextvisible"
+        state_context_features_str = "changing" if args.state_context_features is not None else ""
+        postdirs = f"{args.env}/{args.default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
+        args.outdir = os.path.join(args.outdir, postdirs)
 
     # set up logger
     logger = TrialLogger(
