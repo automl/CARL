@@ -44,7 +44,7 @@ post_command = ""
 runcommands_file_precommand = ""
 if on_luis:
     luis_template_fn = "utils/LUIS_template.sh"
-    conda_env_name = "py39"
+    conda_env_name = "carl"
     project_name = "CARL"
     with open(luis_template_fn, 'r') as file:
         content = file.read()
