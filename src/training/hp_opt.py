@@ -88,6 +88,15 @@ if __name__ == '__main__':
 
     args, unknown_args = parser.parse_known_args()
 
+    if args.build_outdir_from_args:
+        # Build output directory here and falsify command
+        # Normal train method receives the built output directory
+        hide_context_dir_str = "contexthidden" if args.hide_context else "contextvisible"
+        state_context_features_str = "changing" if args.state_context_features is not None else ""
+        postdirs = f"{args.env}/{args.default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
+        args.outdir = os.path.join(args.outdir, postdirs)
+        args.build_outdir_from_args = False
+
     logger = TrialLogger(
         args.outdir,
         parser=parser,
