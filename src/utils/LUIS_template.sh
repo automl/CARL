@@ -19,8 +19,8 @@ git pull
 # create working directories
 WORKING_DIR=$BIGWORK/$PROJECT_NAME
 mkdir -p $WORKING_DIR
-SLURMOUT_DIR=$WORKING_DIR/slurmout
-mkdir -p $SLURMOUT_DIR
+SLURMOUT_DIR={slurmout_dir}
+mkdir -p $SLURMOUT_DIR  # must be created once beforehand :(
 
 # show some information
 python --version
