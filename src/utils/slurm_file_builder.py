@@ -20,6 +20,30 @@ on_luis = True
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 #########################################################################
+env_defaults = getattr(envs, f"{env}_defaults")
+iteration_list = [
+        {
+            "name": "env",
+            "id": "env",
+            "values": [env]
+        },
+        {
+            "name": "default_sample_std_percentage",
+            "id": "std",
+            "values": [0.1, 0.25, 0.5],
+        },
+        {
+            "name": "hide_context",
+            "id": "vis",
+            "values": [True, False]
+        },
+        {
+            "name": "context_feature_args",
+            "id": "cfargs",
+            "values": ['None'] + list(env_defaults.keys())  # None trains only with the default context
+        }
+    ]
+#########################################################################
 
 runfile = "train.py" if not hp_opt else "training/hp_opt.py"
 exptype = "base_vs_context" if not hp_opt else "optimized"
@@ -67,7 +91,6 @@ if on_luis:
     for file in files:
         os.remove(file)
 
-env_defaults = getattr(envs, f"{env}_defaults")
 outdir = f"results/singlecontextfeature_{default_sample_std_percentage}{hide_context_dir_str}/{envtype}/{env}"
 hide_context_dir_str = "contexthidden" if hide_context else "contextvisible"
 state_context_features_str = "changing" if state_context_features is not None else ""
@@ -112,28 +135,7 @@ sbuilder = SlurmBuilder(
     post_command=post_command,
     output_filename=output_filename,
     runcommands_file_precommand=runcommands_file_precommand,
-    iteration_list=[
-        {
-            "name": "env",
-            "id": "env",
-            "values": [env]
-        },
-        {
-            "name": "default_sample_std_percentage",
-            "id": "std",
-            "values": [0.1, 0.25, 0.5],
-        },
-        {
-            "name": "hide_context",
-            "id": "vis",
-            "values": [True, False]
-        },
-        {
-            "name": "context_feature_args",
-            "id": "cfargs",
-            "values": ['None'] + list(env_defaults.keys())  # None trains only with the default context
-        }
-    ]
+    iteration_list=iteration_list,
 )
 sbuilder.build_shfiles()
 
