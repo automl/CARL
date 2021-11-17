@@ -19,6 +19,7 @@ use_cpu = False
 on_luis = True
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
+time = "72:00:00" if use_cpu else "24:00:00"
 #########################################################################
 env_defaults = getattr(envs, f"{env}_defaults")
 iteration_list = [
@@ -65,7 +66,6 @@ else:
 gres = "gpu:1"
 mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
-time = "72:00:00"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
 basecommand = f"cd src\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
               f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
