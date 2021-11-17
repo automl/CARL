@@ -3,7 +3,7 @@ import glob
 from slurmbuilder.slurmbuilder import SlurmBuilder
 import src.envs as envs
 
-######################################
+#########################################################################
 job_name = "CARL"
 env = "CARLCartPoleEnv"
 envtype = "classic_control"
@@ -15,10 +15,11 @@ n_timesteps = 1000000
 state_context_features = "changing_context_features"
 no_eval = True
 hp_opt = True
+use_cpu = False
 on_luis = True
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
-######################################
+#########################################################################
 
 runfile = "train.py" if not hp_opt else "training/hp_opt.py"
 exptype = "base_vs_context" if not hp_opt else "optimized"
@@ -32,7 +33,11 @@ eval_freq = 5000 if envtype == "classic_control" else eval_freq
 eval_freq = 50000
 eval_cb = "" if not no_eval else " --no_eval_callback"
 
-partition = "gpu_normal" if not on_luis else "amo"
+if use_cpu:
+    partition = "cpu_normal" if not on_luis else "amo"
+else:
+    # use gpu
+    partition = "gpu_normal" if not on_luis else "gpu"
 gres = "gpu:1"
 mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
