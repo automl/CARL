@@ -16,6 +16,7 @@ state_context_features = "changing_context_features"
 no_eval = True
 hp_opt = True
 on_luis = True
+luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 ######################################
 
@@ -47,11 +48,13 @@ if on_luis:
     luis_template_fn = "utils/LUIS_template.sh"
     conda_env_name = "carl"
     project_name = "CARL"
+    slurmout_dir = os.path.join("$BIGWORK", project_name, "slurmout")  # need to define it manually so far :( # TODO define once per sh, maybe in runcommands.sh
+    slurmout_dir = os.path.join("/bigwork/", luis_user_name, project_name, "slurmout")  # cannot use environment variables in #SBATCH definitions :(
+    output_filename = os.path.join(slurmout_dir, "slurm-%j.out")
     with open(luis_template_fn, 'r') as file:
         content = file.read()
-    pre_command = content.format(conda_env_name=conda_env_name, project_name=project_name, branch_name=branch_name)
+    pre_command = content.format(conda_env_name=conda_env_name, project_name=project_name, branch_name=branch_name, slurmout_dir=slurmout_dir)
     runcommands_file_precommand = "git pull\n"
-    output_filename = os.path.join("$WORKING_DIR", output_filename)
 
     # remove everything in runscripts/generated
     runfile_dir = "runscripts/generated"
@@ -92,8 +95,10 @@ slurm_config = {
         "mem-per-cpu": mem_per_cpu,
         "gres": gres,
     }
-if on_luis and partition == "amo":
-    del slurm_config["gres"]
+if on_luis:
+    if partition == "amo":
+        del slurm_config["gres"]
+
 
 sbuilder = SlurmBuilder(
     slurm_config=slurm_config,
