@@ -1,4 +1,5 @@
 import os
+import glob
 from slurmbuilder.slurmbuilder import SlurmBuilder
 import src.envs as envs
 
@@ -52,6 +53,11 @@ if on_luis:
     runcommands_file_precommand = "git pull\n"
     output_filename = os.path.join("$WORKING_DIR", output_filename)
 
+    # remove everything in runscripts/generated
+    runfile_dir = "runscripts/generated"
+    files = glob.glob(os.path.join(runfile_dir, "*.sh"))
+    for file in files:
+        os.remove(file)
 
 env_defaults = getattr(envs, f"{env}_defaults")
 outdir = f"results/singlecontextfeature_{default_sample_std_percentage}{hide_context_dir_str}/{envtype}/{env}"
