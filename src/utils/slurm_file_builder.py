@@ -50,6 +50,7 @@ if on_luis:
         content = file.read()
     pre_command = content.format(conda_env_name=conda_env_name, project_name=project_name, branch_name=branch_name)
     runcommands_file_precommand = "git pull\n"
+    output_filename = os.path.join("$WORKING_DIR", output_filename)
 
 
 env_defaults = getattr(envs, f"{env}_defaults")
