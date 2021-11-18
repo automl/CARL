@@ -13,7 +13,7 @@ sys.path.insert(0, parentdir)
 print(os.getcwd())
 
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback, EveryNTimesteps, CheckpointCallback
+from stable_baselines3.common.callbacks import EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 from stable_baselines3 import DDPG, PPO, A2C, DQN
@@ -29,7 +29,7 @@ from src.training.trial_logger import TrialLogger
 
 from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
-
+from src.training.eval_callback import DACEvalCallback
 
 def get_parser() -> configargparse.ArgumentParser:
     """
@@ -307,7 +307,10 @@ def main(args, unknown_args, parser):
         scale_context_features=args.scale_context_features
     )
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
-    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
+    n_eval_envs = 1
+    # eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
+    # by the number of eval envs without rest in order to catch all instances.
+    eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
         eval_normalize_kwargs = normalize_kwargs.copy()
@@ -319,8 +322,8 @@ def main(args, unknown_args, parser):
 
     # eval callback actually records performance over all instances while progress writes performance of the last episode(s)
     # which can be a random set of instances
-    eval_callback = EvalCallback(
-        eval_env,
+    eval_callback = DACEvalCallback(
+        eval_env=eval_env,
         log_path=logger.logdir,
         eval_freq=1, #args.eval_freq,
         n_eval_episodes=args.num_contexts,
