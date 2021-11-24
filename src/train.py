@@ -6,6 +6,7 @@ import yaml
 import json
 from typing import Dict
 import pandas as pd
+import numpy as np
 
 import sys
 import inspect
@@ -32,6 +33,8 @@ from src.training.trial_logger import TrialLogger
 from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.training.eval_callback import DACEvalCallback
+from src.training.eval_policy import evaluate_policy
+
 
 def get_parser() -> configargparse.ArgumentParser:
     """
@@ -392,15 +395,16 @@ def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
         logdir = model.logger.get_dir()
         logfile = os.path.join(logdir, "progress.csv")
         try:
-            df = pd.read_csv(logfile)
-            mean_reward_key = 'rollout/ep_rew_mean'
-            time_key = 'time/total_timesteps'
-            if time_key not in df:
-                time_key = 'time/total timesteps'
-            if mean_reward_key not in df or time_key not in df:
-                mean_reward_key = 'eval/mean_reward'
-            final_ep_mean_reward = df[mean_reward_key].iloc[-1]
-            # TODO do one evaluation with n=n_instances episodes for a proper estimate of the final performance
+            episode_rewards, episode_lengths, episode_instances = evaluate_policy(
+                    model=model,
+                    env=eval_env,
+                    n_eval_episodes=args.num_contexts,
+                    deterministic=True,
+                    render=False,
+                    return_episode_rewards=True,
+                    warn=True,
+            )
+            final_ep_mean_reward = np.mean(episode_rewards)
         except Exception as e:
             print(e)
     model.save(os.path.join(logger.logdir, "model.zip"))
@@ -416,4 +420,4 @@ def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
 if __name__ == '__main__':
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
-    main(args, unknown_args, parser)
+    ret = main(args, unknown_args, parser)
