@@ -130,6 +130,12 @@ def get_parser() -> configargparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--dont_add_agentseed_to_logdir",
+        action="store_true",
+        help="Don't add {agent}_{seed} to logdir but directly log into provided logdir."
+    )
+
+    parser.add_argument(
         "--default_sample_std_percentage",
         default=0.05,
         help="Standard deviation as percentage of mean",
@@ -235,6 +241,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
         args.outdir,
         parser=parser,
         trial_setup_args=args,
+        add_agent_seed_to_logdir=not args.dont_add_agentseed_to_logdir,
         add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir,
         init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )

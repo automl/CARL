@@ -46,6 +46,7 @@ class TrialLogger(object):
             logdir: Union[str, Path],
             parser: configargparse.ArgParser,
             trial_setup_args: argparse.Namespace,
+            add_agent_seed_to_logdir: bool = True,
             add_context_feature_names_to_logdir: bool = False,
             init_sb3_tensorboard: bool = True,
     ):
@@ -67,6 +68,8 @@ class TrialLogger(object):
         trial_setup_args: argparse.Namespace
             Parsed arguments from parser. Arguments are supposed to be parsed before in case
             new arguments are added via some external logic.
+        add_agent_seed_to_logdir: bool, True
+            Logdir: logdir/{agent}_{seed}/
         add_context_feature_names_to_logdir: bool, False
             See logdir for effect.
 
@@ -80,9 +83,13 @@ class TrialLogger(object):
             context_feature_dirname = "default"
             if names:
                 context_feature_dirname = names[0] if len(names) == 1 else "__".join(names)
-            self.logdir = Path(logdir) / context_feature_dirname/f"{agent}_{seed}"
+            self.logdir = Path(logdir) / context_feature_dirname
         else:
-            self.logdir = Path(logdir) / f"{agent}_{seed}"
+            self.logdir = Path(logdir)
+
+        if add_agent_seed_to_logdir:
+            self.logdir = self.logdir / f"{agent}_{seed}"
+
         self.logdir.mkdir(parents=True, exist_ok=True)
 
         self.trial_setup_args = trial_setup_args
