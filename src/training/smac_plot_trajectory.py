@@ -108,6 +108,7 @@ def gather_smac_data(outdir, key_group="exp_source"):
         data["seed"] = [seed] * len(data)
         data["agent"] = [agent] * len(data)
         data[key_group] = [info_fname] * len(data)
+        data["context_feature_args"] = [info["context_feature_args"]] * len(data)
 
         data_list.append(data)
 
@@ -151,6 +152,18 @@ def plot_parallel_coordinates(data, key_hps='incumbent', class_column='seed'):
     plt.show()
 
 
+def extract_incumbents(data, key_group: str = "exp_source", key_performance: str = "cost"):
+    incumbents = []
+    groups = data.groupby(key_group)
+    for group_key, group_value in groups:
+        # get index of incumbent
+        cost_min_idx = group_value[key_performance].argmin()
+        inc = pd.DataFrame(group_value.iloc[cost_min_idx]).T
+        incumbents.append(inc)
+    incumbents = pd.concat(incumbents)
+
+    return incumbents
+
 if __name__ == '__main__':
     """
     Assumed folder structure:
@@ -158,7 +171,7 @@ if __name__ == '__main__':
     outdir / smag_logs / run_runid / traj.json
     outdir / trial_setup.json
     """
-    outdir = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/optimized/classic_control/CARLPendulumEnv/0.75_contexthidden/g/"
+    outdir = "/home/benjamin/Dokumente/code/tmp/carl/src/results/optimized/classic_control/CARLCartPoleEnv/0.1_contexthidden"
 
     convert_sec_to_hours = True
     key_time = "wallclock_time"
@@ -166,8 +179,12 @@ if __name__ == '__main__':
     key_group = "exp_source"
 
     data = gather_smac_data(outdir=outdir, key_group=key_group)
-    plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group)
-    plot_parallel_coordinates(data=data, key_hps="incumbent", class_column='seed')
+    incumbents = extract_incumbents(data=data, key_group=key_group, key_performance=key_performance)
+
+
+
+    # plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group)
+    # plot_parallel_coordinates(data=data, key_hps="incumbent", class_column='seed')
 
 
 
