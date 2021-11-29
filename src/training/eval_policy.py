@@ -128,6 +128,13 @@ def evaluate_policy(
                         episode_rewards.append(current_rewards[i])
                         episode_lengths.append(current_lengths[i])
                         episode_counts[i] += 1
+                        if hasattr(env.envs[i], 'context_index'):  # compatability to CARL
+                            instance_id = getattr(env.envs[i], 'context_index')
+                        elif hasattr(env.envs[i], 'inst_id'):  # compatability to DACBench
+                            instance_id = getattr(env.envs[i], 'inst_id')
+                        else:
+                            instance_id = -1
+                        instance_ids[i] = instance_id
                     current_rewards[i] = 0
                     current_lengths[i] = 0
                     if states is not None:
