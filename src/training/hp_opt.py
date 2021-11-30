@@ -180,7 +180,7 @@ if __name__ == '__main__':
     })
 
     # Intensifier parameters
-    intensifier_kwargs = {'initial_budget': budget_init, 'max_budget': budget_max, 'eta': 3}
+    intensifier_kwargs = {'initial_budget': budget_init, 'max_budget': budget_max, 'eta': 10}
 
     # Initial design parameters
     initial_design_kwargs = {  # static
