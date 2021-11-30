@@ -108,7 +108,7 @@ if __name__ == '__main__':
     smac_outdir = Path(logger.logdir) / "smac_logs"
     del logger
 
-    budget_init = int(5000)  # TODO find values for environment families
+    budget_init = int(args.steps_min)  # TODO find values for environment families
     budget_max = int(args.steps)
 
     # main(args, unknown_args, parser)

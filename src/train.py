@@ -4,7 +4,7 @@ from xvfbwrapper import Xvfb
 import configargparse
 import yaml
 import json
-from typing import Dict
+from typing import Dict, Union
 import pandas as pd
 import numpy as np
 
@@ -200,6 +200,13 @@ def get_parser() -> configargparse.ArgumentParser:
         help="If set, build output directory based on env name, default sample perecentage and visibility."
     )
 
+    parser.add_argument(
+        "--steps_min",
+        type=str,
+        default=1e4,
+        help="Minimum number of steps for each hyperparameter configuration during (BO)HB optimization."
+    )
+
     return parser
 
 
@@ -217,7 +224,7 @@ def get_contexts(args):
     return contexts
 
 
-def main(args, unknown_args, parser, opt_hyperparams: Dict = None):
+def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration"] = None):
     # set_random_seed(args.seed)  # TODO discuss seeding
 
     vec_env_cls_str = args.vec_env_cls
