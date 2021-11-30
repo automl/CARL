@@ -10,7 +10,7 @@ import numpy as np
 import warnings
 from pandas.plotting import parallel_coordinates
 from typing import Optional, List
-from matplotlib.path import Path
+from matplotlib.path import Path as mpl_path
 import matplotlib.patches as patches
 
 
@@ -52,7 +52,8 @@ def fill_trajectory(performance_list, time_list, seed_list: Optional[List[int]] 
     for i, seed in enumerate(seed_list):
         # print(i)
         # where = np.where(list_index == i)
-        seeds[melted['list_index'] == i] = seed
+        ids = np.array(melted['list_index'] == i)
+        seeds[ids] = seed
         # print(melted['seed'][melted['list_index'] == i])
     melted['seed'] = seeds
 
@@ -63,27 +64,77 @@ def fill_trajectory(performance_list, time_list, seed_list: Optional[List[int]] 
     return performance, time_, melted
 
 
-def plot_smac_trajectory(data, key_time, key_performance, key_group):
+def plot_smac_trajectory(data, key_time, key_performance, key_group, init_cost: int = 1e10, hue=None):
+    groupby_keys = []
+
+    if "context_visible" in data.columns:
+        groupby_keys.append("context_visible")
+
+    if "context_variation_magnitude" in data.columns:
+        groupby_keys.append("context_variation_magnitude")
+
+    if "context_feature_args" in data.columns:
+        cfargs = data["context_feature_args"]
+        cfargs_new = []
+        for cf in cfargs:
+            cf = list(cf)
+            cf.sort()
+            cf_new = "__".join(cf)
+            cfargs_new.append(cf_new)
+        data["context_feature_args"] = cfargs_new
+        context_features = data["context_feature_args"].unique()
+        groupby_keys.append("context_feature_args")
+
+    groups = data.groupby(groupby_keys)
+    for group_id, group_df in groups:
+        print(group_id)
+        if group_id == (False, 0.1, 'start_velocity_std') or True:
+            _plot_smac_trajectory(
+                data=group_df,
+                key_time=key_time,
+                key_performance=key_performance,
+                key_group=key_group,
+                identifier=group_id,
+                init_cost=init_cost,
+                hue=hue
+            )
+
+
+def _plot_smac_trajectory(
+        data,
+        key_time,
+        key_performance,
+        key_group,
+        identifier=None,
+        init_cost: float = 1e10,
+        hue=None
+):
     groups = data.groupby(key_group)
     performance_list = []
     time_list = []
     seed_list = []
     for group_value, group_df in groups:
         if len(group_df) > 1:
-            performance_list.append(group_df[key_performance].to_numpy())
+            # group_df = group_df[group_df["budget"] != 0]
+            group_df = group_df.sort_values(by=key_time)
+            performance = group_df[key_performance].to_numpy()
+            performance = np.concatenate(([init_cost], performance), axis=0)
+            performance_list.append(performance)
             times = group_df[key_time].to_numpy()
-            times[0] = 0
+            times = np.concatenate(([0], times), axis=0)
             time_list.append(times)
-            seed_list.append(group_df['seed'].unique()[0])  # just one seed per group
+            seed = int(group_df['seed'].unique()[0])
+            seed_list.append(seed)  # just one seed per grou
         else:
-            warnings.warn(f"Short trajectory (length {len(group_df)}) found for trial {group_value}. Do not add to data.")
+            warnings.warn(f"Short trajectory (length {len(group_df)}) found for "
+                          f"trial {group_value}. Do not add to data.")
 
     performances, times, data_filled = fill_trajectory(
         performance_list=performance_list, time_list=time_list, seed_list=seed_list)
 
-    data_filled.index.name = key_time
-    data_filled.rename(columns={'performance': key_performance}, inplace=True)
-    data_filled.reset_index(level=0, inplace=True)
+    data_filled.rename(columns={'performance': key_performance, 'time': key_time}, inplace=True)
+    # data_filled.index.name = key_time
+    # data_filled.reset_index(level=0, inplace=True)
 
     del_ids = data['evaluations'] == 0
     data.drop(data.index[del_ids], inplace=True)
@@ -96,12 +147,15 @@ def plot_smac_trajectory(data, key_time, key_performance, key_group):
     if convert_sec_to_hours:
         plot_data[key_time] /= 3600
 
-
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax = sns.lineplot(data=plot_data, x=key_time, y=key_performance, ax=ax, marker='o')
-    ax.set_yscale('log')
-    ax.set_title("SMAC Trajectory")
+    ax = sns.lineplot(data=plot_data, x=key_time, y=key_performance, ax=ax, marker='o', hue=hue)
+    if not np.any(data[key_performance] <= 0):
+        ax.set_yscale('log')
+    title = "SMAC Trajectory"
+    if identifier is not None:
+        title += f" {identifier}"
+    ax.set_title(title)
     fig.set_tight_layout(True)
     plt.show()
 
@@ -128,6 +182,8 @@ def gather_smac_data(outdir, key_group="exp_source"):
         data["agent"] = [agent] * len(data)
         data[key_group] = [info_fname] * len(data)
         data["context_feature_args"] = [info["context_feature_args"]] * len(data)
+        data["context_variation_magnitude"] = [info["default_sample_std_percentage"]] * len(data)
+        data["context_visible"] = [not info["hide_context"]] * len(data)
 
         data_list.append(data)
 
@@ -254,9 +310,9 @@ def plot_parallel_coordinates(
             verts = list(zip([x for x in np.linspace(0, len(ys) - 1, len(ys) * 3 - 2, endpoint=True)],
                              np.repeat(zs[j, :], 3)[1:-1]))
             # for x,y in verts: host.plot(x, y, 'go') # to show the control points of the beziers
-            codes = [Path.MOVETO] + [Path.CURVE4 for _ in range(len(verts) - 1)]
-            path = Path(verts, codes)
-            patch = patches.PathPatch(path, facecolor='none', lw=1, edgecolor=colors[category[j]])
+            codes = [mpl_path.MOVETO] + [mpl_path.CURVE4 for _ in range(len(verts) - 1)]
+            path = mpl_path(verts, codes)
+            patch = patches.mpl_path(path, facecolor='none', lw=1, edgecolor=colors[category[j]])
             host.add_patch(patch)
     # host.legend(legend_handles, iris.target_names,
     #             loc='lower center', bbox_to_anchor=(0.5, -0.18),
@@ -288,7 +344,7 @@ if __name__ == '__main__':
     sns.set_style('white')
 
     outdir = "/home/benjamin/Dokumente/code/tmp/carl/src/results/optimized/classic_control/CARLCartPoleEnv/0.1_contexthidden"
-    outdir = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/optimized/classic_control/CARLMountainCarEnv/0.1_contexthidden"
+    outdir = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/optimized/classic_control/CARLMountainCarEnv/"
 
     convert_sec_to_hours = True
     key_time = "wallclock_time"
@@ -296,10 +352,10 @@ if __name__ == '__main__':
     key_group = "exp_source"
 
     data = gather_smac_data(outdir=outdir, key_group=key_group)
-    incumbents = extract_incumbents(data=data, key_group=key_group, key_performance=key_performance)
+    # incumbents = extract_incumbents(data=data, key_group=key_group, key_performance=key_performance)
 
-    # plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group)
-    plot_parallel_coordinates(data=data, key_hps='incumbent', class_column='seed', draw_straight=True)
+    plot_smac_trajectory(data=data, key_time=key_time, key_performance=key_performance, key_group=key_group, hue='seed')
+    # plot_parallel_coordinates(data=data, key_hps='incumbent', class_column='seed', draw_straight=True)
 
 
 
