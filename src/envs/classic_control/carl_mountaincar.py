@@ -54,7 +54,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.position_start = -0.5
         self.position_start_std = 0.1
         self.velocity_start = 0.
-        self.velocity_start_std = 0.
+        self.velocity_start_std = 0.1
         
     def reset_state(self):
         return np.array([
