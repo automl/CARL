@@ -36,6 +36,17 @@ from src.training.eval_callback import DACEvalCallback
 from src.training.eval_policy import evaluate_policy
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise configargparse.ArgumentTypeError('Boolean value expected.')
+
+
 def get_parser() -> configargparse.ArgumentParser:
     """
     Creates new argument parser for running baselines.
@@ -147,8 +158,16 @@ def get_parser() -> configargparse.ArgumentParser:
     
     parser.add_argument(
         "--hide_context",
-        action="store_true",
-        help="Standard deviation as percentage of mean",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        default=False,
+        help="If true, do not append the context to the state.",
+        # from https://docs.python.org/3/library/argparse.html#nargs
+        # '?'. One argument will be consumed from the command line if possible, and produced as a single item.
+        # If no command-line argument is present, the value from default will be produced.
+        # N ote that for optional arguments, there is an additional case - the option string is present but not followed
+        # by a command-line argument. In this case the value from const will be produced.
     )
 
     parser.add_argument(
