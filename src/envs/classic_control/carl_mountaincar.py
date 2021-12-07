@@ -18,7 +18,7 @@ DEFAULT_CONTEXT = {
     "start_position": -0.5,
     "start_position_std": 0.1,
     "start_velocity": 0.,
-    "start_velocity_std": 0.,
+    "start_velocity_std": 0.1,
     # "min_position_start": -0.6,
     # "max_position_start": -0.4,
     # "min_velocity_start": 0.,
