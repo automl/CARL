@@ -2,10 +2,14 @@ import os
 import glob
 from slurmbuilder.slurmbuilder import SlurmBuilder
 import src.envs as envs
+from pathlib import Path
+cwd = os.getcwd()
+if "runscripts" in cwd:
+    os.chdir(Path(cwd).parent)
 
 #########################################################################
 job_name = "CARL"
-env = "CARLCartPoleEnv"
+env = "CARLMountainCarEnv"
 envtype = "classic_control"
 default_sample_std_percentage = 0.1
 hide_context = True
@@ -13,13 +17,13 @@ vec_env_cls = "DummyVecEnv"
 agent = "PPO"
 n_timesteps = 1000000
 state_context_features = "changing_context_features"
-no_eval = True
-hp_opt = True
-use_cpu = False
+no_eval = False
+hp_opt = False
+use_cpu = True
 on_luis = True
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
-time = "72:00:00" if use_cpu else "24:00:00"
+time = "24:00:00" if use_cpu else "24:00:00"
 #########################################################################
 env_defaults = getattr(envs, f"{env}_defaults")
 iteration_list = [
@@ -31,11 +35,11 @@ iteration_list = [
         {
             "name": "default_sample_std_percentage",
             "id": "std",
-            "values": [0.1, 0.25, 0.5],
+            "values": [0.1, 0.25, 0.5]
         },
         {
             "name": "hide_context",
-            "id": "vis",
+            "id": "hid",
             "values": [True, False]
         },
         {
@@ -59,7 +63,7 @@ eval_freq = 50000
 eval_cb = "" if not no_eval else " --no_eval_callback"
 
 if use_cpu:
-    partition = "cpu_normal" if not on_luis else "amo"
+    partition = "cpu_short" if not on_luis else "amo"
 else:
     # use gpu
     partition = "gpu_normal" if not on_luis else "gpu"
@@ -69,7 +73,7 @@ output_filename = "slurmout/slurm-%j.out"
 mem_per_cpu = "2000M" if "racing" not in env else "8000M"
 basecommand = f"cd src\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
               f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
-cpus_per_task = "8"
+cpus_per_task = "16"
 pre_command = ""
 post_command = ""
 runcommands_file_precommand = ""
@@ -98,7 +102,7 @@ outdir = f"results/{exptype}/{envtype}"
 if on_luis:
     outdir = os.path.join("$WORKING_DIR", outdir)
 basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --build_outdir_from_args"
-basecommand += f" {hide_context_cmd_str} --eval_freq {eval_freq} --seed $SLURM_ARRAY_TASK_ID " \
+basecommand += f" --eval_freq {eval_freq} --seed $SLURM_ARRAY_TASK_ID " \
                f"--scale_context_features no  --vec_env_cls {vec_env_cls}  --agent {agent} "
 basecommand += eval_cb
 if state_context_features is not None:
