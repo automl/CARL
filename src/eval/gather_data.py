@@ -105,11 +105,18 @@ def collect_results(
     return data
 
 
-def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
+def load_trial_setup(path: Union[str, Path], info_fn: str = "trial_setup.json"):
+    if info_fn.endswith(".ini"):
+        raise NotImplementedError
     path = Path(path)
     info_fname = path / info_fn
     with open(info_fname, 'r') as file:
         info = json.load(file)
+    return info, info_fname
+
+
+def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
+    info, info_fname = load_trial_setup(path=path, info_fn=info_fn)
 
     agent = info.get("agent", None)
     seed = info.get("seed", None)
