@@ -400,7 +400,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
         agent_cls = eval(args.agent)
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
-    model = agent_cls(env=env, verbose=1, **hyperparams)  # TODO add agent_kwargs
+    model = agent_cls(env=env, verbose=1, seed=args.seed, **hyperparams)  # TODO add agent_kwargs
 
     model.set_logger(logger.stable_baselines_logger)
     final_ep_mean_reward = None
