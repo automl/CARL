@@ -121,6 +121,7 @@ def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
     agent = info.get("agent", None)
     seed = info.get("seed", None)
     data = {
+        "env": info["env"],
         "seed": seed,
         "agent": agent,
         "config_filename": info_fname,
