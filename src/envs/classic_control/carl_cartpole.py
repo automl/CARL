@@ -25,6 +25,9 @@ CONTEXT_BOUNDS = {
 
 
 class CARLCartPoleEnv(CARLEnv):
+    """
+    CartPole-v1
+    """
     def __init__(
             self,
             env: gym.Env = CartPoleEnv(),
