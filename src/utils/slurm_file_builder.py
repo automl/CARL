@@ -1,5 +1,6 @@
 import os
 import glob
+import numpy as np
 from slurmbuilder.slurmbuilder import SlurmBuilder
 import src.envs as envs
 from pathlib import Path
@@ -9,22 +10,23 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLPendulumEnv"
-envtype = "classic_control"
+env = "CARLVehicleRacingEnv"
+envtype = "box2d"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DDPG"
+agent = "PPO"
 n_timesteps = 1000000
 state_context_features = "changing_context_features"
 no_eval = False
 hp_opt = False
-use_cpu = True
-on_luis = True
+use_cpu = False
+on_luis = False
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 time = "24:00:00" if use_cpu else "24:00:00"
 #########################################################################
+context_file = "envs/box2d/parking_garage/context_set_all.json"  # for vehicle racing env
 env_defaults = getattr(envs, f"{env}_defaults")
 iteration_list = [
         {
@@ -32,16 +34,16 @@ iteration_list = [
             "id": "env",
             "values": [env]
         },
-        {
-            "name": "default_sample_std_percentage",
-            "id": "std",
-            "values": [0.1, 0.25, 0.5]
-        },
-        {
-            "name": "hide_context",
-            "id": "hid",
-            "values": [True, False]
-        },
+        # {
+        #     "name": "default_sample_std_percentage",
+        #     "id": "std",
+        #     "values": [0.1, 0.25, 0.5]
+        # },
+        # {
+        #     "name": "hide_context",
+        #     "id": "hid",
+        #     "values": [True, False]
+        # },
         {
             "name": "context_feature_args",
             "id": "cfargs",
@@ -57,7 +59,8 @@ print(env)
 hide_context_dir_str = "_hidecontext" if hide_context else ""
 hide_context_cmd_str = "--hide_context" if hide_context else ""
 eval_freq = 10000 if "Racing" in env else 5000
-xvfb_str = "" if not "Racing" in env else "xvfb-run "
+use_xvfb = True if "Racing" in env  else False
+xvfb_str = "" if not use_xvfb else "xvfb-run --auto-servernum --server-num=1 "
 eval_freq = 5000 if envtype == "classic_control" else eval_freq
 eval_freq = 50000
 eval_cb = "" if not no_eval else " --no_eval_callback"
@@ -70,7 +73,7 @@ else:
 gres = "gpu:1"
 mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
-mem_per_cpu = "2000M" if "racing" not in env else "8000M"
+mem_per_cpu = "2000M" if "Racing" not in env else "8000M"
 basecommand = f"cd src\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
               f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
 cpus_per_task = "16"
@@ -105,8 +108,15 @@ basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --build_outdi
 basecommand += f" --eval_freq {eval_freq} --seed $SLURM_ARRAY_TASK_ID " \
                f"--scale_context_features no  --vec_env_cls {vec_env_cls}  --agent {agent} "
 basecommand += eval_cb
+if use_xvfb:
+    basecommand += " --use_xvfb"
 if state_context_features is not None:
-    basecommand += f"--state_context_features {state_context_features}"
+    basecommand += f" --state_context_features {state_context_features} "
+if "Racing" in env:
+    basecommand += f" --context_file {context_file} "
+is_hide_context_in_iter = np.any([el["name"] == "hide_context" for el in iteration_list])
+if not is_hide_context_in_iter:
+    basecommand += f" --hide_context {hide_context}"
 context_features = list(env_defaults.keys())
 seeds = [0, 1, 2, 3, 4]
 array = f"{min(seeds)}-{max(seeds)}"
@@ -147,3 +157,7 @@ transfer_fn = "runscripts/transfer_generated.sh"
 content = "scp -r runscripts/generated/  nhmlbenc@transfer.cluster.uni-hannover.de:/home/nhmlbenc/repos/CARL/src/runscripts/"
 with open(transfer_fn, 'w') as file:
     file.write(content)
+
+
+# longer output for squeue
+# squeue --format="%.18i %.11P %.30j %.8u %.8T %.10M %.9l %.6D %R" --me
