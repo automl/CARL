@@ -9,12 +9,12 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLMountainCarEnv"
+env = "CARLPendulumEnv"
 envtype = "classic_control"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "PPO"
+agent = "DDPG"
 n_timesteps = 1000000
 state_context_features = "changing_context_features"
 no_eval = False
