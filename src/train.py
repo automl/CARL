@@ -34,6 +34,7 @@ from src.context.sampling import sample_contexts
 from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.training.eval_callback import DACEvalCallback
 from src.training.eval_policy import evaluate_policy
+from src.utils.json_utils import lazy_json_dump
 
 
 def str2bool(v):
@@ -339,8 +340,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
 
     contexts = get_contexts(args)
     contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
-    with open(contexts_fname, 'w') as file:
-        json.dump(contexts, file, indent="\t")
+    lazy_json_dump(data=contexts, filename=contexts_fname)
 
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
