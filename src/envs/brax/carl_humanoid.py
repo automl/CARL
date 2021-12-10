@@ -4,7 +4,7 @@ import json
 
 import brax
 from brax.physics import bodies
-from brax.physics.base import take
+from brax import jumpy as jp
 from brax.envs.wrappers import GymWrapper
 from brax.envs.humanoid import Humanoid, _SYSTEM_CONFIG
 
@@ -76,7 +76,7 @@ class CARLHumanoid(CARLEnv):
         protobuf_config = json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         self.env.sys = brax.System(protobuf_config)
         body = bodies.Body.from_config(protobuf_config)
-        body = take(body, body.idx[:-1])  # skip the floor body
+        body = jp.take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 
