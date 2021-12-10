@@ -1,4 +1,5 @@
 from typing import Dict, Optional, List
+import numpy as np
 
 import Box2D
 from gym import spaces
@@ -305,7 +306,6 @@ def demo_heuristic(env):
 
 if __name__=="__main__":
     # Heurisic: suboptimal, have no notion of balance.
-    import numpy as np
     env = CARLBipedalWalkerEnv(add_gaussian_noise_to_context=True)
     for i in range(3):
         demo_heuristic(env)
