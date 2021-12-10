@@ -342,6 +342,12 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
     contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
     lazy_json_dump(data=contexts, filename=contexts_fname)
 
+    # get agent class
+    try:
+        agent_cls = eval(args.agent)
+    except ValueError:
+        print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
+
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
     EnvCls = partial(
@@ -365,6 +371,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
     # eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
     # by the number of eval envs without rest in order to catch all instances.
     eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
+    eval_env = agent_cls._wrap_env(eval_env)
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
         eval_normalize_kwargs = normalize_kwargs.copy()
@@ -396,10 +403,6 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
     else:
         callbacks.append(chkp_cb)
 
-    try:
-        agent_cls = eval(args.agent)
-    except ValueError:
-        print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
     model = agent_cls(env=env, verbose=1, seed=args.seed, **hyperparams)  # TODO add agent_kwargs
 
     model.set_logger(logger.stable_baselines_logger)
