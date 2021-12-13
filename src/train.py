@@ -372,6 +372,8 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
     # by the number of eval envs without rest in order to catch all instances.
     eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     eval_env = agent_cls._wrap_env(eval_env)
+    if args.seed is not None:
+        eval_env.seed(args.seed)
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
         eval_normalize_kwargs = normalize_kwargs.copy()
