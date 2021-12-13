@@ -7,16 +7,17 @@ from pathlib import Path
 
 
 if __name__ == '__main__':
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLAcrobotEnv"
-    results = gather_results(path=path)
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
+    results = gather_results(path=path, from_progress=True)
 
-    key_plotgroup = ("context_visible", "agent")
+    key_plotgroup = ["context_visible", "agent"]
     key_group = "context_variation_magnitude"
     key_group_sub = "context_feature_args"
     xname = "step"
     yname = "episode_reward"
     hue = None
     default_name = "None"  # identifier for environment with standard context
+    use_first_none = True
 
     color_palette_name = "colorblind"
     color_default_context = "black"
@@ -44,12 +45,15 @@ if __name__ == '__main__':
     env_name = env_names[0]
     plotgroups = results.groupby(by=key_plotgroup)
     for (plot_id, plot_df) in plotgroups:
+        first_none = None
+
         fig = plt.figure(figsize=figsize, dpi=200)
         nrows = 1
         ncols = plot_df[key_group].nunique()
         axes = fig.subplots(nrows=nrows, ncols=ncols, sharey=True)
 
-        figtitle = "context visible" if plot_id else "context hidden"
+        context_visibility_str = "context visible" if plot_id[0] else "context hidden"
+        figtitle = f"agent: {plot_id[1]}, {context_visibility_str}"
         title = None
         xlabel = None
         ylabel = None
@@ -75,6 +79,12 @@ if __name__ == '__main__':
                 color = colors[j]
                 if df_id == default_name:
                     color = color_default_context
+                    if use_first_none:
+                        if i == 0:
+                            first_none = subset_group_df
+                        else:
+                            if first_none is not None:
+                                subset_group_df = first_none
                 ax = sns.lineplot(data=subset_group_df, x=xname, y=yname, ax=ax, color=color, marker='', hue=hue)
                 legend_handles.append(Line2D([0], [0], color=color))
                 labels.append(df_id)
