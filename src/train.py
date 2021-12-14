@@ -19,7 +19,7 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
-from stable_baselines3 import DDPG, PPO, A2C, DQN
+from stable_baselines3 import DDPG, PPO, A2C, DQN, SAC
 
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -326,7 +326,25 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
                 "exploration_final_eps": 0.1,
                 "policy_kwargs": dict(net_arch=[256, 256])
             }
+    if args.agent == "SAC":
+        hyperparams["policy"] = "MlpPolicy"
+        args.num_envs = 1
 
+        if args.env == "CARLBipedalWalkerEnv":
+            hyperparams = {
+                "policy": 'MlpPolicy',
+                "learning_rate": 7.3e-4,
+                "buffer_size": 300000,
+                "batch_size": 256,
+                "ent_coef": 'auto',
+                "gamma": 0.98,
+                "tau": 0.02,
+                "train_freq": 64,
+                "gradient_steps": 64,
+                "learning_starts": 10000,
+                "use_sde": True,
+                "policy_kwargs": dict(log_std_init=-3, net_arch=[400, 300]),
+            }
     if opt_hyperparams is not None:
         for k in opt_hyperparams:
             hyperparams[k] = opt_hyperparams[k]
