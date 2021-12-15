@@ -8,11 +8,20 @@ from pathlib import Path
 
 if __name__ == '__main__':
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
-    results = gather_results(path=path, from_progress=True)
+    results = gather_results(path=path)
 
-    key_plotgroup = ["context_visible", "agent"]
-    key_group = "context_variation_magnitude"
-    key_group_sub = "context_feature_args"
+    plot_across_contextfeatures = True
+    plot_across_magnitudes = not plot_across_contextfeatures
+
+    if plot_across_contextfeatures:
+        key_plotgroup = ["context_variation_magnitude", "agent"]
+        key_axgroup = "context_feature_args"
+        key_huegroup = "context_visible"
+    elif plot_across_magnitudes:
+        key_plotgroup = ["context_visible", "agent"]
+        key_axgroup = "context_variation_magnitude"
+        key_huegroup = "context_feature_args"
+
     xname = "step"
     yname = "episode_reward"
     hue = None
@@ -49,15 +58,29 @@ if __name__ == '__main__':
 
         fig = plt.figure(figsize=figsize, dpi=200)
         nrows = 1
-        ncols = plot_df[key_group].nunique()
+        ncols = plot_df[key_axgroup].nunique()
         axes = fig.subplots(nrows=nrows, ncols=ncols, sharey=True)
 
-        context_visibility_str = "context visible" if plot_id[0] else "context hidden"
-        figtitle = f"agent: {plot_id[1]}, {context_visibility_str}"
+        figtitle = None
+        legend_title = None
+
+        # figtitle
+        if "context_visible" in key_plotgroup:
+            context_visibility_str = "context visible" if plot_id[0] else "context hidden"
+            figtitle = f"agent: {plot_id[1]}, {context_visibility_str}"
+        elif "context_variation_magnitude" in key_plotgroup:
+            figtitle = f"agent: {plot_id[key_plotgroup.index('agent')]}, " \
+                       f"$\sigma_{{rel}}={plot_id[key_plotgroup.index('context_variation_magnitude')]}$"
+
+        # legendtitle
+        if "context_feature_args" == key_huegroup:
+            legend_title = "varying context feature"
+        elif "context_visible" == key_huegroup:
+            legent_title = "context visibility"
         title = None
         xlabel = None
         ylabel = None
-        groups = plot_df.groupby(key_group)
+        groups = plot_df.groupby(key_axgroup)
         xmin = plot_df['step'].min()
         xmax = plot_df['step'].max()
         xlims = (xmin, xmax)
@@ -67,7 +90,7 @@ if __name__ == '__main__':
             else:
                 ax = axes
 
-            groups_sub = group_df.groupby(key_group_sub)
+            groups_sub = group_df.groupby(key_huegroup)
             n = len(groups_sub)
             colors = sns.color_palette(color_palette_name, n)
             legend_handles = []
@@ -90,8 +113,10 @@ if __name__ == '__main__':
                 labels.append(df_id)
 
             # Annotations
-            if key_group == "context_variation_magnitude":
+            if key_axgroup == "context_variation_magnitude":
                 title = f"$\sigma_{{rel}}={group_id}$"
+            if key_axgroup == "context_feature_args":
+                title = group_id
             if yname == "episode_reward":
                 ylabel = "mean reward\nacross instances $\mathcal{I}_{train}$"
             if title:
@@ -119,7 +144,7 @@ if __name__ == '__main__':
                     handles=legend_handles,
                     labels=labels,
                     loc='lower center',
-                    title="varying context feature",
+                    title=legend_title,
                     ncol=ncols,
                     fontsize=legendfontsize,
                     columnspacing=0.5,
