@@ -244,6 +244,16 @@ def get_contexts(args):
     return contexts
 
 
+def get_hps(hp_fn: str, args):
+    with open(hp_fn, "r") as f:
+        hyperparams_dict = yaml.safe_load(f)
+    hyperparams = hyperparams_dict[args.env]
+    if "n_envs" in hyperparams:
+        args.num_envs = hyperparams["n_envs"]
+    hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+    return hyperparams, env_wrapper, normalize, normalize_kwargs
+
+
 def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration"] = None):
     # set_random_seed(args.seed)  # TODO discuss seeding
 
@@ -282,12 +292,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
     normalize_kwargs = {}
     # TODO create hyperparameter files for other agents as well, no hardcoding here
     if args.hp_file is not None and args.agent == "PPO":
-        with open(args.hp_file, "r") as f:
-            hyperparams_dict = yaml.safe_load(f)
-        hyperparams = hyperparams_dict[args.env]
-        if "n_envs" in hyperparams:
-            args.num_envs = hyperparams["n_envs"]
-        hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
+        hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps(hp_fn=args.hp_file, args=args)
 
     schedule = False
     switching_point = None
@@ -302,6 +307,11 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
             hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
             post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147, "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
             hyperparams["policy"] = "MlpPolicy"
+
+        if args.env == "CARLPendulumEnv":
+            hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps(
+                hp_fn=os.path.join(os.path.dirname(__file__),
+                "training/hyperparameters/ddpg.yml"), args=args)
 
     if args.agent == "A2C":
         hyperparams["policy"] = "MlpPolicy"
