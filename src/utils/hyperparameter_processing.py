@@ -43,6 +43,7 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
     normalize_kwargs = None
     if "normalize" in hyperparams.keys():
         normalize = hyperparams["normalize"]
+        normalize_kwargs = {}
         if isinstance(normalize, str):
             normalize_kwargs = eval(normalize)
             normalize = True
