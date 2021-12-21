@@ -10,12 +10,12 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLMountainCarEnv"
+env = "CARLPendulumEnv"
 envtype = "classic_control"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DQN"
+agent = "DDPG"
 n_timesteps = 1_000_000
 state_context_features = "changing_context_features"
 no_eval = False
@@ -24,7 +24,10 @@ use_cpu = True
 on_luis = False
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
-time = "24:00:00" if use_cpu else "24:00:00"
+time = "12:00:00" if use_cpu else "24:00:00"
+tnt_cpu_partition = "short"
+outdirbase = "results/base_vs_context"
+outdirbase = "results/rerun"
 #########################################################################
 context_file = "envs/box2d/parking_garage/context_set_all.json"  # only relevant for vehicle racing env
 env_defaults = getattr(envs, f"{env}_defaults")
@@ -66,11 +69,12 @@ eval_freq = 50000
 eval_cb = "" if not no_eval else " --no_eval_callback"
 
 if use_cpu:
-    partition = "cpu_normal" if not on_luis else "amo"
+    partition = f"cpu_{tnt_cpu_partition}" if not on_luis else "amo"
+    gres = None
 else:
     # use gpu
     partition = "gpu_normal" if not on_luis else "gpu"
-gres = "gpu:1"
+    gres = "gpu:1"
 mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
 mem_per_cpu = "2000M" if "Racing" not in env else "8000M"
@@ -101,7 +105,7 @@ if on_luis:
 outdir = f"results/singlecontextfeature_{default_sample_std_percentage}{hide_context_dir_str}/{envtype}/{env}"
 hide_context_dir_str = "contexthidden" if hide_context else "contextvisible"
 state_context_features_str = "changing" if state_context_features is not None else ""
-outdir = f"results/{exptype}/{envtype}"
+outdir = os.path.join(outdirbase, f"{exptype}/{envtype}")
 if on_luis:
     outdir = os.path.join("$WORKING_DIR", outdir)
 basecommand += f" --outdir {outdir}  --num_workers {cpus_per_task} --build_outdir_from_args"
@@ -135,8 +139,9 @@ slurm_config = {
         # "mincpus": mincpus,
         "cpus-per-task": cpus_per_task,
         "mem-per-cpu": mem_per_cpu,
-        "gres": gres,
     }
+if gres is not None:
+    slurm_config["gres"] = gres
 if on_luis:
     if partition == "amo":
         del slurm_config["gres"]
