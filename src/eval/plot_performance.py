@@ -7,11 +7,13 @@ from pathlib import Path
 
 
 if __name__ == '__main__':
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun/base_vs_context/classic_control/CARLPendulumEnv"
     results = gather_results(path=path)
 
-    plot_across_contextfeatures = True
+    plot_across_contextfeatures = False
     plot_across_magnitudes = not plot_across_contextfeatures
+    logx = False
 
     if plot_across_contextfeatures:
         key_plotgroup = ["context_variation_magnitude", "agent"]
@@ -22,6 +24,7 @@ if __name__ == '__main__':
         key_axgroup = "context_variation_magnitude"
         key_huegroup = "context_feature_args"
 
+    sns.set_style("whitegrid")
     xname = "step"
     yname = "episode_reward"
     hue = None
@@ -31,7 +34,7 @@ if __name__ == '__main__':
     color_palette_name = "colorblind"
     color_default_context = "black"
 
-    figsize = (8, 4)
+    figsize = (8, 4) if plot_across_magnitudes else (12, 4)
     labelfontsize = 12
     titlefontsize = 12
     ticklabelsize = 10
@@ -76,7 +79,7 @@ if __name__ == '__main__':
         if "context_feature_args" == key_huegroup:
             legend_title = "varying context feature"
         elif "context_visible" == key_huegroup:
-            legent_title = "context visibility"
+            legend_title = "context visibility"
         title = None
         xlabel = None
         ylabel = None
@@ -127,7 +130,8 @@ if __name__ == '__main__':
                 ax.set_ylabel(ylabel, fontsize=labelfontsize)
 
             ax.set_xlim(*xlims)
-            ax.set_xscale("log")
+            if logx:
+                ax.set_xscale("log")
             ax.tick_params(labelsize=ticklabelsize)
 
             # Sort labels, put default name at front
