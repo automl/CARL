@@ -248,8 +248,8 @@ def get_hps_from_file(hp_fn: str, env_name: str):
     with open(hp_fn, "r") as f:
         hyperparams_dict = yaml.safe_load(f)
     hyperparams = hyperparams_dict[env_name]
-    hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
-    return hyperparams, env_wrapper, normalize, normalize_kwargs
+    hyperparams, env_wrapper, normalize_kwargs = preprocess_hyperparams(hyperparams)
+    return hyperparams, env_wrapper, normalize_kwargs
 
 
 def set_hps(
@@ -260,12 +260,11 @@ def set_hps(
 ):
     hyperparams = {}
     env_wrapper = None
-    normalize = False
-    normalize_kwargs = {}
+    normalize_kwargs = None
     schedule_kwargs = None
     # TODO create hyperparameter files for other agents as well, no hardcoding here
     if hp_fn is not None and agent_name == "PPO":
-        hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps_from_file(hp_fn=hp_fn, env_name=env_name)
+        hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(hp_fn=hp_fn, env_name=env_name)
 
     if agent_name == "DDPG":
         hyperparams["policy"] = "MlpPolicy"
@@ -281,7 +280,7 @@ def set_hps(
             schedule_kwargs["hyperparams_post_switch"] = post
 
         if env_name == "CARLPendulumEnv":
-            hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps_from_file(
+            hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(
                 hp_fn=os.path.join(os.path.dirname(__file__),
                                    "training/hyperparameters/ddpg.yml"), env_name=env_name)
 
@@ -334,7 +333,7 @@ def set_hps(
         for k in opt_hyperparams:
             hyperparams[k] = opt_hyperparams[k]
 
-    return hyperparams, env_wrapper, normalize, normalize_kwargs, schedule_kwargs
+    return hyperparams, env_wrapper, normalize_kwargs, schedule_kwargs
 
 
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
@@ -371,7 +370,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     )
 
     # Get Hyperparameters
-    hyperparams, env_wrapper, normalize, normalize_kwargs, schedule_kwargs = set_hps(
+    hyperparams, env_wrapper, normalize_kwargs, schedule_kwargs = set_hps(
         env_name=args.env,
         agent_name=args.agent,
         hp_fn=args.hp_file,
@@ -426,7 +425,10 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     eval_env = agent_cls._wrap_env(eval_env)
     if args.seed is not None:
         eval_env.seed(args.seed)  # env is seeded in agent
-    if normalize:
+    normalize = False
+    if normalize_kwargs is not None and normalize_kwargs["normalize"]:
+        normalize = True
+        del normalize_kwargs["normalize"]
         env = VecNormalize(env, **normalize_kwargs)
         eval_normalize_kwargs = normalize_kwargs.copy()
         eval_normalize_kwargs["norm_reward"] = False

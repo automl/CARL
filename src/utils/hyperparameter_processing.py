@@ -40,8 +40,7 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
         del hyperparams["noise_type"]
         del hyperparams["noise_std"]
 
-    normalize_kwargs = {}
-    normalize = False
+    normalize_kwargs = None
     if "normalize" in hyperparams.keys():
         normalize = hyperparams["normalize"]
         if isinstance(normalize, str):
@@ -52,5 +51,6 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
             normalize_kwargs["gamma"] = hyperparams["gamma"]
 
         del hyperparams["normalize"]
+        normalize_kwargs["normalize"] = normalize
 
-    return hyperparams, env_wrapper, normalize, normalize_kwargs
+    return hyperparams, env_wrapper, normalize_kwargs
