@@ -4,9 +4,10 @@ from xvfbwrapper import Xvfb
 import configargparse
 import yaml
 import json
-from typing import Dict, Union, Optional
+from typing import Dict, Union, Optional, Type, Callable, Tuple
 import pandas as pd
 import numpy as np
+import gym
 
 import sys
 import inspect
@@ -25,6 +26,7 @@ from stable_baselines3 import DDPG, PPO, A2C, DQN, SAC
 # importlib.reload(classic_control.meta_mountaincar)
 
 from src.envs import *
+from src.envs.carl_env import CARLEnv
 
 import src.training.trial_logger
 importlib.reload(src.training.trial_logger)
@@ -336,6 +338,54 @@ def set_hps(
     return hyperparams, env_wrapper, normalize_kwargs, schedule_kwargs
 
 
+def get_env(
+        env_name,
+        n_envs: int = 1,
+        env_kwargs: Optional[Dict] = None,
+        wrapper_class: Optional[Callable[[gym.Env], gym.Env]] = None,
+        vec_env_cls: Optional[Type[Union[DummyVecEnv, SubprocVecEnv]]] = None,
+        return_eval_env: bool = False,
+        normalize_kwargs: Optional[Dict] = None,
+        agent_cls: Optional = None,  # only important for eval env to appropriately wrap
+        eval_seed: Optional[int] = None,  # env is seeded in agent
+) -> Union[CARLEnv, Tuple[CARLEnv]]:
+    if env_kwargs is None:
+        env_kwargs = {}
+    EnvCls = partial(eval(env_name), **env_kwargs)
+    env_cls = eval(env_name)
+
+    make_vec_env_kwargs = dict(wrapper_class=wrapper_class, vec_env_cls=vec_env_cls)
+
+    # Wrap, Seed and Normalize Env
+    env = make_vec_env(EnvCls, n_envs=n_envs, **make_vec_env_kwargs)
+    n_eval_envs = 1
+    # Eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
+    # by the number of eval envs without rest in order to catch all instances.
+    if return_eval_env:
+        eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, **make_vec_env_kwargs)
+        if agent_cls is not None:
+            eval_env = agent_cls._wrap_env(eval_env)
+        else:
+            warnings.warn("agent_cls is None. Should be provided for eval_env to ensure that the correct wrappers are used.")
+        if eval_seed is not None:
+            eval_env.seed(eval_seed)  # env is seeded in agent
+
+    if normalize_kwargs is not None and normalize_kwargs["normalize"]:
+        del normalize_kwargs["normalize"]
+        env = VecNormalize(env, **normalize_kwargs)
+
+        if return_eval_env:
+            eval_normalize_kwargs = normalize_kwargs.copy()
+            eval_normalize_kwargs["norm_reward"] = False
+            eval_normalize_kwargs["training"] = False
+            eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
+
+    ret = env
+    if return_eval_env:
+        ret = (env, eval_env)
+    return ret
+
+
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
     # Get Vec Env Class
     vec_env_cls_str = args.vec_env_cls
@@ -379,13 +429,16 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     if "n_envs" in hyperparams:
         args.num_envs = hyperparams["n_envs"]
         del hyperparams["n_envs"]
+    normalize = False
+    if normalize_kwargs is not None and normalize_kwargs["normalize"]:
+        normalize = True
 
     # Write Training Information
     logger.write_trial_setup()
-
     train_args_fname = os.path.join(logger.logdir, "trial_setup.json")
     lazy_json_dump(data=args.__dict__, filename=train_args_fname)
 
+    # Get Contexts
     contexts = get_contexts(args)
     contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
     lazy_json_dump(data=contexts, filename=contexts_fname)
@@ -398,42 +451,24 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
 
     # Get Environment Class
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
-    # make meta-env
-    EnvCls = partial(
-        eval(args.env),
+    env_kwargs = dict(
         contexts=contexts,
         logger=env_logger,
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features,
         state_context_features=args.state_context_features
-        # max_episode_length=1000   # set in meta env
     )
-    env_cls = eval(args.env)
-    env_kwargs = dict(
-        contexts=contexts,
-        logger=env_logger,
-        hide_context=args.hide_context,
-        scale_context_features=args.scale_context_features
+    env, eval_env = get_env(
+        env_name=args.env,
+        n_envs=args.num_envs,
+        env_kwargs=env_kwargs,
+        wrapper_class=env_wrapper,
+        vec_env_cls=vec_env_cls,
+        return_eval_env=True,
+        normalize_kwargs=normalize_kwargs,
+        agent_cls=agent_cls,
+        eval_seed=args.seed
     )
-
-    # Wrap, Seed and Normalize Env
-    env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
-    n_eval_envs = 1
-    # Eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
-    # by the number of eval envs without rest in order to catch all instances.
-    eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
-    eval_env = agent_cls._wrap_env(eval_env)
-    if args.seed is not None:
-        eval_env.seed(args.seed)  # env is seeded in agent
-    normalize = False
-    if normalize_kwargs is not None and normalize_kwargs["normalize"]:
-        normalize = True
-        del normalize_kwargs["normalize"]
-        env = VecNormalize(env, **normalize_kwargs)
-        eval_normalize_kwargs = normalize_kwargs.copy()
-        eval_normalize_kwargs["norm_reward"] = False
-        eval_normalize_kwargs["training"] = False
-        eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
 
     # Setup Callbacks
     # Eval callback actually records performance over all instances while progress writes performance of the last
