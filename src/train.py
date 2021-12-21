@@ -4,7 +4,7 @@ from xvfbwrapper import Xvfb
 import configargparse
 import yaml
 import json
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 import pandas as pd
 import numpy as np
 
@@ -244,17 +244,101 @@ def get_contexts(args):
     return contexts
 
 
-def get_hps(hp_fn: str, args):
+def get_hps_from_file(hp_fn: str, env_name: str):
     with open(hp_fn, "r") as f:
         hyperparams_dict = yaml.safe_load(f)
-    hyperparams = hyperparams_dict[args.env]
-    if "n_envs" in hyperparams:
-        args.num_envs = hyperparams["n_envs"]
+    hyperparams = hyperparams_dict[env_name]
     hyperparams, env_wrapper, normalize, normalize_kwargs = preprocess_hyperparams(hyperparams)
     return hyperparams, env_wrapper, normalize, normalize_kwargs
 
 
-def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration"] = None):
+def set_hps(
+        env_name: str,
+        agent_name: str,
+        hp_fn: Optional[str],
+        opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None
+):
+    hyperparams = {}
+    env_wrapper = None
+    normalize = False
+    normalize_kwargs = {}
+    # TODO create hyperparameter files for other agents as well, no hardcoding here
+    if hp_fn is not None and agent_name == "PPO":
+        hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps_from_file(hp_fn=hp_fn, env_name=env_name)
+
+    schedule = False
+    switching_point = None
+    post = None
+    if agent_name == "DDPG":
+        hyperparams["policy"] = "MlpPolicy"
+
+        if env_name == "CARLAnt":
+            schedule = True
+            switching_point = 4
+            hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0,
+                           "max_grad_norm": 1.0, "vf_coef": 1.0}
+            post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147,
+                    "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
+            hyperparams["policy"] = "MlpPolicy"
+
+        if env_name == "CARLPendulumEnv":
+            hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps_from_file(
+                hp_fn=os.path.join(os.path.dirname(__file__),
+                                   "training/hyperparameters/ddpg.yml"), env_name=env_name)
+
+        hyperparams["n_envs"] = 1
+
+    if agent_name == "A2C":
+        hyperparams["policy"] = "MlpPolicy"
+
+    if agent_name == "DQN":
+        hyperparams["policy"] = "MlpPolicy"
+
+        if env_name == "CARLLunarLanderEnv":
+            hyperparams = {
+                # "n_timesteps": 1e5,
+                "policy": 'MlpPolicy',
+                "learning_rate": 6.3e-4,
+                "batch_size": 128,
+                "buffer_size": 50000,
+                "learning_starts": 0,
+                "gamma": 0.99,
+                "target_update_interval": 250,
+                "train_freq": 4,
+                "gradient_steps": -1,
+                "exploration_fraction": 0.12,
+                "exploration_final_eps": 0.1,
+                "policy_kwargs": dict(net_arch=[256, 256])
+            }
+
+        hyperparams["n_envs"] = 1
+    if agent_name == "SAC":
+        hyperparams["policy"] = "MlpPolicy"
+
+        if env_name == "CARLBipedalWalkerEnv":
+            hyperparams = {
+                "policy": 'MlpPolicy',
+                "learning_rate": 7.3e-4,
+                "buffer_size": 300000,
+                "batch_size": 256,
+                "ent_coef": 'auto',
+                "gamma": 0.98,
+                "tau": 0.02,
+                "train_freq": 64,
+                "gradient_steps": 64,
+                "learning_starts": 10000,
+                "use_sde": True,
+                "policy_kwargs": dict(log_std_init=-3, net_arch=[400, 300]),
+            }
+        hyperparams["n_envs"] = 1
+    if opt_hyperparams is not None:
+        for k in opt_hyperparams:
+            hyperparams[k] = opt_hyperparams[k]
+
+    return hyperparams, env_wrapper, normalize, normalize_kwargs
+
+
+def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
     # set_random_seed(args.seed)  # TODO discuss seeding
 
     vec_env_cls_str = args.vec_env_cls
@@ -286,78 +370,15 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
         init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )
 
-    hyperparams = {}
-    env_wrapper = None
-    normalize = False
-    normalize_kwargs = {}
-    # TODO create hyperparameter files for other agents as well, no hardcoding here
-    if args.hp_file is not None and args.agent == "PPO":
-        hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps(hp_fn=args.hp_file, args=args)
-
-    schedule = False
-    switching_point = None
-    post = None
-    if args.agent == "DDPG":
-        hyperparams["policy"] = "MlpPolicy"
-        args.num_envs = 1
-
-        if args.env == "CARLAnt":
-            schedule = True
-            switching_point = 4
-            hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
-            post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147, "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
-            hyperparams["policy"] = "MlpPolicy"
-
-        if args.env == "CARLPendulumEnv":
-            hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps(
-                hp_fn=os.path.join(os.path.dirname(__file__),
-                "training/hyperparameters/ddpg.yml"), args=args)
-
-    if args.agent == "A2C":
-        hyperparams["policy"] = "MlpPolicy"
-
-    if args.agent == "DQN":
-        hyperparams["policy"] = "MlpPolicy"
-        args.num_envs = 1
-
-        if args.env == "CARLLunarLanderEnv":
-            hyperparams = {
-                #"n_timesteps": 1e5,
-                "policy": 'MlpPolicy',
-                "learning_rate": 6.3e-4,
-                "batch_size": 128,
-                "buffer_size": 50000,
-                "learning_starts": 0,
-                "gamma": 0.99,
-                "target_update_interval": 250,
-                "train_freq": 4,
-                "gradient_steps": -1,
-                "exploration_fraction": 0.12,
-                "exploration_final_eps": 0.1,
-                "policy_kwargs": dict(net_arch=[256, 256])
-            }
-    if args.agent == "SAC":
-        hyperparams["policy"] = "MlpPolicy"
-        args.num_envs = 1
-
-        if args.env == "CARLBipedalWalkerEnv":
-            hyperparams = {
-                "policy": 'MlpPolicy',
-                "learning_rate": 7.3e-4,
-                "buffer_size": 300000,
-                "batch_size": 256,
-                "ent_coef": 'auto',
-                "gamma": 0.98,
-                "tau": 0.02,
-                "train_freq": 64,
-                "gradient_steps": 64,
-                "learning_starts": 10000,
-                "use_sde": True,
-                "policy_kwargs": dict(log_std_init=-3, net_arch=[400, 300]),
-            }
-    if opt_hyperparams is not None:
-        for k in opt_hyperparams:
-            hyperparams[k] = opt_hyperparams[k]
+    hyperparams, env_wrapper, normalize, normalize_kwargs = set_hps(
+        env_name=args.env,
+        agent_name=args.agent,
+        hp_fn=args.hp_file,
+        opt_hyperparams=opt_hyperparams,
+    )
+    if "n_envs" in hyperparams:
+        args.num_envs = hyperparams["n_envs"]
+        del hyperparams["n_envs"]
 
     logger.write_trial_setup()
 
@@ -437,35 +458,35 @@ def main(args, unknown_args, parser, opt_hyperparams: Union[Dict, "Configuration
 
     model.set_logger(logger.stable_baselines_logger)
     final_ep_mean_reward = None
-    if schedule:
-        for it in range(100):
-            model.learn(1e6)
-            switched = False
-            if it >= switching_point and not switched:
-                model.learning_rate = post["learning_rate"]
-                model.gamma = post["gamma"]
-                model.ent_coef = post["ent_coef"]
-                model.vf_coef = post["vf_coef"]
-                model.gae_lambda = post["gae_lambda"]
-                model.max_grad_norm = post["max_grad_norm"]
-                switched = True
-    else:
-        model.learn(total_timesteps=args.steps, callback=callbacks)
-        logdir = model.logger.get_dir()
-        logfile = os.path.join(logdir, "progress.csv")
-        try:
-            episode_rewards, episode_lengths, episode_instances = evaluate_policy(
-                    model=model,
-                    env=eval_env,
-                    n_eval_episodes=args.num_contexts,
-                    deterministic=True,
-                    render=False,
-                    return_episode_rewards=True,
-                    warn=True,
-            )
-            final_ep_mean_reward = np.mean(episode_rewards)
-        except Exception as e:
-            print(e)
+    # if schedule:
+    #     for it in range(100):
+    #         model.learn(1e6)
+    #         switched = False
+    #         if it >= switching_point and not switched:
+    #             model.learning_rate = post["learning_rate"]
+    #             model.gamma = post["gamma"]
+    #             model.ent_coef = post["ent_coef"]
+    #             model.vf_coef = post["vf_coef"]
+    #             model.gae_lambda = post["gae_lambda"]
+    #             model.max_grad_norm = post["max_grad_norm"]
+    #             switched = True
+    # else:
+    model.learn(total_timesteps=args.steps, callback=callbacks)
+    logdir = model.logger.get_dir()
+    logfile = os.path.join(logdir, "progress.csv")
+    try:
+        episode_rewards, episode_lengths, episode_instances = evaluate_policy(
+                model=model,
+                env=eval_env,
+                n_eval_episodes=args.num_contexts,
+                deterministic=True,
+                render=False,
+                return_episode_rewards=True,
+                warn=True,
+        )
+        final_ep_mean_reward = np.mean(episode_rewards)
+    except Exception as e:
+        print(e)
     model.save(os.path.join(logger.logdir, "model.zip"))
     if normalize:
         model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
