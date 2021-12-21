@@ -339,6 +339,7 @@ def set_hps(
 
 
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
+    # Get Vec Env Class
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
         vec_env_cls = DummyVecEnv
@@ -346,19 +347,21 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         vec_env_cls = SubprocVecEnv
     else:
         raise ValueError(f"{vec_env_cls_str} not supported.")
-    use_xvfb = args.use_xvfb
 
+    # Setup IO
+    # Virtual Display
+    use_xvfb = args.use_xvfb
     if use_xvfb:
         vdisplay = Xvfb()
         vdisplay.start()
-
+    # Output Directory
     if args.build_outdir_from_args:
         hide_context_dir_str = "contexthidden" if args.hide_context else "contextvisible"
         state_context_features_str = "changing" if args.state_context_features is not None else ""
         postdirs = f"{args.env}/{args.default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
         args.outdir = os.path.join(args.outdir, postdirs)
 
-    # set up logger
+    # Setup Logger
     logger = TrialLogger(
         args.outdir,
         parser=parser,
@@ -368,6 +371,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )
 
+    # Get Hyperparameters
     hyperparams, env_wrapper, normalize, normalize_kwargs = set_hps(
         env_name=args.env,
         agent_name=args.agent,
@@ -378,6 +382,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         args.num_envs = hyperparams["n_envs"]
         del hyperparams["n_envs"]
 
+    # Write Training Information
     logger.write_trial_setup()
 
     train_args_fname = os.path.join(logger.logdir, "trial_setup.json")
@@ -387,12 +392,13 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
     lazy_json_dump(data=contexts, filename=contexts_fname)
 
-    # get agent class
+    # Get Agent Class
     try:
         agent_cls = eval(args.agent)
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
+    # Get Environment Class
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
     # make meta-env
     EnvCls = partial(
@@ -411,6 +417,8 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features
     )
+
+    # Wrap, Seed and Normalize Env
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     n_eval_envs = 1
     # eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
@@ -418,7 +426,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     eval_env = agent_cls._wrap_env(eval_env)
     if args.seed is not None:
-        eval_env.seed(args.seed)
+        eval_env.seed(args.seed)  # env is seeded in agent
     if normalize:
         env = VecNormalize(env, **normalize_kwargs)
         eval_normalize_kwargs = normalize_kwargs.copy()
@@ -426,10 +434,9 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         eval_normalize_kwargs["training"] = False
         eval_env = VecNormalize(eval_env, **eval_normalize_kwargs)
 
-    # Setup callbacks
-
-    # eval callback actually records performance over all instances while progress writes performance of the last episode(s)
-    # which can be a random set of instances
+    # Setup Callbacks
+    # Eval callback actually records performance over all instances while progress writes performance of the last
+    # episode(s) which can be a random set of instances.
     eval_callback = DACEvalCallback(
         eval_env=eval_env,
         log_path=logger.logdir,
@@ -443,15 +450,14 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     callbacks = [everynstep_callback]
     if args.no_eval_callback:
         callbacks = None
-
     chkp_cb = CheckpointCallback(save_freq=args.eval_freq, save_path=os.path.join(logger.logdir, "models"))
     if callbacks is None:
         callbacks = [chkp_cb]
     else:
         callbacks.append(chkp_cb)
 
-    model = agent_cls(env=env, verbose=1, seed=args.seed, **hyperparams)  # TODO add agent_kwargs
-
+    # Instantiate Agent
+    model = agent_cls(env=env, verbose=1, seed=args.seed, **hyperparams)
     model.set_logger(logger.stable_baselines_logger)
     final_ep_mean_reward = None
     # if schedule:
@@ -467,9 +473,19 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     #             model.max_grad_norm = post["max_grad_norm"]
     #             switched = True
     # else:
+
+    # Train Agent
     model.learn(total_timesteps=args.steps, callback=callbacks)
+
+    # Save Agent
+    model.save(os.path.join(logger.logdir, "model.zip"))
+    if normalize:
+        model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
+
     logdir = model.logger.get_dir()
     logfile = os.path.join(logdir, "progress.csv")
+
+    # Evaluate Final Model
     try:
         episode_rewards, episode_lengths, episode_instances = evaluate_policy(
                 model=model,
@@ -483,9 +499,6 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         final_ep_mean_reward = np.mean(episode_rewards)
     except Exception as e:
         print(e)
-    model.save(os.path.join(logger.logdir, "model.zip"))
-    if normalize:
-        model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
 
     if use_xvfb:
         vdisplay.stop()
