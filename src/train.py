@@ -339,8 +339,6 @@ def set_hps(
 
 
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
-    # set_random_seed(args.seed)  # TODO discuss seeding
-
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
         vec_env_cls = DummyVecEnv
