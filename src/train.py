@@ -262,24 +262,23 @@ def set_hps(
     env_wrapper = None
     normalize = False
     normalize_kwargs = {}
+    schedule_kwargs = None
     # TODO create hyperparameter files for other agents as well, no hardcoding here
     if hp_fn is not None and agent_name == "PPO":
         hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps_from_file(hp_fn=hp_fn, env_name=env_name)
 
-    schedule = False
-    switching_point = None
-    post = None
     if agent_name == "DDPG":
         hyperparams["policy"] = "MlpPolicy"
 
         if env_name == "CARLAnt":
-            schedule = True
-            switching_point = 4
             hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0,
                            "max_grad_norm": 1.0, "vf_coef": 1.0}
             post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147,
                     "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
             hyperparams["policy"] = "MlpPolicy"
+            schedule_kwargs["use_schedule"] = True
+            schedule_kwargs["switching_point"] = 4
+            schedule_kwargs["hyperparams_post_switch"] = post
 
         if env_name == "CARLPendulumEnv":
             hyperparams, env_wrapper, normalize, normalize_kwargs = get_hps_from_file(
@@ -335,7 +334,7 @@ def set_hps(
         for k in opt_hyperparams:
             hyperparams[k] = opt_hyperparams[k]
 
-    return hyperparams, env_wrapper, normalize, normalize_kwargs
+    return hyperparams, env_wrapper, normalize, normalize_kwargs, schedule_kwargs
 
 
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
@@ -372,7 +371,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     )
 
     # Get Hyperparameters
-    hyperparams, env_wrapper, normalize, normalize_kwargs = set_hps(
+    hyperparams, env_wrapper, normalize, normalize_kwargs, schedule_kwargs = set_hps(
         env_name=args.env,
         agent_name=args.agent,
         hp_fn=args.hp_file,
@@ -460,22 +459,23 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     model = agent_cls(env=env, verbose=1, seed=args.seed, **hyperparams)
     model.set_logger(logger.stable_baselines_logger)
     final_ep_mean_reward = None
-    # if schedule:
-    #     for it in range(100):
-    #         model.learn(1e6)
-    #         switched = False
-    #         if it >= switching_point and not switched:
-    #             model.learning_rate = post["learning_rate"]
-    #             model.gamma = post["gamma"]
-    #             model.ent_coef = post["ent_coef"]
-    #             model.vf_coef = post["vf_coef"]
-    #             model.gae_lambda = post["gae_lambda"]
-    #             model.max_grad_norm = post["max_grad_norm"]
-    #             switched = True
-    # else:
-
-    # Train Agent
-    model.learn(total_timesteps=args.steps, callback=callbacks)
+    if schedule_kwargs is not None and schedule_kwargs["use_schedule"] == True:
+        switching_point = schedule_kwargs["switching_point"]
+        post = schedule_kwargs["hyperparams_post_switch"]
+        for it in range(100):
+            model.learn(1e6)
+            switched = False
+            if it >= switching_point and not switched:  # TODO do we still need this?
+                model.learning_rate = post["learning_rate"]
+                model.gamma = post["gamma"]
+                model.ent_coef = post["ent_coef"]
+                model.vf_coef = post["vf_coef"]
+                model.gae_lambda = post["gae_lambda"]
+                model.max_grad_norm = post["max_grad_norm"]
+                switched = True
+    else:
+        # Train Agent
+        model.learn(total_timesteps=args.steps, callback=callbacks)
 
     # Save Agent
     model.save(os.path.join(logger.logdir, "model.zip"))
