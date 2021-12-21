@@ -411,7 +411,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     env_cls = eval(args.env)
     env_kwargs = dict(
         contexts=contexts,
-        # logger=logger,  # no logger because of SubprocVecEnv
+        logger=env_logger,
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features
     )
@@ -419,7 +419,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     # Wrap, Seed and Normalize Env
     env = make_vec_env(EnvCls, n_envs=args.num_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     n_eval_envs = 1
-    # eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
+    # Eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
     # by the number of eval envs without rest in order to catch all instances.
     eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, wrapper_class=env_wrapper, vec_env_cls=vec_env_cls)
     eval_env = agent_cls._wrap_env(eval_env)
