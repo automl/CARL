@@ -382,10 +382,8 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
 
     logger.write_trial_setup()
 
-    # TODO make less hacky
     train_args_fname = os.path.join(logger.logdir, "trial_setup.json")
-    with open(train_args_fname, 'w') as file:
-        json.dump(args.__dict__, file, indent="\t")
+    lazy_json_dump(data=args.__dict__, filename=train_args_fname)
 
     contexts = get_contexts(args)
     contexts_fname = os.path.join(logger.logdir, "contexts_train.json")
