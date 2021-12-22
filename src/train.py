@@ -343,26 +343,40 @@ def get_env(
         n_envs: int = 1,
         env_kwargs: Optional[Dict] = None,
         wrapper_class: Optional[Callable[[gym.Env], gym.Env]] = None,
-        vec_env_cls: Optional[Type[Union[DummyVecEnv, SubprocVecEnv]]] = None,
-        return_eval_env: bool = False,
+        wrapper_kwargs=None,
         normalize_kwargs: Optional[Dict] = None,
         agent_cls: Optional = None,  # only important for eval env to appropriately wrap
         eval_seed: Optional[int] = None,  # env is seeded in agent
+        return_vec_env: bool = True,
+        vec_env_cls: Optional[Type[Union[DummyVecEnv, SubprocVecEnv]]] = None,
+        return_eval_env: bool = False,
 ) -> Union[CARLEnv, Tuple[CARLEnv]]:
+    if wrapper_kwargs is None:
+        wrapper_kwargs = {}
     if env_kwargs is None:
         env_kwargs = {}
     EnvCls = partial(eval(env_name), **env_kwargs)
     env_cls = eval(env_name)
 
-    make_vec_env_kwargs = dict(wrapper_class=wrapper_class, vec_env_cls=vec_env_cls)
+    make_vec_env_kwargs = dict(wrapper_class=wrapper_class, vec_env_cls=vec_env_cls, wrapper_kwargs=wrapper_kwargs)
 
     # Wrap, Seed and Normalize Env
-    env = make_vec_env(EnvCls, n_envs=n_envs, **make_vec_env_kwargs)
+    if return_vec_env:
+        env = make_vec_env(EnvCls, n_envs=n_envs, **make_vec_env_kwargs)
+    else:
+        env = EnvCls()
+        if wrapper_class is not None:
+            env = wrapper_class(env, **wrapper_kwargs)
     n_eval_envs = 1
     # Eval policy works with more than one eval envs, but the number of contexts/instances must be divisible
     # by the number of eval envs without rest in order to catch all instances.
     if return_eval_env:
-        eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, **make_vec_env_kwargs)
+        if return_vec_env:
+            eval_env = make_vec_env(EnvCls, n_envs=n_eval_envs, **make_vec_env_kwargs)
+        else:
+            eval_env = EnvCls()
+            if wrapper_class is not None:
+                eval_env = wrapper_class(env, **wrapper_kwargs)
         if agent_cls is not None:
             eval_env = agent_cls._wrap_env(eval_env)
         else:

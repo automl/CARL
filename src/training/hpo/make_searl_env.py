@@ -44,6 +44,7 @@ def make_searl_env(env_name: str):
             vec_env_cls=vec_env_cls,
             return_eval_env=False,
             normalize_kwargs=normalize_kwargs,
+            return_vec_env=False
         )
     else:
         raise NotImplementedError
