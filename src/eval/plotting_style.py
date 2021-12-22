@@ -1,4 +1,5 @@
 import matplotlib as mpl
+import seaborn as sns
 
 
 def set_rc_params():
@@ -14,3 +15,6 @@ def set_rc_params():
     # Colors
     # - Seaborn Color Palette: colorblind
     # - default context always plotted in black
+
+    sns.set_style("whitegrid")
+    sns.set_palette("colorblind")
