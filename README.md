@@ -4,6 +4,9 @@ to several well-known RL environments.
 It's designed to test your agent's generalization capabilities
 in all scenarios where intra-task generalization is important.
 
+Feel free to check out our [paper](https://arxiv.org/abs/2110.02102) and our short [blog post](https://www.automl.org/carl-a-benchmark-to-study-generalization-in-reinforcement-learning/)!
+
+## Benchmarks
 Benchmarks include:
 - [OpenAI gym classic control suite](https://gym.openai.com/envs/#classic_control) extended with several physics 
   context features like gravity or friction
