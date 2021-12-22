@@ -7,10 +7,13 @@ from pathlib import Path
 
 
 if __name__ == '__main__':
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun/base_vs_context/classic_control/CARLPendulumEnv"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/base_vs_context/brax/CARLHalfcheetah"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/box2d/CARLBipedalWalkerEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun/base_vs_context/classic_control/CARLPendulumEnv"
     results = gather_results(path=path)
 
+    paperversion = True
     plot_across_contextfeatures = False
     plot_across_magnitudes = not plot_across_contextfeatures
     logx = False
@@ -35,6 +38,8 @@ if __name__ == '__main__':
     color_default_context = "black"
 
     figsize = (8, 4) if plot_across_magnitudes else (12, 4)
+    if paperversion:
+        figsize = (6, 3)
     labelfontsize = 12
     titlefontsize = 12
     ticklabelsize = 10
@@ -121,7 +126,7 @@ if __name__ == '__main__':
             if key_axgroup == "context_feature_args":
                 title = group_id
             if yname == "episode_reward":
-                ylabel = "mean reward\nacross instances $\mathcal{I}_{train}$"
+                ylabel = "mean reward\nacross contexts $\mathcal{C}_{train}$"
             if title:
                 ax.set_title(title, fontsize=titlefontsize)
             if xlabel:
@@ -157,7 +162,8 @@ if __name__ == '__main__':
                     bbox_to_anchor=(0.5, 0.205)
                 )
 
-        fig.suptitle(figtitle)
+        if not paperversion:
+            fig.suptitle(figtitle)
         fig.set_tight_layout(True)
         fig_fn = f"evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
         fig_ffn = Path(path) / fig_fn
