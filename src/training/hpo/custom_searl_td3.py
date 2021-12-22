@@ -11,6 +11,7 @@ from src.training.hpo.SEARL.searl.neuroevolution.components.utils import Transit
 from src.training.hpo.SEARL.searl.neuroevolution.searl_td3 import SEARLforTD3
 from src.training.hpo.SEARL.searl.neuroevolution.components.envolvable_mlp import EvolvableMLP
 from src.training.hpo.SEARL.searl.neuroevolution.components.individual_td3 import Individual
+from src.training.hpo.SEARL.searl.neuroevolution.components.utils import to_tensor, Transition
 
 from src.training.hpo.make_searl_env import make_searl_env
 
@@ -31,40 +32,54 @@ class CustomMPEvaluation(MPEvaluation):
 
         env = make_searl_env(env_name=config.env.name)
         env.seed(seed)
-
         actor_net.eval()
-        actor_net.to(device)
-        actor_net.device = device
 
         with torch.no_grad():
             while episodes < num_episodes or num_frames < config.eval.min_eval_steps:
                 episode_fitness = 0.0
                 episode_transitions = []
                 state = env.reset()
-
+                t_state = to_tensor(state).unsqueeze(0)
                 done = False
                 while not done:
-                    action = actor_net.act(state)
+                    if start_phase:
+                        action = env.action_space.sample()
+                        action = to_tensor(action)
+                    else:
+                        action = actor_net(t_state)
+                    action.clamp(-1, 1)
+                    action = action.data.numpy()
+                    if exploration_noise is not False:
+                        action += config.eval.exploration_noise * np.random.randn(config.action_dim)
+                        action = np.clip(action, -1, 1)
+                    action = action.flatten()
 
-                    next_state, reward, done, info = env.step(action)
+                    step_action = (action + 1) / 2  # [-1, 1] => [0, 1]
+                    step_action *= (env.action_space.high - env.action_space.low)
+                    step_action += env.action_space.low
+
+                    next_state, reward, done, info = env.step(step_action)  # Simulate one step in environment
+
+                    done_bool = 0 if num_frames + 1 == env._max_episode_steps else float(done)
+
+                    t_next_state = to_tensor(next_state).unsqueeze(0)
+
                     episode_fitness += reward
                     num_frames += 1
 
-                    transition = Transition(torch.FloatTensor(state), torch.LongTensor([action]),
-                                            torch.FloatTensor(next_state), torch.FloatTensor(np.array([reward])),
-                                            torch.FloatTensor(np.array([done]).astype('uint8'))
-                                            )
-
+                    transition = Transition(state, action, next_state, np.array([reward]),
+                                            np.array([done_bool]).astype('uint8'))
                     episode_transitions.append(transition)
+                    t_state = t_next_state
                     state = next_state
                 episodes += 1
                 fitness_list.append(episode_fitness)
                 transistions_list.append(episode_transitions)
 
-        actor_net.to(torch.device("cpu"))
+        return {
+            individual.index: {"fitness_list": fitness_list, "num_episodes": num_episodes, "num_frames": num_frames,
+                               "id": individual.index, "transitions": transistions_list}}
 
-        return {individual.index: {"fitness_list": fitness_list, "num_episodes": num_episodes, "num_frames": num_frames,
-                                   "id": individual.index, "transitions": transistions_list}}
 
 
 class CustomEvolvableMLP(EvolvableMLP):
