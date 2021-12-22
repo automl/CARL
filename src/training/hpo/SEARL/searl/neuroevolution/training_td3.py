@@ -90,7 +90,6 @@ class TD3Training():
                 noise = (torch.randn_like(action) * args.td3_policy_noise).clamp(-args.td3_noise_clip,
                                                                                  args.td3_noise_clip)
                 next_action = (actor_target(next_state) + noise).clamp(-1, 1)
-                print(next_state.size(), next_action.size())
                 target_Q1 = critic_1_target(torch.cat([next_state, next_action], 1))
                 target_Q2 = critic_2_target(torch.cat([next_state, next_action], 1))
                 target_Q = torch.min(target_Q1, target_Q2)
