@@ -18,7 +18,7 @@ nevo:
   training:                     True
   elitism:                      True
   min_train_time:               200
-  worker:                       5
+  worker:                       10
   reuse_batch:                  1
   ind_memory:                   False
   init_random:                  False
@@ -75,7 +75,7 @@ env:
 
 
 eval:
-  eval_episodes:                1
+  eval_episodes:                10
   min_eval_steps:               250
   exploration_noise:            0.1     # Default 0.1
   test_episodes:                10
