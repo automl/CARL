@@ -10,24 +10,24 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLPendulumEnv"
-envtype = "classic_control"
+env = "CARLHalfcheetah"
+envtype = "brax"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DDPG"
-n_timesteps = 1_000_000
+agent = "PPO"
+n_timesteps = 5_000_000
 state_context_features = "changing_context_features"
 no_eval = False
 hp_opt = False
-use_cpu = True
+use_cpu = False
 on_luis = False
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 time = "12:00:00" if use_cpu else "24:00:00"
 tnt_cpu_partition = "short"
-outdirbase = "results/base_vs_context"
-outdirbase = "results/rerun"
+outdirbase = "results"
+# outdirbase = "results/rerun"
 #########################################################################
 context_file = "envs/box2d/parking_garage/context_set_all.json"  # only relevant for vehicle racing env
 env_defaults = getattr(envs, f"{env}_defaults")
@@ -40,7 +40,7 @@ iteration_list = [
         {
             "name": "default_sample_std_percentage",
             "id": "std",
-            "values": [0.1, 0.25, 0.5]
+            "values": [0.25, 0.5]
         },
         {
             "name": "hide_context",
@@ -79,7 +79,7 @@ mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.un
 output_filename = "slurmout/slurm-%j.out"
 mem_per_cpu = "2000M" if "Racing" not in env else "8000M"
 basecommand = f"cd src\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
-              f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/hyperparameters_ppo.yml"
+              f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/ppo.yml"
 cpus_per_task = "16"
 pre_command = ""
 post_command = ""
