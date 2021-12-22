@@ -332,7 +332,9 @@ class CARLEnv(Wrapper):
             if self.hide_context or \
                     (self.state_context_features is not None and len(self.state_context_features) == 0):
                 self.env.observation_space = spaces.Box(
-                    env_lower_bounds, env_upper_bounds, dtype=np.float32,
+                    env_lower_bounds.astype(dtype=np.float32),
+                    env_upper_bounds.astype(dtype=np.float32),
+                    dtype=np.float32,
                 )
             else:
                 context_keys = list(self.context.keys())
@@ -346,8 +348,8 @@ class CARLEnv(Wrapper):
                     ids = np.array([context_keys.index(k) for k in self.state_context_features])
                     context_lower_bounds = context_lower_bounds[ids]
                     context_upper_bounds = context_upper_bounds[ids]
-                low = np.concatenate((env_lower_bounds, context_lower_bounds))
-                high = np.concatenate((env_upper_bounds, context_upper_bounds))
+                low = np.concatenate((env_lower_bounds, context_lower_bounds)).astype(dtype=np.float32)
+                high = np.concatenate((env_upper_bounds, context_upper_bounds)).astype(dtype=np.float32)
                 self.env.observation_space = spaces.Box(
                     low=low,
                     high=high,
