@@ -6,6 +6,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 # from searl.rl_algorithms.components.wrappers import make_atari, wrap_deepmind, wrap_pytorch
 from src.train import get_env, set_hps, get_parser, get_contexts
 from src.utils.json_utils import lazy_json_dump
+from gym.wrappers import TimeLimit
 
 
 def make_searl_env(env_name: str):
@@ -46,6 +47,7 @@ def make_searl_env(env_name: str):
             normalize_kwargs=normalize_kwargs,
             return_vec_env=False
         )
+        env = TimeLimit(env, max_episode_steps=env.cutoff)  # attribute _max_episode_steps expected from searl
     else:
         raise NotImplementedError
 
