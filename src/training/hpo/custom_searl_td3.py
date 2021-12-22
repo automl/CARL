@@ -2,6 +2,8 @@ import numpy as np
 import torch
 import copy
 
+import sys
+sys.path.append("..")
 from src.training.hpo.SEARL.searl.neuroevolution.components.replay_memory import MPReplayMemory, ReplayMemory
 from src.training.hpo.SEARL.searl.neuroevolution.evaluation_td3 import MPEvaluation
 from src.training.hpo.SEARL.searl.neuroevolution.mutation_mlp import Mutations
