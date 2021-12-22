@@ -1,0 +1,8 @@
+defaults:
+  - slurm
+  - _self_
+#  - ./SEARL/configs/searl_td3_config.yml
+
+config_file: null
+expt_dir: null
+seed: 123
