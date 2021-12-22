@@ -1,0 +1,103 @@
+#######################################
+###       Logging Configuration     ###
+#######################################
+expt:
+  project_name:                 "searl"
+  session_name:                 "neuroevolution"
+  experiment_name:              "default_searl_td3"
+
+
+#######################################
+###      NEVO Configuration         ###
+#######################################
+nevo:
+  population_size:              10
+  tournament_size:              3
+  selection:                    True
+  mutation:                     True
+  training:                     True
+  elitism:                      True
+  min_train_time:               200
+  worker:                       5
+  reuse_batch:                  1
+  ind_memory:                   False
+  init_random:                  False
+
+
+mutation:
+  no_mutation:                  0.2
+  parameters:                   0.2
+  architecture:                 0.2
+  activation:                   0.2
+  rl_hyperparam:                0.2
+  rl_hp_selection:              ['lr_actor','lr_critic'] # 'train_frames_fraction','batch_size',,'td3_policy_noise','td3_update_freq', 'optimizer']
+  new_layer_prob:               0.2
+  mutation_sd:                  0.1
+
+
+train:
+  replay_memory_size:           1000000
+  num_frames:                   2000000
+  td3_double_q:                 True
+  evo_warm_up:                  1
+  min_train_steps:              250
+
+
+rl:
+  train_frames_fraction:        0.5 # 5000 train_iternations
+  gamma:                        0.99
+  tau:                          0.005
+  batch_size:                   100
+  lr_actor:                     0.001
+  lr_critic:                    0.001
+  clip_grad_norm:               100
+  td3_policy_noise:             0.2     # False or TD3 default: 0.2
+  td3_noise_clip:               0.5     # default 0.5
+  td3_update_freq:              2       # 1 or TD3 default: 2
+  optimizer:                    "adam" ##  ["adam", "adamax", "rmsprop", "sdg"]
+  start_timesteps:              1
+
+
+seed:
+  replay_memory:                123
+  evaluation:                   123
+  mutation:                     123
+  training:                     123
+  torch:                        123
+  numpy:                        123
+
+
+#######################################
+###    Environment Configuration    ###
+#######################################
+env:
+  name:                        'CARLAnt' #'Walker2d-v2' #'HalfCheetah-v2' # HalfCheetah-v2'
+
+
+eval:
+  eval_episodes:                1
+  min_eval_steps:               250
+  exploration_noise:            0.1     # Default 0.1
+  test_episodes:                10
+  test_seed:                    123
+
+
+#######################################
+###  Actor Starting Configuration   ###
+#######################################
+actor:
+  hidden_size:             [128]
+  activation:              'relu' #'relu' , 'sigmoid' 'softplus',
+  output_activation:       'tanh'
+  layer_norm:              True
+  output_vanish:           False
+
+#######################################
+###  Critic Starting Configuration  ###
+#######################################
+critic:
+  hidden_size:             [128]
+  activation:              'relu' #'relu' , 'sigmoid' 'softplus',
+  output_activation:       'linear'
+  layer_norm:              True
+  output_vanish:           True
