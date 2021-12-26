@@ -440,6 +440,14 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         hp_fn=args.hp_file,
         opt_hyperparams=opt_hyperparams,
     )
+    hp_content = {
+        "hyperparameters": hyperparams,
+        "env_wrapper": env_wrapper,
+        "normalize_kwargs": normalize_kwargs,
+        "schedule_kwargs": schedule_kwargs
+    }
+    hp_fn = os.path.join(logger.logdir, "hyperparameters.json")
+    lazy_json_dump(data=hp_content, filename=hp_fn)
     if "n_envs" in hyperparams:
         args.num_envs = hyperparams["n_envs"]
         del hyperparams["n_envs"]
