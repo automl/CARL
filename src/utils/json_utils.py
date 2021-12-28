@@ -3,6 +3,7 @@ import numpy as np
 import json
 import os
 from pathlib import Path
+import inspect
 from numpyencoder import NumpyEncoder
 
 
@@ -39,6 +40,12 @@ class NpEncoder(json.JSONEncoder):
 
         elif isinstance(obj, Path):
             return str(obj)
+
+        elif inspect.isclass(obj):
+            return obj.__name__
+
+        elif inspect.isfunction(obj):
+            return obj.__name__
 
         return json.JSONEncoder.default(self, obj)
 
