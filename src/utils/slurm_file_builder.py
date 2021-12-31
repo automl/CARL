@@ -10,13 +10,13 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLHalfcheetah"
-envtype = "brax"
+env = "CARLPendulumEnv"
+envtype = "classic_control"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "PPO"
-n_timesteps = 5_000_000
+agent = "DDPG"
+n_timesteps = 1_000_000
 state_context_features = "changing_context_features"
 no_eval = False
 hp_opt = False
@@ -27,9 +27,10 @@ branch_name = "HP_opt"
 time = "12:00:00" if use_cpu else "24:00:00"
 tnt_cpu_partition = "short"
 outdirbase = "results"
-# outdirbase = "results/rerun"
+outdirbase = "results/compounding"
 #########################################################################
 context_file = "envs/box2d/parking_garage/context_set_all.json"  # only relevant for vehicle racing env
+compounding_pendulum_cfargs = ['None', 'm', 'm l', 'm l dt', 'm l dt g', 'm l dt g max_speed']
 env_defaults = getattr(envs, f"{env}_defaults")
 iteration_list = [
         {
@@ -40,7 +41,7 @@ iteration_list = [
         {
             "name": "default_sample_std_percentage",
             "id": "std",
-            "values": [0.25, 0.5]
+            "values": [0.1, 0.25, 0.5]
         },
         {
             "name": "hide_context",
