@@ -148,6 +148,7 @@ if __name__ == '__main__':
                 legend_handles.insert(0, handle_item)
 
             if i == 1:
+                labels = [label.replace("__", ", ") for label in labels]
                 ncols = len(legend_handles)
                 legend = fig.legend(
                     handles=legend_handles,
