@@ -30,10 +30,10 @@ class ContextFeature(object):
         self.mid = mid
         self.upper = upper
 
-        assert lower < lower_constraint < mid < upper
+        assert lower < lower_constraint < mid < upper or lower > lower_constraint > mid > upper
 
 
-class EvaluationProtocol2D(object):
+class EvaluationProtocol(object):
     """
     Only for continuous context features (so far).
     """
@@ -251,7 +251,7 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
     for i in range(n_protocols):
         ax = axes[i]
         mode = modes[i]
-        ep = EvaluationProtocol2D(context_features=context_features, mode=mode, seed=seed)
+        ep = EvaluationProtocol(context_features=context_features, mode=mode, seed=seed)
         cfs = ep.context_features
         cf0, cf1 = cfs
 
@@ -261,7 +261,7 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
         ax.set_ylim(*ylim)
 
         contexts_train = ep.create_train_contexts(n=n_contexts)
-        contexts_ES = ep.create_contexts_extrapolation_single(n=2 * n_contexts)  # covers two quadrants
+        contexts_ES = ep.create_contexts_extrapolation_single(n=n_contexts)  # covers two quadrants
         contexts_EA = ep.create_contexts_extrapolation_all(n=n_contexts)
         contexts_I = ep.create_contexts_interpolation(n=n_contexts, contexts_forbidden=contexts_train)
         contexts_IC = ep.create_contexts_interpolation_combinatorial(n=n_contexts, contexts_forbidden=contexts_train)
