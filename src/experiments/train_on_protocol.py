@@ -5,13 +5,18 @@ from src.experiments.evaluation_protocol import ContextFeature, EvaluationProtoc
 from src.utils.json_utils import lazy_json_dump
 
 
-def get_ep_contexts(env_name, n_contexts, seed, mode):
+def get_context_features(env_name):
     if env_name == "CARLCartPoleEnv":
         cf0 = ContextFeature("gravity", 9., 9.5, 10., 11.)
         cf1 = ContextFeature("pole_length", 0.4, 0.5, 0.6, 0.8)
     else:
         raise NotImplementedError
     context_features = [cf0, cf1]
+    return context_features
+
+
+def get_ep_contexts(env_name, n_contexts, seed, mode):
+    context_features = get_context_features(env_name=env_name)
     ep = EvaluationProtocol(context_features=context_features, mode=mode, seed=seed)
     contexts_train = ep.create_train_contexts(n=n_contexts)
     contexts_ES = ep.create_contexts_extrapolation_single(n=n_contexts)  # covers two quadrants
