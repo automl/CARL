@@ -10,24 +10,26 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLPendulumEnv"
+env = "CARLCartPoleEnv"
 envtype = "classic_control"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DDPG"
-n_timesteps = 1_000_000
+agent = "DQN"
+n_timesteps = 500_000
 state_context_features = "changing_context_features"
 no_eval = False
 hp_opt = False
-use_cpu = False
+use_cpu = True
 on_luis = False
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 time = "12:00:00" if use_cpu else "24:00:00"
 tnt_cpu_partition = "short"
+follow_evaluation_protocol = True
 outdirbase = "results"
-outdirbase = "results/compounding"
+if follow_evaluation_protocol:
+    outdirbase = "results/evaluation_protocol"
 #########################################################################
 context_file = "envs/box2d/parking_garage/context_set_all.json"  # only relevant for vehicle racing env
 compounding_pendulum_cfargs = ['None', 'm', 'm l', 'm l dt', 'm l dt g', 'm l dt g max_speed']
@@ -55,6 +57,29 @@ iteration_list = [
         }
     ]
 #########################################################################
+if follow_evaluation_protocol:
+    iteration_list = [
+        {
+            "name": "env",
+            "id": "env",
+            "values": [env]
+        },
+        {
+            "name": "follow_evaluation_protocol",
+            "id": "ep",
+            "values": [True]
+        },
+        {
+            "name": "hide_context",
+            "id": "hid",
+            "values": [False, True]
+        },
+        {
+            "name": "evaluation_protocol_mode",
+            "id": "mode",
+            "values": ['A', 'B', 'C']
+        }
+    ]
 
 runfile = "train.py" if not hp_opt else "training/hp_opt.py"
 exptype = "base_vs_context" if not hp_opt else "optimized"

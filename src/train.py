@@ -37,6 +37,7 @@ from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.training.eval_callback import DACEvalCallback
 from src.training.eval_policy import evaluate_policy
 from src.utils.json_utils import lazy_json_dump
+from src.experiments.train_on_protocol import get_train_contexts
 
 
 def str2bool(v):
@@ -222,17 +223,37 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Minimum number of steps for each hyperparameter configuration during (BO)HB optimization."
     )
 
+    parser.add_argument(
+        "--follow_evaluation_protocol",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        default=False,
+        help="If true, follow evaluation protocol for context set creation. Overrides context_feature_args."
+    )
+
+    parser.add_argument(
+        "--evaluation_protocol_mode",
+        type=str,
+        choices=["A", "B", "C"],
+        help="Evaluation protocols from Kirk et al., 2021."
+    )
+
     return parser
 
 
 def get_contexts(args):
     if not args.context_file:
-        contexts = sample_contexts(
-            args.env,
-            args.context_feature_args,
-            args.num_contexts,
-            default_sample_std_percentage=args.default_sample_std_percentage
-        )
+        if args.follow_evaluation_protocol:
+            contexts = get_train_contexts(
+                env_name=args.env, seed=args.seed, n_contexts=args.num_contexts, mode=args.evaluation_protocol_mode)
+        else:
+            contexts = sample_contexts(
+                args.env,
+                args.context_feature_args,
+                args.num_contexts,
+                default_sample_std_percentage=args.default_sample_std_percentage
+            )
     else:
         with open(args.context_file, 'r') as file:
             contexts = json.load(file)
@@ -394,6 +415,10 @@ def get_env(
 
 
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
+    # Manipulate args
+    if args.follow_evaluation_protocol:
+        args.context_feature_args = []
+
     # Get Vec Env Class
     vec_env_cls_str = args.vec_env_cls
     if vec_env_cls_str == "DummyVecEnv":
@@ -413,7 +438,10 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     if args.build_outdir_from_args:
         hide_context_dir_str = "contexthidden" if args.hide_context else "contextvisible"
         state_context_features_str = "changing" if args.state_context_features is not None else ""
-        postdirs = f"{args.env}/{args.default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
+        if args.follow_evaluation_protocol:
+            postdirs = f"{args.env}/evaluation_protocol-mode{args.evaluation_protocol_mode}-{state_context_features_str}{hide_context_dir_str}"
+        else:
+            postdirs = f"{args.env}/{args.default_sample_std_percentage}_{state_context_features_str}{hide_context_dir_str}"
         args.outdir = os.path.join(args.outdir, postdirs)
 
     # Setup Logger
