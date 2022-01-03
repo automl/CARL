@@ -1,0 +1,7 @@
+defaults:
+  - slurm
+  - _self_
+
+model_fname: /home/benjamin/Dokumente/code/tmp/CARL/src/tmp/test_logs/CARLCartPoleEnv/evaluation_protocol-modeB-changingcontextvisible/DQN_2/model.zip #null
+context_distribution_type: test_interpolation  # choices: ['train', 'test_interpolation', 'test_interpolation_combinatorial', 'test_extrapolation_single', 'test_extrapolation_all']
+n_eval_eps_per_context: 5
