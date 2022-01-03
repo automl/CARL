@@ -243,16 +243,7 @@ class EvaluationProtocol2D(object):
         return contexts
 
 
-if __name__ == '__main__':
-    cf0 = ContextFeature("g",  9., 9.5, 10., 11.)
-    cf1 = ContextFeature("l", 0.4, 0.5, 0.6, 0.8)
-    # ep = EvaluationProtocol2D(
-    #     context_features=[cf0, cf1],
-    #     mode="B"
-    # )
-    # contexts = ep.create_train_contexts(n=10)
-
-    n_contexts = 100
+def plot_evaluation_protocol(context_features, seed, n_contexts):
     modes = ["A", "B", "C"]
     n_protocols = len(modes)
     fig = plt.figure(figsize=(8, 6), dpi=300)
@@ -260,7 +251,7 @@ if __name__ == '__main__':
     for i in range(n_protocols):
         ax = axes[i]
         mode = modes[i]
-        ep = EvaluationProtocol2D(context_features=[cf0, cf1], mode=mode)
+        ep = EvaluationProtocol2D(context_features=context_features, mode=mode, seed=seed)
         cfs = ep.context_features
         cf0, cf1 = cfs
 
@@ -278,15 +269,21 @@ if __name__ == '__main__':
         # Draw Quadrants
         patches = []
 
-        color_T = "cornflowerblue"
-        color_I = "red"
-        color_ES = "green"
-        color_EB = "blue"
-        color_IC = "yellow"
+        colors = sns.color_palette("colorblind")
+        color_T = colors[0]
+        color_I = colors[1]
+        color_ES = colors[2]
+        color_EB = colors[3]
+        color_IC = colors[4]
+        # color_T = "cornflowerblue"
+        # color_I = "red"
+        # color_ES = "green"
+        # color_EB = "blue"
+        # color_IC = "yellow"
         ec_test = "black"
         markerfacecolor_alpha = 0.
 
-        patch_kwargs = dict(zorder=0, linewidth=0.,)
+        patch_kwargs = dict(zorder=0, linewidth=0., )
 
         # Extrapolation along single factors, Q_ES
         xy = (cf0.mid, cf1.lower)
@@ -348,18 +345,22 @@ if __name__ == '__main__':
         ax = sns.scatterplot(data=contexts_train, x=cf0.name, y=cf1.name, color=color_T, ax=ax, edgecolor=color_T)
 
         # Extrapolation single
-        ax = sns.scatterplot(data=contexts_ES, x=cf0.name, y=cf1.name, color=mplc.to_rgba(color_ES, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+        ax = sns.scatterplot(data=contexts_ES, x=cf0.name, y=cf1.name,
+                             color=mplc.to_rgba(color_ES, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
 
         # Extrapolation all factors
-        ax = sns.scatterplot(data=contexts_EA, x=cf0.name, y=cf1.name, color=mplc.to_rgba(color_EB, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+        ax = sns.scatterplot(data=contexts_EA, x=cf0.name, y=cf1.name,
+                             color=mplc.to_rgba(color_EB, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
 
         # Interpolation (Train Distribution)
         if len(contexts_I) > 0:
-            ax = sns.scatterplot(data=contexts_I, x=cf0.name, y=cf1.name, color=mplc.to_rgba(color_I, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+            ax = sns.scatterplot(data=contexts_I, x=cf0.name, y=cf1.name,
+                                 color=mplc.to_rgba(color_I, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
 
         # Combinatorial Interpolation
         if len(contexts_IC) > 0:
-            ax = sns.scatterplot(data=contexts_IC, x=cf0.name, y=cf1.name, color=mplc.to_rgba(color_IC, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+            ax = sns.scatterplot(data=contexts_IC, x=cf0.name, y=cf1.name,
+                                 color=mplc.to_rgba(color_IC, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
 
         # Add axis descriptions
         ax.set_xlabel(cf0.name)
@@ -384,6 +385,16 @@ if __name__ == '__main__':
 
     fig.set_tight_layout(True)
     plt.show()
+
+
+if __name__ == '__main__':
+    cf0 = ContextFeature("g",  9., 9.5, 10., 11.)
+    cf1 = ContextFeature("l", 0.4, 0.5, 0.6, 0.8)
+    seed = 1
+    n_contexts = 100
+    context_features = [cf0, cf1]
+    plot_evaluation_protocol(context_features=context_features, seed=seed, n_contexts=n_contexts)
+
 
 
 
