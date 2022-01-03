@@ -120,6 +120,7 @@ def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
 
     agent = info.get("agent", None)
     seed = info.get("seed", None)
+    evaluation_protocol_mode = info.get("evaluation_protocol_mode", None)
     data = {
         "env": info["env"],
         "seed": seed,
@@ -129,6 +130,8 @@ def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
         "context_variation_magnitude": info["default_sample_std_percentage"],
         "context_visible": not info["hide_context"]
     }
+    if evaluation_protocol_mode is not None:
+        data["evaluation_protocol_mode"] = evaluation_protocol_mode
 
     return data
 
