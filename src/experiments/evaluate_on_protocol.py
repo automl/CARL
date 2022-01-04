@@ -10,6 +10,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from pathlib import Path
 import numpy as np
+import warnings
 
 from src.context.sampling import sample_contexts
 from src.train import get_env
@@ -51,10 +52,14 @@ def rollout(cfg):
     contexts = sample_contexts(env_name, [], n_contexts)
     contexts_test_ep = contexts_dict[context_distribution_type]
     contexts_test = merge_contexts(ep_contexts=contexts_test_ep, contexts=contexts)
+    if contexts_test is None:
+        warnings.warn(f"Selected context distribution type {context_distribution_type} not available in evaluation "
+                         f"protocol {mode}. Exiting.")
+        return
 
     # Setup env
     env_kwargs = dict(
-        contexts=contexts,
+        contexts=contexts_test,
         hide_context=setup['hide_context'],
         scale_context_features=setup['scale_context_features'],
         state_context_features=setup['state_context_features']
