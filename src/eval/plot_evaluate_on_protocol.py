@@ -159,8 +159,9 @@ def get_patches(
         Q_I = Rectangle(xy=xy, width=width, height=height, color=color_interpolation, **patch_kwargs)
         patches.append(Q_I)
 
+        xy = (cf0.lower, cf1.lower_constraint)
         width = cf0.lower_constraint - cf0.lower
-        height = cf1.mid - cf1.lower
+        height = cf1.mid - cf1.lower_constraint
         Q_I = Rectangle(xy=xy, width=width, height=height, color=color_interpolation, **patch_kwargs)
         patches.append(Q_I)
 
@@ -283,7 +284,8 @@ if __name__ == '__main__':
             color_interpolation=color_I,
             color_extrapolation_single=color_ES,
             color_extrapolation_all=color_EB,
-            color_interpolation_combinatorial=color_IC
+            color_interpolation_combinatorial=color_IC,
+            patch_kwargs={"alpha": 0.3}
         )
 
         for patch in patches:
