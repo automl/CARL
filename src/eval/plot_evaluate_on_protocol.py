@@ -18,7 +18,7 @@ from scipy.interpolate import griddata
 from src.eval.gather_data import extract_info
 from src.experiments.train_on_protocol import get_context_features, get_ep_contexts
 from src.experiments.evaluation_protocol import ContextFeature
-from src.utils.json_utils import lazy_json_dump, lazy_json_load
+
 
 def gather_results(
         path: Union[str, Path],
@@ -101,20 +101,20 @@ def get_patches(
 ):
     def update_colors(color, patch_kwargs: Dict, draw_frame: bool):
         if draw_frame:
-            patch_kwargs["edgecolor"] = color
-            patch_kwargs["facecolor"] = (1., 1., 1., 0.)
+            patch_kwargs["edgecolor"] = mplc.to_rgba(color)
+            patch_kwargs["facecolor"] = (0., 0., 0., 0.)
             if "linewidth" not in patch_kwargs:
                 patch_kwargs["linewidth"] = 4.
         else:
             patch_kwargs["color"] = color
             if "linewidth" not in patch_kwargs:
                 patch_kwargs["linewidth"] = 0.
+            if "zorder" not in patch_kwargs:
+                patch_kwargs["zorder"] = 0
         return patch_kwargs
 
     if patch_kwargs is None:
         patch_kwargs = {}
-    if "zorder" not in patch_kwargs:
-        patch_kwargs["zorder"] = 0
 
     colors = sns.color_palette("colorblind")
     color_T = colors[0]
@@ -142,23 +142,26 @@ def get_patches(
     width = cf0.upper - cf0.mid
     height = cf1.mid - cf1.lower
     patch_kwargs = update_colors(color_extrapolation_single, patch_kwargs, draw_frame)
-    Q_ES = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-    patches.append(Q_ES)
+    patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+    # patch.set_alpha(None)
+    patches.append(patch)
 
     xy = (cf0.lower, cf1.mid)
     height = cf1.upper - cf1.mid
     width = cf0.mid - cf0.lower
     patch_kwargs = update_colors(color_extrapolation_single, patch_kwargs, draw_frame)
-    Q_ES = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-    patches.append(Q_ES)
+    patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+    # patch.set_alpha(None)
+    patches.append(patch)
 
     # Extrapolation along both factors
     xy = (cf0.mid, cf1.mid)
     height = cf1.upper - cf1.mid
     width = cf0.upper - cf0.mid
     patch_kwargs = update_colors(color_extrapolation_all, patch_kwargs, draw_frame)
-    Q_EB = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-    patches.append(Q_EB)
+    patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+    # patch.set_alpha(None)
+    patches.append(patch)
 
     # Interpolation
     if mode == "A":
@@ -166,22 +169,25 @@ def get_patches(
         height = cf1.mid - cf1.lower
         width = cf0.mid - cf0.lower
         patch_kwargs = update_colors(color_interpolation, patch_kwargs, draw_frame)
-        Q_I = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        patches.append(Q_I)
+        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+        # patch.set_alpha(None)
+        patches.append(patch)
     elif mode == "B":
         xy = (cf0.lower, cf1.lower)
         width = cf0.mid - cf0.lower
         height = cf1.lower_constraint - cf1.lower
         patch_kwargs = update_colors(color_interpolation, patch_kwargs, draw_frame)
-        Q_I = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        patches.append(Q_I)
+        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+        # patch.set_alpha(None)
+        patches.append(patch)
 
         xy = (cf0.lower, cf1.lower_constraint)
         width = cf0.lower_constraint - cf0.lower
         height = cf1.mid - cf1.lower_constraint
         patch_kwargs = update_colors(color_interpolation, patch_kwargs, draw_frame)
-        Q_I = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        patches.append(Q_I)
+        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+        # patch.set_alpha(None)
+        patches.append(patch)
 
     # Combinatorial Interpolation
     if mode == "B":
@@ -189,15 +195,17 @@ def get_patches(
         height = cf1.mid - cf1.lower_constraint
         width = cf0.mid - cf0.lower_constraint
         patch_kwargs = update_colors(color_interpolation_combinatorial, patch_kwargs, draw_frame)
-        Q_IC = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        patches.append(Q_IC)
+        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+        # patch.set_alpha(None)
+        patches.append(patch)
     elif mode == "C":
         xy = (cf0.lower, cf1.lower)
         height = cf1.mid - cf1.lower
         width = cf0.mid - cf0.lower
         patch_kwargs = update_colors(color_interpolation_combinatorial, patch_kwargs, draw_frame)
-        Q_IC = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        patches.append(Q_IC)
+        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
+        # patch.set_alpha(None)
+        patches.append(patch)
 
     return patches
 
@@ -213,6 +221,9 @@ def get_solved_threshold(env_name):
 
 if __name__ == '__main__':
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/evaluation_protocol/base_vs_context/classic_control/CARLCartPoleEnv"
+    draw_points = False
+    draw_mean_per_region = True
+    plot_train = False
 
     results = gather_results(path=path)
     
@@ -283,126 +294,193 @@ if __name__ == '__main__':
 
     print("Draw!")
     # Create figure
-    fig = plt.figure(figsize=(8, 6), dpi=300)
-    axes = fig.subplots(nrows=1, ncols=n_protocols, sharex=True, sharey=True)
+    figsize = (9, 3) if draw_mean_per_region else (18, 6)
+    fig = plt.figure(figsize=figsize, dpi=300)
+    nrows = 1
+    axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
 
-    results.sort_values("mode", inplace=True)
+    context_distribution_types = results["context_distribution_type"].unique()
     groups = results.groupby("mode")
     cf0, cf1 = context_features
     xlim = (cf0.lower, cf0.upper)
     ylim = (cf1.lower, cf1.upper)
 
+    index = 0  # 0 for mean, 1 for std  # TODO Rename to more verbose
+    performances_list = []
+    for i, (group_id, group_df) in enumerate(groups):
+        performances = {}
+        for context_distribution_type in context_distribution_types:
+            if not plot_train and context_distribution_type == "train":
+                continue
+            sub_df = group_df[group_df["context_distribution_type"] == context_distribution_type]
+            if len(sub_df) > 0:
+                performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
+            else:
+                performance = (np.nan, np.nan)
+            performances[context_distribution_type] = performance
+        performances_list.append(performances)
+
+    perf = []
+    for performances in performances_list:
+        for v in performances.values():
+            perf.append(v)
+    perf = np.array(perf)
+    perf_min = np.nanmin(perf)
+    perf_max = np.nanmax(perf)
+    perf_ptp = perf_max - perf_min
+
+    def scale(x):
+        return (x - perf_min) / perf_ptp
+
     for i, (group_id, group_df) in enumerate(groups):
         ax = axes[i]
         ax.set_xlim(*xlim)
         ax.set_ylim(*ylim)
-        mode = modes[i]
+        mode = group_id
 
         episode_reward_min = group_df["episode_reward"].min()
         episode_reward_max = group_df["episode_reward"].max()
         ptp = episode_reward_max - episode_reward_min
-        def scale(x):
-            return (x - episode_reward_min) / ptp
-        context_distribution_types = group_df["context_distribution_type"].unique()
 
         performances = {}
         for context_distribution_type in context_distribution_types:
             sub_df = group_df[group_df["context_distribution_type"] == context_distribution_type]
-            performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
+            if len(sub_df) > 0:
+                performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
+            else:
+                performance = (np.nan, np.nan)
             performances[context_distribution_type] = performance
 
-        # TODO match performance of instance to actual point
+        if not plot_train:
+            del_ids = group_df["context_distribution_type"] == "train"
+            group_df = group_df[~del_ids]
 
-        colors = sns.color_palette("colorblind")
-        color_T = colors[0]
-        color_I = colors[1]
-        color_ES = colors[2]
-        color_EB = colors[3]
-        color_IC = colors[4]
-
-        ec_test = "black"
-        markerfacecolor_alpha = 0.
-
-        patches = get_patches(
-            context_features=context_features,
-            color_interpolation=color_I,
-            color_extrapolation_single=color_ES,
-            color_extrapolation_all=color_EB,
-            color_interpolation_combinatorial=color_IC,
-            patch_kwargs={"alpha": 1., "linewidth": 3, "zorder": 1e6},
-            draw_frame=True,
-        )
-
-        for patch in patches:
-            ax.add_patch(patch)
-
-        columns = context_feature_names + ["episode_reward",]
-
+        columns = context_feature_names + ["episode_reward", ]
         contexts_train = group_df[group_df["context_distribution_type"] == "train"][columns]
         contexts_ES = group_df[group_df["context_distribution_type"] == "test_extrapolation_single"][columns]
         contexts_EA = group_df[group_df["context_distribution_type"] == "test_extrapolation_all"][columns]
         contexts_I = group_df[group_df["context_distribution_type"] == "test_interpolation"][columns]
         contexts_IC = group_df[group_df["context_distribution_type"] == "test_interpolation_combinatorial"][columns]
 
-        def scatter(ax, contexts):
-            cols = contexts.columns
-            context_feature_names = cols[:-1]
-            performance_key = cols[-1]
-            x = contexts[context_feature_names[0]]
-            y = contexts[context_feature_names[1]]
-            perf = contexts[performance_key].to_numpy()
-            perf_scaled = scale(perf)
-            c = cmap(perf_scaled)
-            ax.scatter(x=x, y=y, c=c, alpha=0.5)
-            return ax
+        if draw_mean_per_region:
+            color_T = cmap(scale(performances["train"][index]))
+            color_I = cmap(scale(performances["test_interpolation"][index]))
+            color_ES = cmap(scale(performances["test_extrapolation_single"][index]))
+            color_EB = cmap(scale(performances["test_extrapolation_all"][index]))
+            color_IC = cmap(scale(performances["test_interpolation_combinatorial"][index]))
+            patches = get_patches(
+                context_features=context_features,
+                color_interpolation=color_I,
+                color_extrapolation_single=color_ES,
+                color_extrapolation_all=color_EB,
+                color_interpolation_combinatorial=color_IC,
+                patch_kwargs={"alpha": 1, "linewidth": 0, "zorder": 0},
+                draw_frame=False,
+            )
+            for patch in patches:
+                ax.add_patch(patch)
+        else:
+            colors = sns.color_palette("colorblind")
+            color_T = colors[0]
+            color_I = colors[1]
+            color_ES = colors[2]
+            color_EB = colors[3]
+            color_IC = colors[4]
 
-        # # Plot train context
-        # if len(contexts_train) > 0:
-        #     ax = scatter(ax, contexts_train)
-        # # Extrapolation single
-        # if len(contexts_ES) > 0:
-        #     ax = scatter(ax, contexts_ES)
-        # # Extrapolation all factors
-        # if len(contexts_EA) > 0:
-        #     ax = scatter(ax, contexts_EA)
-        # # Interpolation (Train Distribution)
-        # if len(contexts_I) > 0:
-        #     ax = scatter(ax, contexts_I)
-        # # Combinatorial Interpolation
-        # if len(contexts_IC) > 0:
-        #     ax = scatter(ax, contexts_IC)
+            ec_test = "black"
+            markerfacecolor_alpha = 0.
 
-        # # Draw colorbar
-        # norm = mpl.colors.Normalize(vmin=episode_reward_min, vmax=episode_reward_max)
-        # divider = make_axes_locatable(ax)
-        # cax = divider.append_axes('right', size='5%', pad=0.05)
-        # colorbar = fig.colorbar(
-        #     ax=ax, cax=cax, mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap), orientation='vertical',
-        #     label='Episode Reward'
-        # )
-        # solved_threshold = get_solved_threshold(env_name=env)
-        # if solved_threshold is not None:
-        #     colorbar.add_lines(levels=[solved_threshold], colors=["black"], linewidths=[2])
+            if draw_points:
+                patch_kwargs = {"alpha": 1, "linewidth": 0, "zorder": 0}
+                draw_frame = False
+            else:
+                patch_kwargs = {"linewidth": 3, "zorder": 1e6}
+                draw_frame = True
 
-        # Draw heatmap
-        points = group_df[context_feature_names].to_numpy()
-        values = group_df["episode_reward"].to_numpy()
-        # target grid to interpolate to
-        n_points = 20
-        xi = np.linspace(group_df[context_feature_names[0]].min(), group_df[context_feature_names[0]].max(), n_points)
-        yi = np.linspace(group_df[context_feature_names[1]].min(), group_df[context_feature_names[1]].max(), n_points)
-        Xi, Yi = np.meshgrid(xi, yi)
-        zi = griddata(points=points, values=values, xi=(Xi, Yi), method='linear')
-        ax = sns.heatmap(data=zi, vmin=episode_reward_min, vmax=episode_reward_max, cmap='viridis', ax=ax)
+            patches = get_patches(
+                context_features=context_features,
+                color_interpolation=color_I,
+                color_extrapolation_single=color_ES,
+                color_extrapolation_all=color_EB,
+                color_interpolation_combinatorial=color_IC,
+                patch_kwargs=patch_kwargs,
+                draw_frame=draw_frame,
+            )
 
-        # Fix ticks
-        n_ticks = 5
-        xmin, xmax = xi[0], xi[-1]
-        ymin, ymax = yi[0], yi[-1]
-        xticks = np.linspace(xmin, xmax, n_ticks)
-        yticks = np.linspace(ymin, ymax, n_ticks)
-        ax.set_xticks(xticks)
-        ax.set_yticks(yticks)
+            for patch in patches:
+                ax.add_patch(patch)
+
+            def scatter(ax, contexts):
+                cols = contexts.columns
+                context_feature_names = cols[:-1]
+                performance_key = cols[-1]
+                x = contexts[context_feature_names[0]]
+                y = contexts[context_feature_names[1]]
+                perf = contexts[performance_key].to_numpy()
+                perf_scaled = scale(perf)
+                c = cmap(perf_scaled)
+                ax.scatter(x=x, y=y, c=c, alpha=0.5)
+                return ax
+
+            if draw_points:
+                # Plot train context
+                if len(contexts_train) > 0:
+                    ax = scatter(ax, contexts_train)
+                # Extrapolation single
+                if len(contexts_ES) > 0:
+                    ax = scatter(ax, contexts_ES)
+                # Extrapolation all factors
+                if len(contexts_EA) > 0:
+                    ax = scatter(ax, contexts_EA)
+                # Interpolation (Train Distribution)
+                if len(contexts_I) > 0:
+                    ax = scatter(ax, contexts_I)
+                # Combinatorial Interpolation
+                if len(contexts_IC) > 0:
+                    ax = scatter(ax, contexts_IC)
+
+            else:
+                # Draw heatmap
+                points = group_df[context_feature_names].to_numpy()
+                values = group_df["episode_reward"].to_numpy()
+                # target grid to interpolate to
+                n_points = 300
+                xi = np.linspace(group_df[context_feature_names[0]].min(), group_df[context_feature_names[0]].max(), n_points)
+                yi = np.linspace(group_df[context_feature_names[1]].min(), group_df[context_feature_names[1]].max(), n_points)
+                Xi, Yi = np.meshgrid(xi, yi)
+                zi = griddata(points=points, values=values, xi=(Xi, Yi), method='linear')
+                # ax = sns.heatmap(data=zi, vmin=episode_reward_min, vmax=episode_reward_max, cmap='viridis', ax=ax)
+                extent = [xi[0], xi[-1], yi[0], yi[-1]]  # left right bottom top
+                extent = [xlim[0], xlim[1], ylim[0], ylim[1]]
+                ax.imshow(zi, vmin=episode_reward_min, vmax=episode_reward_max, cmap='viridis', extent=extent, origin='lower')
+                ax.set_aspect("auto")
+
+        # Draw colorbar
+        if draw_mean_per_region:
+            norm = mpl.colors.Normalize(vmin=perf_min, vmax=perf_max)
+        else:
+            norm = mpl.colors.Normalize(vmin=episode_reward_min, vmax=episode_reward_max)
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        colorbar = fig.colorbar(
+            ax=ax, cax=cax, mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap), orientation='vertical',
+            label='Episode Reward'
+        )
+        if not draw_mean_per_region:
+            solved_threshold = get_solved_threshold(env_name=env)
+            if solved_threshold is not None:
+                colorbar.add_lines(levels=[solved_threshold], colors=["black"], linewidths=[2])
+
+
+
+        # # Fix ticks
+        # n_ticks = 5
+        # xmin, xmax = xi[0], xi[-1]
+        # ymin, ymax = yi[0], yi[-1]
+        # xticks = np.linspace(xmin, xmax, n_ticks)
+        # yticks = np.linspace(ymin, ymax, n_ticks)
+        # ax.set_xticks(xticks)
+        # ax.set_yticks(yticks)
 
         # Add axis descriptions
         ax.set_xlabel(cf0.name)
