@@ -1,4 +1,6 @@
 from pathlib import Path
+from typing import Optional, Dict
+import pandas as pd
 
 from src.context.sampling import sample_contexts
 from src.experiments.evaluation_protocol import ContextFeature, EvaluationProtocol
@@ -15,7 +17,7 @@ def get_context_features(env_name):
     return context_features
 
 
-def get_ep_contexts(env_name, n_contexts, seed, mode):
+def get_ep_contexts(env_name, n_contexts, seed, mode) -> Dict[str, pd.DataFrame]:
     context_features = get_context_features(env_name=env_name)
     ep = EvaluationProtocol(context_features=context_features, mode=mode, seed=seed)
     contexts_train = ep.create_train_contexts(n=n_contexts)
@@ -33,14 +35,16 @@ def get_ep_contexts(env_name, n_contexts, seed, mode):
     return contexts_dict
 
 
-def merge_contexts(ep_contexts, contexts):
+def merge_contexts(ep_contexts: pd.DataFrame, contexts: Dict) -> Optional[Dict]:
+    if len(ep_contexts) == 0:
+        return None
     for i in range(len(contexts)):
         C_ep = ep_contexts.iloc[i].to_dict()
         contexts[i].update(C_ep)
     return contexts
 
 
-def get_train_contexts(env_name, seed, n_contexts, mode):
+def get_train_contexts(env_name, seed, n_contexts, mode) -> Optional[Dict]:
     contexts_dict = get_ep_contexts(env_name=env_name, seed=seed, n_contexts=n_contexts, mode=mode)
     contexts = sample_contexts(env_name, [], n_contexts)
     contexts_train_ep = contexts_dict["train"]
