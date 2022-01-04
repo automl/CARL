@@ -1,6 +1,6 @@
 import unittest
 
-from src.experiments.evaluation_protocol import ContextFeature, EvaluationProtocol
+from src.experiments.evaluation_protocol import ContextFeature, EvaluationProtocol, plot_evaluation_protocol
 
 
 class TestEvaluationProtocol(unittest.TestCase):
@@ -28,3 +28,11 @@ class TestEvaluationProtocol(unittest.TestCase):
             for c_id, C in contexts_dict.items():
                 if len(C) != 0:
                     self.assertTrue(len(C) == n_contexts, msg=f"Number of contexts {len(C)} not equal to desired number {n_contexts} for {c_id}.")
+
+    def test_plot(self):
+        cf0 = ContextFeature("g", 9., 9.5, 10., 11.)
+        cf1 = ContextFeature("l", 0.4, 0.5, 0.6, 0.8)
+        seed = 1
+        n_contexts = 100
+        context_features = [cf0, cf1]
+        plot_evaluation_protocol(context_features=context_features, seed=seed, n_contexts=n_contexts)
