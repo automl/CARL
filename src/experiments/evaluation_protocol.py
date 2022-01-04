@@ -166,8 +166,7 @@ class EvaluationProtocol(object):
         if n % n_cfs != 0:
             warnings.warn(f"Requested number of contexts {n} is not divisible by number of contexts "
                           f"{n_cfs} without rest. You will get less contexts than {n}.")
-        n_i = n // n_cfs
-        contexts = [sample_function(n_i)]
+        contexts = [sample_function(n)]
         contexts = pd.concat(contexts)
         contexts.reset_index(inplace=True, drop=True)
         return contexts
@@ -217,17 +216,13 @@ class EvaluationProtocol(object):
                         contexts[cf.name] = samples
                     contexts = pd.DataFrame(contexts)
                     return contexts
-                n_cfs = len(self.context_features)  # number of context features
-                n_i = n // n_cfs
-                contexts = [sample_function(n_i)]
+                contexts = [sample_function(n)]
                 contexts = pd.concat(contexts)
                 contexts.reset_index(inplace=True, drop=True)
 
             elif self.mode == "C":
                 sample_function = self.sample_train_A
-                n_cfs = len(self.context_features)  # number of context features
-                n_i = n // n_cfs
-                contexts = [sample_function(n_i)]
+                contexts = [sample_function(n)]
                 contexts = pd.concat(contexts)
                 contexts.reset_index(inplace=True, drop=True)
             return contexts
