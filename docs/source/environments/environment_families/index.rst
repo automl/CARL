@@ -9,3 +9,8 @@ Environment Families
     brax
     toad_gan
     rna
+
+.. image:: ../../figures/envs_overview.png
+  :width: 90%
+  :align: center
+  :alt: Screenshot of each environment included in CARL.
