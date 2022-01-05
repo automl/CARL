@@ -130,6 +130,26 @@ class TestStateConstruction(unittest.TestCase):
         # state should be of length 5 because two features are changing (dt and l)
         self.assertEqual(5, len(state))
 
+    def test_dict_observation_space(self):
+        contexts = {
+            "0": {"max_speed": 8., "dt":  0.03, "g": 10.0, "m": 1., "l": 1.}
+        }
+        env = CARLPendulumEnv(
+            contexts=contexts,
+            hide_context=False,
+            dict_observation_space=True,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=["changing_context_features"],
+        ) 
+        obs = env.reset()
+        self.assertEqual(type(obs), dict)
+        self.assertTrue("state" in obs)
+        self.assertTrue("context" in obs)
+        action = [0.01]  # torque
+        next_obs, reward, done, info = env.step(action=action)
+        env.close() 
+        
 
 if __name__ == '__main__':
     unittest.main()

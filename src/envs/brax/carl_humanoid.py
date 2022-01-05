@@ -4,7 +4,7 @@ import json
 
 import brax
 from brax.physics import bodies
-from brax.physics.base import take
+import jax.numpy as jnp
 from brax.envs.wrappers import GymWrapper
 from brax.envs.humanoid import Humanoid, _SYSTEM_CONFIG
 
@@ -45,6 +45,7 @@ class CARLHumanoid(CARLEnv):
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
+            dict_observation_space: bool = False,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(text_format.Parse(_SYSTEM_CONFIG, brax.Config()))
@@ -61,6 +62,7 @@ class CARLHumanoid(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
+            dict_observation_space=dict_observation_space
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 
@@ -76,7 +78,7 @@ class CARLHumanoid(CARLEnv):
         protobuf_config = json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         self.env.sys = brax.System(protobuf_config)
         body = bodies.Body.from_config(protobuf_config)
-        body = take(body, body.idx[:-1])  # skip the floor body
+        body = jnp.take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 

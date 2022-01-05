@@ -200,6 +200,7 @@ class CARLVehicleRacingEnv(CARLEnv):
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
+            dict_observation_space: bool = False,
     ):
         """
 
@@ -231,6 +232,7 @@ class CARLVehicleRacingEnv(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
+            dict_observation_space=dict_observation_space
         )
         self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
 
