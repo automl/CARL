@@ -1,4 +1,5 @@
-#CARLify your Environment
+CARLify your Environment
+========================
 
 If you have an environment that you think would make an interesting addition
 to CARL, feel free to add it. Here is a short guide on what to do:
