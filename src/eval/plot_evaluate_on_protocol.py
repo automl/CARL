@@ -1,96 +1,24 @@
 import pandas as pd
 from typing import Union, Dict, List, Optional
 from pathlib import Path
-import os
-import glob
 import numpy as np
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.colors as mplc
-from matplotlib.patches import Rectangle, Patch
-from matplotlib.lines import Line2D
+from matplotlib.patches import Rectangle
 from matplotlib import cm
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
-from src.eval.gather_data import extract_info
-from src.experiments.evaluation_protocol_utils import get_context_features, get_ep_contexts
+from src.experiments.evaluation_protocol_utils import create_ep_contexts_LUT, \
+    read_ep_contexts_LUT, gather_results
+from src.experiments.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
 from src.experiments.evaluation_protocol import ContextFeature
 
 
-def gather_results(
-        path: Union[str, Path],
-        eval_file_id: Union[str, Path] = "eval/evaluation_protocol/*.npz",
-        trial_setup_fn: str = "trial_setup.json"
-):
-    dirs = glob.glob(os.path.join(path, "**", trial_setup_fn), recursive=True)
-
-    data = []
-    for result_dir in dirs:
-        result_dir = Path(result_dir).parent
-        # agent
-        # seed
-        # context feature args
-        info = extract_info(path=result_dir, info_fn=trial_setup_fn)
-        mode = info["evaluation_protocol_mode"]
-        eval_fns = glob.glob(str(result_dir / eval_file_id), recursive=True)
-        for eval_fn in eval_fns:
-            eval_fn = Path(eval_fn)
-            D = None
-            if not eval_fn.is_file():
-                print(f"Eval fn {eval_fn} does not exist. Skip.")
-                continue
-
-            eval_data = np.load(str(eval_fn))
-            timesteps = eval_data["timesteps"]
-            episode_lengths = eval_data["ep_lengths"]
-            instance_ids = np.squeeze(eval_data["episode_instances"])
-            episode_rewards = eval_data["results"]
-
-            key = None
-            if "test_id" in eval_data:
-                key = "test_id"
-            elif "context_distribution_type" in eval_data:
-                key = "context_distribution_type"
-
-            context_distribution_type = eval_data[key] if key is not None else None
-
-            timesteps = np.concatenate([timesteps[:, np.newaxis]] * episode_rewards.shape[-1], axis=1)
-
-            timesteps = timesteps.flatten()
-            instance_ids = instance_ids.flatten()
-            instance_ids = instance_ids.astype(dtype=np.int)
-            episode_rewards = episode_rewards.flatten()
-            episode_lengths = episode_lengths.flatten()
-
-            n = len(timesteps)
-
-            D = pd.DataFrame({
-                "step": timesteps,
-                "instance_id": instance_ids,
-                "episode_reward": episode_rewards,
-                "episode_length": episode_lengths,
-                "context_distribution_type": context_distribution_type,
-                "mode": mode
-            })
-
-            # merge info and results
-            n = len(D)
-            for k, v in info.items():
-                D[k] = [v] * n
-
-            if D is not None:
-                data.append(D)
-
-    if data:
-        data = pd.concat(data)
-
-    return data
-
-
-def get_patches(
+def get_ep_mplpatches(
         context_features: List[ContextFeature],
         color_interpolation: Optional[Union[str, List[float], np.array]] = None,
         color_extrapolation_single: Optional[Union[str, List[float], np.array]] = None,
@@ -210,13 +138,15 @@ def get_patches(
     return patches
 
 
-def get_solved_threshold(env_name):
-    thresh = None
-    if env_name == "CARLCartPoleEnv":
-        thresh = 195
-    elif env_name == "CARLPendulumEnv":
-        thresh = -175
-    return thresh
+def add_colorbar_to_ax(vmin, vmax, cmap, label):
+    norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes('right', size='5%', pad=0.05)
+    colorbar = fig.colorbar(
+        ax=ax, cax=cax, mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap), orientation='vertical',
+        label=label
+    )
+    return colorbar
 
 
 if __name__ == '__main__':
@@ -247,33 +177,11 @@ if __name__ == '__main__':
     index_col = ["mode", "seed", "context_distribution_type", "instance_id"]
     if contexts_LUT_fn.is_file():
         print("Load LUT")
-        contexts_LUT = pd.read_csv(str(contexts_LUT_fn), index_col=index_col)
+        contexts_LUT = read_ep_contexts_LUT(contexts_LUT_fn)
     else:
         print("Create LUT")
-        contexts_LUT = []
-        for mode in modes:
-            for seed in seeds:
-                context_dict = get_ep_contexts(env_name=env, n_contexts=n_contexts, seed=seed, mode=mode)
-                for context_distribution_type, contexts in context_dict.items():
-                    if type(contexts) == list and len(contexts) == 0:
-                        continue
-                    # contexts["context_distribution_type"] = [context_distribution_type] * len(contexts)
-                    # contexts["mode"] = [mode] * len(contexts)
-                    # contexts["seed"] = [seed] * len(contexts)
-                    # contexts["instance_id"] = np.arange(0, len(contexts))
-                    arrays = [
-                        [mode] * len(contexts),
-                        [seed] * len(contexts),
-                        [context_distribution_type] * len(contexts),
-                        np.arange(0, len(contexts))
-                    ]
-                    tuples = list(zip(*arrays))
-                    index = pd.MultiIndex.from_tuples(tuples, names=index_col)
-                    contexts.index = index
-                    contexts_LUT.append(contexts)
-
-        contexts_LUT = pd.concat(contexts_LUT)
-        contexts_LUT.to_csv(str(contexts_LUT_fn))
+        contexts_LUT = create_ep_contexts_LUT(
+            env_name=env, n_contexts=n_contexts, modes=modes, seeds=seeds, contexts_LUT_fn=contexts_LUT_fn)
 
     # Populate results with context feature values
     print("Get context feature values")
@@ -323,7 +231,7 @@ if __name__ == '__main__':
     perf = []
     for performances in performances_list:
         for v in performances.values():
-            perf.append(v)
+            perf.append(v[index])
     perf = np.array(perf)
     perf_min = np.nanmin(perf)
     perf_max = np.nanmax(perf)
@@ -368,7 +276,7 @@ if __name__ == '__main__':
             color_ES = cmap(scale(performances["test_extrapolation_single"][index]))
             color_EB = cmap(scale(performances["test_extrapolation_all"][index]))
             color_IC = cmap(scale(performances["test_interpolation_combinatorial"][index]))
-            patches = get_patches(
+            patches = get_ep_mplpatches(
                 context_features=context_features,
                 color_interpolation=color_I,
                 color_extrapolation_single=color_ES,
@@ -397,7 +305,7 @@ if __name__ == '__main__':
                 patch_kwargs = {"linewidth": 3, "zorder": 1e6}
                 draw_frame = True
 
-            patches = get_patches(
+            patches = get_ep_mplpatches(
                 context_features=context_features,
                 color_interpolation=color_I,
                 color_extrapolation_single=color_ES,
@@ -456,31 +364,14 @@ if __name__ == '__main__':
                 ax.set_aspect("auto")
 
         # Draw colorbar
-        if draw_mean_per_region:
-            norm = mpl.colors.Normalize(vmin=perf_min, vmax=perf_max)
+        colorbar_label = "Episode Reward"
+        if draw_mean_per_region and i == len(groups) - 1:
+                colorbar = add_colorbar_to_ax(perf_min, perf_max, cmap, colorbar_label)
         else:
-            norm = mpl.colors.Normalize(vmin=episode_reward_min, vmax=episode_reward_max)
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes('right', size='5%', pad=0.05)
-        colorbar = fig.colorbar(
-            ax=ax, cax=cax, mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap), orientation='vertical',
-            label='Episode Reward'
-        )
-        if not draw_mean_per_region:
+            colorbar = add_colorbar_to_ax(episode_reward_min, episode_reward_max, cmap, colorbar_label)
             solved_threshold = get_solved_threshold(env_name=env)
             if solved_threshold is not None:
                 colorbar.add_lines(levels=[solved_threshold], colors=["black"], linewidths=[2])
-
-
-
-        # # Fix ticks
-        # n_ticks = 5
-        # xmin, xmax = xi[0], xi[-1]
-        # ymin, ymax = yi[0], yi[-1]
-        # xticks = np.linspace(xmin, xmax, n_ticks)
-        # yticks = np.linspace(ymin, ymax, n_ticks)
-        # ax.set_xticks(xticks)
-        # ax.set_yticks(yticks)
 
         # Add axis descriptions
         ax.set_xlabel(cf0.name)
