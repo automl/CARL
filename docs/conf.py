@@ -331,4 +331,4 @@ sphinx_gallery_conf = {
 
 # Compile/render dynamic content
 # import src.utils.doc_building.build_env_overview_table
-# src.utils.doc_building.build_env_overview_table.build()
+# src.utils.doc_building.build.build()
