@@ -141,7 +141,8 @@ class CARLLunarLanderEnv(CARLEnv):
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
             max_episode_length: int = 1000,
-            high_gameover_penalty: bool = False
+            high_gameover_penalty: bool = False,
+            dict_observation_space: bool = False,
     ):
         """
 
@@ -170,6 +171,7 @@ class CARLLunarLanderEnv(CARLEnv):
             default_context=default_context,
             state_context_features=state_context_features,
             max_episode_length=max_episode_length,
+            dict_observation_space=dict_observation_space
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 
