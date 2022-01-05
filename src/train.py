@@ -37,7 +37,7 @@ from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.training.eval_callback import DACEvalCallback
 from src.training.eval_policy import evaluate_policy
 from src.utils.json_utils import lazy_json_dump
-from src.experiments.train_on_protocol import get_train_contexts
+from src.experiments.evaluation_protocol_utils import get_train_contexts
 
 
 def str2bool(v):

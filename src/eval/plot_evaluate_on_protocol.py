@@ -16,7 +16,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
 from src.eval.gather_data import extract_info
-from src.experiments.train_on_protocol import get_context_features, get_ep_contexts
+from src.experiments.evaluation_protocol_utils import get_context_features, get_ep_contexts
 from src.experiments.evaluation_protocol import ContextFeature
 
 
