@@ -1,4 +1,5 @@
-#CARLify your Environment
+CARLify your Environment
+========================
 
 If you have an environment that you think would make an interesting addition
 to CARL, feel free to add it. Here is a short guide on what to do:
@@ -11,8 +12,8 @@ as well as bounds for all features.
    
 3. If additional requirements need to be installed, add them as install
 options in setup.cfg. Make sure those changes are reflected in the ReadME
-   as well, especially if there are any extra steps (e.g. data downloads)
-   to the installation process.
+as well, especially if there are any extra steps (e.g. data downloads)
+to the installation process.
    
 4. Make a PR to the main branch of CARL. We'll review it and try to clarify
 any open questions.
