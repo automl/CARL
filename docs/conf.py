@@ -328,3 +328,7 @@ sphinx_gallery_conf = {
     'plot_gallery': 'False',
     'ignore_pattern': '.*pcs$'
 }
+
+# Compile/render dynamic content
+import src.utils.doc_building.build_env_overview_table
+src.utils.doc_building.build_env_overview_table.build()
