@@ -1,4 +1,4 @@
-#License
+# License
 CARL falls under the Apache License 2.0 (see file 'LICENSE') as is 
 permitted by all work that we use. This includes CARLMario, which is not 
 based on the Nintendo Game, but on TOAD-GAN and TOAD-GUI running under 
