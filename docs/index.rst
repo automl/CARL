@@ -4,8 +4,11 @@ Home
 .. toctree::
    :hidden:
    :maxdepth: 2
-
+    source/getting_started
     source/environments/overview
+    source/cite
+    source/license
+    source/references
 
 
 
