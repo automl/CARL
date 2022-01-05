@@ -1,4 +1,4 @@
-# The CARL environments
+#The CARL environments
 
 CARL extends the standard [gym interface](https://gym.openai.com/docs/ "Gym Docs") with context.
 This context changes the environment's transition dynamics and reward
