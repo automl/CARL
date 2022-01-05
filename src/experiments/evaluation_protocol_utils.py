@@ -1,5 +1,7 @@
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Dict, List, Union
+
+import numpy as np
 import pandas as pd
 
 from src.context.sampling import sample_contexts
@@ -52,6 +54,44 @@ def get_train_contexts(env_name, seed, n_contexts, mode) -> Optional[Dict]:
     return contexts_train
 
 
+def create_ep_contexts_LUT(
+        env_name: str,
+        n_contexts: int,
+        seeds: List[int],
+        modes: List[str],
+        contexts_LUT_fn: Optional[Union[str, Path]] = None) -> pd.DataFrame:
+    index_col = ["mode", "seed", "context_distribution_type", "instance_id"]
+    contexts_LUT = []
+    for mode in modes:
+        for seed in seeds:
+            context_dict = get_ep_contexts(env_name=env_name, n_contexts=n_contexts, seed=seed, mode=mode)
+            for context_distribution_type, contexts in context_dict.items():
+                if type(contexts) == list and len(contexts) == 0:
+                    continue
+                arrays = [
+                    [mode] * len(contexts),
+                    [seed] * len(contexts),
+                    [context_distribution_type] * len(contexts),
+                    np.arange(0, len(contexts))
+                ]
+                tuples = list(zip(*arrays))
+                index = pd.MultiIndex.from_tuples(tuples, names=index_col)
+                contexts.index = index
+                contexts_LUT.append(contexts)
+
+    contexts_LUT = pd.concat(contexts_LUT)
+    if contexts_LUT_fn is not None:
+        contexts_LUT.to_csv(str(contexts_LUT_fn))
+
+    return contexts_LUT
+
+
+def read_ep_contexts_LUT(csv_filename: Union[str, Path]) -> pd.DataFrame:
+    index_col = ["mode", "seed", "context_distribution_type", "instance_id"]
+    contexts_LUT = pd.read_csv(str(csv_filename), index_col=index_col)
+    return contexts_LUT
+
+
 if __name__ == '__main__':
     n_contexts = 100
     seed = 1
@@ -73,4 +113,3 @@ if __name__ == '__main__':
             fnames.append(fname)
 
         break
-
