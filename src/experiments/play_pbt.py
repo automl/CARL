@@ -118,39 +118,41 @@ def load_hps(policy_file):
 
     return last_old_conf, iter(list(reversed(policy)))
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-        "--policy_path", help="Path to PBT policy")
-parser.add_argument("--seed", type=int)
-parser.add_argument("--env", type=str)
-parser.add_argument("--hide_context", action='store_true')
-parser.add_argument("--name", type=str)
-parser.add_argument("--context_args", type=str)
-args, _ = parser.parse_known_args()
 
-pbt_folder = "pbt_hps"
-if args.hide_context:
-    pbt_folder = "pbt_hps_hidden"
-context_feature_str = "".join(args.context_args)
-outdir = f"/home/benjamin/Dokumente/code/tmp/CARL/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}/{context_feature_str}"
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            "--policy_path", help="Path to PBT policy")
+    parser.add_argument("--seed", type=int)
+    parser.add_argument("--env", type=str)
+    parser.add_argument("--hide_context", action='store_true')
+    parser.add_argument("--name", type=str)
+    parser.add_argument("--context_args", type=str)
+    args, _ = parser.parse_known_args()
 
-env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_context, "context_args": args.context_args}
+    pbt_folder = "pbt_hps"
+    if args.hide_context:
+        pbt_folder = "pbt_hps_hidden"
+    context_feature_str = "".join(args.context_args)
+    outdir = f"/home/benjamin/Dokumente/code/tmp/CARL/src/results/classic_control/{pbt_folder}/{args.env}/{args.name}/{context_feature_str}"
 
-config, hp_schedule = load_hps(args.policy_path)
-config["env_config"] = env_config
-model, timesteps, context_args, hide_context = setup_agent(config, outdir, parser, args)
-change_at, next_config = next(hp_schedule, None)
-for i in range(250):
-    reward, model, timesteps = step(model, timesteps, args.env, context_args, hide_context)
-    print(f"Step: {i*4096}, reward: {reward}")
-    if i == change_at:
-        model.learning_rate = next_config["learning_rate"]
-        model.gamma = next_config["gamma"]
-        model.ent_coef = next_config["ent_coef"]
-        model.vf_coef = next_config["vf_coef"]
-        model.gae_lambda = next_config["gae_lambda"]
-        model.max_grad_norm = next_config["max_grad_norm"]
-        try:
-            change_at, next_config = next(hp_schedule, None)
-        except:
-            pass
+    env_config = {"seed": args.seed, "env": args.env, "hide_context": args.hide_context, "context_args": args.context_args}
+
+    config, hp_schedule = load_hps(args.policy_path)
+    config["env_config"] = env_config
+    model, timesteps, context_args, hide_context = setup_agent(config, outdir, parser, args)
+    change_at, next_config = next(hp_schedule, None)
+    for i in range(250):
+        reward, model, timesteps = step(model, timesteps, args.env, context_args, hide_context)
+        print(f"Step: {i*4096}, reward: {reward}")
+        if i == change_at:
+            model.learning_rate = next_config["learning_rate"]
+            model.gamma = next_config["gamma"]
+            model.ent_coef = next_config["ent_coef"]
+            model.vf_coef = next_config["vf_coef"]
+            model.gae_lambda = next_config["gae_lambda"]
+            model.max_grad_norm = next_config["max_grad_norm"]
+            try:
+                change_at, next_config = next(hp_schedule, None)
+            except:
+                pass
