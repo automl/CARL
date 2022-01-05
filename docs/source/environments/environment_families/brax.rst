@@ -17,14 +17,10 @@ Here the agent needs to learn how to control a four-legged ant in order
 to run (quickly) into one direction.
 
 
-.. csv-table:: Defaults
-   :file: ../data/context_defaults/CARLAnt.csv
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLAnt.csv
    :header-rows: 1
 
-
-.. csv-table:: Bounds
-   :file: ../data/context_bounds/CARLAnt.csv
-   :header-rows: 1
 
 
 CARL Fetch Environment
@@ -40,14 +36,10 @@ Fetch trains a dog to run to a target location.
 The target radius and distance as well as physical properties can be varied via the context features.
 
 
-.. csv-table:: Defaults
-   :file: ../data/context_defaults/CARLFetch.csv
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLFetch.csv
    :header-rows: 1
 
-
-.. csv-table:: Bounds
-   :file: ../data/context_bounds/CARLFetch.csv
-   :header-rows: 1
 
 
 CARL Grasp Environment
@@ -64,14 +56,10 @@ When Object reaches Target, the agent is rewarded.
 Apart from Grasp's pyhiscal properties the target radius, height and distance are also varied.
 
 
-.. csv-table:: Defaults
-   :file: ../data/context_defaults/CARLGrasp.csv
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLGrasp.csv
    :header-rows: 1
 
-
-.. csv-table:: Bounds
-   :file: ../data/context_bounds/CARLGrasp.csv
-   :header-rows: 1
 
 
 CARL Halfcheetah Environment
@@ -86,14 +74,10 @@ A Halfcheetah is trained to run in the +x direction.
 The context features can vary physical properties.
 
 
-.. csv-table:: Defaults
-   :file: ../data/context_defaults/CARLHalfcheetah.csv
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLHalfcheetah.csv
    :header-rows: 1
 
-
-.. csv-table:: Bounds
-   :file: ../data/context_bounds/CARLHalfcheetah.csv
-   :header-rows: 1
 
 
 CARL Humanoid Environment
@@ -107,13 +91,8 @@ CARL Humanoid Environment
 Here, a Humanoid needs to learn how to run in the +x direction.
 
 
-.. csv-table:: Defaults
-   :file: ../data/context_defaults/CARLHumanoid.csv
-   :header-rows: 1
-
-
-.. csv-table:: Bounds
-   :file: ../data/context_bounds/CARLHumanoid.csv
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLHumanoid.csv
    :header-rows: 1
 
 
@@ -129,11 +108,6 @@ The agent needs to learn how to move a ur5e robot arm and its end effector to a 
 The robot arm has 6 joints.
 
 
-.. csv-table:: Defaults
-   :file: ../data/context_defaults/CARLUr5e.csv
-   :header-rows: 1
-
-
-.. csv-table:: Bounds
-   :file: ../data/context_bounds/CARLUr5e.csv
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLUr5e.csv
    :header-rows: 1
