@@ -1,4 +1,4 @@
-from src.experiments.evaluation_protocol import ContextFeature
+from src.experiments.evaluation_protocol.evaluation_protocol import ContextFeature
 
 
 def get_context_features(env_name):

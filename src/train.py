@@ -5,7 +5,6 @@ import configargparse
 import yaml
 import json
 from typing import Dict, Union, Optional, Type, Callable, Tuple
-import pandas as pd
 import numpy as np
 import gym
 
@@ -20,7 +19,6 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
-from stable_baselines3 import DDPG, PPO, A2C, DQN, SAC
 
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -37,7 +35,7 @@ from src.utils.hyperparameter_processing import preprocess_hyperparams
 from src.training.eval_callback import DACEvalCallback
 from src.training.eval_policy import evaluate_policy
 from src.utils.json_utils import lazy_json_dump
-from src.experiments.evaluation_protocol_utils import get_train_contexts
+from src.experiments.evaluation_protocol.evaluation_protocol_utils import get_train_contexts
 
 
 def str2bool(v):

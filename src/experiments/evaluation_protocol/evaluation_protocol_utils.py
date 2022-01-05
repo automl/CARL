@@ -8,8 +8,8 @@ import pandas as pd
 
 from src.context.sampling import sample_contexts
 from src.eval.gather_data import extract_info
-from src.experiments.evaluation_protocol import EvaluationProtocol
-from src.experiments.evaluation_protocol_experiment_definitions import get_context_features
+from src.experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol
+from src.experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features
 from src.utils.json_utils import lazy_json_dump
 
 

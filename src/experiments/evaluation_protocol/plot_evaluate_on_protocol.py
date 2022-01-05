@@ -12,10 +12,10 @@ import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
-from src.experiments.evaluation_protocol_utils import create_ep_contexts_LUT, \
+from src.experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_contexts_LUT, \
     read_ep_contexts_LUT, gather_ep_results
-from src.experiments.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
-from src.experiments.evaluation_protocol import ContextFeature
+from src.experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
+from src.experiments.evaluation_protocol.evaluation_protocol import ContextFeature
 
 
 def get_ep_mplpatches(
@@ -149,10 +149,55 @@ def add_colorbar_to_ax(vmin, vmax, cmap, label):
     return colorbar
 
 
+def get_agg_index(agg_per_region: str = "mean"):
+    if agg_per_region == "mean":
+        index = 0
+    elif agg_per_region == "std":
+        index = 1
+    else:
+        raise ValueError
+    return index
+
+
+def get_agg_minmax(
+        results: Union[pd.DataFrame, pd.core.groupby.generic.DataFrameGroupBy], agg_per_region: str = "mean"):
+    index = get_agg_index(agg_per_region)
+
+    if type(results) == pd.core.groupby.generic.DataFrameGroupBy:
+        groups = results
+    else:
+        groups = results.groupby("mode")
+
+    performances_list = []
+    for i, (group_id, group_df) in enumerate(groups):
+        performances = {}
+        for context_distribution_type in context_distribution_types:
+            if not plot_train and context_distribution_type == "train":
+                continue
+            sub_df = group_df[group_df["context_distribution_type"] == context_distribution_type]
+            if len(sub_df) > 0:
+                performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
+            else:
+                performance = (np.nan, np.nan)
+            performances[context_distribution_type] = performance
+        performances_list.append(performances)
+
+    perf = []
+    for performances in performances_list:
+        for v in performances.values():
+            perf.append(v[index])
+    perf = np.array(perf)
+    perf_min = np.nanmin(perf)
+    perf_max = np.nanmax(perf)
+
+    return perf_min, perf_max
+
+
 if __name__ == '__main__':
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/evaluation_protocol/base_vs_context/classic_control/CARLCartPoleEnv"
     draw_points = False
-    draw_mean_per_region = True
+    draw_agg_per_region = True
+    agg_per_region = "mean"
     plot_train = False
 
     results = gather_ep_results(path=path)
@@ -202,7 +247,7 @@ if __name__ == '__main__':
 
     print("Draw!")
     # Create figure
-    figsize = (9, 3) if draw_mean_per_region else (18, 6)
+    figsize = (9, 3) if draw_agg_per_region else (18, 6)
     fig = plt.figure(figsize=figsize, dpi=300)
     nrows = 1
     axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
@@ -213,29 +258,9 @@ if __name__ == '__main__':
     xlim = (cf0.lower, cf0.upper)
     ylim = (cf1.lower, cf1.upper)
 
-    index = 0  # 0 for mean, 1 for std  # TODO Rename to more verbose
-    performances_list = []
-    for i, (group_id, group_df) in enumerate(groups):
-        performances = {}
-        for context_distribution_type in context_distribution_types:
-            if not plot_train and context_distribution_type == "train":
-                continue
-            sub_df = group_df[group_df["context_distribution_type"] == context_distribution_type]
-            if len(sub_df) > 0:
-                performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
-            else:
-                performance = (np.nan, np.nan)
-            performances[context_distribution_type] = performance
-        performances_list.append(performances)
-
-    perf = []
-    for performances in performances_list:
-        for v in performances.values():
-            perf.append(v[index])
-    perf = np.array(perf)
-    perf_min = np.nanmin(perf)
-    perf_max = np.nanmax(perf)
-    perf_ptp = perf_max - perf_min
+    if draw_agg_per_region:
+        perf_min, perf_max = get_agg_minmax(groups, agg_per_region=agg_per_region)
+        perf_ptp = perf_max - perf_min
 
     def scale(x):
         return (x - perf_min) / perf_ptp
@@ -270,7 +295,8 @@ if __name__ == '__main__':
         contexts_I = group_df[group_df["context_distribution_type"] == "test_interpolation"][columns]
         contexts_IC = group_df[group_df["context_distribution_type"] == "test_interpolation_combinatorial"][columns]
 
-        if draw_mean_per_region:
+        if draw_agg_per_region:
+            index = get_agg_index(agg_per_region=agg_per_region)
             color_T = cmap(scale(performances["train"][index]))
             color_I = cmap(scale(performances["test_interpolation"][index]))
             color_ES = cmap(scale(performances["test_extrapolation_single"][index]))
@@ -365,7 +391,7 @@ if __name__ == '__main__':
 
         # Draw colorbar
         colorbar_label = "Episode Reward"
-        if draw_mean_per_region and i == len(groups) - 1:
+        if draw_agg_per_region and i == len(groups) - 1:
                 colorbar = add_colorbar_to_ax(perf_min, perf_max, cmap, colorbar_label)
         else:
             colorbar = add_colorbar_to_ax(episode_reward_min, episode_reward_max, cmap, colorbar_label)

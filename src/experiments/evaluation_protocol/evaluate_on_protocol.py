@@ -1,12 +1,12 @@
 import sys
-sys.path.append("..")
 sys.path.append("../..")
+sys.path.append("../../..")
 sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL/src")
 sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL")
 print(sys.path)
 
 import hydra
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 
 from pathlib import Path
 import numpy as np
@@ -14,14 +14,12 @@ import warnings
 
 from src.context.sampling import sample_contexts
 from src.train import get_env
-from src.experiments.evaluation_protocol_utils import merge_contexts, get_ep_contexts
+from src.experiments.evaluation_protocol.evaluation_protocol_utils import merge_contexts, get_ep_contexts
 from src.utils.json_utils import lazy_json_load
 from src.training.eval_policy import evaluate_policy
 
 
 def rollout(cfg):
-    from stable_baselines3 import DDPG, PPO, A2C, DQN, SAC
-
     context_distribution_type = cfg.context_distribution_type
     n_eval_eps_per_context = cfg.n_eval_eps_per_context
     model_fname = cfg.model_fname
