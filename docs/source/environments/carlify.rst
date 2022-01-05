@@ -12,8 +12,8 @@ as well as bounds for all features.
    
 3. If additional requirements need to be installed, add them as install
 options in setup.cfg. Make sure those changes are reflected in the ReadME
-   as well, especially if there are any extra steps (e.g. data downloads)
-   to the installation process.
+as well, especially if there are any extra steps (e.g. data downloads)
+to the installation process.
    
 4. Make a PR to the main branch of CARL. We'll review it and try to clarify
 any open questions.
