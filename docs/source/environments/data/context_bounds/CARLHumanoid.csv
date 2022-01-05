@@ -1,0 +1,6 @@
+Context Feature,Bounds
+gravity,"(-inf, -0.1, <class 'float'>)"
+friction,"(-inf, inf, <class 'float'>)"
+angular_damping,"(-inf, inf, <class 'float'>)"
+joint_angular_damping,"(0, inf, <class 'float'>)"
+torso_mass,"(0.1, inf, <class 'float'>)"

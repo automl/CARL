@@ -1,0 +1,10 @@
+Context Feature,Default
+joint_stiffness,40000.0
+gravity,-9.81
+friction,0.6
+angular_damping,-0.05
+actuator_strength,100.0
+joint_angular_damping,50.0
+target_radius,0.02
+target_distance,0.5
+torso_mass,1.0

@@ -1,0 +1,11 @@
+Context Feature,Default
+link_length_1,1.0
+link_length_2,1.0
+link_mass_1,1.0
+link_mass_2,1.0
+link_com_1,0.5
+link_com_2,0.5
+link_moi,1.0
+max_velocity_1,12.566370614359172
+max_velocity_2,28.274333882308138
+torque_noise_max,0.0

@@ -1,0 +1,11 @@
+Context Feature,Default
+min_position,-1.2
+max_position,0.6
+max_speed,0.07
+goal_position,0.45
+goal_velocity,0.0
+power,0.0015
+min_position_start,-0.6
+max_position_start,-0.4
+min_velocity_start,0.0
+max_velocity_start,0.0
