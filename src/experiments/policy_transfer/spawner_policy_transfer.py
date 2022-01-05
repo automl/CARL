@@ -13,8 +13,8 @@ output_filename = "slurmout/slurm-%j.out"
 partition = "gpu_normal"
 time = "03:00:00"
 mem_per_cpu = "1000M" if env != "CARLVehicleRacingEnv" else "16000M"
-basecommand = 'python experiments/run_policy_transfer.py'
-# outdir = f"results/experiments/policytransfer/{env}"
+basecommand = 'python experiments/policy_transfer/run.py'
+# outdir = f"results/experiments/policy_transfer/{env}"
 # basecommand += f" --outdir {outdir}  "
 basecommand += " --seed $SLURM_ARRAY_TASK_ID "
 basecommand += f" --context_file {context_file}"
