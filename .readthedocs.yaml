@@ -17,6 +17,5 @@ python:
   install:
     - method: pip
       path: .
-  #TODO: dacbench has extra requirements (e.g. sphinx) for docs, solve this somehow
-  #    extra_requirements:
-  #      - docs
+      extra_requirements:
+        - docs
