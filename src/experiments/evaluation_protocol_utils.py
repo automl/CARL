@@ -1,3 +1,5 @@
+import glob
+import os
 from pathlib import Path
 from typing import Optional, Dict, List, Union
 
@@ -5,18 +7,10 @@ import numpy as np
 import pandas as pd
 
 from src.context.sampling import sample_contexts
-from src.experiments.evaluation_protocol import ContextFeature, EvaluationProtocol
+from src.eval.gather_data import extract_info
+from src.experiments.evaluation_protocol import EvaluationProtocol
+from src.experiments.evaluation_protocol_experiment_definitions import get_context_features
 from src.utils.json_utils import lazy_json_dump
-
-
-def get_context_features(env_name):
-    if env_name == "CARLCartPoleEnv":
-        cf0 = ContextFeature("gravity", 9., 9.5, 10., 11.)
-        cf1 = ContextFeature("pole_length", 0.4, 0.5, 0.6, 0.8)
-    else:
-        raise NotImplementedError
-    context_features = [cf0, cf1]
-    return context_features
 
 
 def get_ep_contexts(env_name, n_contexts, seed, mode) -> Dict[str, pd.DataFrame]:
@@ -90,6 +84,76 @@ def read_ep_contexts_LUT(csv_filename: Union[str, Path]) -> pd.DataFrame:
     index_col = ["mode", "seed", "context_distribution_type", "instance_id"]
     contexts_LUT = pd.read_csv(str(csv_filename), index_col=index_col)
     return contexts_LUT
+
+
+def gather_results(
+        path: Union[str, Path],
+        eval_file_id: Union[str, Path] = "eval/evaluation_protocol/*.npz",
+        trial_setup_fn: str = "trial_setup.json"
+):
+    dirs = glob.glob(os.path.join(path, "**", trial_setup_fn), recursive=True)
+
+    data = []
+    for result_dir in dirs:
+        result_dir = Path(result_dir).parent
+        # agent
+        # seed
+        # context feature args
+        info = extract_info(path=result_dir, info_fn=trial_setup_fn)
+        mode = info["evaluation_protocol_mode"]
+        eval_fns = glob.glob(str(result_dir / eval_file_id), recursive=True)
+        for eval_fn in eval_fns:
+            eval_fn = Path(eval_fn)
+            D = None
+            if not eval_fn.is_file():
+                print(f"Eval fn {eval_fn} does not exist. Skip.")
+                continue
+
+            eval_data = np.load(str(eval_fn))
+            timesteps = eval_data["timesteps"]
+            episode_lengths = eval_data["ep_lengths"]
+            instance_ids = np.squeeze(eval_data["episode_instances"])
+            episode_rewards = eval_data["results"]
+
+            key = None
+            if "test_id" in eval_data:
+                key = "test_id"
+            elif "context_distribution_type" in eval_data:
+                key = "context_distribution_type"
+
+            context_distribution_type = eval_data[key] if key is not None else None
+
+            timesteps = np.concatenate([timesteps[:, np.newaxis]] * episode_rewards.shape[-1], axis=1)
+
+            timesteps = timesteps.flatten()
+            instance_ids = instance_ids.flatten()
+            instance_ids = instance_ids.astype(dtype=int)
+            episode_rewards = episode_rewards.flatten()
+            episode_lengths = episode_lengths.flatten()
+
+            n = len(timesteps)
+
+            D = pd.DataFrame({
+                "step": timesteps,
+                "instance_id": instance_ids,
+                "episode_reward": episode_rewards,
+                "episode_length": episode_lengths,
+                "context_distribution_type": context_distribution_type,
+                "mode": mode
+            })
+
+            # merge info and results
+            n = len(D)
+            for k, v in info.items():
+                D[k] = [v] * n
+
+            if D is not None:
+                data.append(D)
+
+    if data:
+        data = pd.concat(data)
+
+    return data
 
 
 if __name__ == '__main__':
