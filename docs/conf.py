@@ -296,7 +296,7 @@ html_logo = "source/figures/logo.png"
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
-#  dir menu entry, description, category)
+#  dir menu entry, description, getting_started)
 # texinfo_documents = [
 # (master_doc, 'SMAC3', u'SMAC3 Documentation',
 # author, 'SMAC3', 'One line description of project.',
