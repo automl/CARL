@@ -5,11 +5,11 @@ CARL- Contextually Adaptive Reinforcement Learning
    :hidden:
    :maxdepth: 2
 
-   source/getting_started
-   source/environments/overview
+   source/getting_started/index
+   source/environments/index
    source/cite
-   source/license
-   source/references
+   source/license.md
+   source/references.md
 
 Welcome to the documentation of CARL, a benchmark library for Contextually Adaptive
 Reinforcement Learning. CARL extends well-known RL environments with context, making
