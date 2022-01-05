@@ -101,23 +101,23 @@ def build():
     save_df = df[overview_columns]
     save_df.to_csv(csv_filename, index=False)
 
-    # Save context defaults as tables
-    for env_name, defaults in defaults_entries.items():
-        fname = outdir / f"context_defaults/{env_name}.csv"
+    env_names = list(defaults_entries.keys())
+
+    for env_name in env_names:
+        fname = outdir / f"context_definitions/{env_name}.csv"
         fname.parent.mkdir(parents=True, exist_ok=True)
+        defaults = defaults_entries[env_name]
         defaults_df = pd.Series(defaults)
         defaults_df.index.name = "Context Feature"
         defaults_df.name = "Default"
-        defaults_df.to_csv(fname)
-
-    # Save context bounds as tables
-    for env_name, bounds in bounds_entries.items():
-        fname = outdir / f"context_bounds/{env_name}.csv"
-        fname.parent.mkdir(parents=True, exist_ok=True)
+        bounds = bounds_entries[env_name]
         bounds_df = pd.Series(bounds)
         bounds_df.index.name = "Context Feature"
         bounds_df.name = "Bounds"
-        bounds_df.to_csv(fname)
+
+        context_def_df = pd.concat([defaults_df, bounds_df], axis=1)
+        context_def_df.to_csv(fname)
+
 
     print("Done!")
 
