@@ -8,7 +8,7 @@ also physics-based, e.g. friction, mass or gravity.
 CARL Pendulum Environment
 -------------------------
 .. image:: ../data/screenshots/pendulum.jpeg
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Pendulum Environment
 In Pendulum, the agent's task is to swing up an inverted pendulum and
@@ -23,7 +23,7 @@ direction and amount of force the agent wants to apply to the pendulum.
 CARL CartPole Environment
 -------------------------
 .. image:: ../data/screenshots/cartpole.jpeg
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: CartPole Environment
 CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
@@ -38,7 +38,7 @@ the pole ist placed either to the left or the right.
 CARL Acrobot Environment
 -------------------------
 .. image:: ../data/screenshots/acrobot.jpeg
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Acrobot Environment
 Acrobot is another swing-up task with the goal being swinging the end of the lower
@@ -53,7 +53,7 @@ the joint connecting both links.
 CARL MountainCar Environments
 ------------------------------
 .. image:: ../data/screenshots/mountaincar.jpeg
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: MountainCar Environment
 The MountainCar environment asks the agent to move a car up a steep slope. In order

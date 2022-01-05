@@ -8,7 +8,7 @@ like joint strength or torso mass.
 CARL Ant Environment
 ***************************
 .. image:: ../data/screenshots/ant.png
-  :width: 200px
+  :width: 25%
   :align: center
   :alt: Screenshot of CARLAnt
 
@@ -26,7 +26,7 @@ to run (quickly) into one direction.
 CARL Fetch Environment
 **********************
 .. image:: ../data/screenshots/fetch.png
-    :width: 200px
+    :width: 25%
     :height: 100px
     :align: center
     :alt: Screenshot of CARLFetch
@@ -45,7 +45,7 @@ The target radius and distance as well as physical properties can be varied via 
 CARL Grasp Environment
 **********************
 .. image:: ../data/screenshots/grasp.png
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Screenshot of CARLGrasp
 
@@ -65,7 +65,7 @@ Apart from Grasp's pyhiscal properties the target radius, height and distance ar
 CARL Halfcheetah Environment
 **********************
 .. image:: ../data/screenshots/halfcheetah.png
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Screenshot of CARLHalfcheetah
 
@@ -83,7 +83,7 @@ The context features can vary physical properties.
 CARL Humanoid Environment
 **********************
 .. image:: ../data/screenshots/humanoid.png
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Screenshot of CARLHumanoid
 
@@ -99,7 +99,7 @@ Here, a Humanoid needs to learn how to run in the +x direction.
 CARL UR5e Environment
 **********************
 .. image:: ../data/screenshots/ur5e.png
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Screenshot of CARLUr5e
 

@@ -8,7 +8,7 @@ new vehicles to race.
 CARL BipedalWalker Environment
 ------------------------------
 .. image:: ../data/screenshots/bipedalwalker.jpeg
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Screenshot of CARLBipedalWalkerEnv
 
@@ -24,7 +24,7 @@ can be varied via the context features.
 CARL LunarLander Environment
 ------------------------------
 .. image:: ../data/screenshots/lunarlander.jpeg
-    :width: 200px
+    :width: 25%
     :align: center
     :alt: Screenshot of CARLLunarLanderEnv
 
