@@ -1,4 +1,5 @@
-#References
+References
+===========
 CARL is built on top of other environments and benchmarks, extending them
 to contextual reinforcement learning environments.
 
