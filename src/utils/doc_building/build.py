@@ -58,8 +58,8 @@ def build():
             defaults_entries[env_name] = local_vars[f"{env_name}_defaults"]
             bounds_entries[env_name] = local_vars[f"{env_name}_bounds"]
 
-            if len(overview_table_entries) == 3:  # TODO change back
-                break
+            # if len(overview_table_entries) == 3:  # TODO change back
+            #     break
 
     # Add RNA and Mario Information
     env_families = ["RNA", "Mario"]
