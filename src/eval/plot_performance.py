@@ -7,14 +7,15 @@ from pathlib import Path
 
 
 if __name__ == '__main__':
-    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/base_vs_context/brax/CARLHalfcheetah"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/box2d/CARLBipedalWalkerEnv"
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
-    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun/base_vs_context/classic_control/CARLPendulumEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
     results = gather_results(path=path)
 
     paperversion = True
-    plot_across_contextfeatures = False
+    plot_across_contextfeatures = True
     plot_across_magnitudes = not plot_across_contextfeatures
     logx = False
 
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     yname = "episode_reward"
     hue = None
     default_name = "None"  # identifier for environment with standard context
-    use_first_none = True
+    use_first_none = False
 
     color_palette_name = "colorblind"
     color_default_context = "black"
@@ -148,7 +149,7 @@ if __name__ == '__main__':
                 legend_handles.insert(0, handle_item)
 
             if i == 1:
-                labels = [label.replace("__", ", ") for label in labels]
+                # labels = [label.replace("__", ", ") for label in labels]
                 ncols = len(legend_handles)
                 legend = fig.legend(
                     handles=legend_handles,
