@@ -1,7 +1,0 @@
-Context Feature,Default
-gravity,9.8
-masscart,1.0
-masspole,0.1
-pole_length,0.5
-force_magnifier,10.0
-update_interval,0.02

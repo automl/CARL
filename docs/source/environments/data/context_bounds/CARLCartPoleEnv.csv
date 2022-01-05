@@ -1,7 +1,0 @@
-Context Feature,Bounds
-gravity,"(0.1, inf, <class 'float'>)"
-masscart,"(0.1, 10, <class 'float'>)"
-masspole,"(0.01, 1, <class 'float'>)"
-pole_length,"(0.05, 5, <class 'float'>)"
-force_magnifier,"(1, 100, <class 'int'>)"
-update_interval,"(0.002, 0.2, <class 'float'>)"

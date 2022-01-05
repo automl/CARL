@@ -1,6 +1,0 @@
-Context Feature,Default
-gravity,-9.8
-friction,0.6
-angular_damping,-0.05
-joint_angular_damping,20.0
-torso_mass,8.907463

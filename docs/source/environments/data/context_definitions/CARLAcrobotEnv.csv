@@ -1,0 +1,11 @@
+Context Feature,Default,Bounds
+link_length_1,1.0,"(0.1, 10, <class 'float'>)"
+link_length_2,1.0,"(0.1, 10, <class 'float'>)"
+link_mass_1,1.0,"(0.1, 10, <class 'float'>)"
+link_mass_2,1.0,"(0.1, 10, <class 'float'>)"
+link_com_1,0.5,"(0, 1, <class 'float'>)"
+link_com_2,0.5,"(0, 1, <class 'float'>)"
+link_moi,1.0,"(0.1, 10, <class 'float'>)"
+max_velocity_1,12.566370614359172,"(1.2566370614359172, 125.66370614359172, <class 'float'>)"
+max_velocity_2,28.274333882308138,"(2.827433388230814, 282.7433388230814, <class 'float'>)"
+torque_noise_max,0.0,"(-1.0, 1.0, <class 'float'>)"
