@@ -159,7 +159,7 @@ html_theme_path = ['themes']
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = "source/figures/logo.png"
+html_logo = "source/figures/CARL_logo.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -296,7 +296,7 @@ html_logo = "source/figures/logo.png"
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
-#  dir menu entry, description, category)
+#  dir menu entry, description, getting_started)
 # texinfo_documents = [
 # (master_doc, 'SMAC3', u'SMAC3 Documentation',
 # author, 'SMAC3', 'One line description of project.',
