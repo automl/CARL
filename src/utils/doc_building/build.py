@@ -16,6 +16,7 @@ MARIO_ACTION_SPACE = spaces.Discrete(n=10)
 
 def build():
     filepath = Path(__file__)
+    outdir = filepath.parent.parent.parent.parent / "docs/source/environments/data"
     print("Build environment overview table.")
     # Create snapshot
     local_vars = globals().copy()
@@ -88,7 +89,7 @@ def build():
     df = pd.DataFrame(overview_table_entries)
 
     # Save overview table
-    csv_filename = filepath.parent.parent.parent.parent / "docs/source/environments/data/tab_overview_environments.csv"
+    csv_filename = outdir / "tab_overview_environments.csv"
     csv_filename.parent.mkdir(exist_ok=True, parents=True)
     overview_columns = [
         k_env_family,
@@ -98,8 +99,25 @@ def build():
         k_obs_space,
     ]
     save_df = df[overview_columns]
-    # save_df.to_csv(csv_filename, index=False)
+    save_df.to_csv(csv_filename, index=False)
 
+    # Save context defaults as tables
+    for env_name, defaults in defaults_entries.items():
+        fname = outdir / f"context_defaults/{env_name}.csv"
+        fname.parent.mkdir(parents=True, exist_ok=True)
+        defaults_df = pd.Series(defaults)
+        defaults_df.index.name = "Context Feature"
+        defaults_df.name = "Default"
+        defaults_df.to_csv(fname)
+
+    # Save context bounds as tables
+    for env_name, bounds in bounds_entries.items():
+        fname = outdir / f"context_bounds/{env_name}.csv"
+        fname.parent.mkdir(parents=True, exist_ok=True)
+        bounds_df = pd.Series(bounds)
+        bounds_df.index.name = "Context Feature"
+        bounds_df.name = "Bounds"
+        bounds_df.to_csv(fname)
 
     print("Done!")
 
