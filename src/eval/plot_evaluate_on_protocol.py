@@ -13,7 +13,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
 from src.experiments.evaluation_protocol_utils import create_ep_contexts_LUT, \
-    read_ep_contexts_LUT, gather_results
+    read_ep_contexts_LUT, gather_ep_results
 from src.experiments.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
 from src.experiments.evaluation_protocol import ContextFeature
 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     draw_mean_per_region = True
     plot_train = False
 
-    results = gather_results(path=path)
+    results = gather_ep_results(path=path)
     
     cmap = cm.get_cmap("viridis")
 

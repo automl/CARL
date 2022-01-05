@@ -86,7 +86,7 @@ def read_ep_contexts_LUT(csv_filename: Union[str, Path]) -> pd.DataFrame:
     return contexts_LUT
 
 
-def gather_results(
+def gather_ep_results(
         path: Union[str, Path],
         eval_file_id: Union[str, Path] = "eval/evaluation_protocol/*.npz",
         trial_setup_fn: str = "trial_setup.json"
