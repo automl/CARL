@@ -6,7 +6,7 @@ for agent-environment interactions.
 To get started using CARL with your own agents, first define
 a context set. In this example, we will use the CARLCartPoleEnv with its 
 default context and a longer pole. 
-```
+```python
 from src.envs import CARLCartPoleEnv_defaults as default
 longer_pole = default.copy()
 longer_pole["pole_length"] = default["pole_length"]*2
@@ -14,7 +14,7 @@ contexts = {0: default, 1: longer_pole}
 ```
 
 Now that we defined a context set, we can use it to create our environment:
-```
+```python
 from src.envs import CARLCartPoleEnv
 env = CARLCartPoleEnv(contexts=contexts)
 ```
