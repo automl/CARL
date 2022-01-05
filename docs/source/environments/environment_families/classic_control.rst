@@ -7,10 +7,9 @@ also physics-based, e.g. friction, mass or gravity.
 
 CARL Pendulum Environment
 -------------------------
-.. image:: ../data/screenshots/pendulum.png
+.. image:: ../data/screenshots/pendulum.jpeg
     :width: 200px
     :align: center
-    :height: 100px
     :alt: Pendulum Environment
 In Pendulum, the agent's task is to swing up an inverted pendulum and
 balance it at the top from a random position. The action here is the
@@ -29,10 +28,9 @@ The context feature values are bounded like this:
 
 CARL CartPole Environment
 -------------------------
-.. image:: ../data/screenshots/cartpole.png
+.. image:: ../data/screenshots/cartpole.jpeg
     :width: 200px
     :align: center
-    :height: 100px
     :alt: CartPole Environment
 CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
 this time the agent doesn't directly apply force to the pole but moves a cart on which
@@ -50,10 +48,9 @@ Their values should stay between:
 
 CARL Acrobot Environment
 -------------------------
-.. image:: ../data/screenshots/acrobot.png
+.. image:: ../data/screenshots/acrobot.jpeg
     :width: 200px
     :align: center
-    :height: 100px
     :alt: Acrobot Environment
 Acrobot is another swing-up task with the goal being swinging the end of the lower
 of two links up to a given height. The agent accomplishes this by actuating
@@ -71,10 +68,9 @@ The context feature bounds consist of:
 
 CARL MountainCar Environments
 ------------------------------
-.. image:: ../data/screenshots/mountaincar.png
+.. image:: ../data/screenshots/mountaincar.jpeg
     :width: 200px
     :align: center
-    :height: 100px
     :alt: MountainCar Environment
 The MountainCar environment asks the agent to move a car up a steep slope. In order
 to succeed, the agent has to accelerate using the opposite slope. There are two

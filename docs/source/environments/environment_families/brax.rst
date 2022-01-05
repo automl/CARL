@@ -9,7 +9,6 @@ CARL Ant Environment
 ***************************
 .. image:: ../data/screenshots/ant.png
   :width: 200px
-  :height: 100px
   :align: center
   :alt: Screenshot of CARLAnt
 
@@ -55,7 +54,6 @@ CARL Grasp Environment
 **********************
 .. image:: ../data/screenshots/grasp.png
     :width: 200px
-    :height: 100px
     :align: center
     :alt: Screenshot of CARLGrasp
 
@@ -80,7 +78,6 @@ CARL Halfcheetah Environment
 **********************
 .. image:: ../data/screenshots/halfcheetah.png
     :width: 200px
-    :height: 100px
     :align: center
     :alt: Screenshot of CARLHalfcheetah
 
@@ -103,7 +100,6 @@ CARL Humanoid Environment
 **********************
 .. image:: ../data/screenshots/humanoid.png
     :width: 200px
-    :height: 100px
     :align: center
     :alt: Screenshot of CARLHumanoid
 
@@ -125,7 +121,6 @@ CARL UR5e Environment
 **********************
 .. image:: ../data/screenshots/ur5e.png
     :width: 200px
-    :height: 100px
     :align: center
     :alt: Screenshot of CARLUr5e
 
