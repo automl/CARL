@@ -1,7 +1,7 @@
 import json
 import numpy as np
 from src.context.sampling import get_default_context_and_bounds
-from src.experiments.policy_transfer import get_train_contexts_ll_exp1, get_train_contexts_ll, gravities
+from src.experiments.policy_transfer.policy_transfer import get_train_contexts_ll_exp1, get_train_contexts_ll, gravities
 
 fname = "experiments/lunarLander_contexts_train_Gaussian.json"
 

@@ -6,13 +6,12 @@ import seaborn as sns
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import List
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env.dummy_vec_env import DummyVecEnv
 
 from src.eval.eval_models import load_model, setup_env
-from src.experiments.policy_transfer import get_train_contexts_ll, gravities, get_train_contexts_ll_exp1
+from src.experiments.policy_transfer.policy_transfer import get_train_contexts_ll, gravities, get_train_contexts_ll_exp1
 from src.context.sampling import get_default_context_and_bounds
 
 

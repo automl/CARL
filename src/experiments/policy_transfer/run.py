@@ -6,7 +6,7 @@ parentdir = os.path.dirname(currentdir)
 parentdir = os.path.dirname(parentdir)  # go up twice
 sys.path.insert(0, parentdir)
 print(os.getcwd())
-from src.experiments.policy_transfer import train_env
+from src.experiments.policy_transfer.policy_transfer import train_env
 from src.train import get_parser
 
 if __name__ == "__main__":
