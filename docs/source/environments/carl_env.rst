@@ -42,20 +42,20 @@ fashion.
 The user can choose if and how the context is provided to the agent.
 If the context should be hidden completely, instantiate the environment
 with the 'hide_context' option:
-.. code-block:: python
+::
     from src.envs import CARLCartPoleEnv
     env = CARLCartPoleEnv(contexts=contexts, hide_context=True)
 
 By default, the context is visible and concatenated onto the state information
 with no separation between state and context features. They can be 
 provided separately, though, using dict observations:
-.. code-block:: python
+::
     from src.envs import CARLCartPoleEnv
     env = CARLCartPoleEnv(contexts=contexts, hide_context=False, dict_observation_space=True)
 
 Furthermore, users can choose to provide the full context information (default)
 or only a subset:
-.. code-block:: python
+::
     from src.envs import CARLCartPoleEnv
     env = CARLCartPoleEnv(contexts=contexts, state_context_features=["gravity", "pole_length"])
 
