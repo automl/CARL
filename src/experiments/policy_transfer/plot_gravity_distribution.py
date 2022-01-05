@@ -4,8 +4,7 @@ import seaborn as sns
 from scipy.stats import norm
 from policy_transfer import gravities
 import json
-from src.experiments.policy_transfer import get_uniform_intervals_exp1
-from src.experiments.sample_lunarlander_contexts import fname as context_train_fname
+from src.experiments.policy_transfer.sample_lunarlander_contexts import fname as context_train_fname
 
 
 def plot_gravities_vlines(ax, gravities, yvalue, mean, std, fontsize, shortanno: bool = False):
