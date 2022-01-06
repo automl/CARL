@@ -1,3 +1,5 @@
+<img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL Logo">
+
 # The CARL Benchmark Library
 CARL (context adaptive RL) provides highly configurable contextual extensions
 to several well-known RL environments. 
