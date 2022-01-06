@@ -16,11 +16,11 @@ Welcome to the documentation of CARL, a benchmark library for Contextually Adapt
 Reinforcement Learning. CARL extends well-known RL environments with context, making
 them easily configurable to test robustness and generalization.
 
-CARL is written in Python 3.9.
+CARL being developed in Python 3.9.
 
 
-Feel free to check out our `paper <https://arxiv.org/abs/2110.02102>`_ and our short
-`blog post <https://www.automl.org/carl-a-benchmark-to-study-generalization-in-reinforcement-learning/>`_!
+Feel free to check out our `paper <https://arxiv.org/abs/2110.02102>`_ and our
+`blog post <https://www.automl.org/carl-a-benchmark-to-study-generalization-in-reinforcement-learning/>`_ on CARL!
 
 
 Contact

@@ -14,7 +14,7 @@ CARL Ant Environment
 
 
 Here the agent needs to learn how to control a four-legged ant in order
-to run (quickly) into one direction.
+to run (quickly) into a given direction.
 
 
 .. csv-table:: Defaults and Bounds
@@ -32,7 +32,7 @@ CARL Fetch Environment
     :alt: Screenshot of CARLFetch
 
 
-Fetch trains a dog to run to a target location.
+Fetch trains a robotic dog to run to a target location.
 The target radius and distance as well as physical properties can be varied via the context features.
 
 
@@ -50,7 +50,7 @@ CARL Grasp Environment
     :alt: Screenshot of CARLGrasp
 
 
-In CARL Grasp the agent is trained to pick up an object.
+In CARL Grasp the agent is trained to pick up an object with a robot hand.
 Three bodies are observed by Grasp: 'Hand', 'Object', and 'Target'.
 When Object reaches Target, the agent is rewarded.
 Apart from Grasp's pyhiscal properties the target radius, height and distance are also varied.
@@ -70,7 +70,7 @@ CARL Halfcheetah Environment
     :alt: Screenshot of CARLHalfcheetah
 
 
-A Halfcheetah is trained to run in the +x direction.
+A Halfcheetah is trained to run in a given direction.
 The context features can vary physical properties.
 
 
@@ -88,7 +88,7 @@ CARL Humanoid Environment
     :alt: Screenshot of CARLHumanoid
 
 
-Here, a Humanoid needs to learn how to run in the +x direction.
+Here, a Humanoid needs to learn how to walk forward.
 
 
 .. csv-table:: Defaults and Bounds
