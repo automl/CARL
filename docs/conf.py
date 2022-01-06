@@ -56,6 +56,8 @@ extensions = [
 ]
 
 autosectionlabel_maxdepth = 1
+
+autoapi_type = 'python'
 autoapi_dirs = ["../src/envs"]
 
 # Add any paths that contain templates here, relative to this directory.
