@@ -1,4 +1,5 @@
 from typing import Dict, Optional, List
+import numpy as np
 
 import Box2D
 from gym import spaces
