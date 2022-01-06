@@ -65,22 +65,6 @@ In case you want to run our experiments or use our training files, also install 
 ```bash
 pip install -e .[experiments]
 ```
-## Train an Agent
-To get started with CARL, you can use our 'train.py' script.
-It will train a PPO agent on the environment of your choice
-with custom context variations that are sampled from a standard 
-deviation. 
-
-To use MetaCartPole with variations in gravity and friction by 20% 
-compared to the default, run:
-```bash
-python train.py 
---env CARLCartPoleEnv 
---context_args gravity friction
---default_sample_std_percentage 0.2
---outdir <result_location>
-```
-You can use the plotting scripts in src/eval to view the results.
 
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
