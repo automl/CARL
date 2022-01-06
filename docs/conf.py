@@ -60,6 +60,7 @@ autosectionlabel_maxdepth = 1
 
 autoapi_type = 'python'
 autoapi_dirs = ["../src/envs"]
+autoapi_ignore = ["../src/envs/learna/src", "../src/envs/mario/sprites", "../src/envs/mario/models", "../src/envs/mario/Mario-AI-Framework", "../src/envs/mario/TOAD-GUI"]
 autoapi_add_toctree_entry = False
 
 # Add any paths that contain templates here, relative to this directory.
