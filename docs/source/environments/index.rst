@@ -5,7 +5,7 @@ overview of all CARL environments and their context features.
 .. toctree::
     :maxdepth: 2
 
-    carl_env
     overview
+    carl_env
     environment_families/index
     carlify
