@@ -52,6 +52,7 @@ extensions = [
     'sphinx.ext.napoleon',  # Enables to understand NumPy docstring
     # 'sphinx_gallery.gen_gallery',
     'smac_theme',
+    'autoapi.extension',
 ]
 
 autosectionlabel_maxdepth = 1
@@ -64,6 +65,7 @@ templates_path = ['templates']
 # You can specify multiple suffix as a list of string:
 source_suffix = ['.rst', '.md']
 # source_suffix = '.rst'
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
