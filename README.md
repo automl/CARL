@@ -61,11 +61,6 @@ cd src/envs/rna/learna
 make requirements
 make data
 ```
-In case you want to run our experiments or use our training files, also install the experiment dependencies:
-```bash
-pip install -e .[experiments]
-```
-
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
 
@@ -88,6 +83,8 @@ If you use CARL in your research, please cite our paper on the benchmark:
   month = dec
 }
 ```
+
+You can find the code and experiments for this paper in the `neurips_ecorl_workshop_2021` branch.
 
 ## References
 [OpenAI gym, Brockman et al., 2016. arXiv preprint arXiv:1606.01540](https://arxiv.org/pdf/1606.01540.pdf)
