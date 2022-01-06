@@ -6,7 +6,8 @@ This page gives an overview of all CARL environments.
 
 
 .. toctree::
-
+    CARLEnv
+    classic_control
     ../../apidoc/src.envs
     ../../apidoc/src.envs.classic_control
     ../../apidoc/src.envs.box2d
