@@ -73,10 +73,11 @@ class CARLEnv(Wrapper):
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
-            max_episode_length: int = 1e6,
+            max_episode_length: int = int(1e6),
             scale_context_features: str = "no",
             default_context: Optional[Dict] = None,
             state_context_features: Optional[List[str]] = None,
+            dict_observation_space: bool = False,
     ):
         super().__init__(env=env)
         # Gather args
@@ -85,6 +86,7 @@ class CARLEnv(Wrapper):
             raise ValueError(f"instance_mode '{instance_mode}' not in '{self.available_instance_modes}'.")
         self.instance_mode = instance_mode
         self.hide_context = hide_context
+        self.dict_observation_space = dict_observation_space
         self.cutoff = max_episode_length
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
@@ -182,10 +184,13 @@ class CARLEnv(Wrapper):
                 # get the correct state
                 context_keys = list(self.context.keys())
                 context_values = np.array([context_values[context_keys.index(k)] for k in self.state_context_features])
-            state = np.concatenate((state, context_values))
+            if self.dict_observation_space:
+                state = dict(state=state, context=context_values)
+            else:
+                state = np.concatenate((state, context_values))
         return state
 
-    def step(self, action) -> (Any, Any, bool, Dict):
+    def step(self, action) -> Tuple[Any, Any, bool, Dict]:
         """
         Step the environment.
 
@@ -274,7 +279,7 @@ class CARLEnv(Wrapper):
                         random_generator=None,  # self.np_random TODO discuss this
                     )
                 else:
-                    context_augmented[key] = context[key] # TODO(frederik): sample from categorical?
+                    context_augmented[key] = context[key]
             context = context_augmented
         self.context = context
 
@@ -314,17 +319,18 @@ class CARLEnv(Wrapper):
         None
 
         """
-        if not isinstance(self.observation_space, spaces.Box) and not self.hide_context:
+        if not self.dict_observation_space and not isinstance(self.observation_space, spaces.Box) and not self.hide_context:
             raise ValueError("This environment does not yet support non-hidden contexts. Only supports "
                              "Box observation spaces.")
 
-        obs_shape = self.env.observation_space.low.shape
+        obs_space = self.env.observation_space.spaces["state"].low if isinstance(self.env.observation_space, spaces.Dict) else self.env.observation_space.low
+        obs_shape = obs_space.shape
         if len(obs_shape) == 3 and self.hide_context:
             # do not touch pixel state
             pass
         else:
             if env_lower_bounds is None and env_upper_bounds is None:
-                obs_dim = self.env.observation_space.low.shape[0]
+                obs_dim = obs_shape[0]
                 env_lower_bounds = - np.inf * np.ones(obs_dim)
                 env_upper_bounds = np.inf * np.ones(obs_dim)
 
@@ -345,13 +351,19 @@ class CARLEnv(Wrapper):
                     ids = np.array([context_keys.index(k) for k in self.state_context_features])
                     context_lower_bounds = context_lower_bounds[ids]
                     context_upper_bounds = context_upper_bounds[ids]
-                low = np.concatenate((env_lower_bounds, context_lower_bounds))
-                high = np.concatenate((env_upper_bounds, context_upper_bounds))
-                self.env.observation_space = spaces.Box(
-                    low=low,
-                    high=high,
-                    dtype=np.float32
-                )
+                if self.dict_observation_space:
+                    self.env.observation_space = spaces.Dict({
+                        "state": spaces.Box(low=env_lower_bounds, high=env_upper_bounds, dtype=np.float32),
+                        "context": spaces.Box(low=context_lower_bounds, high=context_upper_bounds, dtype=np.float32)
+                    })
+                else:
+                    low = np.concatenate((env_lower_bounds, context_lower_bounds))
+                    high = np.concatenate((env_upper_bounds, context_upper_bounds))
+                    self.env.observation_space = spaces.Box(
+                        low=low,
+                        high=high,
+                        dtype=np.float32
+                    )
             self.observation_space = self.env.observation_space  # make sure it is the same object
 
     def _update_context(self):

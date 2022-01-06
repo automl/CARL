@@ -38,6 +38,7 @@ class CARLPendulumEnv(CARLEnv):
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
             state_context_features: Optional[List[str]] = None,
+            dict_observation_space: bool = False,
     ):
         """
         Max torque is not a context feature because it changes the action space.
@@ -65,6 +66,7 @@ class CARLPendulumEnv(CARLEnv):
             default_context=default_context,
             max_episode_length=max_episode_length,
             state_context_features=state_context_features,
+            dict_observation_space=dict_observation_space
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 

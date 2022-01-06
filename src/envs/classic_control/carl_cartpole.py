@@ -38,6 +38,7 @@ class CARLCartPoleEnv(CARLEnv):
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
             state_context_features: Optional[List[str]] = None,
+            dict_observation_space: bool = False,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
@@ -53,6 +54,7 @@ class CARLCartPoleEnv(CARLEnv):
             default_context=default_context,
             max_episode_length=max_episode_length,
             state_context_features=state_context_features,
+            dict_observation_space=dict_observation_space
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 

@@ -22,6 +22,7 @@ class CARLMarioEnv(CARLEnv):
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
@@ -35,6 +36,7 @@ class CARLMarioEnv(CARLEnv):
             logger=logger,
             scale_context_features="no",
             default_context=default_context,
+            dict_observation_space=dict_observation_space
         )
         self.levels = []
         self._update_context()

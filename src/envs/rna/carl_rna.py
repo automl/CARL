@@ -20,7 +20,7 @@ class CARLRnaDesignEnv(CARLEnv):
             gaussian_noise_std_percentage: float = 0.01,
             logger: Optional[TrialLogger] = None,
             scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
+            default_context: Optional[Dict] = DEFAULT_CONTEXT
     ):
         """
 
@@ -62,7 +62,7 @@ class CARLRnaDesignEnv(CARLEnv):
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
             scale_context_features=scale_context_features,
-            default_context=default_context,
+            default_context=default_context
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
