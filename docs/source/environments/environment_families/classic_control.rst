@@ -50,8 +50,8 @@ the joint connecting both links.
    :header-rows: 1
 
 
-CARL MountainCar Environments
-------------------------------
+CARL MountainCar Environment
+----------------------------
 .. image:: ../data/screenshots/mountaincar.jpeg
     :width: 25%
     :align: center
