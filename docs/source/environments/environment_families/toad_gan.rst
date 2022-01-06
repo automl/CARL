@@ -1,4 +1,4 @@
-CARL ToadGAN Environment
+CARL Mario Environment
 ========================
 
 .. image:: ../data/screenshots/supermario.png
