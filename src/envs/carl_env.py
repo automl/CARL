@@ -7,7 +7,7 @@ import json
 from typing import Dict, Tuple, Union, List, Optional, Any
 from src.context.augmentation import add_gaussian_noise
 from src.context.utils import get_context_bounds
-from src.training.trial_logger import TrialLogger
+from src.utils.trial_logger import TrialLogger
 
 
 class CARLEnv(Wrapper):

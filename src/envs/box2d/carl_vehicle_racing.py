@@ -5,7 +5,7 @@ import pyglet
 pyglet.options["debug_gl"] = False
 from pyglet import gl
 from src.envs.carl_env import CARLEnv
-from src.training.trial_logger import TrialLogger
+from src.utils.trial_logger import TrialLogger
 
 from gym.envs.box2d.car_dynamics import Car
 

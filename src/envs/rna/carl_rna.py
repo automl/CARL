@@ -5,7 +5,7 @@ import numpy as np
 from typing import Optional, Dict
 
 from src.envs.rna.carl_rna_definitions import DEFAULT_CONTEXT, ACTION_SPACE, OBSERVATION_SPACE
-from src.training.trial_logger import TrialLogger
+from src.utils.trial_logger import TrialLogger
 
 
 class CARLRnaDesignEnv(CARLEnv):

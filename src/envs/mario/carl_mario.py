@@ -6,7 +6,7 @@ from src.envs.mario.carl_mario_definitions import INITIAL_WIDTH, INITIAL_HEIGHT,
 from src.envs.mario.mario_env import MarioEnv
 from src.envs.mario.toad_gan import generate_level
 from src.envs.carl_env import CARLEnv
-from src.training.trial_logger import TrialLogger
+from src.utils.trial_logger import TrialLogger
 
 
 class CARLMarioEnv(CARLEnv):
