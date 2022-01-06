@@ -18,6 +18,48 @@ class CARLEnv(Wrapper):
     environment. An instance is the environment with a specific context.
 
     Can change the context after each episode.
+
+
+    Parameters
+    ----------
+    env: gym.Env
+        Environment which context features are made visible / which is turned into a cMDP.
+    contexts: Dict[Any, Dict[Any, Any]]
+        Dict of contexts/instances. Key are context id, values are contexts as
+        Dict[context feature id, context feature value].
+    instance_mode: str, default="rr"
+        Instance sampling mode. Available modes are 'random' or 'rr'/'roundrobin'.
+    hide_context: bool = False
+        If False, the context will be appended to the original environment's state.
+    add_gaussian_noise_to_context: bool = False
+        Wether to add Gaussian noise to the context with the relative standard deviation
+        'gaussian_noise_std_percentage'.
+    gaussian_noise_std_percentage: float = 0.01
+        The relative standard deviation for the Gaussian noise. The actual standard deviation
+        is calculated by 'gaussian_noise_std_percentage' * context feature value.
+    logger: TrialLogger, optional
+        Optional TrialLogger which takes care of setting up logging directories and handles
+        custom logging.
+    max_episode_length: int = 1e6
+        Maximum length of episode in (time)steps. Cutoff.
+    scale_context_features: str = "no"
+        Wether to scale context features. Available modes are 'no', 'by_mean' and 'by_default'.
+        'by_mean' scales the context features by their mean over all passed instances and
+        'by_default' scales the context features by their default values ('default_context').
+    default_context: Dict
+        The default context of the environment. Used for scaling the context features if applicable.
+    state_context_features: Optional[List[str]] = None
+        If the context is visible to the agent (hide_context=False), the context features are appended to the state.
+        state_context_features specifies which of the context features are appended to the state. The default is
+        appending all context features.
+
+    Raises
+    ------
+    ValueError
+        If the choice of instance_mode is not available.
+    ValueError
+        If the choice of scale_context_features is not available.
+
     """
     available_scale_methods = ["by_default", "by_mean", "no"]
     available_instance_modes = ["random", "rr", "roundrobin"]
@@ -36,49 +78,6 @@ class CARLEnv(Wrapper):
             default_context: Optional[Dict] = None,
             state_context_features: Optional[List[str]] = None,
     ):
-        """
-
-        Parameters
-        ----------
-        env: gym.Env
-            Environment which context features are made visible / which is turned into a cMDP.
-        contexts: Dict[Any, Dict[Any, Any]]
-            Dict of contexts/instances. Key are context id, values are contexts as
-            Dict[context feature id, context feature value].
-        instance_mode: str, default="rr"
-            Instance sampling mode. Available modes are 'random' or 'rr'/'roundrobin'.
-        hide_context: bool = False
-            If False, the context will be appended to the original environment's state.
-        add_gaussian_noise_to_context: bool = False
-            Wether to add Gaussian noise to the context with the relative standard deviation
-            'gaussian_noise_std_percentage'.
-        gaussian_noise_std_percentage: float = 0.01
-            The relative standard deviation for the Gaussian noise. The actual standard deviation
-            is calculated by 'gaussian_noise_std_percentage' * context feature value.
-        logger: TrialLogger, optional
-            Optional TrialLogger which takes care of setting up logging directories and handles
-            custom logging.
-        max_episode_length: int = 1e6
-            Maximum length of episode in (time)steps. Cutoff.
-        scale_context_features: str = "no"
-            Wether to scale context features. Available modes are 'no', 'by_mean' and 'by_default'.
-            'by_mean' scales the context features by their mean over all passed instances and
-            'by_default' scales the context features by their default values ('default_context').
-        default_context: Dict
-            The default context of the environment. Used for scaling the context features if applicable.
-        state_context_features: Optional[List[str]] = None
-            If the context is visible to the agent (hide_context=False), the context features are appended to the state.
-            state_context_features specifies which of the context features are appended to the state. The default is
-            appending all context features.
-
-        Raises
-        ------
-        ValueError
-            If the choice of instance_mode is not available.
-        ValueError
-            If the choice of scale_context_features is not available.
-
-        """
         super().__init__(env=env)
         # Gather args
         self.contexts = contexts
