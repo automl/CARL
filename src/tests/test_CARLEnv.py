@@ -280,7 +280,47 @@ class TestContextFeatureScaling(unittest.TestCase):
         with self.assertRaises(ValueError):
             next_obs, reward, done, info = env.step(action=action)
 
-        
+
+class TestInstanceModes(unittest.TestCase):
+    def test_instance_mode_random(self):
+        env = CARLPendulumEnv(
+            contexts={},
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            instance_mode="random"
+        )
+
+    def test_instance_mode_roundrobin(self):
+        env = CARLPendulumEnv(
+            contexts={},
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            instance_mode="rr"
+        )
+        env = CARLPendulumEnv(
+            contexts={},
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            instance_mode="roundrobin"
+        )
+
+    def test_instance_mode_unknown(self):
+        with self.assertRaises(ValueError):
+            env = CARLPendulumEnv(
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                instance_mode="bork"
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
