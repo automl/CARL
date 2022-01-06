@@ -44,5 +44,5 @@ been tested there. For MAC, you will need to install Box2D via conda:
     conda install -c conda-forge gym-box2d
 
 We generally test and develop CARL on Linux systems, but aim to keep it as compatible
-with MAC as possible. The ToadGAN, environment, however, is Linux exclusive at this
+with MAC as possible. The ToadGAN environment is Linux exclusive at this
 point. 
