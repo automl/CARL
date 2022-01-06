@@ -4,7 +4,7 @@ if __name__ == '__main__':
     import pandas as pd
     import seaborn as sns
 
-    from src.utils.plotting import radar_factory
+    from src.utils.doc_building.plotting import radar_factory
 
     env_context_feature_names = {
         'CARLMountainCarEnv': ['force',

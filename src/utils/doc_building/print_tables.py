@@ -1,5 +1,4 @@
 if __name__ == '__main__':
-    import tabulate
     import numpy as np
     from typing import List
     from src.envs import *
