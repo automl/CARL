@@ -148,7 +148,138 @@ class TestStateConstruction(unittest.TestCase):
         self.assertTrue("context" in obs)
         action = [0.01]  # torque
         next_obs, reward, done, info = env.step(action=action)
-        env.close() 
+        env.close()
+
+
+class TestEpisodeTermination(unittest.TestCase):
+    def test_episode_termination(self):
+        """
+        Test if we set hide_context = True that we get the original, normal state.
+        """
+        ep_length = 100
+        env = CARLPendulumEnv(
+            contexts={},
+            hide_context=True,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            max_episode_length=ep_length
+        )
+        env.reset()
+        action = [0.0]  # torque
+        done = False
+        counter = 0
+        while not done:
+            state, reward, done, info = env.step(action=action)
+            counter += 1
+            self.assertTrue(counter <= ep_length)
+            if counter > ep_length:
+                break
+        env.close()
+
+
+class TestContextFeatureScaling(unittest.TestCase):
+    def test_context_feature_scaling_no(self):
+        env = CARLPendulumEnv(
+            contexts={},
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            scale_context_features="no"
+        )
+
+    def test_context_feature_scaling_by_mean(self):
+        contexts = {
+            # order is important because context "0" is checked in the test
+            # because of the reset context "0" must come seond
+            "1": {"max_speed": 16., "dt": 0.06, "g": 20.0, "m": 2., "l": 3.6},
+            "0": {"max_speed": 8., "dt": 0.03, "g": 10.0, "m": 1., "l": 1.8},
+        }
+        env = CARLPendulumEnv(
+            contexts=contexts,
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            scale_context_features="by_mean",
+        )
+        env.reset()
+        action = [0.]
+        state, reward, done, info = env.step(action=action)
+        n_c = len(contexts["0"])
+        scaled_contexts = state[-n_c:]
+        target = np.array([8/12, 0.03/0.045, 10/15, 1/1.5, 1.8/2.7])
+        self.assertTrue(np.all(target == scaled_contexts), f"target {target} != actual {scaled_contexts}")
+
+    def test_context_feature_scaling_by_default(self):
+        default_context = {
+            "max_speed": 8.,
+            "dt": 0.05,
+            "g": 10.0,
+            "m": 1.,
+            "l": 1.,
+        }
+        contexts = {
+            "0": {"max_speed": 8., "dt": 0.03, "g": 10.0, "m": 1., "l": 1.8},
+        }
+        env = CARLPendulumEnv(
+            contexts=contexts,
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            scale_context_features="by_default",
+            default_context=default_context,
+        )
+        env.reset()
+        action = [0.]
+        state, reward, done, info = env.step(action=action)
+        n_c = len(default_context)
+        scaled_contexts = state[-n_c:]
+        self.assertTrue(np.all(np.array([1., 0.6, 1, 1, 1.8]) == scaled_contexts))
+
+
+
+    def test_context_feature_scaling_by_default_nodefcontext(self):
+        with self.assertRaises(ValueError):
+            env = CARLPendulumEnv(
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                scale_context_features="by_default",
+                default_context=None
+            )
+
+    def test_context_feature_scaling_unknown_init(self):
+        with self.assertRaises(ValueError):
+            env = CARLPendulumEnv(
+                    contexts={},
+                    hide_context=False,
+                    add_gaussian_noise_to_context=False,
+                    gaussian_noise_std_percentage=0.01,
+                    state_context_features=None,
+                    scale_context_features="bork"
+                )
+
+    def test_context_feature_scaling_unknown_step(self):
+        env = CARLPendulumEnv(
+            contexts={},
+            hide_context=False,
+            add_gaussian_noise_to_context=False,
+            gaussian_noise_std_percentage=0.01,
+            state_context_features=None,
+            scale_context_features="no"
+        )
+
+        env.reset()
+        env.scale_context_features = "bork"
+        action = [0.01]  # torque
+        with self.assertRaises(ValueError):
+            next_obs, reward, done, info = env.step(action=action)
+
         
 
 if __name__ == '__main__':
