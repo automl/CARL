@@ -59,6 +59,7 @@ autosectionlabel_maxdepth = 1
 
 autoapi_type = 'python'
 autoapi_dirs = ["../src/envs"]
+autoapi_add_toctree_entry = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['templates']
