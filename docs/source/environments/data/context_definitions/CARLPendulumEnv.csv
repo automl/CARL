@@ -1,0 +1,6 @@
+Context Feature,Default,Bounds
+max_speed,8.0,"(-inf, inf, <class 'float'>)"
+dt,0.05,"(0, inf, <class 'float'>)"
+g,10.0,"(0, inf, <class 'float'>)"
+m,1.0,"(1e-06, inf, <class 'float'>)"
+l,1.0,"(1e-06, inf, <class 'float'>)"

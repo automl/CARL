@@ -1,4 +1,6 @@
-# The CARL Benchmark Library
+<img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
+
+# – The Benchmark Library
 CARL (context adaptive RL) provides highly configurable contextual extensions
 to several well-known RL environments. 
 It's designed to test your agent's generalization capabilities

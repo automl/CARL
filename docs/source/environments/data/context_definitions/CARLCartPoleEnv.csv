@@ -1,0 +1,7 @@
+Context Feature,Default,Bounds
+gravity,9.8,"(0.1, inf, <class 'float'>)"
+masscart,1.0,"(0.1, 10, <class 'float'>)"
+masspole,0.1,"(0.01, 1, <class 'float'>)"
+pole_length,0.5,"(0.05, 5, <class 'float'>)"
+force_magnifier,10.0,"(1, 100, <class 'int'>)"
+update_interval,0.02,"(0.002, 0.2, <class 'float'>)"

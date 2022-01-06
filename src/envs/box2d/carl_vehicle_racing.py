@@ -274,7 +274,8 @@ if __name__ == '__main__':
             a[2] = 0
 
 
-    env = CARLVehicleRacingEnv()
+    contexts = {i: {"VEHICLE": i} for i in range(len(VEHICLE_NAMES))}
+    env = CARLVehicleRacingEnv(contexts=contexts)
     env.render()
     env.viewer.window.on_key_press = key_press
     env.viewer.window.on_key_release = key_release

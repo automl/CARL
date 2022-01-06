@@ -1,0 +1,12 @@
+Context Feature,Default,Bounds
+min_position,-1.2,"(-inf, inf, <class 'float'>)"
+max_position,0.6,"(-inf, inf, <class 'float'>)"
+max_speed,0.07,"(0, inf, <class 'float'>)"
+goal_position,0.5,"(-inf, inf, <class 'float'>)"
+goal_velocity,0.0,"(-inf, inf, <class 'float'>)"
+force,0.001,"(-inf, inf, <class 'float'>)"
+gravity,0.0025,"(0, inf, <class 'float'>)"
+start_position,-0.5,"(-1.5, 0.5, <class 'float'>)"
+start_position_std,0.1,"(0.1, inf, <class 'float'>)"
+start_velocity,0.0,"(-inf, inf, <class 'float'>)"
+start_velocity_std,0.0,"(0.1, inf, <class 'float'>)"

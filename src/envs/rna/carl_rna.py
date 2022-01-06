@@ -3,24 +3,10 @@ from src.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
 from src.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
 import numpy as np
 from typing import Optional, Dict
-from gym import spaces
+
+from src.envs.rna.carl_rna_definitions import DEFAULT_CONTEXT, ACTION_SPACE, OBSERVATION_SPACE
 from src.training.trial_logger import TrialLogger
 
-DEFAULT_CONTEXT = {
-    "mutation_threshold": 5,
-    "reward_exponent": 1,
-    "state_radius": 5,
-    "dataset": "eterna",
-    "target_structure_ids": None
-}
-
-CONTEXT_BOUNDS = {
-    "mutation_threshold": (0.1, np.inf, float),
-    "reward_exponent": (0.1, np.inf, float),
-    "state_radius": (1, np.inf, float),
-    "dataset": ("eterna", "rfam_taneda", None),
-    "target_structure_ids": (0, np.inf, [list, int]) #This is conditional on the dataset (and also a list)
-}
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
@@ -60,8 +46,8 @@ class CARLRnaDesignEnv(CARLEnv):
                 target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
-        env.action_space = spaces.Discrete(4)
-        env.observation_space = spaces.Box(low=-np.inf*np.ones(11), high=np.inf*np.ones(11))
+        env.action_space = ACTION_SPACE
+        env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
         # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
