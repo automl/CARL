@@ -52,12 +52,12 @@ Mario at this point, however, will not run on any operation system besides Linux
 
 To install the additional requirements for ToadGAN:
 ```bash
-javac src/envs/mario/Mario-AI-Framework/**/*.java
+javac carl/envs/mario/Mario-AI-Framework/**/*.java
 ```
 
 If you want to use the RNA design environment:
 ```bash
-cd src/envs/rna/learna
+cd carl/envs/rna/learna
 make requirements
 make data
 ```
