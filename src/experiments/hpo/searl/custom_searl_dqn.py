@@ -1,14 +1,14 @@
 import numpy as np
 import torch
-from src.training.hpo.searl.SEARL.searl.neuroevolution.components.replay_memory import ReplayMemory
-from src.training.hpo.searl.SEARL.searl.neuroevolution.mutation_cnn import Mutations
-from src.training.hpo.searl.SEARL.searl.neuroevolution.searl_dqn import SEARLforDQN
-from src.training.hpo.searl.SEARL.searl.neuroevolution.tournament_selection import TournamentSelection
-from src.training.hpo.searl.SEARL.searl.neuroevolution.training_dqn import DQNTraining
-from src.training.hpo.searl.SEARL.searl.neuroevolution.evaluation_dqn import MPEvaluation
-from src.training.hpo.searl.SEARL.searl.neuroevolution.components.utils import Transition
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.components.replay_memory import ReplayMemory
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.mutation_cnn import Mutations
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.searl_dqn import SEARLforDQN
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.tournament_selection import TournamentSelection
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.training_dqn import DQNTraining
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.evaluation_dqn import MPEvaluation
+from src.experiments.hpo.searl.SEARL.searl.neuroevolution.components.utils import Transition
 
-from src.training.hpo.searl.make_searl_env import make_searl_env
+from src.experiments.hpo.searl.make_searl_env import make_searl_env
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

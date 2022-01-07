@@ -3,8 +3,8 @@ from pathlib import Path
 import configargparse
 import sys
 sys.path.append("../../..")
-from src.training.hpo.smac.smac_plot_trajectory import gather_smac_data, extract_incumbents
-from src.training.hpo.smac.hp_opt import carl_from_cfg, get_parser
+from src.experiments.hpo.smac.smac_plot_trajectory import gather_smac_data, extract_incumbents
+from src.experiments.hpo.smac.hp_opt import carl_from_cfg, get_parser
 
 
 def get_retrain_parser() -> configargparse.ArgumentParser:

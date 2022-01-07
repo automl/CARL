@@ -7,9 +7,9 @@ from omegaconf import DictConfig
 
 # from searl.neuroevolution.searl_td3 import start_searl_td3_run  # TODO modify
 import sys
-sys.path.append("../..")
-from src.training.hpo.searl.searl_starter import start_searl_run
-from src.training.hpo.searl.custom_searl_td3 import CustomSEARLforTD3
+sys.path.append("../../../training")
+from src.experiments.hpo.searl.searl_starter import start_searl_run
+from src.experiments.hpo.searl.custom_searl_td3 import CustomSEARLforTD3
 
 
 @hydra.main("configs", "config_td3.yaml")
