@@ -151,8 +151,8 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
 
 
 if __name__ == '__main__':
-    cf0 = ContextFeature("g",  9., 9.5, 10., 11.)
-    cf1 = ContextFeature("l", 0.4, 0.5, 0.6, 0.8)
+    cf0 = ContextFeature("gravity",  9., 9.5, 10., 11.)
+    cf1 = ContextFeature("pole_length", 0.4, 0.5, 0.6, 0.8)
     seed = 1
     n_contexts = 100
     context_features = [cf0, cf1]
