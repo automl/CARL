@@ -74,7 +74,7 @@ for combo in all_combos:
 
 fullcommand = "\n".join(commands)
 
-shfilename = Path("runscripts/run_train_evaluation_protocol.sh")
+shfilename = Path("run_train_evaluation_protocol.sh")
 shfilename.parent.mkdir(parents=True, exist_ok=True)
 with open(shfilename, 'w') as file:
     file.write(fullcommand)
