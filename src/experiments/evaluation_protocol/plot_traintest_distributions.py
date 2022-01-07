@@ -9,7 +9,7 @@ from src.experiments.evaluation_protocol.evaluation_protocol import EvaluationPr
 def plot_evaluation_protocol(context_features, seed, n_contexts):
     modes = ["A", "B", "C"]
     n_protocols = len(modes)
-    fig = plt.figure(figsize=(12, 4), dpi=300)
+    fig = plt.figure(figsize=(9, 3), dpi=300)
     axes = fig.subplots(nrows=1, ncols=n_protocols, sharex=True, sharey=True)
     for i in range(n_protocols):
         ax = axes[i]
