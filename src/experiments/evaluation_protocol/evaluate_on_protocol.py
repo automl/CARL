@@ -126,16 +126,3 @@ def main(cfg: DictConfig):
 
 if __name__ == '__main__':
     main()
-
-    # get model fnames
-    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/evaluation_protocol/base_vs_context/classic_control/CARLCartPoleEnv"
-    # import glob
-    # import os
-    # model_fnames = glob.glob(os.path.join(path, "**", "model.zip"), recursive=True)
-    # string = ",".join(model_fnames)
-
-
-
-
-
-
