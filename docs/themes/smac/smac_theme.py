@@ -511,7 +511,7 @@ def setup_edit_url(app, pagename, templatename, context, doctree):
             {
                 ("bitbucket_user", "bitbucket_repo", "bitbucket_version"): (
                     "{{ bitbucket_url }}/{{ bitbucket_user }}/{{ bitbucket_repo }}"
-                    "/src/{{ bitbucket_version }}"
+                    "/carl/{{ bitbucket_version }}"
                     "/{{ doc_path }}{{ file_name }}?mode=edit"
                 ),
                 ("github_user", "github_repo", "github_version"): (

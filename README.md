@@ -52,36 +52,15 @@ Mario at this point, however, will not run on any operation system besides Linux
 
 To install the additional requirements for ToadGAN:
 ```bash
-javac src/envs/mario/Mario-AI-Framework/**/*.java
+javac carl/envs/mario/Mario-AI-Framework/**/*.java
 ```
 
 If you want to use the RNA design environment:
 ```bash
-cd src/envs/rna/learna
+cd carl/envs/rna/learna
 make requirements
 make data
 ```
-In case you want to run our experiments or use our training files, also install the experiment dependencies:
-```bash
-pip install -e .[experiments]
-```
-## Train an Agent
-To get started with CARL, you can use our 'train.py' script.
-It will train a PPO agent on the environment of your choice
-with custom context variations that are sampled from a standard 
-deviation. 
-
-To use MetaCartPole with variations in gravity and friction by 20% 
-compared to the default, run:
-```bash
-python train.py 
---env CARLCartPoleEnv 
---context_args gravity friction
---default_sample_std_percentage 0.2
---outdir <result_location>
-```
-You can use the plotting scripts in src/eval to view the results.
-
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
 
@@ -104,6 +83,8 @@ If you use CARL in your research, please cite our paper on the benchmark:
   month = dec
 }
 ```
+
+You can find the code and experiments for this paper in the `neurips_ecorl_workshop_2021` branch.
 
 ## References
 [OpenAI gym, Brockman et al., 2016. arXiv preprint arXiv:1606.01540](https://arxiv.org/pdf/1606.01540.pdf)

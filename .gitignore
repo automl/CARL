@@ -9,4 +9,6 @@
 /httpRequests/
 tmp/
 slurm.sh
-src/runscripts/generated
+carl/runscripts/generated
+docs/html
+docs/apidoc
