@@ -171,6 +171,7 @@ def get_agg_minmax(
     performances_list = []
     for i, (group_id, group_df) in enumerate(groups):
         performances = {}
+        context_distribution_types = group_df["context_distribution_type"].unique()
         for context_distribution_type in context_distribution_types:
             if not plot_train and context_distribution_type == "train":
                 continue
@@ -245,6 +246,11 @@ if __name__ == '__main__':
     ret.index = results.index
     results = pd.concat([results, ret], axis=1)
 
+    if draw_agg_per_region:
+        perf_min, perf_max = get_agg_minmax(
+            results.groupby(["context_visible", "mode"]), agg_per_region=agg_per_region)
+        perf_ptp = perf_max - perf_min
+
     maingroups = results.groupby("context_visible")
     for visibility, maingroup_df in maingroups:
         print("Draw!")
@@ -259,10 +265,6 @@ if __name__ == '__main__':
         cf0, cf1 = context_features
         xlim = (cf0.lower, cf0.upper)
         ylim = (cf1.lower, cf1.upper)
-
-        if draw_agg_per_region:
-            perf_min, perf_max = get_agg_minmax(groups, agg_per_region=agg_per_region)
-            perf_ptp = perf_max - perf_min
 
         def scale(x):
             return (x - perf_min) / perf_ptp
@@ -393,8 +395,10 @@ if __name__ == '__main__':
 
             # Draw colorbar
             colorbar_label = "Episode Reward"
-            if draw_agg_per_region and i == len(groups) - 1:
-                    colorbar = add_colorbar_to_ax(perf_min, perf_max, cmap, colorbar_label)
+            if draw_agg_per_region: # and i == len(groups) - 1:
+                colorbar = add_colorbar_to_ax(perf_min, perf_max, cmap, colorbar_label)
+                if i != len(groups) - 1:
+                    colorbar.remove()
             else:
                 colorbar = add_colorbar_to_ax(episode_reward_min, episode_reward_max, cmap, colorbar_label)
                 solved_threshold = get_solved_threshold(env_name=env)
