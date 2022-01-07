@@ -27,6 +27,8 @@ Benchmarks include:
   constraints with structures from different datasets to choose from
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
+
+For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
    
 
 ## Installation
