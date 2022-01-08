@@ -124,10 +124,8 @@ def sac(cfg, env, eval_env):
                 commit=False,
             )
         log_wandb(env)
-    return {
-        "pi": pi,
-        "q1": q1,
-        "q2": q2,
-        "q1_targ": q1_targ,
-        "q2_targ": q2_targ,
-    }
+    average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+    return (
+        {"pi": pi, "q1": q1, "q2": q2, "q1_targ": q1_targ, "q2_targ": q2_targ,},
+        onp.mean(average_returns),
+    )
