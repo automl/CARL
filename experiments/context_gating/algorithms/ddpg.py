@@ -94,8 +94,5 @@ def ddpg(cfg, env, eval_env):
                 commit=False,
             )
         log_wandb(env)
-    return {
-        "pi": pi,
-        "q": q,
-        "q_targ": q_targ,
-    }
+    average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+    return {"pi": pi, "q": q, "q_targ": q_targ,}, onp.mean(average_returns)

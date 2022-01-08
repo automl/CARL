@@ -71,14 +71,15 @@ def train(cfg: DictConfig):
     print(f"Contexts: ", contexts)
 
     if cfg.algorithm == "sac":
-        func_dict = sac(cfg, env, eval_env)
+        func_dict, avg_return = sac(cfg, env, eval_env)
     elif cfg.algorithm == "ddpg":
-        func_dict = ddpg(cfg, env, eval_env)
+        func_dict, avg_return = ddpg(cfg, env, eval_env)
     else:
         raise ValueError(f"Unknown algorithm {cfg.algorithm}")
 
     coax.utils.dump(func_dict, Path(wandb.run.dir) / "func_dict.pkl.lz4")
 
+    return avg_return
 
 if __name__ == "__main__":
     train()
