@@ -9,5 +9,6 @@ python run_context_gating.py 'seed=range(0,5)' '+experiment=glob(*)' '+algorithm
 ## Hyperparameter Sweep
 
 ```bash
-python run_context_gating.py '+experiment=glob(*)' '+algorithm=sac' '+environment=pendulum' '+sweeps=sac_hp_search' --multirun
+python run_context_gating.py '+experiment=context_gating' '+algorithm=sac' '+environment=pendulum' '+sweeps=sac_hp_search' --multirun
 ```
+Please note that `glob` does not work. The experiments need to be started and swept over individually.
