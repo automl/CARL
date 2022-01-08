@@ -9,6 +9,6 @@
 /httpRequests/
 tmp/
 slurm.sh
-src/runscripts/generated
-src/slurmout
-src/results
+carl/runscripts/generated
+carl/slurmout
+carl/results

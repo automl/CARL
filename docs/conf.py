@@ -39,7 +39,7 @@ extensions = [
 ]
 napoleon_google_docstring = False
 
-autoapi_dirs = ["../src"]
+autoapi_dirs = ["../carl"]
 #autoapi_ignore = ["*/rl-plan*"]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -1,7 +1,0 @@
-defaults:
-  - slurm
-  - _self_
-
-model_fname: /home/benjamin/Dokumente/code/tmp/CARL/src/results/evaluation_protocol/base_vs_context/classic_control/CARLCartPoleEnv/evaluation_protocol-modeA-changingcontexthidden/default/DQN_3/model.zip #null
-context_distribution_type: test_extrapolation_all  # choices: ['train', 'test_interpolation', 'test_interpolation_combinatorial', 'test_extrapolation_single', 'test_extrapolation_all']
-n_eval_eps_per_context: 5
