@@ -1,8 +1,8 @@
 # @package _global_
 # see https://hydra.cc/docs/plugins/optuna_sweeper/#search-space-configuration
 defaults:
-  - override hydra/sweeper: optuna
-  - override hydra/sweeper/sampler: tpe
+  - override /hydra/sweeper: optuna
+  - override /hydra/sweeper/sampler: tpe
 
 group: sac_hp_search
 
