@@ -1,0 +1,15 @@
+# @package _global_
+
+env: CARLLunarLanderEnv
+max_num_frames: 500000
+n_step: 5
+gamma: 0.9
+alpha: 0.2
+batch_size: 128
+learning_rate: 0.001
+q_targ_tau: 0.001
+warmup_num_frames: 5000
+
+replay_capacity: 100000
+render_freq: 10000
+eval_freq: 10000
