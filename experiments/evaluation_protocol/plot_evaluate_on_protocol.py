@@ -12,10 +12,10 @@ import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
-from carl.experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_contexts_LUT, \
+from experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_contexts_LUT, \
     read_ep_contexts_LUT, gather_ep_results
-from carl.experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
-from carl.experiments.evaluation_protocol.evaluation_protocol import ContextFeature
+from experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
+from experiments.evaluation_protocol.evaluation_protocol import ContextFeature
 
 
 def get_ep_mplpatches(

@@ -1,4 +1,4 @@
-from carl.experiments.evaluation_protocol.evaluation_protocol import ContextFeature
+from experiments.evaluation_protocol.evaluation_protocol import ContextFeature
 
 
 def get_context_features(env_name):

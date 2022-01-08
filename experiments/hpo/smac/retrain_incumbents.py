@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 import configargparse
 import sys
-sys.path.append("../../..")
-from carl.experiments.hpo.smac.smac_plot_trajectory import gather_smac_data, extract_incumbents
-from carl.experiments.hpo.smac.hp_opt import carl_from_cfg, get_parser
+sys.path.append("../../../carl")
+from carl.experiments import gather_smac_data, extract_incumbents
+from experiments.hpo.smac.hp_opt import carl_from_cfg, get_parser
 
 
 def get_retrain_parser() -> configargparse.ArgumentParser:

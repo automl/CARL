@@ -8,8 +8,8 @@ import pandas as pd
 
 from carl.context.sampling import sample_contexts
 from carl.eval.gather_data import extract_info
-from carl.experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol
-from carl.experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features
+from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol
+from experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features
 from carl.utils.json_utils import lazy_json_dump
 
 

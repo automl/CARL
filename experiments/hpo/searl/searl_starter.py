@@ -1,10 +1,10 @@
 from typing import Union, Type
 import sys
-sys.path.append("../../../training")
-from carl.experiments.hpo.searl.SEARL.searl.utils.supporter import Supporter
-from carl.experiments.hpo.searl.make_searl_env import make_searl_env
-from carl.experiments.hpo.searl.custom_searl_td3 import CustomSEARLforTD3
-from carl.experiments.hpo.searl.custom_searl_dqn import CustomSEARLforDQN
+sys.path.append("../../../carl/training")
+from carl.experiments import Supporter
+from experiments.hpo.searl.make_searl_env import make_searl_env
+from experiments.hpo.searl.custom_searl_td3 import CustomSEARLforTD3
+from experiments.hpo.searl.custom_searl_dqn import CustomSEARLforDQN
 
 
 def start_searl_run(

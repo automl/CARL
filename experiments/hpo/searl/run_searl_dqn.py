@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 
 # from searl.neuroevolution.searl_dqn import start_searl_dqn_run
-from carl.experiments.hpo.searl.searl_starter import start_searl_run
-from carl.experiments.hpo.searl.custom_searl_dqn import CustomSEARLforDQN
+from carl.experiments import start_searl_run
+from experiments.hpo.searl.custom_searl_dqn import CustomSEARLforDQN
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='define cluster setup')

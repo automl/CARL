@@ -1,9 +1,9 @@
 import sys
 # FIXME does not run
-sys.path.append(".")
-sys.path.append("..")
+sys.path.append("")
+sys.path.append("../../carl/experiments")
+sys.path.append("../../carl")
 sys.path.append("../..")
-sys.path.append("../../..")
 sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL/carl")
 sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL")
 print(sys.path)
@@ -17,7 +17,7 @@ import warnings
 
 from carl.context.sampling import sample_contexts
 from carl.train import get_env
-from carl.experiments.evaluation_protocol.evaluation_protocol_utils import merge_contexts, get_ep_contexts
+from experiments.evaluation_protocol.evaluation_protocol_utils import merge_contexts, get_ep_contexts
 from carl.utils.json_utils import lazy_json_load
 from carl.training.eval_policy import evaluate_policy
 

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json
 from policy_transfer import gravities
-from carl.experiments.policy_transfer.plot_gravity_distribution import plot_gravities_vlines
+from carl.experiments import plot_gravities_vlines
 
 fname = "experiments/lunarLander_contexts_train_2intervals.json"
 fname = "experiments/lunarLander_contexts_train_Gaussian.json"

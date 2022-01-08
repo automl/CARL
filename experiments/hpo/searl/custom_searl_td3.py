@@ -3,18 +3,18 @@ import torch
 import copy
 
 import sys
-sys.path.append("../../../training")
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.components.replay_memory import MPReplayMemory, ReplayMemory
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.evaluation_td3 import MPEvaluation
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.mutation_mlp import Mutations
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.tournament_selection import TournamentSelection
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.training_td3 import TD3Training
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.searl_td3 import SEARLforTD3
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.components.envolvable_mlp import EvolvableMLP
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.components.individual_td3 import Individual
-from carl.experiments.hpo.searl.SEARL.searl.neuroevolution.components.utils import to_tensor, Transition
+sys.path.append("../../../carl/training")
+from experiments.hpo.searl.SEARL.searl.neuroevolution.components.replay_memory import MPReplayMemory, ReplayMemory
+from experiments.hpo.searl.SEARL.searl.neuroevolution.evaluation_td3 import MPEvaluation
+from experiments.hpo.searl.SEARL.searl.neuroevolution.mutation_mlp import Mutations
+from experiments.hpo.searl.SEARL.searl.neuroevolution.tournament_selection import TournamentSelection
+from experiments.hpo.searl.SEARL.searl.neuroevolution.training_td3 import TD3Training
+from experiments.hpo.searl.SEARL.searl.neuroevolution.searl_td3 import SEARLforTD3
+from experiments.hpo.searl.SEARL.searl.neuroevolution.components.envolvable_mlp import EvolvableMLP
+from experiments.hpo.searl.SEARL.searl.neuroevolution.components.individual_td3 import Individual
+from experiments.hpo.searl.SEARL.searl.neuroevolution.components.utils import to_tensor, Transition
 
-from carl.experiments.hpo.searl.make_searl_env import make_searl_env
+from experiments.hpo.searl.make_searl_env import make_searl_env
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

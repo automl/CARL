@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt, colors as mplc
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle, Patch
 
-from carl.experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol, ContextFeature
+from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol, ContextFeature
 
 
 def plot_evaluation_protocol(context_features, seed, n_contexts):

@@ -3,13 +3,8 @@ import seaborn as sns
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 from matplotlib.patches import FancyBboxPatch, Rectangle
-from carl.experiments.policy_transfer import get_uniform_intervals_exp1
-from matplotlib.transforms import (
-    Bbox, TransformedBbox, blended_transform_factory)
-from mpl_toolkits.axes_grid1.inset_locator import (
-    BboxPatch, BboxConnector, BboxConnectorPatch)
+from experiments.policy_transfer import get_uniform_intervals_exp1
 
 eval_data_fnames = [
      "results/experiments/policytransfer/exp0/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data.csv",
