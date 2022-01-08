@@ -40,3 +40,5 @@ hydra:
       batch_size:
         type: categorical
         choices: [64, 128, 256, 512]
+
+        # TODO sweep network sizes?
