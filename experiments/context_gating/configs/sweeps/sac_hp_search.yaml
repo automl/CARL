@@ -26,6 +26,7 @@ hydra:
         type: float
         low: 0.0001
         high: 0.01
+        log: true
       alpha:
         type: float
         low: 0.0
