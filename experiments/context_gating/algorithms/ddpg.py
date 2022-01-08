@@ -94,3 +94,8 @@ def ddpg(cfg, env, eval_env):
                 commit=False,
             )
         log_wandb(env)
+    return {
+        "pi": pi,
+        "q": q,
+        "q_targ": q_targ,
+    }

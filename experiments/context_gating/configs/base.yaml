@@ -11,7 +11,7 @@ carl:
   instance_mode: rr
   gaussian_noise_std_percentage: 0.15
 
-algorithm: ???
+algorithm: sac
 debug: false
 seed: 0
 group: null
@@ -25,12 +25,13 @@ batch_size: 128
 learning_rate: 0.001
 q_targ_tau: 0.001
 warmup_num_frames: 5000
+pi_warmup_num_frames: 7500
+pi_update_freq: 4
 
 replay_capacity: 100000
 render_freq: 10000
 eval_freq: 10000
 eval_episodes: ${contexts.num_contexts}
-
 
 zero_context: false # set context to zero
 state_context: false # set context to state feature subset

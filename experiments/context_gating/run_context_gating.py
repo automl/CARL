@@ -1,17 +1,18 @@
 import os
 from functools import partial
+from pathlib import Path
 
+import carl.envs as envs
 import coax
 import hydra
 import jax
 import numpy as onp
-import src.envs as envs
 import wandb
+from carl.context.sampling import sample_contexts
 from experiments.context_gating.algorithms.ddpg import ddpg
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.utils import set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
-from src.context.sampling import sample_contexts
 
 
 @hydra.main("./configs", "base")
@@ -70,13 +71,14 @@ def train(cfg: DictConfig):
     print(f"Contexts: ", contexts)
 
     if cfg.algorithm == "sac":
-        sac(cfg, env, eval_env)
+        func_dict = sac(cfg, env, eval_env)
     elif cfg.algorithm == "ddpg":
-        ddpg(cfg, env, eval_env)
+        func_dict = ddpg(cfg, env, eval_env)
+    else:
+        raise ValueError(f"Unknown algorithm {cfg.algorithm}")
+
+    coax.utils.dump(func_dict, Path(wandb.run.dir) / "func_dict.pkl.lz4")
 
 
 if __name__ == "__main__":
-    # screen = Xvfb()
-    # screen.start()
     train()
-    # screen.stop()

@@ -124,3 +124,10 @@ def sac(cfg, env, eval_env):
                 commit=False,
             )
         log_wandb(env)
+    return {
+        "pi": pi,
+        "q1": q1,
+        "q2": q2,
+        "q1_targ": q1_targ,
+        "q2_targ": q2_targ,
+    }

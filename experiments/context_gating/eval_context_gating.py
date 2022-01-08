@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import wandb
-from src.eval.plotting_style import set_rc_params
 from tqdm import tqdm
 
 
@@ -50,7 +49,6 @@ def main():
             dfs.append(df)
     df = pd.concat(dfs)
     df.reset_index(inplace=True)
-    set_rc_params()
     plt.tight_layout()
     ax = sns.lineplot(x="_step", y="eval/return", hue="group", data=df, ci=68)
     ax.set_xlabel("timestep")
