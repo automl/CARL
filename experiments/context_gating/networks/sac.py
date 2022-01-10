@@ -21,11 +21,13 @@ def pi_func(cfg, env):
             )
             context_gating = context_gating_func(cfg)
             x = state_seq(S["state"])
+            width = cfg.network.width
             if cfg.pi_context:
                 x = context_gating(x, S)
+                width = cfg.context_branch.width
             pi_seq = hk.Sequential(
                 (
-                    hk.Linear(cfg.network.width),
+                    hk.Linear(width),
                     jax.nn.relu,
                     hk.Linear(onp.prod(env.action_space.shape) * 2, w_init=jnp.zeros),
                     hk.Reshape((*env.action_space.shape, 2)),

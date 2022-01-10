@@ -39,6 +39,9 @@ pi_context: true
 q_context: true
 context_state_indices: null
 
+context_branch:
+  width: 32
+
 contexts:
   context_feature_args: []
   num_contexts: 100
