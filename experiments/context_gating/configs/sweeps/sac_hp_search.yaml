@@ -37,8 +37,10 @@ hydra:
       replay_capacity:
         type: categorical
         choices: [25000, 50000, 100000, 200000]
-      batch_size:
+#      batch_size:
+#        type: categorical
+#        choices: [64, 128, 256, 512]
+      network.width:
         type: categorical
-        choices: [64, 128, 256, 512]
+        choices: [32, 64, 128, 256]
 
-        # TODO sweep network sizes?
