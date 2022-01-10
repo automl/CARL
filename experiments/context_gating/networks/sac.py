@@ -11,11 +11,11 @@ def pi_func(cfg, env):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
                 (
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
                 )
             )
@@ -25,7 +25,7 @@ def pi_func(cfg, env):
                 x = context_gating(x, S)
             pi_seq = hk.Sequential(
                 (
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
                     hk.Linear(onp.prod(env.action_space.shape) * 2, w_init=jnp.zeros),
                     hk.Reshape((*env.action_space.shape, 2)),
@@ -35,11 +35,11 @@ def pi_func(cfg, env):
         else:
             state_seq = hk.Sequential(
                 (
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
                     hk.Linear(onp.prod(env.action_space.shape) * 2, w_init=jnp.zeros),
                     hk.Reshape((*env.action_space.shape, 2)),
@@ -57,11 +57,11 @@ def q_func(cfg, env):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
                 (
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
                 )
             )
@@ -71,18 +71,18 @@ def q_func(cfg, env):
             if cfg.q_context:
                 x = context_gating(x, S)
             q_seq = hk.Sequential(
-                (hk.Linear(32), jax.nn.relu, hk.Linear(1, w_init=jnp.zeros), jnp.ravel)
+                (hk.Linear(cfg.network.width), jax.nn.relu, hk.Linear(1, w_init=jnp.zeros), jnp.ravel)
             )
             x = q_seq(x)
         else:
             X = jnp.concatenate((S, A), axis=-1)
             state_seq = hk.Sequential(
                 (
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(32),
+                    hk.Linear(cfg.network.width),
                     jax.nn.relu,
                     hk.Linear(1, w_init=jnp.zeros),
                     jnp.ravel,

@@ -6,8 +6,8 @@ from omegaconf import DictConfig
 
 def context_gating_func(cfg: DictConfig):
     context_seq = hk.Sequential((
-        hk.Linear(32), jax.nn.relu,
-        hk.Linear(32), jax.nn.sigmoid,
+        hk.Linear(cfg.network.width), jax.nn.relu,
+        hk.Linear(cfg.network.width), jax.nn.sigmoid,
     ))
 
     def context_gating_seq(x, S):
