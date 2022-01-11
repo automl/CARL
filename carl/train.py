@@ -7,14 +7,17 @@ import json
 from typing import Dict, Union, Optional, Type, Callable, Tuple
 import numpy as np
 import gym
+import importlib
 
 import sys
 import inspect
+import warnings
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 print(os.getcwd())
 
+import stable_baselines3
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
@@ -23,7 +26,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
 
-from carl.envs import *
+import carl.envs
 from carl.envs.carl_env import CARLEnv
 
 import carl.training.trial_logger
@@ -367,8 +370,7 @@ def get_env(
         wrapper_kwargs = {}
     if env_kwargs is None:
         env_kwargs = {}
-    EnvCls = partial(eval(env_name), **env_kwargs)
-    env_cls = eval(env_name)
+    EnvCls = partial(getattr(carl.envs, env_name), **env_kwargs)
 
     make_vec_env_kwargs = dict(wrapper_class=wrapper_class, vec_env_cls=vec_env_cls, wrapper_kwargs=wrapper_kwargs)
 
@@ -486,7 +488,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
 
     # Get Agent Class
     try:
-        agent_cls = eval(args.agent)
+        agent_cls = getattr(stable_baselines3, args.agent)
     except ValueError:
         print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
 
