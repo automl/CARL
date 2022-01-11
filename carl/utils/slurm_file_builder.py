@@ -10,24 +10,24 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLCartPoleEnv"
-envtype = "classic_control"
+env = "CARLHalfcheetah"
+envtype = "brax"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "DQN"
-n_timesteps = 500_000
+agent = "PPO"
+n_timesteps = 5_000_000
 state_context_features = "changing_context_features"
 no_eval = False
 hp_opt = False
-use_cpu = True
+use_cpu = False
 on_luis = False
+follow_evaluation_protocol = False
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 time = "12:00:00" if use_cpu else "24:00:00"
 tnt_cpu_partition = "short"
-follow_evaluation_protocol = True
-outdirbase = "results"
+outdirbase = "results/rerun"
 if follow_evaluation_protocol:
     outdirbase = "results/evaluation_protocol"
 #########################################################################
@@ -43,7 +43,7 @@ iteration_list = [
         {
             "name": "default_sample_std_percentage",
             "id": "std",
-            "values": [0.1, 0.25, 0.5]
+            "values": [0.1]#, 0.25, 0.5]
         },
         {
             "name": "hide_context",
