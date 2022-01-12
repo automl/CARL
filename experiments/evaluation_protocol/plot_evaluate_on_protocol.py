@@ -200,6 +200,7 @@ if __name__ == '__main__':
     draw_agg_per_region = True
     agg_per_region = "mean"
     plot_train = False
+    plot_hiddenvisible = False
 
     results = gather_ep_results(path=path)
     
@@ -251,14 +252,25 @@ if __name__ == '__main__':
             results.groupby(["context_visible", "mode"]), agg_per_region=agg_per_region)
         perf_ptp = perf_max - perf_min
 
-    maingroups = results.groupby("context_visible")
-    for visibility, maingroup_df in maingroups:
-        print("Draw!")
-        # Create figure
-        figsize = (9, 3) if draw_agg_per_region else (18, 6)
+    if plot_hiddenvisible:
+        figsize = (18, 3) if draw_agg_per_region else (18, 6)
         fig = plt.figure(figsize=figsize, dpi=300)
         nrows = 1
-        axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
+        n_visibilities = results["context_visible"].nunique()
+        axes_set = fig.subplots(nrows=nrows, ncols=n_protocols * n_visibilities, sharex=True, sharey=True)
+        axes_set = axes_set.reshape((n_visibilities, -1))
+
+    maingroups = results.groupby("context_visible")
+    for k, (visibility, maingroup_df) in enumerate(maingroups):
+        print("Draw!")
+        # Create figure
+        if not plot_hiddenvisible:
+            figsize = (9, 3) if draw_agg_per_region else (18, 6)
+            fig = plt.figure(figsize=figsize, dpi=300)
+            nrows = 1
+            axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
+        else:
+            axes = axes_set[k]
 
         context_distribution_types = maingroup_df["context_distribution_type"].unique()
         groups = maingroup_df.groupby("mode")
@@ -397,7 +409,7 @@ if __name__ == '__main__':
             colorbar_label = "Episode Reward"
             if draw_agg_per_region: # and i == len(groups) - 1:
                 colorbar = add_colorbar_to_ax(perf_min, perf_max, cmap, colorbar_label)
-                if i != len(groups) - 1:
+                if i != len(groups) - 1 or (plot_hiddenvisible and k == 0):
                     colorbar.remove()
             else:
                 colorbar = add_colorbar_to_ax(episode_reward_min, episode_reward_max, cmap, colorbar_label)
@@ -411,10 +423,20 @@ if __name__ == '__main__':
                 ax.set_ylabel(cf1.name)
             ax.set_title(mode)
 
+        if not plot_hiddenvisible:
+            fig.set_tight_layout(True)
+            plt.show()
+
+            fig_fname = Path(f"figures/results_env-{env}_visibility-{visibility}.png")
+            fig_fname.parent.mkdir(parents=True, exist_ok=True)
+            fig.savefig(fig_fname, bbox_inches="tight")
+
+    if plot_hiddenvisible:
         fig.set_tight_layout(True)
         plt.show()
-        
-        fig_fname = Path(f"figures/results_env-{env}_visibility-{visibility}.png")
+
+        fig_fname = Path(f"figures/results_env-{env}.png")
         fig_fname.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(fig_fname, bbox_inches="tight")
+
 
