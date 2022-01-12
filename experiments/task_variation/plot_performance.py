@@ -1,20 +1,25 @@
-from matplotlib.lines import Line2D
-import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 from pathlib import Path
+import pandas as pd
+
+from matplotlib.lines import Line2D
+import matplotlib.pyplot as plt
+import matplotlib.transforms as mtrans
+import seaborn as sns
 
 from carl.eval.gather_data import gather_results
 
 
 if __name__ == '__main__':
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLMountainCarEnv"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLMountainCarEnv"
     # # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/box2d/CARLBipedalWalkerEnv"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
-    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
-    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
+    path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
     results = gather_results(path=path)
+    results2 = gather_results(path=path2)
+    results = pd.concat([results, results2])
 
     paperversion = True
     plot_across_contextfeatures = False
@@ -43,21 +48,22 @@ if __name__ == '__main__':
     figsize = (8, 4) if plot_across_magnitudes else (12, 4)
     if paperversion:
         figsize = (6, 3)
+        if plot_across_contextfeatures:
+            figsize = (10, 3)
     labelfontsize = 12
     titlefontsize = 12
     ticklabelsize = 10
     legendfontsize = 10
 
     if "context_feature_args" in results.columns:
-        cfargs = results["context_feature_args"]
-        cfargs_new = []
-        for cf in cfargs:
-            cf = list(cf)
-            cf.sort()
-            cf_new = "__".join(cf)
-            cfargs_new.append(cf_new)
-        results["context_feature_args"] = cfargs_new
-        context_features = results["context_feature_args"].unique()
+        # Get number of context features
+        results["n_context_features"] = results["context_feature_args"].apply(len)
+        results = results.sort_values(by="n_context_features")
+
+        # Convert cf args list to string
+        def cfargs_to_str(x):
+            return ", ".join([str(el) for el in x])
+        results["context_feature_args"] = results["context_feature_args"].apply(cfargs_to_str)
 
     env_names = results['env'].unique()
     if len(env_names) > 1:
@@ -91,11 +97,23 @@ if __name__ == '__main__':
         title = None
         xlabel = None
         ylabel = None
+        if plot_across_contextfeatures:
+            plot_df = plot_df.sort_values(by="n_context_features")
         groups = plot_df.groupby(key_axgroup)
         xmin = plot_df['step'].min()
         xmax = plot_df['step'].max()
         xlims = (xmin, xmax)
-        for i, (group_id, group_df) in enumerate(groups):
+        group_ids = []
+        group_dfs = []
+        for group_id, group_df in groups:
+            group_ids.append(group_id)
+            group_dfs.append(group_df)
+        if plot_across_contextfeatures:
+            # sort along number of context features
+            ids = np.array([x for x, y in sorted(enumerate(group_ids), key=lambda x: x[1].count(","))])
+            group_ids = np.array(group_ids)[ids]
+            group_dfs = np.array(group_dfs)[ids]
+        for i, (group_id, group_df) in enumerate(zip(group_ids, group_dfs)):
             if type(axes) == list or type(axes) == np.ndarray:
                 ax = axes[i]
             else:
@@ -158,7 +176,7 @@ if __name__ == '__main__':
                     labels=labels,
                     loc='lower center',
                     title=legend_title,
-                    ncol=ncols,
+                    ncol=3, #ncols,
                     fontsize=legendfontsize,
                     columnspacing=0.5,
                     handletextpad=0.5,
@@ -169,7 +187,21 @@ if __name__ == '__main__':
         if not paperversion:
             fig.suptitle(figtitle)
         fig.set_tight_layout(True)
+
+        if plot_across_contextfeatures:
+            # Get the bounding boxes of the axes including text decorations
+            r = fig.canvas.get_renderer()
+            get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
+            bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
+
+            index = results["n_context_features"].max()  # plus one to account for default/None
+            bbox = bboxes[index]
+            x = 0.5*(bbox.x1 + bboxes[index+1].x0) + 1 * bboxes[0].x0  # account for ylabel offset?
+            line = plt.Line2D([x, x], [0.05, 0.95], transform=fig.transFigure, color="black")
+            fig.add_artist(line)
+
+
         fig_fn = f"evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
         fig_ffn = Path(path) / fig_fn
-        fig.savefig(fig_ffn, bbox_inches="tight")
+        # fig.savefig(fig_ffn, bbox_inches="tight")
         plt.show()
