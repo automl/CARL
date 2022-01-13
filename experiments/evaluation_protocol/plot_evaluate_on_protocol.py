@@ -12,6 +12,8 @@ import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
+from carl.eval.plotting_style import set_rc_params
+
 from experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_contexts_LUT, \
     read_ep_contexts_LUT, gather_ep_results
 from experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
@@ -195,12 +197,13 @@ def get_agg_minmax(
 
 
 if __name__ == '__main__':
+    set_rc_params()
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/evaluation_protocol/base_vs_context/classic_control/CARLCartPoleEnv"
     draw_points = False
     draw_agg_per_region = True
     agg_per_region = "mean"
     plot_train = False
-    plot_hiddenvisible = False
+    plot_hiddenvisible = True
 
     results = gather_ep_results(path=path)
     
@@ -253,7 +256,7 @@ if __name__ == '__main__':
         perf_ptp = perf_max - perf_min
 
     if plot_hiddenvisible:
-        figsize = (18, 3) if draw_agg_per_region else (18, 6)
+        figsize = (12, 2) if draw_agg_per_region else (18, 6)
         fig = plt.figure(figsize=figsize, dpi=300)
         nrows = 1
         n_visibilities = results["context_visible"].nunique()
