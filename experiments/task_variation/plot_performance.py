@@ -17,9 +17,10 @@ if __name__ == '__main__':
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
     path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/carl/results/rerun/base_vs_context/brax/CARLHalfcheetah"
     results = gather_results(path=path)
-    results2 = gather_results(path=path2)
-    results = pd.concat([results, results2])
+    # results2 = gather_results(path=path2)
+    # results = pd.concat([results, results2])
 
     paperversion = True
     plot_across_contextfeatures = False
@@ -189,16 +190,17 @@ if __name__ == '__main__':
         fig.set_tight_layout(True)
 
         if plot_across_contextfeatures:
-            # Get the bounding boxes of the axes including text decorations
-            r = fig.canvas.get_renderer()
-            get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
-            bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
-
             index = results["n_context_features"].max()  # plus one to account for default/None
-            bbox = bboxes[index]
-            x = 0.5*(bbox.x1 + bboxes[index+1].x0) + 1 * bboxes[0].x0  # account for ylabel offset?
-            line = plt.Line2D([x, x], [0.05, 0.95], transform=fig.transFigure, color="black")
-            fig.add_artist(line)
+            if index > 1:
+                # Get the bounding boxes of the axes including text decorations
+                r = fig.canvas.get_renderer()
+                get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
+                bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
+
+                bbox = bboxes[index]
+                x = 0.5*(bbox.x1 + bboxes[index+1].x0) + 1 * bboxes[0].x0  # account for ylabel offset?
+                line = plt.Line2D([x, x], [0.05, 0.95], transform=fig.transFigure, color="black")
+                fig.add_artist(line)
 
 
         fig_fn = f"evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
