@@ -20,4 +20,4 @@ For insights into cRL, we recommend our CARL paper as well as:
 
 `Contextual Markov Decision Processes, Hallak et al., CoRR 2015 <https://arxiv.org/pdf/1502.02259.pdf>`_
 
-`A survey of Generalisation in Deep Reinforcement Learning, Kirk et al., CoRR 2021 <https://arxiv.org/pdf/2111.09794.pdf>`_
+`A Survey of Generalisation in Deep Reinforcement Learning, Kirk et al. <https://arxiv.org/pdf/2111.09794.pdf>`_
