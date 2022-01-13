@@ -3,13 +3,17 @@ from matplotlib import pyplot as plt, colors as mplc
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle, Patch
 
+from carl.eval.plotting_style import set_rc_params
+
 from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol, ContextFeature
 
 
 def plot_evaluation_protocol(context_features, seed, n_contexts):
+    set_rc_params()
+
     modes = ["A", "B", "C"]
     n_protocols = len(modes)
-    fig = plt.figure(figsize=(9, 3), dpi=300)
+    fig = plt.figure(figsize=(6, 2), dpi=300)
     axes = fig.subplots(nrows=1, ncols=n_protocols, sharex=True, sharey=True)
     for i in range(n_protocols):
         ax = axes[i]
@@ -45,6 +49,7 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
         # color_IC = "yellow"
         ec_test = "black"
         markerfacecolor_alpha = 0.
+        markersize = 10
 
         patch_kwargs = dict(zorder=0, linewidth=0., )
 
@@ -105,25 +110,30 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
             ax.add_patch(patch)
 
         # Plot train context
-        ax = sns.scatterplot(data=contexts_train, x=cf0.name, y=cf1.name, color=color_T, ax=ax, edgecolor=color_T)
+        ax = sns.scatterplot(data=contexts_train, x=cf0.name, y=cf1.name, color=color_T, ax=ax, edgecolor=color_T,
+                             s=markersize)
 
         # Extrapolation single
         ax = sns.scatterplot(data=contexts_ES, x=cf0.name, y=cf1.name,
-                             color=mplc.to_rgba(color_ES, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+                             color=mplc.to_rgba(color_ES, markerfacecolor_alpha), ax=ax, edgecolor=ec_test,
+                             s=markersize)
 
         # Extrapolation all factors
         ax = sns.scatterplot(data=contexts_EA, x=cf0.name, y=cf1.name,
-                             color=mplc.to_rgba(color_EB, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+                             color=mplc.to_rgba(color_EB, markerfacecolor_alpha), ax=ax, edgecolor=ec_test,
+                             s=markersize)
 
         # Interpolation (Train Distribution)
         if len(contexts_I) > 0:
             ax = sns.scatterplot(data=contexts_I, x=cf0.name, y=cf1.name,
-                                 color=mplc.to_rgba(color_I, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+                                 color=mplc.to_rgba(color_I, markerfacecolor_alpha), ax=ax, edgecolor=ec_test,
+                                 s=markersize)
 
         # Combinatorial Interpolation
         if len(contexts_IC) > 0:
             ax = sns.scatterplot(data=contexts_IC, x=cf0.name, y=cf1.name,
-                                 color=mplc.to_rgba(color_IC, markerfacecolor_alpha), ax=ax, edgecolor=ec_test)
+                                 color=mplc.to_rgba(color_IC, markerfacecolor_alpha), ax=ax, edgecolor=ec_test,
+                                 s=markersize)
 
         # Add axis descriptions
         ax.set_xlabel(cf0.name)
