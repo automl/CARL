@@ -2,19 +2,17 @@ import sys
 sys.path.append("../../carl")
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import VecNormalize
 
 import os
 import json
 import argparse
 from functools import partial
-from carl.train import get_parser
 from carl.context.sampling import sample_contexts
 
 import importlib
-import carl.training.trial_logger
-importlib.reload(carl.training.trial_logger)
-from carl.training.trial_logger import TrialLogger
+import experiments.common.train.trial_logger
+importlib.reload(experiments.common.train.trial_logger)
+from experiments.common.train.trial_logger import TrialLogger
 
 def setup_agent(config, outdir, parser, args):
     env_wrapper = None
@@ -53,7 +51,6 @@ def setup_agent(config, outdir, parser, args):
         json.dump(contexts, file, indent="\t")
 
     env_logger = logger
-    from carl.envs import CARLAcrobotEnv, CARLLunarLanderEnv
     EnvCls = partial(
         eval(env),
         contexts=contexts,
@@ -88,7 +85,6 @@ def step(model, timesteps, env, context_args, hide_context):
         default_sample_std_percentage=0.1
     )
     env_logger = None
-    from carl.envs import CARLAcrobotEnv, CARLLunarLanderEnv
     EnvCls = partial(
         eval(env),
         contexts=contexts,

@@ -4,7 +4,7 @@ import os
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.vec_env import sync_envs_normalization
 
-from carl.training.eval_policy import evaluate_policy
+from experiments.common.train.eval_policy import evaluate_policy
 
 
 class DACEvalCallback(EvalCallback):

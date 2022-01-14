@@ -9,7 +9,7 @@ from gym.envs.box2d import bipedal_walker as bpw
 from Box2D.b2 import (edgeShape, fixtureDef, polygonShape)
 
 from carl.envs.carl_env import CARLEnv
-from carl.training.trial_logger import TrialLogger
+from experiments.common.train.trial_logger import TrialLogger
 
 
 DEFAULT_CONTEXT = {

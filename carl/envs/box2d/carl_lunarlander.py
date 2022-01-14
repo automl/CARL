@@ -12,7 +12,7 @@ from gym import spaces
 from gym.utils import seeding, EzPickle
 
 from carl.envs.carl_env import CARLEnv
-from carl.training.trial_logger import TrialLogger
+from experiments.common.train.trial_logger import TrialLogger
 
 # TODO debug/test this environment by looking at rendering!
 

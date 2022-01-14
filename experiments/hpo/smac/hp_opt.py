@@ -9,25 +9,18 @@ sys.path.append("../../..")
 
 print(os.system('python --version'))
 
-import warnings
 import numpy as np
 from functools import partial
 
-import ConfigSpace as CS
 from ConfigSpace.hyperparameters import \
-    CategoricalHyperparameter, UniformFloatHyperparameter, UniformIntegerHyperparameter
-
-from sklearn.datasets import load_digits
-from sklearn.exceptions import ConvergenceWarning
-from sklearn.model_selection import cross_val_score, StratifiedKFold
-from sklearn.neural_network import MLPClassifier
+    UniformFloatHyperparameter
 
 from smac.configspace import ConfigurationSpace, Configuration
 from smac.facade.smac_mf_facade import SMAC4MF
 from smac.scenario.scenario import Scenario
 
 from carl.train import get_parser, main
-from carl.training.trial_logger import TrialLogger
+from experiments.common.train.trial_logger import TrialLogger
 
 
 def carl_from_cfg(cfg, seed, budget, parser, args):

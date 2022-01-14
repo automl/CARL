@@ -5,7 +5,7 @@ import gym
 import gym.envs.classic_control as gccenvs
 
 from carl.envs.carl_env import CARLEnv
-from carl.training.trial_logger import TrialLogger
+from experiments.common.train.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,

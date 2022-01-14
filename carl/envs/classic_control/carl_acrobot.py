@@ -3,7 +3,7 @@ import numpy as np
 from typing import Optional, Dict, List
 from gym.envs.classic_control import AcrobotEnv
 from carl.envs.carl_env import CARLEnv
-from carl.training.trial_logger import TrialLogger
+from experiments.common.train.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "link_length_1": 1,  # should be seen as 100% default and scaled

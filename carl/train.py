@@ -29,14 +29,14 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 import carl.envs
 from carl.envs.carl_env import CARLEnv
 
-import carl.training.trial_logger
-importlib.reload(carl.training.trial_logger)
-from carl.training.trial_logger import TrialLogger
+import experiments.common.train.trial_logger
+importlib.reload(experiments.common.train.trial_logger)
+from experiments.common.train.trial_logger import TrialLogger
 
 from carl.context.sampling import sample_contexts
 from carl.utils.hyperparameter_processing import preprocess_hyperparams
-from carl.training.eval_callback import DACEvalCallback
-from carl.training.eval_policy import evaluate_policy
+from experiments.common.train.eval_callback import DACEvalCallback
+from experiments.common.train.eval_policy import evaluate_policy
 from carl.utils.json_utils import lazy_json_dump
 from experiments.evaluation_protocol.evaluation_protocol_utils import get_train_contexts
 
@@ -172,7 +172,7 @@ def get_parser() -> configargparse.ArgumentParser:
         "--hp_file",
         type=str,
         default=os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             "training/hyperparameters/ppo.yml")),
+                                             "../experiments/common/train/hyperparameters/ppo.yml")),
         help="YML file with hyperparameter",
     )
 
@@ -299,7 +299,7 @@ def set_hps(
         if env_name == "CARLPendulumEnv":
             hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(
                 hp_fn=os.path.join(os.path.dirname(__file__),
-                                   "training/hyperparameters/ddpg.yml"), env_name=env_name)
+                                   "../experiments/common/train/hyperparameters/ddpg.yml"), env_name=env_name)
 
         hyperparams["n_envs"] = 1
 

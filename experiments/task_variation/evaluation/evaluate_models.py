@@ -13,7 +13,6 @@ from omegaconf import DictConfig
 
 from pathlib import Path
 import numpy as np
-import warnings
 import glob
 
 import stable_baselines3
@@ -21,7 +20,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 
 from carl.train import get_env
 from carl.utils.json_utils import lazy_json_load
-from carl.training.eval_policy import evaluate_policy
+from experiments.common.train.eval_policy import evaluate_policy
 
 
 def rollout(cfg):

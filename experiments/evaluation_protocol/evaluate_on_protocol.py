@@ -19,7 +19,7 @@ from carl.context.sampling import sample_contexts
 from carl.train import get_env
 from experiments.evaluation_protocol.evaluation_protocol_utils import merge_contexts, get_ep_contexts
 from carl.utils.json_utils import lazy_json_load
-from carl.training.eval_policy import evaluate_policy
+from experiments.common.train.eval_policy import evaluate_policy
 
 
 def rollout(cfg):
