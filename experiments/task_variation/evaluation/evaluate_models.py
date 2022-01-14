@@ -2,8 +2,8 @@ import sys
 # FIXME does not run
 sys.path.append("")
 sys.path.append("../../carl/experiments")
-sys.path.append("../../carl")
-sys.path.append("../..")
+sys.path.append("../../../carl")
+sys.path.append("../../..")
 sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL/carl")
 sys.path.append("/home/benjamin/Dokumente/code/tmp/CARL")
 print(sys.path)
