@@ -100,7 +100,6 @@ def rollout(cfg):
 
         # Setup IO
         if evaluate_on_train_contexts:
-            exp_dir = Path("/home/benjamin/Dokumente/code/tmp/CARL/experiments/task_variation/tmp/evaluate_models")
             output_dir = exp_dir
             output_dir.mkdir(parents=True, exist_ok=True)
             evaluation_fn = output_dir / f"evaluations.npz"
