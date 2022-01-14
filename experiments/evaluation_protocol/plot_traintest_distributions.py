@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt, colors as mplc
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle, Patch
 
-from carl.eval.plotting_style import set_rc_params
+from experiments.common.eval.plotting_style import set_rc_params
 
 from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol, ContextFeature
 

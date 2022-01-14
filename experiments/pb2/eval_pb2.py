@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from carl.eval.gather_data import collect_results
+from experiments.common.eval.gather_data import collect_results
 
 
 def clean_worker_dirs(dirs: List[str]):
