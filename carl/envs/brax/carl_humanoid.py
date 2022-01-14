@@ -45,6 +45,7 @@ class CARLHumanoid(CARLEnv):
             scale_context_features: str = "no",
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
+            max_episode_length: int = 1000,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(text_format.Parse(_SYSTEM_CONFIG, brax.Config()))
@@ -61,6 +62,7 @@ class CARLHumanoid(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
+            max_episode_length=max_episode_length,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 
