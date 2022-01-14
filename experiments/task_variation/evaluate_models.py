@@ -33,6 +33,7 @@ def rollout(cfg):
         model_fnames = glob.glob(str(model_fname / "rl_model_*.zip"))
         model_fnames.sort()
     else:
+        raise NotImplementedError("evaluations.npz would be overwritten otherwise, is a todo")
         model_fnames = [model_fname]
 
     for mf in model_fnames:
