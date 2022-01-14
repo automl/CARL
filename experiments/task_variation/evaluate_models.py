@@ -146,3 +146,5 @@ def main(cfg: DictConfig):
 
 if __name__ == '__main__':
     main()
+
+# run with (--multirun starts it on slurm): python evaluate_models.py --multirun model_fname=path0,path1,path2,path3
