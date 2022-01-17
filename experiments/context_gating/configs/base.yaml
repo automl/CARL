@@ -17,7 +17,7 @@ seed: 0
 group: null
 
 env: CARLPendulumEnv
-max_num_frames: 1000000
+max_num_frames: 500000
 n_step: 5
 gamma: 0.9
 alpha: 0.2
