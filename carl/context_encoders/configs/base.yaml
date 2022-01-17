@@ -1,0 +1,8 @@
+encoder.
+  outdir: '/home/mohan/git/CARL/tmp/AE_stuff/AE_Test'
+  context_db: '/home/mohan/git/CARL/tmp/AE_database/Pendulum/new_60k.npy'
+  model: ContextVAE
+  input_dim: 5
+  latent_dim: 2
+  hidden_dim: [3]
+  M_N: 0.005

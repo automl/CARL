@@ -9,6 +9,11 @@ from carl.context.augmentation import add_gaussian_noise
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
 
+from carl.context_encoders import *
+import torch as th
+
+import pdb
+
 
 class CARLEnv(Wrapper):
     """
@@ -78,10 +83,14 @@ class CARLEnv(Wrapper):
             default_context: Optional[Dict] = None,
             state_context_features: Optional[List[str]] = None,
             dict_observation_space: bool = False,
+            context_encoder: Optional[ContextEncoder()]= None,      # encoder of the base type
     ):
         super().__init__(env=env)
         # Gather args
         self.contexts = contexts
+        self.context_encoder = context_encoder  
+
+        print(f'Context Encoder: {self.context_encoder}')       
         if instance_mode not in self.available_instance_modes:
             raise ValueError(f"instance_mode '{instance_mode}' not in '{self.available_instance_modes}'.")
         self.instance_mode = instance_mode
@@ -171,6 +180,17 @@ class CARLEnv(Wrapper):
         return state
 
     def build_context_adaptive_state(self, state, context_feature_values=None):
+        """
+        Add context to state if visible 
+        
+        Parameters
+        ----------
+        state                   : state of environment
+        context_feature_values  : list of context feature values
+        Returns
+        -------
+        State with context or original state
+        """
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
@@ -184,6 +204,12 @@ class CARLEnv(Wrapper):
                 # get the correct state
                 context_keys = list(self.context.keys())
                 context_values = np.array([context_values[context_keys.index(k)] for k in self.state_context_features])
+            
+            # Pass the context features to the encoder to extract decomposed representation             
+            if self.context_encoder:
+                # Encode context
+                self.encode_contexts(context_values)
+
             if self.dict_observation_space:
                 state = dict(state=state, context=context_values)
             else:
@@ -351,11 +377,17 @@ class CARLEnv(Wrapper):
                     ids = np.array([context_keys.index(k) for k in self.state_context_features])
                     context_lower_bounds = context_lower_bounds[ids]
                     context_upper_bounds = context_upper_bounds[ids]
+                
+                if self.context_encoder is not None:
+                    context_lower_bounds = - np.inf * np.ones(1)
+                    context_upper_bounds = np.inf * np.ones(1)
+                
                 if self.dict_observation_space:
                     self.env.observation_space = spaces.Dict({
                         "state": spaces.Box(low=env_lower_bounds, high=env_upper_bounds, dtype=np.float32),
                         "context": spaces.Box(low=context_lower_bounds, high=context_upper_bounds, dtype=np.float32)
                     })
+                                
                 else:
                     low = np.concatenate((env_lower_bounds, context_lower_bounds))
                     high = np.concatenate((env_upper_bounds, context_upper_bounds))
@@ -366,6 +398,32 @@ class CARLEnv(Wrapper):
                     )
             self.observation_space = self.env.observation_space  # make sure it is the same object
 
+    def encode_contexts(self, context_vals):
+        """
+        Pass the context values through an encoder
+        Parameters
+        ----------
+        context_vals: np.array
+            Context values to encode.
+        Returns
+        -------
+        np.array
+            Encoded context values.
+        """
+        
+        self.context_encoder(th.tensor(context_vals))
+        context_reps = self.context_encoder.get_representation()
+        
+        # Bit of post-processing to get an array from tensors :)
+        
+        context_reps = np.array([t.detach().numpy() for t in context_reps])
+        context_reps = context_reps.reshape(context_reps.shape[0], context_reps.shape[-1])
+        if context_reps.shape[1] == 1:
+            context_reps = context_reps.reshape(context_reps.shape[0])
+        
+        return context_reps
+    
+    
     def _update_context(self):
         """
         Update the context feature values of the environment.
@@ -388,5 +446,4 @@ class CARLEnv(Wrapper):
         """
         if self.logger:
             self.logger.write_context(self.episode_counter, self.total_timestep_counter, self.context)
-
 

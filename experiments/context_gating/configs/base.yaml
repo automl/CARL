@@ -2,6 +2,14 @@ defaults:
   - slurm
   - _self_
 
+encoder:
+  weights: null
+  model: ContextAE
+  input_dim: 5
+  latent_dim: 1
+  hidden_dim: [3]
+  
+
 carl:
   hide_context: false
   dict_observation_space: false
