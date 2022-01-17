@@ -17,6 +17,8 @@ from omegaconf import DictConfig, OmegaConf
 
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
+    if cfg.carl.hide_context and cfg.carl.state_context_features:
+        return
     wandb.init(
         mode="offline" if cfg.debug else None,
         project="carl",
