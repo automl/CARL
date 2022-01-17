@@ -12,3 +12,6 @@ gamma: 0.98
 pi_targ_tau: 0.001
 replay_capacity: 200000
 warmup_num_frames: 10000
+
+context_branch:
+  width: 512

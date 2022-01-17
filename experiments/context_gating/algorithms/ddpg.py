@@ -38,7 +38,7 @@ def ddpg(cfg, env, eval_env):
         optimizer=optax.adam(cfg.learning_rate),
     )
     determ_pg = coax.policy_objectives.DeterministicPG(
-        pi, q_targ, optimizer=optax.adam(cfg.learning_rate)
+        pi, q_targ, optimizer=optax.adam(cfg.learning_rate / 10.0)
     )
 
     # action noise
