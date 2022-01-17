@@ -28,10 +28,12 @@ warmup_num_frames: 5000
 pi_warmup_num_frames: 7500
 pi_update_freq: 4
 
+
 replay_capacity: 100000
 render_freq: 10000
 eval_freq: 10000
 eval_episodes: ${contexts.num_contexts}
+eval_on_train_context: true
 
 zero_context: false # set context to zero
 state_context: false # set context to state feature subset

@@ -29,7 +29,10 @@ def train(cfg: DictConfig):
 
     EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
     contexts = sample_contexts(cfg.env, **cfg.contexts)
-    eval_contexts = sample_contexts(cfg.env, **cfg.contexts)
+    if cfg.eval_on_train_context:
+        eval_contexts = contexts
+    else:
+        eval_contexts = sample_contexts(cfg.env, **cfg.contexts)
     if contexts:
         table = wandb.Table(
             columns=sorted(contexts[0].keys()),
