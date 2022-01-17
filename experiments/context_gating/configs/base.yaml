@@ -7,7 +7,7 @@ carl:
   dict_observation_space: false
   scale_context_features: "no" # by_mean, by_default
   state_context_features: null
-  add_gaussian_noise_to_context: true
+  add_gaussian_noise_to_context: false
   instance_mode: rr
   gaussian_noise_std_percentage: 0.15
 
