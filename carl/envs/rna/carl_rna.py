@@ -14,7 +14,7 @@ from carl.envs.rna.carl_rna_definitions import (
 )
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 
 class CARLRnaDesignEnv(CARLEnv):
@@ -30,7 +30,7 @@ class CARLRnaDesignEnv(CARLEnv):
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 

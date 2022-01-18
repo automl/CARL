@@ -4,7 +4,7 @@ from typing import Optional, Dict, List
 from gym.envs.classic_control import AcrobotEnv
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "link_length_1": 1,  # should be seen as 100% default and scaled
@@ -68,7 +68,7 @@ class CARLAcrobotEnv(CARLEnv):
         max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}

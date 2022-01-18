@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pickle
 from mle_hyperopt import HyperbandSearch
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 import json
 import shutil
 

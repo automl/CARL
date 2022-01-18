@@ -5,7 +5,7 @@ import gym.envs.classic_control as gccenvs
 from typing import Dict
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 
 DEFAULT_CONTEXT = {

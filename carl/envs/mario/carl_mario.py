@@ -12,7 +12,7 @@ from carl.envs.mario.toad_gan import generate_level
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 
 class CARLMarioEnv(CARLEnv):
@@ -29,7 +29,7 @@ class CARLMarioEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}

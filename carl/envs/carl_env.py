@@ -9,7 +9,7 @@ from carl.context.augmentation import add_gaussian_noise
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 import torch as th
 
 
@@ -82,7 +82,7 @@ class CARLEnv(Wrapper):
         default_context: Optional[Dict] = None,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,  # encoder of the base type
+        context_encoder: Optional[ContextEncoder] = None,  # encoder of the base type
     ):
         super().__init__(env=env)
         # Gather args

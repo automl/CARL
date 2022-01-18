@@ -6,7 +6,7 @@ import gym.envs.classic_control as gccenvs
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,

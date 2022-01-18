@@ -16,7 +16,7 @@ from carl import context_encoders
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 # TODO debug/test this environment by looking at rendering!
 
@@ -150,7 +150,7 @@ class CARLLunarLanderEnv(CARLEnv):
         max_episode_length: int = 1000,
         high_gameover_penalty: bool = False,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 

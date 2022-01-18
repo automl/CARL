@@ -11,7 +11,7 @@ from typing import Optional, Dict, List
 from numpyencoder import NumpyEncoder
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 5000,
@@ -52,7 +52,7 @@ class CARLFetch(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(

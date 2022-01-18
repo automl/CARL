@@ -43,7 +43,7 @@ from carl.envs.box2d.parking_garage.bus import BusLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.bus import FWDBusLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -203,7 +203,7 @@ class CARLVehicleRacingEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 

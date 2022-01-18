@@ -12,7 +12,7 @@ from carl import context_encoders
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import *
+from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "FPS": 50,
@@ -127,7 +127,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder()] = None,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 
