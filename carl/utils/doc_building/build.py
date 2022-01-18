@@ -6,11 +6,11 @@ from gym import spaces
 
 # JUST FOR DOCS / is dynamic in code!!
 MARIO_OBSERVATION_SPACE = spaces.Box(
-            low=0,
-            high=255,
-            shape=[4, 64, 64],
-            dtype=np.uint8,
-        )  # is dynamic in code
+    low=0,
+    high=255,
+    shape=[4, 64, 64],
+    dtype=np.uint8,
+)  # is dynamic in code
 MARIO_ACTION_SPACE = spaces.Discrete(n=10)
 
 
@@ -22,7 +22,7 @@ def build():
     local_vars = globals().copy()
 
     k_env_family = "Env. Family"
-    k_env_name =  "Name"
+    k_env_name = "Name"
     k_n_context_features = "# Context Features"
     k_action_space = "Action Space"
     k_obs_space = "Obs. Space"
@@ -70,6 +70,7 @@ def build():
     from carl.envs.rna.carl_rna_definitions import OBSERVATION_SPACE as rna_O
     from carl.envs.mario.carl_mario_definitions import DEFAULT_CONTEXT as mario_defaults
     from carl.envs.mario.carl_mario_definitions import CONTEXT_BOUNDS as mario_bounds
+
     unicorn_defaults = [rna_defaults, mario_defaults]
     N_context_features = [len(c) for c in unicorn_defaults]
     action_spaces = [rna_A, MARIO_ACTION_SPACE]
@@ -118,12 +119,10 @@ def build():
         context_def_df = pd.concat([defaults_df, bounds_df], axis=1)
         context_def_df.to_csv(fname)
 
-
     print("Done!")
 
     return df, defaults_entries, bounds_entries
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     df, defaults_entries, bounds_entries = build()
-

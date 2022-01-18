@@ -10,7 +10,12 @@ def pi_func(cfg, env):
     def pi(S, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
-                (hk.Linear(512), jax.nn.relu, hk.Linear(256), jax.nn.relu,)
+                (
+                    hk.Linear(512),
+                    jax.nn.relu,
+                    hk.Linear(256),
+                    jax.nn.relu,
+                )
             )
             context_gating = context_gating_func(cfg)
             x = state_seq(S["state"])
@@ -48,7 +53,12 @@ def q_func(cfg, env):
     def q(S, A, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
-                (hk.Linear(512), jax.nn.relu, hk.Linear(256), jax.nn.relu,)
+                (
+                    hk.Linear(512),
+                    jax.nn.relu,
+                    hk.Linear(256),
+                    jax.nn.relu,
+                )
             )
             context_gating = context_gating_func(cfg)
             X = jnp.concatenate((S["state"], A), axis=-1)

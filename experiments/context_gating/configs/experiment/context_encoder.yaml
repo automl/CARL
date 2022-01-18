@@ -1,0 +1,9 @@
+# @package _global_
+group: context_encoder
+
+encoder:
+  weights: '../../carl/context_encoders/saved_models/AE/Pendulum/model.zip'
+  model: ContextAE
+  input_dim: 5
+  latent_dim: 1
+  hidden_dim: [3]

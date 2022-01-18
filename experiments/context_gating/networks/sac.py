@@ -73,7 +73,12 @@ def q_func(cfg, env):
             if cfg.q_context:
                 x = context_gating(x, S)
             q_seq = hk.Sequential(
-                (hk.Linear(cfg.network.width), jax.nn.relu, hk.Linear(1, w_init=jnp.zeros), jnp.ravel)
+                (
+                    hk.Linear(cfg.network.width),
+                    jax.nn.relu,
+                    hk.Linear(1, w_init=jnp.zeros),
+                    jnp.ravel,
+                )
             )
             x = q_seq(x)
         else:

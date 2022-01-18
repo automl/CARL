@@ -6,15 +6,15 @@ Structure adapted from: https://github.com/AntixK/PyTorch-VAE
 
 
 import torch as th
-from typing import List, Callable, Union, Any, TypeVar, Tuple
+from typing import List, Any
 
 from abc import abstractmethod
 
+
 class ContextEncoder(th.nn.Module):
-    
     def __init__(self) -> None:
         super(ContextEncoder, self).__init__()
-    
+
     def encode(self, input: th.Tensor) -> th.Tensor:
         """
         Encodes the context.

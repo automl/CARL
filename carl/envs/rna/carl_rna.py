@@ -1,26 +1,36 @@
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
-from carl.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
+from carl.envs.rna.learna.src.learna.environment import (
+    RnaDesignEnvironment,
+    RnaDesignEnvironmentConfig,
+)
 import numpy as np
 from typing import Optional, Dict
 
-from carl.envs.rna.carl_rna_definitions import DEFAULT_CONTEXT, ACTION_SPACE, OBSERVATION_SPACE
+from carl.envs.rna.carl_rna_definitions import (
+    DEFAULT_CONTEXT,
+    ACTION_SPACE,
+    OBSERVATION_SPACE,
+)
 from carl.utils.trial_logger import TrialLogger
+
+from carl.context_encoders import *
 
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
-            self,
-            env = None,
-            data_location: str = "carl/envs/rna/learna/data",
-            contexts: Dict[str, Dict] = {},
-            instance_mode: str = "rr",
-            hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT
+        self,
+        env=None,
+        data_location: str = "carl/envs/rna/learna/data",
+        contexts: Dict[str, Dict] = {},
+        instance_mode: str = "rr",
+        hide_context: bool = False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        context_encoder: Optional[ContextEncoder()] = None,
     ):
         """
 
@@ -62,7 +72,8 @@ class CARLRnaDesignEnv(CARLEnv):
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
             scale_context_features=scale_context_features,
-            default_context=default_context
+            default_context=default_context,
+            context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
@@ -78,7 +89,8 @@ class CARLRnaDesignEnv(CARLEnv):
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.env.data_location,
-            target_structure_ids=self.context["target_structure_ids"],)
+            target_structure_ids=self.context["target_structure_ids"],
+        )
         env_config = RnaDesignEnvironmentConfig(
             mutation_threshold=self.context["mutation_threshold"],
             reward_exponent=self.context["reward_exponent"],

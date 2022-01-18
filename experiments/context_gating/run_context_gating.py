@@ -17,7 +17,8 @@ from omegaconf import DictConfig, OmegaConf
 from carl.context_encoders import *
 import torch as th
 
-import pdb
+base_dir = os.getcwd()
+
 
 def get_encoder(cfg) -> ContextEncoder:
     """
@@ -26,16 +27,16 @@ def get_encoder(cfg) -> ContextEncoder:
     model = None
 
     if cfg.encoder.weights is not None:
-        encoder_cls  = eval(cfg.encoder.model)
+        encoder_cls = eval(cfg.encoder.model)
         model = encoder_cls(
-                   cfg.encoder.input_dim,
-                   cfg.encoder.latent_dim,
-                   cfg.encoder.hidden_dim,
-                )
-   
-       # Load the weights of a pre-trained AE
-        model.load_state_dict(th.load(cfg.encoder.weights))
-        
+            cfg.encoder.input_dim,
+            cfg.encoder.latent_dim,
+            cfg.encoder.hidden_dim,
+        )
+
+        # Load the weights of a pre-trained AE
+        model.load_state_dict(th.load(os.path.join(base_dir, cfg.encoder.weights)))
+
     return model
 
 
@@ -71,11 +72,8 @@ def train(cfg: DictConfig):
             ],
         )
         wandb.log({"eval/contexts": eval_table}, step=0)
-    
-    env = EnvCls(
-            contexts=contexts,
-            context_encoder=get_encoder(cfg)
-            )
+
+    env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
     eval_env = EnvCls(contexts=eval_contexts)
     env = coax.wrappers.TrainMonitor(env, name="sac")
     key = jax.random.PRNGKey(cfg.seed)
@@ -108,6 +106,7 @@ def train(cfg: DictConfig):
     coax.utils.dump(func_dict, Path(wandb.run.dir) / "func_dict.pkl.lz4")
 
     return avg_return
+
 
 if __name__ == "__main__":
     train()

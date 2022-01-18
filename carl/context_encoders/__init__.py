@@ -1,4 +1,4 @@
-from .Context_AE import ContextAE
-from .Context_Beta_VAE import ContextBVAE
-from .Context_VAE import ContextVAE
+from .context_ae import ContextAE
+from .context_beta_vae import ContextBVAE
+from .context_vae import ContextVAE
 from .context_encoder import ContextEncoder

@@ -1,0 +1,2 @@
+out_file: "./database/example_60k.npy"
+json_file: "./database/Pendulum/contexts_train.json"

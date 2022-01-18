@@ -16,5 +16,3 @@ class TestInitEnvs(unittest.TestCase):
                 except Exception as e:
                     print(f"Cannot instantiate {var} environment.")
                     raise e
-
-

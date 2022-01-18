@@ -3,9 +3,9 @@ from typing import Union, List
 
 
 def add_gaussian_noise(
-        default_value: Union[float, List[float]],
-        percentage_std: float = 0.01,
-        random_generator: np.random.Generator = None
+    default_value: Union[float, List[float]],
+    percentage_std: float = 0.01,
+    random_generator: np.random.Generator = None,
 ) -> Union[float, List[float]]:
     """
     Add gaussian noise to default value.
@@ -41,16 +41,23 @@ def add_gaussian_noise(
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
+
     seed = 123456
     rng = np.random.default_rng(seed=seed)
     default_value = 10
     default_value = list(np.arange(0, 4))
     percentage_std = 0.01
     n_samples = 1000
-    values = np.array([add_gaussian_noise(
-        default_value=default_value, percentage_std=percentage_std, random_generator=rng) for i in range(n_samples)])
-    plt.close('all')
+    values = np.array(
+        [
+            add_gaussian_noise(
+                default_value=default_value,
+                percentage_std=percentage_std,
+                random_generator=rng,
+            )
+            for i in range(n_samples)
+        ]
+    )
+    plt.close("all")
     plt.hist(values, bins=100)
     plt.show()
-
-
