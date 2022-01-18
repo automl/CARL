@@ -2,6 +2,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt, colors as mplc
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle, Patch
+from pathlib import Path
 
 from experiments.common.eval.plotting_style import set_rc_params
 
@@ -13,8 +14,8 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
 
     modes = ["A", "B", "C"]
     n_protocols = len(modes)
-    fig = plt.figure(figsize=(6, 2), dpi=300)
-    axes = fig.subplots(nrows=1, ncols=n_protocols, sharex=True, sharey=True)
+    fig = plt.figure(figsize=(8, 2), dpi=300)
+    axes = fig.subplots(nrows=1, ncols=n_protocols + 1, sharex=True, sharey=True)
     for i in range(n_protocols):
         ax = axes[i]
         mode = modes[i]
@@ -140,22 +141,30 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
         if i == 0:
             ax.set_ylabel(cf1.name)
         ax.set_title(mode)
+        ax.set_aspect(aspect=5)
+        yticks = [cf1.lower, cf1.mid, cf1.upper]
+        ax.set_yticks(yticks)
 
-        # Legend
-        legend_elements = [
-            Line2D([0], [0], label='Train Contexts', marker='o', color='w', markerfacecolor=color_T,
-                   markeredgecolor=color_T, markersize=10, linewidth=0),
-            Line2D([0], [0], label='Test Contexts', marker='o', color='w', markerfacecolor='w', markeredgecolor=ec_test,
-                   markersize=10, linewidth=0),
-            Patch(label="Interpolation", facecolor=color_I),
-            Patch(label="Combinatorial Interpolation", facecolor=color_IC),
-            Patch(label="Extrapolation (Single Factor)", facecolor=color_ES),
-            Patch(label="Extrapolation (Both Factors)", facecolor=color_EB),
-        ]
+    # Legend
+    legend_elements = [
+        Line2D([0], [0], label='Train Contexts', marker='o', color='w', markerfacecolor=color_T,
+               markeredgecolor=color_T, markersize=8, linewidth=0),
+        Line2D([0], [0], label='Test Contexts', marker='o', color='w', markerfacecolor='w', markeredgecolor=ec_test,
+               markersize=8, linewidth=0),
+        Patch(label="Interpolation", facecolor=color_I),
+        Patch(label="Combinatorial Interpolation", facecolor=color_IC),
+        Patch(label="Extrapolation (Single Factor)", facecolor=color_ES),
+        Patch(label="Extrapolation (Both Factors)", facecolor=color_EB),
+    ]
+    ax = axes[-1]
+    ax.set_axis_off()
+    ax.legend(handles=legend_elements, loc="center", fontsize=8)
 
-        if i == n_protocols - 1:
-            ax.legend(handles=legend_elements)
+    # Adjust spaces for savin plot
+    fig.subplots_adjust(wspace=0.2)
+    fig.savefig(Path("figures") / f"evaluation_protocol_traintest_distributions_seed{seed}.png", dpi=300, bbox_inches="tight")
 
+    # Set tight layout for viewing in IDE
     fig.set_tight_layout(True)
     plt.show()
 
