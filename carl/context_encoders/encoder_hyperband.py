@@ -114,7 +114,7 @@ def main(cfg: DictConfig) -> None:
         with open(os.path.join(iter_dir, "opt.pkl"), "wb") as f:
             pickle.dump(optimizer.state_dict(), f)
 
-        th.save(model.state_dict(), os.path.join(iter_dir, "model.zip"))
+        th.save(model, os.path.join(iter_dir, "model.zip"))
 
         step = step + 1
 

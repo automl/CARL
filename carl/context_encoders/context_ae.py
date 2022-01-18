@@ -83,6 +83,13 @@ class ContextAE(ContextEncoder):
 
         self.decoder = th.nn.Sequential(*modules)
 
+    def _representation_hook(self, inst, inp, out):
+        """
+        Return a hook that returns the representation of the layer.
+        """
+        self.representations = out
+
+    
     def forward(self, x) -> List[th.Tensor]:
         """
         Takes a tensor, or a batch of tensors, passes it through the encoder, 
