@@ -6,9 +6,9 @@ from carl.context_encoders.context_encoder import ContextEncoder
 
 class ContextBVAE(ContextEncoder):
     """
-    Implementation of a Beta-Variational Autoencoder (https://openreview.net/forum?id=Sy2fzU9gl) 
-    that learns to reconstruct a context vector, while optimizing for a factorized distribution 
-    in the latent space, using an adjustable hyperparameter beta that balances latent channel 
+    Implementation of a Beta-Variational Autoencoder (https://openreview.net/forum?id=Sy2fzU9gl)
+    that learns to reconstruct a context vector, while optimizing for a factorized distribution
+    in the latent space, using an adjustable hyperparameter beta that balances latent channel
     capacity and independence constraints with reconstruction accuracy
 
     Structure adapted from: https://github.com/AntixK/PyTorch-VAE
@@ -31,7 +31,7 @@ class ContextBVAE(ContextEncoder):
         Maximum number of iterations to reach the maximum capacity
     loss_type: str
         Loss type to be used for the beta distribution
-    
+
 
     Attributes
     ----------
@@ -42,6 +42,7 @@ class ContextBVAE(ContextEncoder):
     representations: th.Tensor
         Latent representation of the context vector
     """
+
     num_iter = 0  # Global static variable to keep track of iterations
 
     def __init__(
@@ -165,12 +166,12 @@ class ContextBVAE(ContextEncoder):
             Number of samples to be drawn from the latent-space distribution
         current_device: int
             Device to be used for the sampling
-        
+
         Returns
         -------
         th.Tensor
             Samples from the latent-space distribution
-        
+
         """
         z = th.randn(num_samples, self.latent_dim)
 
@@ -188,7 +189,7 @@ class ContextBVAE(ContextEncoder):
 
         # sample the latent vector from this distribution
         z = self.reparameterize(mu, log_var)
-        
+
         return z
 
     def get_encoder(self):

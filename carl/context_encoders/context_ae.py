@@ -29,6 +29,7 @@ class ContextAE(ContextEncoder):
 
 
     """
+
     def __init__(
         self,
         input_dim: int = 5,
@@ -49,7 +50,7 @@ class ContextAE(ContextEncoder):
 
     def _build_network(self) -> None:
         """
-        Builds the encoder and decoder networks 
+        Builds the encoder and decoder networks
         """
         # Make the Encoder
         modules = []
@@ -89,18 +90,17 @@ class ContextAE(ContextEncoder):
         """
         self.representations = out
 
-    
     def forward(self, x) -> List[th.Tensor]:
         """
-        Takes a tensor, or a batch of tensors, passes it through the encoder, 
+        Takes a tensor, or a batch of tensors, passes it through the encoder,
         records a representation, and then decodes the latent representations
-        
+
         Returns
         -------
             recon: th.Tensor
                 Reconstructed context vector
             x: th.Tensor
-                Input context vector            
+                Input context vector
 
         """
 
@@ -135,7 +135,7 @@ class ContextAE(ContextEncoder):
         """
         Get the recorded latent representations of a passed context vector
         """
-                
+
         return self.encode(context)
 
     def get_encoder(self) -> th.nn.Module:
@@ -176,7 +176,7 @@ class ContextAE(ContextEncoder):
         -------
         loss: dict
             Dictionary containing the loss and the loss components
-        
+
         """
         recons = args[0]
         ip = args[1]

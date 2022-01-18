@@ -64,7 +64,6 @@ def train(cfg: DictConfig):
             ],
         )
         wandb.log({"eval/contexts": eval_table}, step=0)
-        
 
     env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
     eval_env = EnvCls(contexts=eval_contexts)

@@ -34,7 +34,7 @@ def main(cfg: DictConfig) -> None:
     dataset = np.load(os.path.join(base_dir, cfg.encoder.context_dataset))
 
     np.random.shuffle(dataset)
-    train_set = dataset[: int(cfg.encoder.split* len(dataset))]
+    train_set = dataset[: int(cfg.encoder.split * len(dataset))]
     val_set = dataset[int(-(1 - cfg.encoder.split) * len(dataset)) :]
 
     # Blackbox objective
@@ -109,33 +109,34 @@ def main(cfg: DictConfig) -> None:
         with open(os.path.join(iter_dir, "losses.pkl"), "wb") as f:
             pickle.dump(losses, f)
 
-
         step = step + 1
 
     # Create a sampling strategy
     strategy = HyperbandSearch(
         real={
             "rate": {
-                "begin": cfg.hyperband.real.rate.begin, 
-                "end": cfg.hyperband.real.rate.end, 
-                "prior": cfg.hyperband.real.rate.prior
+                "begin": cfg.hyperband.real.rate.begin,
+                "end": cfg.hyperband.real.rate.end,
+                "prior": cfg.hyperband.real.rate.prior,
             },
             "decay": {
-                "begin": cfg.hyperband.real.decay.begin, 
-                "end": cfg.hyperband.real.decay.end, 
-                "prior": cfg.hyperband.real.decay.prior
+                "begin": cfg.hyperband.real.decay.begin,
+                "end": cfg.hyperband.real.decay.end,
+                "prior": cfg.hyperband.real.decay.prior,
             },
         },
         integer={
             "batch": {
-                "begin": cfg.hyperband.integer.batch.begin, #
-                "end": cfg.hyperband.integer.batch.end, 
-                "prior": cfg.hyperband.integer.batch.prior}},
-        search_config={
-            "max_resource": cfg.hyperband.search_config.max_resource, 
-            "eta": cfg.hyperband.search_config.eta
+                "begin": cfg.hyperband.integer.batch.begin,  #
+                "end": cfg.hyperband.integer.batch.end,
+                "prior": cfg.hyperband.integer.batch.prior,
+            }
         },
-        seed_id=cfg.hyperband.seed, 
+        search_config={
+            "max_resource": cfg.hyperband.search_config.max_resource,
+            "eta": cfg.hyperband.search_config.eta,
+        },
+        seed_id=cfg.hyperband.seed,
     )
 
     # Generate the configs using the strategy and dump them

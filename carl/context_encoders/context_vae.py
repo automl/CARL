@@ -6,7 +6,7 @@ from carl.context_encoders.context_encoder import ContextEncoder
 
 class ContextVAE(ContextEncoder):
     """
-    Implementation of a Variational Autoencoder (https://arxiv.org/abs/1312.6114) that 
+    Implementation of a Variational Autoencoder (https://arxiv.org/abs/1312.6114) that
     learns to reconstruct a context vector.
 
     Structure adapted from: https://github.com/AntixK/PyTorch-VAE
@@ -29,7 +29,7 @@ class ContextVAE(ContextEncoder):
     representations: th.Tensor
         Latent representation of the context vector
     """
-    
+
     def __init__(
         self, input_dim: int = 5, latent_dim: int = 1, hidden_dims: List = [3]
     ):
@@ -139,7 +139,7 @@ class ContextVAE(ContextEncoder):
             Number of samples to be drawn
         current_device: int
             Device to be used for sampling
-        
+
         Returns
         -------
         th.Tensor
@@ -161,7 +161,7 @@ class ContextVAE(ContextEncoder):
 
         # sample the latent vector from this distribution
         z = self.reparameterize(mu, log_var)
-        
+
         return z
 
     def get_encoder(self) -> th.nn.Module:
@@ -180,7 +180,7 @@ class ContextVAE(ContextEncoder):
         """
         Computes the VAE loss function.
             KL(N(\mu, \sigma), N(0, 1)) = \log \frac{1}{\sigma} + \frac{\sigma^2 + \mu^2}{2} - \frac{1}{2}
-        
+
         Parameters:
         -----------
         *args: list
