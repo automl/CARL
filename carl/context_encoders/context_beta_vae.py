@@ -179,11 +179,17 @@ class ContextBVAE(ContextEncoder):
         samples = self.decode(z)
         return samples
 
-    def get_representation(self):
+    def get_representation(self, context: th.Tensor) -> th.Tensor:
         """
-        Get the recorded latent representations of the encoder
+        Get the recorded latent representations of a passed context vector
         """
-        return self.representations
+        # Get mean and sigma for the latent distribution
+        mu, log_var = self.encode(context)
+
+        # sample the latent vector from this distribution
+        z = self.reparameterize(mu, log_var)
+        
+        return z
 
     def get_encoder(self):
         """

@@ -131,11 +131,12 @@ class ContextAE(ContextEncoder):
         """
         return self.decoder(x)
 
-    def get_representation(self) -> th.Tensor:
+    def get_representation(self, context) -> th.Tensor:
         """
-        Get the recorded latent representations of the encoder
+        Get the recorded latent representations of a passed context vector
         """
-        return self.representations
+                
+        return self.encode(context)
 
     def get_encoder(self) -> th.nn.Module:
         """

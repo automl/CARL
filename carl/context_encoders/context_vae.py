@@ -152,19 +152,25 @@ class ContextVAE(ContextEncoder):
         samples = self.decode(z)
         return samples
 
-    def get_representation(self):
+    def get_representation(self, context: th.Tensor) -> th.Tensor:
         """
         Get the recorded latent representations of the encoder
         """
-        return self.representations
+        # Get mean and sigma for the latent distribution
+        mu, log_var = self.encode(context)
 
-    def get_encoder(self):
+        # sample the latent vector from this distribution
+        z = self.reparameterize(mu, log_var)
+        
+        return z
+
+    def get_encoder(self) -> th.nn.Module:
         """
         Get the encoder module
         """
         return self.encoder
 
-    def get_decoder(self):
+    def get_decoder(self) -> th.nn.Module:
         """
         Get the decoder module
         """

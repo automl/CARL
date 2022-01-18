@@ -459,24 +459,29 @@ class CARLEnv(Wrapper):
                 self.env.observation_space
             )  # make sure it is the same object
 
-    def encode_contexts(self, context_vals):
+    def encode_contexts(
+                    self, 
+                    context_vals: Optional[Union[List, np.array]],
+                ) -> np.array:
         """
         Pass the context values through an encoder
         Parameters
         ----------
         context_vals: np.array
             Context values to encode.
+        
         Returns
         -------
         np.array
             Encoded context values.
         """
 
-        self.context_encoder(th.tensor(context_vals))
-        context_reps = self.context_encoder.get_representation()
+        # Make contexts into a tensor 
+        context_tensor= th.tensor(context_vals)
+        context_reps = self.context_encoder.get_representation(context_tensor)
 
-        # Bit of post-processing to get an array from tensors :)
-
+        # Post-processing to get an array from tensors, irrespective 
+        # of the latent size 
         context_reps = np.array([t.detach().numpy() for t in context_reps])
         context_reps = context_reps.reshape(
             context_reps.shape[0], context_reps.shape[-1]
