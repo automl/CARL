@@ -141,7 +141,10 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
         if i == 0:
             ax.set_ylabel(cf1.name)
         ax.set_title(mode)
-        ax.set_aspect(aspect=5)
+        unit_x = cf0.mid - cf0.lower
+        unit_y = cf1.mid - cf1.lower
+        aspect = unit_x / unit_y
+        ax.set_aspect(aspect=aspect)
         yticks = [cf1.lower, cf1.mid, cf1.upper]
         ax.set_yticks(yticks)
 
