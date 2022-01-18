@@ -9,7 +9,7 @@ import jax
 import numpy as onp
 import wandb
 from carl.context.sampling import sample_contexts
-from experiments.context_gating.algorithms.ddpg import ddpg
+from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.utils import set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
@@ -78,8 +78,8 @@ def train(cfg: DictConfig):
 
     if cfg.algorithm == "sac":
         avg_return = sac(cfg, env, eval_env)
-    elif cfg.algorithm == "ddpg":
-        avg_return = ddpg(cfg, env, eval_env)
+    elif cfg.algorithm == "td3":
+        avg_return = td3(cfg, env, eval_env)
     else:
         raise ValueError(f"Unknown algorithm {cfg.algorithm}")
 

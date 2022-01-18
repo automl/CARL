@@ -6,11 +6,11 @@ import numpy as onp
 import optax
 import wandb
 
-from ..networks.ddpg import pi_func, q_func
+from ..networks.td3 import pi_func, q_func
 from ..utils import dump_func_dict, evaluate, log_wandb
 
 
-def ddpg(cfg, env, eval_env):
+def td3(cfg, env, eval_env):
     func_pi = pi_func(cfg, env)
     func_q = q_func(cfg, env)
 
@@ -73,10 +73,14 @@ def ddpg(cfg, env, eval_env):
                 transition_batch = buffer.sample(batch_size=cfg.batch_size)
 
                 metrics = {"OrnsteinUhlenbeckNoise/sigma": noise.sigma}
-                metrics.update(determ_pg.update(transition_batch))
+
                 qlearning = qlearning1 if jax.random.bernoulli(
                     q1.rng) else qlearning2
                 metrics.update(qlearning.update(transition_batch))
+
+                if env.T >= cfg.warmup_pi_num_frames and env.T % 2 == 0:
+                    metrics.update(determ_pg.update(transition_batch))
+
                 env.record_metrics(metrics)
 
                 # sync target networks
