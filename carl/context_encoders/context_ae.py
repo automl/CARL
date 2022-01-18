@@ -4,11 +4,36 @@ from carl.context_encoders.context_encoder import ContextEncoder
 
 
 class ContextAE(ContextEncoder):
+    """
+    Implementation of an Autoencoder that learns to reconstruct a context vector.
+
+    Structure adapted from: https://github.com/AntixK/PyTorch-VAE
+
+    Parameters
+    ----------
+    input_dim: int
+        Dimensions of the context vector being fed to the Autoencoder
+    latent_dim: int
+        Dimensions of the latent representation of the context vector
+    hidden_dims: List[int]
+        List of hidden dimensions to be used by the encoder and decoder
+
+    Attributes
+    ----------
+    encoder: th.nn.Module
+        Encoder network
+    decoder: th.nn.Module
+        Decoder network
+    representations: th.Tensor
+        Latent representation of the context vector
+
+
+    """
     def __init__(
         self,
         input_dim: int = 5,
         latent_dim: int = 1,
-        hidden_dims: List = [3],
+        hidden_dims: List[int] = [3],
     ):
         super().__init__()
 
@@ -20,10 +45,12 @@ class ContextAE(ContextEncoder):
 
         # Registering
         self.representations = None
-        self.encoder.register_forward_hook(self._representation_hook)
         self.double()
 
     def _build_network(self) -> None:
+        """
+        Builds the encoder and decoder networks 
+        """
         # Make the Encoder
         modules = []
 
@@ -56,30 +83,46 @@ class ContextAE(ContextEncoder):
 
         self.decoder = th.nn.Sequential(*modules)
 
-    def forward(self, x) -> th.Tensor:
+    def forward(self, x) -> List[th.Tensor]:
+        """
+        Takes a tensor, or a batch of tensors, passes it through the encoder, 
+        records a representation, and then decodes the latent representations
+        
+        Returns
+        -------
+            recon: th.Tensor
+                Reconstructed context vector
+            x: th.Tensor
+                Input context vector            
 
-        # Extract representation from the input
+        """
 
-        # Re-create the input
-        return [self.decode(self.encode(x)), x]
+        self.representations = self.encode(x)
+        recon = self.decode(self.representations)
+
+        return [recon, x]
 
     def encode(self, x) -> th.Tensor:
         """
         Pass the tensor through the encoder network
+
+        Parameters
+        ----------
+        x: th.Tensor
+            Input context vector
         """
         return self.encoder(x)
 
     def decode(self, x) -> th.Tensor:
         """
         Pass the tensor through the decoder network
+
+        Parameters
+        ----------
+        x: th.Tensor
+            Latent context vector
         """
         return self.decoder(x)
-
-    def _representation_hook(self, inst, inp, out):
-        """
-        Return a hook that returns the representation of the layer.
-        """
-        self.representations = out
 
     def get_representation(self) -> th.Tensor:
         """
@@ -90,18 +133,42 @@ class ContextAE(ContextEncoder):
     def get_encoder(self) -> th.nn.Module:
         """
         Get the encoder module
+
+        Returns
+        -------
+        encoder: th.nn.Module
+            Encoder module
         """
         return self.encoder
 
     def get_decoder(self) -> th.nn.Module:
         """
         Get the decoder module
+
+        Returns
+        -------
+        decoder: th.nn.Module
+            Decoder module
         """
         return self.decoder
 
     def loss_function(self, *args, **kwargs) -> dict:
         """
-        Calculate the loss the loss
+        Calculate the loss
+
+        Parameters
+        ----------
+        *args: Any
+            Arguments to be passed to the loss function
+
+        **kwargs: Any
+            Keyword arguments to be passed to the loss function
+
+        Returns
+        -------
+        loss: dict
+            Dictionary containing the loss and the loss components
+        
         """
         recons = args[0]
         ip = args[1]

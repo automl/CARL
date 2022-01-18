@@ -5,7 +5,43 @@ from carl.context_encoders.context_encoder import ContextEncoder
 
 
 class ContextBVAE(ContextEncoder):
+    """
+    Implementation of a Beta-Variational Autoencoder (https://openreview.net/forum?id=Sy2fzU9gl) 
+    that learns to reconstruct a context vector, while optimizing for a factorized distribution 
+    in the latent space, using an adjustable hyperparameter beta that balances latent channel 
+    capacity and independence constraints with reconstruction accuracy
 
+    Structure adapted from: https://github.com/AntixK/PyTorch-VAE
+
+    Parameters
+    ----------
+    input_dim: int
+        Dimensions of the context vector being fed to the Autoencoder
+    latent_dim: int
+        Dimensions of the latent representation of the context vector
+    hidden_dims: List[int]
+        List of hidden dimensions to be used by the encoder and decoder
+    beta: int
+        Beta hyperparameter for the beta distribution
+    gamma: float
+        Gamma hyperparameter for the beta distribution
+    max_capacity: int
+        Maximum capacity of the latent channel
+    Capacity_max_iter: int
+        Maximum number of iterations to reach the maximum capacity
+    loss_type: str
+        Loss type to be used for the beta distribution
+    
+
+    Attributes
+    ----------
+    encoder: th.nn.Module
+        Encoder network
+    decoder: th.nn.Module
+        Decoder network
+    representations: th.Tensor
+        Latent representation of the context vector
+    """
     num_iter = 0  # Global static variable to keep track of iterations
 
     def __init__(
@@ -35,10 +71,12 @@ class ContextBVAE(ContextEncoder):
 
         # Registering
         self.representations = None
-        # self.encoder.register_forward_hook(self._representation_hook)
         self.double()
 
     def _build_network(self):
+        """
+        Builds the network
+        """
         # Make the Encoder
         modules = []
 
@@ -76,6 +114,9 @@ class ContextBVAE(ContextEncoder):
         self.decoder = th.nn.Sequential(*modules)
 
     def forward(self, x, **kwargs):
+        """
+        Forward pass of the network
+        """
 
         # Get mean and sigma for the latent distribution
         mu, log_var = self.encode(x)
@@ -116,11 +157,20 @@ class ContextBVAE(ContextEncoder):
 
     def sample(self, num_samples: int, current_device: int = 0, **kwargs) -> th.Tensor:
         """
-        Samples from the latent space and return the corresponding
-        image space map.
-        :param num_samples: (Int) Number of samples
-        :param current_device: (Int) Device to run the model
-        :return: (Tensor)
+        Sample from the latent-space distribution
+
+        Parameters
+        ----------
+        num_samples: int
+            Number of samples to be drawn from the latent-space distribution
+        current_device: int
+            Device to be used for the sampling
+        
+        Returns
+        -------
+        th.Tensor
+            Samples from the latent-space distribution
+        
         """
         z = th.randn(num_samples, self.latent_dim)
 
@@ -128,12 +178,6 @@ class ContextBVAE(ContextEncoder):
 
         samples = self.decode(z)
         return samples
-
-    def _representation_hook(self, inst, inp, out):
-        """
-        Return a hook that returns the representation of the layer.
-        """
-        self.representations = out
 
     def get_representation(self):
         """
@@ -154,6 +198,17 @@ class ContextBVAE(ContextEncoder):
         return self.decoder
 
     def loss_function(self, *args, **kwargs) -> dict:
+        """
+        Loss function for the network
+
+        Parameters
+        ----------
+        *args:
+            Arguments to be passed to the loss function
+        **kwargs:
+            Keyword arguments to be passed to the loss function
+        """
+
         self.num_iter += 1
         recons = args[0]
         ip = args[1]
