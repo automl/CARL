@@ -6,7 +6,7 @@ import optax
 import wandb
 
 from ..networks.sac import pi_func, q_func
-from ..utils import evaluate, log_wandb
+from ..utils import evaluate, log_wandb, dump_func_dict
 
 
 def sac(cfg, env, eval_env):
@@ -86,7 +86,8 @@ def sac(cfg, env, eval_env):
                 metrics = {}
 
                 # flip a coin to decide which of the q-functions to update
-                qlearning = qlearning1 if jax.random.bernoulli(q1.rng) else qlearning2
+                qlearning = qlearning1 if jax.random.bernoulli(
+                    q1.rng) else qlearning2
                 metrics.update(qlearning.update(transition_batch))
 
                 # delayed policy updates
@@ -115,6 +116,7 @@ def sac(cfg, env, eval_env):
         #     wandb.log({"eval/episode": wandb.Video(
         #         gif_path, caption=str(T), fps=30)}, commit=False)
         if env.period(name="evaluate", T_period=cfg.eval_freq):
+            path = dump_func_dict(locals())
             average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
             wandb.log(
                 {
@@ -125,7 +127,4 @@ def sac(cfg, env, eval_env):
             )
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
-    return (
-        {"pi": pi, "q1": q1, "q2": q2, "q1_targ": q1_targ, "q2_targ": q2_targ,},
-        onp.mean(average_returns),
-    )
+    return onp.mean(average_returns)

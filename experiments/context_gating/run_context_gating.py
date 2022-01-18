@@ -47,14 +47,15 @@ def train(cfg: DictConfig):
         eval_table = wandb.Table(
             columns=sorted(eval_contexts[0].keys()),
             data=[
-                [eval_contexts[idx][key] for key in sorted(eval_contexts[idx].keys())]
+                [eval_contexts[idx][key]
+                    for key in sorted(eval_contexts[idx].keys())]
                 for idx in eval_contexts.keys()
             ],
         )
         wandb.log({"eval/contexts": eval_table}, step=0)
     env = EnvCls(contexts=contexts)
     eval_env = EnvCls(contexts=eval_contexts)
-    env = coax.wrappers.TrainMonitor(env, name="sac")
+    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
         key, subkey = jax.random.split(key)
@@ -76,15 +77,14 @@ def train(cfg: DictConfig):
     print(f"Contexts: ", contexts)
 
     if cfg.algorithm == "sac":
-        func_dict, avg_return = sac(cfg, env, eval_env)
+        avg_return = sac(cfg, env, eval_env)
     elif cfg.algorithm == "ddpg":
-        func_dict, avg_return = ddpg(cfg, env, eval_env)
+        avg_return = ddpg(cfg, env, eval_env)
     else:
         raise ValueError(f"Unknown algorithm {cfg.algorithm}")
 
-    coax.utils.dump(func_dict, Path(wandb.run.dir) / "func_dict.pkl.lz4")
-
     return avg_return
+
 
 if __name__ == "__main__":
     train()
