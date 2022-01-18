@@ -14,7 +14,7 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
 
     modes = ["A", "B", "C"]
     n_protocols = len(modes)
-    fig = plt.figure(figsize=(8, 2), dpi=300)
+    fig = plt.figure(figsize=(6, 2), dpi=300)
     axes = fig.subplots(nrows=1, ncols=n_protocols + 1, sharex=True, sharey=True)
     for i in range(n_protocols):
         ax = axes[i]

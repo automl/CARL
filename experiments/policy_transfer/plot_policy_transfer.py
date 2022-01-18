@@ -4,11 +4,11 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, Rectangle
-from experiments.policy_transfer import get_uniform_intervals_exp1
+from experiments.policy_transfer.policy_transfer import get_uniform_intervals_exp1
 
 eval_data_fnames = [
-     "results/experiments/policytransfer/exp0/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data.csv",
-    "results/experiments/policytransfer/exp0/CARLLunarLanderEnv/visible/GRAVITY_Y/eval_data.csv",
+     "/home/benjamin/Dokumente/code/tmp/CARL/src/results/experiments/policytransfer/exp0/CARLLunarLanderEnv/hidden/GRAVITY_Y/eval_data.csv",
+    "/home/benjamin/Dokumente/code/tmp/CARL/src/results/experiments/policytransfer/exp0/CARLLunarLanderEnv/visible/GRAVITY_Y/eval_data.csv",
 ]
 figfname = os.path.join(os.path.commonpath(eval_data_fnames), "policytransfer_hiddenvisible.png")
 sns.set_context("paper")
@@ -42,7 +42,7 @@ if filter_by_ep_length:
 palette = "colorblind"
 hue = 'train_seed'
 hue = 'visibility'
-figsize = (5, 3) if is_exp0 else (5, 3)
+figsize = (6, 2) if is_exp0 else (5, 3)
 dpi = 250
 fig = plt.figure(figsize=figsize, dpi=dpi)
 # ax = fig.add_subplot(111)
@@ -74,10 +74,10 @@ ax = sns.stripplot(
     y="ep_rew_mean",
     ax=ax,
     hue=hue,
-    size=1.5,
-    edgecolors=[0.,0.,0.],
+    size=4,
+    edgecolor=[0.,0.,0.],
     linewidths=0,
-    color='black',
+    color=[0., 0., 0., 1],
     split=True,
     # palette=palette
 )

@@ -203,7 +203,7 @@ if __name__ == '__main__':
     draw_agg_per_region = True
     agg_per_region = "mean"
     plot_train = False
-    plot_hiddenvisible = True
+    plot_hiddenvisible = False
 
     results = gather_ep_results(path=path)
     
@@ -268,7 +268,7 @@ if __name__ == '__main__':
         print("Draw!")
         # Create figure
         if not plot_hiddenvisible:
-            figsize = (9, 3) if draw_agg_per_region else (18, 6)
+            figsize = (6, 2) if draw_agg_per_region else (18, 6)
             fig = plt.figure(figsize=figsize, dpi=300)
             nrows = 1
             axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
@@ -425,6 +425,12 @@ if __name__ == '__main__':
             if i == 0:
                 ax.set_ylabel(cf1.name)
             ax.set_title(mode)
+
+            # if plot_hiddenvisible:
+            #     unit_x = cf0.mid - cf0.lower
+            #     unit_y = cf1.mid - cf1.lower
+            #     aspect = unit_x / unit_y
+            #     ax.set_aspect(aspect=aspect, adjustable="box")
 
         if not plot_hiddenvisible:
             fig.set_tight_layout(True)
