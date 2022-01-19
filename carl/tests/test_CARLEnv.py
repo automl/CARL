@@ -158,15 +158,11 @@ class TestStateConstruction(unittest.TestCase):
         }
 
         # Build the encoder from saved weights
-        encoder = ContextAE(5, 1, [3])
-        encoder.load_state_dict(
-            th.load(
-                os.path.join(
-                    os.getcwd(),
-                    "../context_encoders/saved_models/AE/Pendulum/model.zip",
-                )
-            )
-        )
+        modelpath = os.path.join(
+                        os.getcwd(),
+                        "../context_encoders/saved_models/AE/Pendulum/model.zip",
+                    )
+        encoder = th.load(modelpath)
 
         # Pass the encoder to the environment with visible contexts
         env = CARLPendulumEnv(
