@@ -1,40 +1,38 @@
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
-from carl.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, RnaDesignEnvironmentConfig
+from carl.envs.rna.learna.src.learna.environment import (
+    RnaDesignEnvironment,
+    RnaDesignEnvironmentConfig,
+)
 import numpy as np
 from typing import Optional, Dict
 from gym import spaces
 from carl.utils.trial_logger import TrialLogger
 
-DEFAULT_CONTEXT = {
-    "mutation_threshold": 5,
-    "reward_exponent": 1,
-    "state_radius": 5,
-    "dataset": "eterna",
-    "target_structure_ids": None
-}
+from carl.envs.rna.carl_rna_definitions import (
+    DEFAULT_CONTEXT,
+    ACTION_SPACE,
+    OBSERVATION_SPACE,
+)
+from carl.utils.trial_logger import TrialLogger
 
-CONTEXT_BOUNDS = {
-    "mutation_threshold": (0.1, np.inf, float),
-    "reward_exponent": (0.1, np.inf, float),
-    "state_radius": (1, np.inf, float),
-    "dataset": ("eterna", "rfam_taneda", None),
-    "target_structure_ids": (0, np.inf, [list, int]) #This is conditional on the dataset (and also a list)
-}
+from carl.context_encoders import ContextEncoder
+
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
-            self,
-            env = None,
-            data_location: str = "carl/envs/rna/learna/data",
-            contexts: Dict[str, Dict] = {},
-            instance_mode: str = "rr",
-            hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        self,
+        env=None,
+        data_location: str = "carl/envs/rna/learna/data",
+        contexts: Dict[str, Dict] = {},
+        instance_mode: str = "rr",
+        hide_context: bool = False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 
@@ -60,8 +58,8 @@ class CARLRnaDesignEnv(CARLEnv):
                 target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
-        env.action_space = spaces.Discrete(4)
-        env.observation_space = spaces.Box(low=-np.inf*np.ones(11), high=np.inf*np.ones(11))
+        env.action_space = ACTION_SPACE
+        env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
         # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
@@ -77,6 +75,7 @@ class CARLRnaDesignEnv(CARLEnv):
             logger=logger,
             scale_context_features=scale_context_features,
             default_context=default_context,
+            context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
@@ -92,7 +91,8 @@ class CARLRnaDesignEnv(CARLEnv):
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.env.data_location,
-            target_structure_ids=self.context["target_structure_ids"],)
+            target_structure_ids=self.context["target_structure_ids"],
+        )
         env_config = RnaDesignEnvironmentConfig(
             mutation_threshold=self.context["mutation_threshold"],
             reward_exponent=self.context["reward_exponent"],

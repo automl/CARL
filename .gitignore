@@ -10,5 +10,8 @@
 tmp/
 slurm.sh
 carl/runscripts/generated
-carl/slurmout
-carl/results
+docs/html
+docs/apidoc
+outputs/
+*.egg
+*.egg-info/

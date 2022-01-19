@@ -1,4 +1,6 @@
-# The CARL Benchmark Library
+<img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
+
+# – The Benchmark Library
 CARL (context adaptive RL) provides highly configurable contextual extensions
 to several well-known RL environments. 
 It's designed to test your agent's generalization capabilities
@@ -25,6 +27,8 @@ Benchmarks include:
   constraints with structures from different datasets to choose from
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
+
+For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
    
 
 ## Installation
@@ -59,27 +63,6 @@ cd carl/envs/rna/learna
 make requirements
 make data
 ```
-In case you want to run our experiments or use our training files, also install the experiment dependencies:
-```bash
-pip install -e .[experiments]
-```
-## Train an Agent
-To get started with CARL, you can use our 'train.py' script.
-It will train a PPO agent on the environment of your choice
-with custom context variations that are sampled from a standard 
-deviation. 
-
-To use MetaCartPole with variations in gravity and friction by 20% 
-compared to the default, run:
-```bash
-python train.py 
---env CARLCartPoleEnv 
---context_args gravity friction
---default_sample_std_percentage 0.2
---outdir <result_location>
-```
-You can use the plotting scripts in src/eval to view the results.
-
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
 
@@ -102,6 +85,8 @@ If you use CARL in your research, please cite our paper on the benchmark:
   month = dec
 }
 ```
+
+You can find the code and experiments for this paper in the `neurips_ecorl_workshop_2021` branch.
 
 ## References
 [OpenAI gym, Brockman et al., 2016. arXiv preprint arXiv:1606.01540](https://arxiv.org/pdf/1606.01540.pdf)

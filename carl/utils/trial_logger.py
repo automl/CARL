@@ -41,14 +41,14 @@ class TrialLogger(object):
         - train/policy_gradient_loss
         - train/value_loss
     """
+
     def __init__(
-            self,
-            logdir: Union[str, Path],
-            parser: configargparse.ArgParser,
-            trial_setup_args: argparse.Namespace,
-            add_agent_seed_to_logdir: bool = True,
-            add_context_feature_names_to_logdir: bool = False,
-            init_sb3_tensorboard: bool = True,
+        self,
+        logdir: Union[str, Path],
+        parser: configargparse.ArgParser,
+        trial_setup_args: argparse.Namespace,
+        add_context_feature_names_to_logdir: bool = False,
+        init_sb3_tensorboard: bool = True,
     ):
         """
 
@@ -68,8 +68,6 @@ class TrialLogger(object):
         trial_setup_args: argparse.Namespace
             Parsed arguments from parser. Arguments are supposed to be parsed before in case
             new arguments are added via some external logic.
-        add_agent_seed_to_logdir: bool, True
-            Logdir: logdir/{agent}_{seed}/
         add_context_feature_names_to_logdir: bool, False
             See logdir for effect.
 
@@ -79,17 +77,17 @@ class TrialLogger(object):
         agent = trial_setup_args.agent
         if add_context_feature_names_to_logdir:
             context_feature_args = trial_setup_args.context_feature_args
-            names = [n for n in context_feature_args if "std" not in n and "mean" not in n]  # TODO make sure to exclude numbers
+            names = [
+                n for n in context_feature_args if "std" not in n and "mean" not in n
+            ]  # TODO make sure to exclude numbers
             context_feature_dirname = "default"
             if names:
-                context_feature_dirname = names[0] if len(names) == 1 else "__".join(names)
-            self.logdir = Path(logdir) / context_feature_dirname
+                context_feature_dirname = (
+                    names[0] if len(names) == 1 else "__".join(names)
+                )
+            self.logdir = Path(logdir) / context_feature_dirname / f"{agent}_{seed}"
         else:
-            self.logdir = Path(logdir)
-
-        if add_agent_seed_to_logdir:
-            self.logdir = self.logdir / f"{agent}_{seed}"
-
+            self.logdir = Path(logdir) / f"{agent}_{seed}"
         self.logdir.mkdir(parents=True, exist_ok=True)
 
         self.trial_setup_args = trial_setup_args
@@ -113,7 +111,9 @@ class TrialLogger(object):
 
         """
         output_file_paths = [str(self.trial_setup_fn)]
-        self.parser.write_config_file(parsed_namespace=self.trial_setup_args, output_file_paths=output_file_paths)
+        self.parser.write_config_file(
+            parsed_namespace=self.trial_setup_args, output_file_paths=output_file_paths
+        )
 
     def write_context(self, episode: int, step: int, context: Dict[Any, Any]):
         """
@@ -153,8 +153,5 @@ class TrialLogger(object):
             sep=",",
             header=write_header,
             index=False,
-            mode=mode
+            mode=mode,
         )
-
-
-

@@ -1,0 +1,5 @@
+Context Feature,Default,Bounds
+level_index,0,"(None, None, 'categorical', array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13]))"
+noise,None *,"(-1.0, 1.0, <class 'float'>)"
+mario_state,0,"(None, None, 'categorical', [0, 1, 2])"
+mario_inertia,0.89,"(0.5, 1.5, <class 'float'>)"

@@ -4,6 +4,7 @@ from typing import Optional, Dict, List
 from gym.envs.classic_control import AcrobotEnv
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "link_length_1": 1,  # should be seen as 100% default and scaled
@@ -13,39 +14,61 @@ DEFAULT_CONTEXT = {
     "link_com_1": 0.5,  # Percentage of the length of link one
     "link_com_2": 0.5,  # Percentage of the length of link one
     "link_moi": 1,  # should be seen as 100% default and scaled
-    "max_velocity_1": 4*np.pi,
-    "max_velocity_2": 9*np.pi,
-    "torque_noise_max": 0.,  # optional noise on torque, sampled uniformly from [-torque_noise_max, torque_noise_max]
+    "max_velocity_1": 4 * np.pi,
+    "max_velocity_2": 9 * np.pi,
+    "torque_noise_max": 0.0,  # optional noise on torque, sampled uniformly from [-torque_noise_max, torque_noise_max]
 }
 
 CONTEXT_BOUNDS = {
-    "link_length_1": (0.1, 10, float),  # Links can be shrunken and grown by a factor of 10
+    "link_length_1": (
+        0.1,
+        10,
+        float,
+    ),  # Links can be shrunken and grown by a factor of 10
     "link_length_2": (0.1, 10, float),
-    "link_mass_1": (0.1, 10, float),  # Link mass can be shrunken and grown by a factor of 10
+    "link_mass_1": (
+        0.1,
+        10,
+        float,
+    ),  # Link mass can be shrunken and grown by a factor of 10
     "link_mass_2": (0.1, 10, float),
     "link_com_1": (0, 1, float),  # Center of mass can move from one end to the other
     "link_com_2": (0, 1, float),
-    "link_moi": (0.1, 10, float),  # Moments on inertia can be shrunken and grown by a factor of 10
-    "max_velocity_1": (0.4*np.pi, 40*np.pi, float),  # Velocity can vary by a factor of 10 in either direction
-    "max_velocity_2": (0.9*np.pi, 90*np.pi, float),
-    "torque_noise_max": (-1., 1., float)  # torque is either {-1., 0., 1}. Applying noise of 1. would be quite extreme
+    "link_moi": (
+        0.1,
+        10,
+        float,
+    ),  # Moments on inertia can be shrunken and grown by a factor of 10
+    "max_velocity_1": (
+        0.4 * np.pi,
+        40 * np.pi,
+        float,
+    ),  # Velocity can vary by a factor of 10 in either direction
+    "max_velocity_2": (0.9 * np.pi, 90 * np.pi, float),
+    "torque_noise_max": (
+        -1.0,
+        1.0,
+        float,
+    ),  # torque is either {-1., 0., 1}. Applying noise of 1. would be quite extreme
 }
 
 
 class CARLAcrobotEnv(CARLEnv):
     def __init__(
-            self,
-            env: gym.Env = AcrobotEnv(),
-            contexts: Dict[str, Dict] = {},
-            instance_mode: str = "rr",
-            hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
-            state_context_features: Optional[List[str]] = None,
+        self,
+        env: gym.Env = AcrobotEnv(),
+        contexts: Dict[str, Dict] = {},
+        instance_mode: str = "rr",
+        hide_context: bool = False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
+        state_context_features: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
@@ -61,8 +84,12 @@ class CARLAcrobotEnv(CARLEnv):
             default_context=default_context,
             max_episode_length=max_episode_length,
             state_context_features=state_context_features,
+            dict_observation_space=dict_observation_space,
+            context_encoder=context_encoder,
         )
-        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
+        self.whitelist_gaussian_noise = list(
+            DEFAULT_CONTEXT.keys()
+        )  # allow to augment all values
 
     def _update_context(self):
         self.env.LINK_LENGTH_1 = self.context["link_length_1"]
@@ -76,7 +103,9 @@ class CARLAcrobotEnv(CARLEnv):
         self.env.MAX_VEL_2 = self.context["max_velocity_2"]
         self.env.torque_noise_max = self.context["torque_noise_max"]
 
-        high = np.array([1.0, 1.0, 1.0, 1.0, self.env.MAX_VEL_1, self.env.MAX_VEL_2], dtype=np.float32)
+        high = np.array(
+            [1.0, 1.0, 1.0, 1.0, self.env.MAX_VEL_1, self.env.MAX_VEL_2],
+            dtype=np.float32,
+        )
         low = -high
         self.build_observation_space(low, high, CONTEXT_BOUNDS)
-

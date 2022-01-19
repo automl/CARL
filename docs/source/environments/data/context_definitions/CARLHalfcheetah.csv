@@ -1,0 +1,7 @@
+Context Feature,Default,Bounds
+joint_stiffness,15000.0,"(1, inf, <class 'float'>)"
+gravity,-9.8,"(-inf, -0.1, <class 'float'>)"
+friction,0.6,"(-inf, inf, <class 'float'>)"
+angular_damping,-0.05,"(-inf, inf, <class 'float'>)"
+joint_angular_damping,20.0,"(0, inf, <class 'float'>)"
+torso_mass,9.457333,"(0.1, inf, <class 'float'>)"

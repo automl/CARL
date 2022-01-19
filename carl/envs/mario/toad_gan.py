@@ -71,6 +71,7 @@ def load_generator(level_index: int):
         token_list=token_list,
     )
 
+
 def generate_level(
     width: int,
     height: int,
@@ -91,7 +92,9 @@ def generate_level(
             initial_noise=initial_noise
         )
         if filter_unplayable and tries < 100:
-            _, playable = reachability_map(level, shape=(height, width), check_outside=True)
+            _, playable = reachability_map(
+                level, shape=(height, width), check_outside=True
+            )
         else:
             playable = True
     assert level

@@ -1,0 +1,5 @@
+# @package _global_
+group: hidden_context
+
+carl:
+  hide_context: true

@@ -71,7 +71,7 @@ class MarioEnv(gym.Env):
         self.current_level_idx = 0
         self.frame_size = -1
         self.port = get_port()
-        self.mario_state: Literal[0, 1, 2] = 0 # normal, large, fire
+        self.mario_state: Literal[0, 1, 2] = 0  # normal, large, fire
         self.mario_inertia = 0.89
         self._init_game()
 
@@ -164,7 +164,10 @@ class MarioEnv(gym.Env):
 
     def _init_game(self):
         self.gateway = JavaGateway(
-            gateway_parameters=GatewayParameters(port=self.port, eager_load=True,)
+            gateway_parameters=GatewayParameters(
+                port=self.port,
+                eager_load=True,
+            )
         )
         self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
