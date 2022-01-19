@@ -1,6 +1,6 @@
 # @package _global_
 
-algorithm: ddpg
+algorithm: td3
 
 noise_kwargs:
   mu: 0.0
@@ -12,3 +12,7 @@ gamma: 0.98
 pi_targ_tau: 0.001
 replay_capacity: 200000
 warmup_num_frames: 10000
+warmup_pi_num_frames: 15000
+
+context_branch:
+  width: 512

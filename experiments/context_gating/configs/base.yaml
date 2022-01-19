@@ -12,7 +12,7 @@ carl:
   dict_observation_space: false
   scale_context_features: "no" # by_mean, by_default
   state_context_features: null
-  add_gaussian_noise_to_context: true
+  add_gaussian_noise_to_context: false
   instance_mode: rr
   gaussian_noise_std_percentage: 0.15
 
@@ -22,7 +22,7 @@ seed: 0
 group: null
 
 env: CARLPendulumEnv
-max_num_frames: 1000000
+max_num_frames: 500000
 n_step: 5
 gamma: 0.9
 alpha: 0.2
@@ -33,10 +33,12 @@ warmup_num_frames: 5000
 pi_warmup_num_frames: 7500
 pi_update_freq: 4
 
+
 replay_capacity: 100000
 render_freq: 10000
 eval_freq: 10000
 eval_episodes: ${contexts.num_contexts}
+eval_on_train_context: true
 
 zero_context: false # set context to zero
 state_context: false # set context to state feature subset

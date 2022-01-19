@@ -1,27 +1,37 @@
+from multiprocessing import Process
+
 import coax
+import jax
 import numpy as onp
 import optax
 import wandb
 
-from ..networks.ddpg import pi_func, q_func
-from ..utils import evaluate, log_wandb
+from ..networks.td3 import pi_func, q_func
+from ..utils import dump_func_dict, evaluate, log_wandb
 
 
-def ddpg(cfg, env, eval_env):
+def td3(cfg, env, eval_env):
     func_pi = pi_func(cfg, env)
     func_q = q_func(cfg, env)
 
     # main function approximators
     pi = coax.Policy(func_pi, env, random_seed=cfg.seed)
-    q = coax.Q(
+    q1 = coax.Q(
         func_q,
         env,
         action_preprocessor=pi.proba_dist.preprocess_variate,
         random_seed=cfg.seed,
     )
+    q2 = coax.Q(
+        func_q,
+        env,
+        action_preprocessor=pi.proba_dist.preprocess_variate,
+        random_seed=cfg.seed + 1,
+    )
 
     # target network
-    q_targ = q.copy()
+    q1_targ = q1.copy()
+    q2_targ = q2.copy()
     pi_targ = pi.copy()
 
     # experience tracer
@@ -30,15 +40,14 @@ def ddpg(cfg, env, eval_env):
         capacity=cfg.replay_capacity, random_seed=cfg.seed
     )
 
-    qlearning = coax.td_learning.QLearning(
-        q,
-        pi_targ,
-        q_targ,
-        loss_function=coax.value_losses.mse,
-        optimizer=optax.adam(cfg.learning_rate),
-    )
+    qlearning1 = coax.td_learning.ClippedDoubleQLearning(
+        q1, pi_targ_list=[pi_targ], q_targ_list=[q1_targ, q2_targ],
+        loss_function=coax.value_losses.mse, optimizer=optax.adam(cfg.learning_rate))
+    qlearning2 = coax.td_learning.ClippedDoubleQLearning(
+        q2, pi_targ_list=[pi_targ], q_targ_list=[q1_targ, q2_targ],
+        loss_function=coax.value_losses.mse, optimizer=optax.adam(cfg.learning_rate))
     determ_pg = coax.policy_objectives.DeterministicPG(
-        pi, q_targ, optimizer=optax.adam(cfg.learning_rate)
+        pi, q1_targ, optimizer=optax.adam(cfg.learning_rate / 10.0)
     )
 
     # action noise
@@ -64,19 +73,25 @@ def ddpg(cfg, env, eval_env):
                 transition_batch = buffer.sample(batch_size=cfg.batch_size)
 
                 metrics = {"OrnsteinUhlenbeckNoise/sigma": noise.sigma}
-                metrics.update(determ_pg.update(transition_batch))
+
+                qlearning = qlearning1 if jax.random.bernoulli(
+                    q1.rng) else qlearning2
                 metrics.update(qlearning.update(transition_batch))
+
+                if env.T >= cfg.warmup_pi_num_frames and env.T % 2 == 0:
+                    metrics.update(determ_pg.update(transition_batch))
+
                 env.record_metrics(metrics)
 
                 # sync target networks
-                q_targ.soft_update(q, tau=cfg.q_targ_tau)
+                q1_targ.soft_update(q1, tau=cfg.q_targ_tau)
+                q2_targ.soft_update(q2, tau=cfg.q_targ_tau)
                 pi_targ.soft_update(pi, tau=cfg.pi_targ_tau)
 
             if done:
                 break
 
             s = s_next
-
         # if env.period(name='generate_gif', T_period=cfg.render_freq) and env.T > cfg.q_warmup_num_frames:
         #     T = env.T - env.T % cfg.render_freq  # round
         #     gif_path = f"{os.getcwd()}/gifs/T{T:08d}.gif"
@@ -85,6 +100,7 @@ def ddpg(cfg, env, eval_env):
         #     wandb.log({"eval/episode": wandb.Video(
         #         gif_path, caption=str(T), fps=30)}, commit=False)
         if env.period(name="evaluate", T_period=cfg.eval_freq):
+            path = dump_func_dict(locals())
             average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
             wandb.log(
                 {
@@ -95,8 +111,4 @@ def ddpg(cfg, env, eval_env):
             )
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
-    return {
-        "pi": pi,
-        "q": q,
-        "q_targ": q_targ,
-    }, onp.mean(average_returns)
+    return onp.mean(average_returns)

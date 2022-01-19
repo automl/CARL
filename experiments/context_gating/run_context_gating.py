@@ -9,7 +9,7 @@ import jax
 import numpy as onp
 import wandb
 from carl.context.sampling import sample_contexts
-from experiments.context_gating.algorithms.ddpg import ddpg
+from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.utils import set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
@@ -34,6 +34,8 @@ def get_encoder(cfg) -> ContextEncoder:
 
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
+    if cfg.carl.hide_context and cfg.carl.state_context_features:
+        return
     wandb.init(
         mode="offline" if cfg.debug else None,
         project="carl",
@@ -46,7 +48,10 @@ def train(cfg: DictConfig):
 
     EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
     contexts = sample_contexts(cfg.env, **cfg.contexts)
-    eval_contexts = sample_contexts(cfg.env, **cfg.contexts)
+    if cfg.eval_on_train_context:
+        eval_contexts = contexts
+    else:
+        eval_contexts = sample_contexts(cfg.env, **cfg.contexts)
     if contexts:
         table = wandb.Table(
             columns=sorted(contexts[0].keys()),
@@ -59,7 +64,8 @@ def train(cfg: DictConfig):
         eval_table = wandb.Table(
             columns=sorted(eval_contexts[0].keys()),
             data=[
-                [eval_contexts[idx][key] for key in sorted(eval_contexts[idx].keys())]
+                [eval_contexts[idx][key]
+                    for key in sorted(eval_contexts[idx].keys())]
                 for idx in eval_contexts.keys()
             ],
         )
@@ -67,7 +73,7 @@ def train(cfg: DictConfig):
 
     env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
     eval_env = EnvCls(contexts=eval_contexts)
-    env = coax.wrappers.TrainMonitor(env, name="sac")
+    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
         key, subkey = jax.random.split(key)
@@ -89,13 +95,11 @@ def train(cfg: DictConfig):
     print(f"Contexts: ", contexts)
 
     if cfg.algorithm == "sac":
-        func_dict, avg_return = sac(cfg, env, eval_env)
-    elif cfg.algorithm == "ddpg":
-        func_dict, avg_return = ddpg(cfg, env, eval_env)
+        avg_return = sac(cfg, env, eval_env)
+    elif cfg.algorithm == "td3":
+        avg_return = td3(cfg, env, eval_env)
     else:
         raise ValueError(f"Unknown algorithm {cfg.algorithm}")
-
-    coax.utils.dump(func_dict, Path(wandb.run.dir) / "func_dict.pkl.lz4")
 
     return avg_return
 
