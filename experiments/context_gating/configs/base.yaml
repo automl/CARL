@@ -2,6 +2,11 @@ defaults:
   - slurm
   - _self_
 
+encoder:
+  weights: null
+  model: ContextAE
+  
+
 carl:
   hide_context: false
   dict_observation_space: false

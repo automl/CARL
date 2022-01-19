@@ -14,6 +14,23 @@ from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.utils import set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
 
+from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
+import torch as th
+
+base_dir = os.getcwd()
+
+
+def get_encoder(cfg) -> ContextEncoder:
+    """
+    Loads the state dict of an already trained autoencoder.
+    """
+    model = None
+
+    if cfg.encoder.weights is not None:
+        model = th.load(os.path.join(base_dir, cfg.encoder.weights))
+
+    return model
+
 
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
@@ -53,7 +70,8 @@ def train(cfg: DictConfig):
             ],
         )
         wandb.log({"eval/contexts": eval_table}, step=0)
-    env = EnvCls(contexts=contexts)
+
+    env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
     eval_env = EnvCls(contexts=eval_contexts)
     env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
     key = jax.random.PRNGKey(cfg.seed)

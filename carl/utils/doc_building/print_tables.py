@@ -1,4 +1,4 @@
-if __name__ == '__main__':
+if __name__ == "__main__":
     import numpy as np
     from typing import List
     from carl.envs import *
@@ -8,8 +8,7 @@ if __name__ == '__main__':
     import seaborn as sns
     import pandas as pd
 
-
-    def plot_context_feature_freq(context_feature_names: List[str], fname: str =""):
+    def plot_context_feature_freq(context_feature_names: List[str], fname: str = ""):
         filter_cf_names = True
         if filter_cf_names:
             aliases = {
@@ -22,7 +21,7 @@ if __name__ == '__main__':
                 "velocity": ["velocity", "speed"],
                 "torque": ["torque"],
                 "damping": ["damping"],
-                "friction": ["friction"]
+                "friction": ["friction"],
             }
             cfs = []
             for cf in context_feature_names:
@@ -30,8 +29,15 @@ if __name__ == '__main__':
                 for alias, alias_values in aliases.items():
                     longs = [a for a in alias_values if len(a) > 2]
                     shorts = [a for a in alias_values if len(a) <= 2]
-                    if np.any([a in cf for a in longs]) \
-                            or np.any([cf == a or cf[-len(a):] == a or cf[:len(a)+1] == a + "_" or cf == a for a in shorts]):
+                    if np.any([a in cf for a in longs]) or np.any(
+                        [
+                            cf == a
+                            or cf[-len(a) :] == a
+                            or cf[: len(a) + 1] == a + "_"
+                            or cf == a
+                            for a in shorts
+                        ]
+                    ):
                         cf = alias
                 cfs.append(cf)
 
@@ -56,17 +62,25 @@ if __name__ == '__main__':
         fig = plt.figure(figsize=(5, 7), dpi=200)
         ax = fig.add_subplot(111)
         ax.barh(cf_names_unique, counts)
-        ax.set_yticklabels(cf_names_unique, ha='right', fontsize=8)
-        ax.set_title(f"Context Feature Frequency (lazily filtered, $n = {np.sum(counts_orig)}$)", fontsize=10)
+        ax.set_yticklabels(cf_names_unique, ha="right", fontsize=8)
+        ax.set_title(
+            f"Context Feature Frequency (lazily filtered, $n = {np.sum(counts_orig)}$)",
+            fontsize=10,
+        )
         ax.grid(axis="x", which="both")
 
         if filter_single_occurrences:
-            text = "Single occurrences:\n" + "\n".join([f"{cf}" for cf in cf_names_single_occurrences])
-            at2 = AnchoredText(text,
-                               loc='lower right', prop=dict(size=8), frameon=False,
-                               # bbox_to_anchor=(0., 1.),
-                               # bbox_transform=ax.transAxes
-                               )
+            text = "Single occurrences:\n" + "\n".join(
+                [f"{cf}" for cf in cf_names_single_occurrences]
+            )
+            at2 = AnchoredText(
+                text,
+                loc="lower right",
+                prop=dict(size=8),
+                frameon=False,
+                # bbox_to_anchor=(0., 1.),
+                # bbox_transform=ax.transAxes
+            )
             at2.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
             ax.add_artist(at2)
 
@@ -77,9 +91,10 @@ if __name__ == '__main__':
 
         plt.show()
 
-
     global_vars = vars()
-    vars = {k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k}
+    vars = {
+        k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k
+    }
     env_names = [n for n in vars.keys() if "bounds" not in n and "defaults" not in n]
     env_context_feature_names = {}
 
@@ -137,12 +152,15 @@ if __name__ == '__main__':
         index_names=True,
         float_format="{:0.2f}".format,
         bold_rows=bold_rows,
-        caption=("Context Features: Defaults and Bounds", "Context Features: Defaults and bounds for each environment."),
+        caption=(
+            "Context Features: Defaults and Bounds",
+            "Context Features: Defaults and bounds for each environment.",
+        ),
         label="tab:context_features_defaults_bounds",
         # position="c",?
     )
     df_cf_defbounds_fname = "utils/context_features_defaults_bounds.tex"
-    with open(df_cf_defbounds_fname, 'w') as file:
+    with open(df_cf_defbounds_fname, "w") as file:
         file.write(table_str)
 
     for env_name, df in zip(env_names, dfs):
@@ -157,17 +175,19 @@ if __name__ == '__main__':
             float_format="{:0.2f}".format,
             bold_rows=bold_rows,
             caption=(
-                f"{env_name}",#: Context Features with Defaults, Bounds and Types",
-                f"{env_name}",#: Context Features with Defaults, Bounds and Types"
+                f"{env_name}",  #: Context Features with Defaults, Bounds and Types",
+                f"{env_name}",  #: Context Features with Defaults, Bounds and Types"
             ),
             label=f"tab:context_features_defaults_bounds_{env_name}",
             # position="c",?
         )
         table_str = table_str.replace("{table}", "{subtable}")
-        table_str = table_str.replace(r"\begin{subtable}", r"\begin{subtable}{0.4\textwidth}")
+        table_str = table_str.replace(
+            r"\begin{subtable}", r"\begin{subtable}{0.4\textwidth}"
+        )
         # print(table_str)
         fname = f"utils/context_features_defaults_bounds_{env_name}.tex"
-        with open(fname, 'w') as file:
+        with open(fname, "w") as file:
             file.write(table_str)
 
     # plot_context_feature_freq(context_feature_names=context_feature_names, fname="utils/context_feature_freq.png")
@@ -175,7 +195,7 @@ if __name__ == '__main__':
         fig = plt.figure(figsize=(5, 7), dpi=200)
         ax = fig.add_subplot(111)
         ax.barh(env_names, n_context_features)
-        ax.set_yticklabels(env_names, ha='right', fontsize=8)
+        ax.set_yticklabels(env_names, ha="right", fontsize=8)
         ax.set_title(f"TODO", fontsize=10)
         ax.grid(axis="x", which="both")
 
@@ -185,7 +205,6 @@ if __name__ == '__main__':
             fig.savefig(fname, bbox_inches="tight")
 
         plt.show()
-
 
     # collect size of state space
     calc_new = False
@@ -201,14 +220,74 @@ if __name__ == '__main__':
             action_space_sizes.append(action_space.shape)
             print(env_name, state.shape)
     else:
-        env_names = ['CARLMountainCarEnv', 'CARLPendulumEnv', 'CARLAcrobotEnv', 'CARLCartPoleEnv', 'CARLMountainCarContinuousEnv', 'CARLLunarLanderEnv', 'CARLVehicleRacingEnv', 'CARLBipedalWalkerEnv', 'CARLAnt', 'CARLHalfcheetah', 'CARLHumanoid', 'CARLFetch', 'CARLGrasp', 'CARLUr5e']
+        env_names = [
+            "CARLMountainCarEnv",
+            "CARLPendulumEnv",
+            "CARLAcrobotEnv",
+            "CARLCartPoleEnv",
+            "CARLMountainCarContinuousEnv",
+            "CARLLunarLanderEnv",
+            "CARLVehicleRacingEnv",
+            "CARLBipedalWalkerEnv",
+            "CARLAnt",
+            "CARLHalfcheetah",
+            "CARLHumanoid",
+            "CARLFetch",
+            "CARLGrasp",
+            "CARLUr5e",
+        ]
 
         # hide_context = False
-        state_space_sizes = [(13,), (8,),  (15,),  (10,),  (12,), (24,), (96, 96, 3), (44,), (94,), (29,), (304,), (110,), (141,), (75,)]
+        state_space_sizes = [
+            (13,),
+            (8,),
+            (15,),
+            (10,),
+            (12,),
+            (24,),
+            (96, 96, 3),
+            (44,),
+            (94,),
+            (29,),
+            (304,),
+            (110,),
+            (141,),
+            (75,),
+        ]
         # hide_context = True
-        state_space_sizes = [(2,),  (3,), (6,), (4,), (2,), (8,), (96, 96, 3), (24,), (87,), (23,), (299,), (101,), (132,), (66,)]  #, (11,), (64, 64, 3)]
+        state_space_sizes = [
+            (2,),
+            (3,),
+            (6,),
+            (4,),
+            (2,),
+            (8,),
+            (96, 96, 3),
+            (24,),
+            (87,),
+            (23,),
+            (299,),
+            (101,),
+            (132,),
+            (66,),
+        ]  # , (11,), (64, 64, 3)]
 
-        action_space_sizes = [(3,), (1,), (3,), (2,), (1,), (4,), (3,), (4,), (8,), (6,), (17,), (10,), (19,), (6,)]
+        action_space_sizes = [
+            (3,),
+            (1,),
+            (3,),
+            (2,),
+            (1,),
+            (4,),
+            (3,),
+            (4,),
+            (8,),
+            (6,),
+            (17,),
+            (10,),
+            (19,),
+            (6,),
+        ]
 
     fname = "utils/env_statistics.png"
 
@@ -216,7 +295,13 @@ if __name__ == '__main__':
     n_context_features.append(5)
     state_space_sizes.append((11,))
     action_space_sizes.append((8,))  # 2 types with 4 actions
-    env_context_feature_names["CARLRnaDesignEnv"] = ['mutation_threshold', 'reward_exponent', 'state_radius', 'dataset', 'target_structure_ids']
+    env_context_feature_names["CARLRnaDesignEnv"] = [
+        "mutation_threshold",
+        "reward_exponent",
+        "state_radius",
+        "dataset",
+        "target_structure_ids",
+    ]
 
     env_names.append("CARLMarioEnv")
     n_context_features.append(3)
@@ -252,9 +337,3 @@ if __name__ == '__main__':
     fig.set_tight_layout(True)
 
     plt.show()
-
-
-
-
-
-

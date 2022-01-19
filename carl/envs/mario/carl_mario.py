@@ -2,11 +2,17 @@ from typing import Dict, List, Optional
 
 import gym
 
-from carl.envs.mario.carl_mario_definitions import INITIAL_WIDTH, INITIAL_HEIGHT, DEFAULT_CONTEXT
+from carl.envs.mario.carl_mario_definitions import (
+    INITIAL_WIDTH,
+    INITIAL_HEIGHT,
+    DEFAULT_CONTEXT,
+)
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+
+from carl.context_encoders import ContextEncoder
 
 
 class CARLMarioEnv(CARLEnv):
@@ -23,6 +29,7 @@ class CARLMarioEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
@@ -36,7 +43,8 @@ class CARLMarioEnv(CARLEnv):
             logger=logger,
             scale_context_features="no",
             default_context=default_context,
-            dict_observation_space=dict_observation_space
+            dict_observation_space=dict_observation_space,
+            context_encoder=context_encoder,
         )
         self.levels = []
         self._update_context()
@@ -62,4 +70,3 @@ class CARLMarioEnv(CARLEnv):
             self.logger.write_context(
                 self.episode_counter, self.total_timestep_counter, loggable_context
             )
-
