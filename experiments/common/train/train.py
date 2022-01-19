@@ -34,7 +34,7 @@ importlib.reload(experiments.common.train.trial_logger)
 from experiments.common.train.trial_logger import TrialLogger
 
 from carl.context.sampling import sample_contexts
-from carl.utils.hyperparameter_processing import preprocess_hyperparams
+from experiments.common.train.hyperparameter_processing import preprocess_hyperparams
 from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
 from carl.utils.json_utils import lazy_json_dump
