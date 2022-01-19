@@ -19,7 +19,7 @@ import stable_baselines3
 from stable_baselines3.common.vec_env import DummyVecEnv
 
 from experiments.common.train.train import get_env
-from carl.utils.json_utils import lazy_json_load
+from experiments.common.utils.json_utils import lazy_json_load
 from experiments.common.train.eval_policy import evaluate_policy
 
 

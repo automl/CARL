@@ -37,7 +37,7 @@ from carl.context.sampling import sample_contexts
 from experiments.common.train.hyperparameter_processing import preprocess_hyperparams
 from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
-from carl.utils.json_utils import lazy_json_dump
+from experiments.common.utils.json_utils import lazy_json_dump
 from experiments.evaluation_protocol.evaluation_protocol_utils import get_train_contexts
 
 
