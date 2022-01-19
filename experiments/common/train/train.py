@@ -22,6 +22,7 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EveryNTimesteps, CheckpointCallback
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.common.logger import configure
 
 # from classic_control import CARLMountainCarEnv
 # importlib.reload(classic_control.meta_mountaincar)
@@ -449,10 +450,13 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         args.outdir,
         parser=parser,
         trial_setup_args=args,
-        add_agent_seed_to_logdir=not args.dont_add_agentseed_to_logdir,
         add_context_feature_names_to_logdir=args.add_context_feature_names_to_logdir,
-        init_sb3_tensorboard=False  # set to False if using SubprocVecEnv
     )
+    init_sb3_tensorboard = False
+    sb_loggers = ["stdout", "csv"]
+    if init_sb3_tensorboard:
+        sb_loggers.append("tensorboard")
+    stable_baselines_logger = configure(str(logger.logdir), sb_loggers)
 
     # Get Hyperparameters
     hyperparams, env_wrapper, normalize_kwargs, schedule_kwargs = set_hps(
