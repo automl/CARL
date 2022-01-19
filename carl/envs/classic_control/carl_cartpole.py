@@ -3,7 +3,7 @@ import numpy as np
 from typing import Optional, Dict, List
 from gym.envs.classic_control import CartPoleEnv
 from carl.envs.carl_env import CARLEnv
-from experiments.common.train.trial_logger import TrialLogger
+from carl.utils.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "gravity": 9.8,

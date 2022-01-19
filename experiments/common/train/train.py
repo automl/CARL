@@ -29,9 +29,9 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 import carl.envs
 from carl.envs.carl_env import CARLEnv
 
-import experiments.common.train.trial_logger
-importlib.reload(experiments.common.train.trial_logger)
-from experiments.common.train.trial_logger import TrialLogger
+import carl.utils.trial_logger
+importlib.reload(carl.utils.trial_logger)
+from carl.utils.trial_logger import TrialLogger
 
 from carl.context.sampling import sample_contexts
 from experiments.common.train.hyperparameter_processing import preprocess_hyperparams

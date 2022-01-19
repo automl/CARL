@@ -4,7 +4,7 @@ from carl.envs.rna.learna.src.learna.environment import RnaDesignEnvironment, Rn
 import numpy as np
 from typing import Optional, Dict
 from gym import spaces
-from experiments.common.train.trial_logger import TrialLogger
+from carl.utils.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "mutation_threshold": 5,

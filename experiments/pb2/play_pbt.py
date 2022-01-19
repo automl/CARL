@@ -10,9 +10,9 @@ from functools import partial
 from carl.context.sampling import sample_contexts
 
 import importlib
-import experiments.common.train.trial_logger
-importlib.reload(experiments.common.train.trial_logger)
-from experiments.common.train.trial_logger import TrialLogger
+import carl.utils.trial_logger
+importlib.reload(carl.utils.trial_logger)
+from carl.utils.trial_logger import TrialLogger
 
 def setup_agent(config, outdir, parser, args):
     env_wrapper = None

@@ -20,7 +20,7 @@ from smac.facade.smac_mf_facade import SMAC4MF
 from smac.scenario.scenario import Scenario
 
 from experiments.common.train.train import get_parser, main
-from experiments.common.train.trial_logger import TrialLogger
+from carl.utils.trial_logger import TrialLogger
 
 
 def carl_from_cfg(cfg, seed, budget, parser, args):
