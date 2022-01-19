@@ -4,8 +4,6 @@ import argparse
 import configargparse
 import pandas as pd
 
-from stable_baselines3.common.logger import configure
-
 
 class TrialLogger(object):
     """
@@ -48,7 +46,6 @@ class TrialLogger(object):
         parser: configargparse.ArgParser,
         trial_setup_args: argparse.Namespace,
         add_context_feature_names_to_logdir: bool = False,
-        init_sb3_tensorboard: bool = True,
     ):
         """
 
@@ -95,11 +92,6 @@ class TrialLogger(object):
 
         self.context_history_fn = self.logdir / "context_history.csv"
         self.prepared_context_history_file = False
-
-        sb_loggers = ["stdout", "csv"]
-        if init_sb3_tensorboard:
-            sb_loggers.append("tensorboard")
-        self.stable_baselines_logger = configure(str(self.logdir), sb_loggers)
 
     def write_trial_setup(self):
         """
