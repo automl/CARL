@@ -1,10 +1,9 @@
 # Preprocessing from stable baselines zoo
 # Source: https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/utils/exp_manager.py
-import sys
-from carl.utils.rl_baselines3_zoo.utils.utils import get_wrapper_class, linear_schedule
-from carl.utils.rl_baselines3_zoo.utils.exp_manager import ExperimentManager
+from experiments.common.utils.rl_baselines3_zoo.utils.utils import get_wrapper_class
+from experiments.common.utils.rl_baselines3_zoo.utils.exp_manager import ExperimentManager
 from typing import Any, Dict
-from torch import nn as nn
+
 
 def preprocess_hyperparams(hyperparams: Dict[str, Any]):
     # Convert schedule strings to objects
