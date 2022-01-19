@@ -38,7 +38,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from functools import partial
 import configparser
 
-from carl.train import get_parser, main
+from experiments.common.train.train import get_parser, main
 from carl.context.sampling import get_default_context_and_bounds
 from carl.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv
 from carl.envs.box2d.carl_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE

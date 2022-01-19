@@ -172,7 +172,7 @@ def get_parser() -> configargparse.ArgumentParser:
         "--hp_file",
         type=str,
         default=os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             "../experiments/common/train/hyperparameters/ppo.yml")),
+                                             "hyperparameters/ppo.yml")),
         help="YML file with hyperparameter",
     )
 
@@ -299,7 +299,7 @@ def set_hps(
         if env_name == "CARLPendulumEnv":
             hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(
                 hp_fn=os.path.join(os.path.dirname(__file__),
-                                   "../experiments/common/train/hyperparameters/ddpg.yml"), env_name=env_name)
+                                   "hyperparameters/ddpg.yml"), env_name=env_name)
 
         hyperparams["n_envs"] = 1
 

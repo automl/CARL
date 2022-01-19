@@ -19,7 +19,7 @@ from smac.configspace import ConfigurationSpace, Configuration
 from smac.facade.smac_mf_facade import SMAC4MF
 from smac.scenario.scenario import Scenario
 
-from carl.train import get_parser, main
+from experiments.common.train.train import get_parser, main
 from experiments.common.train.trial_logger import TrialLogger
 
 

@@ -1,4 +1,4 @@
-from carl.train import get_parser, main
+from experiments.common.train.train import get_parser, main
 if __name__ == '__main__':
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()

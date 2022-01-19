@@ -19,7 +19,7 @@ from stable_baselines3 import DDPG, PPO, A2C, DQN
 from functools import partial
 import configparser
 
-from carl.train import get_parser
+from experiments.common.train.train import get_parser
 from carl.context.sampling import sample_contexts
 from carl.envs import *
 

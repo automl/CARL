@@ -3,8 +3,6 @@ import sys
 # sys.path.append(os.path.dirname(os.getcwd()))
 # sys.path.append(os.getcwd())
 from functools import partial
-import numpy as np
-import yaml
 from pathlib import Path
 
 import ray
@@ -15,9 +13,7 @@ from stable_baselines3 import PPO, DDPG
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import VecNormalize
 
-from carl.utils.hyperparameter_processing import preprocess_hyperparams
-from carl.train import get_parser
-from carl.context.sampling import sample_contexts
+from experiments.common.train.train import get_parser
 
 
 def setup_model(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
@@ -34,7 +30,6 @@ def setup_model(env, num_envs, hide_context, context_feature_args, default_sampl
     #        default_sample_std_percentage=default_sample_std_percentage
     #    )
     env_logger = None
-    from carl.envs import *
     EnvCls = partial(
         eval(env),
         # contexts=contexts,
