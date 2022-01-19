@@ -11,7 +11,7 @@ import wandb
 from carl.context.sampling import sample_contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
-from experiments.context_gating.utils import set_seed_everywhere
+from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
@@ -34,7 +34,9 @@ def get_encoder(cfg) -> ContextEncoder:
 
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
-    if cfg.carl.hide_context and cfg.carl.state_context_features:
+    dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
+    if cfg.carl.hide_context and cfg.carl.state_context_features or check_wandb_exists(dict_cfg):
+        print(f"Skipping run with cfg {dict_cfg}")
         return
     wandb.init(
         mode="offline" if cfg.debug else None,
@@ -42,7 +44,7 @@ def train(cfg: DictConfig):
         entity="tnt",
         group=cfg.group,
         dir=os.getcwd(),
-        config=OmegaConf.to_container(cfg, resolve=True, enum_to_str=True),
+        config=dict_cfg,
     )
     set_seed_everywhere(cfg.seed)
 

@@ -49,8 +49,44 @@ def log_wandb(train_monitor_env: coax.wrappers.TrainMonitor):
     }
 
     if train_monitor_env._ep_actions:
-        metrics["train/actions"] = wandb.Histogram(train_monitor_env._ep_actions.values)
+        metrics["train/actions"] = wandb.Histogram(
+            train_monitor_env._ep_actions.values)
     if train_monitor_env._ep_metrics and not train_monitor_env.tensorboard_write_all:
         for k, (x, n) in train_monitor_env._ep_metrics.items():
             metrics[str(k)] = float(x) / n
     wandb.log(metrics, step=train_monitor_env.T)
+
+
+def check_wandb_exists(cfg):
+
+    ignore_fields = ["encoder"]
+    query_config = {}
+    for key, value in cfg.items():
+        if key in ignore_fields:
+            continue
+        if isinstance(value, (list, tuple)):
+            raise ValueError('list and tuple not supported in query')
+
+        query_config[key] = value
+
+    query_config_wandb = {"config.{}".format(
+        key): value for key, value in query_config.items()}
+
+    query_wandb = {
+        'state': 'finished',
+        **query_config_wandb
+    }
+    print(query_wandb)
+
+    api = wandb.Api()
+    cls_runs = api.runs("tnt/carl", query_wandb)
+
+    found_run = False
+    for run in cls_runs:
+        episode = run.summary['train/episode'] if 'train/episode' in run.summary else -1
+        if episode != 2488:
+            # run not completed
+            continue
+        found_run = True
+
+    return found_run
