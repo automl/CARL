@@ -1,0 +1,231 @@
+#Hyperparameters for Classic Control, Box2D and walker tasks from baselines zoo
+#Source: https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/hyperparams/ppo.yml
+
+CARLPendulumEnv:
+  n_envs: 8
+  n_timesteps: !!float 2e6
+  policy: 'MlpPolicy'
+  n_steps: 2048
+  batch_size: 64
+  gae_lambda: 0.95
+  gamma: 0.99
+  n_epochs: 10
+  ent_coef: 0.0
+  learning_rate: !!float 3e-4
+  clip_range: 0.2
+
+CARLCartPoleEnv:
+  n_envs: 8
+  n_timesteps: !!float 1e5
+  policy: 'MlpPolicy'
+  n_steps: 32
+  batch_size: 256
+  gae_lambda: 0.8
+  gamma: 0.98
+  n_epochs: 20
+  ent_coef: 0.0
+  learning_rate: lin_0.001
+  clip_range: lin_0.2
+
+CARLMountainCarEnv:
+  normalize: true
+  n_envs: 16
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  n_steps: 16
+  gae_lambda: 0.98
+  gamma: 0.99
+  n_epochs: 4
+  ent_coef: 0.0
+
+CARLMountainCarContinuousEnv:
+  normalize: true
+  n_envs: 1
+  n_timesteps: !!float 20000
+  policy: 'MlpPolicy'
+  batch_size: 256
+  n_steps: 8
+  gamma: 0.9999
+  learning_rate: !!float 7.77e-05
+  ent_coef: 0.00429
+  clip_range: 0.1
+  n_epochs: 10
+  gae_lambda: 0.9
+  max_grad_norm: 5
+  vf_coef: 0.19
+  use_sde: True
+  policy_kwargs: "dict(log_std_init=-3.29, ortho_init=False)"
+
+CARLAcrobotEnv:
+  normalize: true
+  n_envs: 16
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  n_steps: 256
+  gae_lambda: 0.94
+  gamma: 0.99
+  n_epochs: 4
+  ent_coef: 0.0
+
+CARLBipedalWalkerEnv:
+  normalize: true
+  n_envs: 16
+  n_timesteps: !!float 5e6
+  policy: 'MlpPolicy'
+  n_steps: 2048
+  batch_size: 64
+  gae_lambda: 0.95
+  gamma: 0.99
+  n_epochs: 10
+  ent_coef: 0.001
+  learning_rate: !!float 2.5e-4
+  clip_range: 0.2
+
+CARLLunarLanderEnv:
+  n_envs: 16
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  n_steps: 1024
+  batch_size: 64
+  gae_lambda: 0.98
+  gamma: 0.999
+  n_epochs: 4
+  ent_coef: 0.01
+
+
+CARLVehicleRacingEnv:
+  env_wrapper:
+    - gym.wrappers.resize_observation.ResizeObservation:
+        shape: 64
+    - gym.wrappers.gray_scale_observation.GrayScaleObservation:
+        keep_dim: true
+  frame_stack: 4
+  n_envs: 8
+  n_timesteps: !!float 1e6
+  policy: 'CnnPolicy'
+  batch_size: 128
+  n_steps: 512
+  gamma: 0.99
+  gae_lambda: 0.9
+  n_epochs: 20
+  ent_coef: 0.0
+  sde_sample_freq: 4
+  max_grad_norm: 0.5
+  vf_coef: 0.5
+  learning_rate: !!float 3e-5
+  use_sde: True
+  clip_range: 0.4
+  policy_kwargs: "dict(log_std_init=-2,
+                       ortho_init=False,
+                       )"
+
+CARLHalfcheetah: &pybullet-defaults
+  env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
+  normalize: true
+  n_envs: 16
+  n_timesteps: !!float 2e6
+  policy: 'MlpPolicy'
+  batch_size: 128
+  n_steps: 512
+  gamma: 0.99
+  gae_lambda: 0.9
+  n_epochs: 20
+  ent_coef: 0.0
+  sde_sample_freq: 4
+  max_grad_norm: 0.5
+  vf_coef: 0.5
+  learning_rate: !!float 3e-5
+  use_sde: True
+  clip_range: 0.4
+  policy_kwargs: "dict(log_std_init=-2,
+                       ortho_init=False,
+                       activation_fn=nn.ReLU,
+                       net_arch=[dict(pi=[256, 256], vf=[256, 256])]
+                       )"
+
+CARLAnt:
+  <<: *pybullet-defaults
+  env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
+  learning_rate: !!float 3e-5
+  policy_kwargs: "dict(log_std_init=-1,
+                       ortho_init=False,
+                       activation_fn=nn.ReLU,
+                       net_arch=[dict(pi=[256, 256], vf=[256, 256])]
+                       )"
+
+CARLGrasp:
+  env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
+  normalize: true
+  n_envs: 8
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  batch_size: 64
+  n_steps: 512
+  gamma: 0.99
+  gae_lambda: 0.9
+  n_epochs: 20
+  ent_coef: 0.0
+  sde_sample_freq: 4
+  max_grad_norm: 0.5
+  vf_coef: 0.5
+  learning_rate: !!float 3e-5
+  use_sde: True
+  clip_range: lin_0.4
+  policy_kwargs: "dict(log_std_init=-2.7,
+                       ortho_init=False,
+                       activation_fn=nn.ReLU,
+                       net_arch=[dict(pi=[256, 256], vf=[256, 256])]
+                       )"
+
+CARLFetch:
+    env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
+    normalize: true
+    n_envs: 8
+    n_timesteps: !!float 1e6
+    policy: 'MlpPolicy'
+    batch_size: 64
+    n_steps: 512
+    gamma: 0.99
+    gae_lambda: 0.9
+    n_epochs: 20
+    ent_coef: 0.0
+    sde_sample_freq: 4
+    max_grad_norm: 0.5
+    vf_coef: 0.5
+    learning_rate: !!float 3e-5
+    use_sde: True
+    clip_range: lin_0.4
+    policy_kwargs: "dict(log_std_init=-2.7,
+                         ortho_init=False,
+                         activation_fn=nn.ReLU,
+                         net_arch=[dict(pi=[256, 256], vf=[256, 256])]
+                         )"
+
+CARLHumanoid:
+  normalize: true
+  n_envs: 8
+  n_timesteps: !!float 1e7
+  policy: 'MlpPolicy'
+  n_steps: 2048
+  batch_size: 64
+  gae_lambda: 0.95
+  gamma: 0.99
+  n_epochs: 10
+  ent_coef: 0.0
+  learning_rate: 2.5e-4
+  clip_range: 0.2
+
+CARLMarioEnv:
+  normalize: false
+  env_wrapper:
+    - stable_baselines3.common.atari_wrappers.NoopResetEnv
+  policy: 'CnnPolicy'
+  n_envs: 8
+  n_steps: 128
+  n_epochs: 4
+  batch_size: 256
+  n_timesteps: !!float 1e7
+  learning_rate: lin_2.5e-4
+  clip_range: lin_0.1
+  vf_coef: 0.5
+  ent_coef: 0.01

@@ -1,0 +1,10 @@
+defaults:
+  - override hydra/launcher: submitit_slurm
+hydra:
+  launcher:
+    partition: ${env:HYDRA_SLURM_PARTITION,gpu_normal}
+    mem_gb: 64
+    cpus_per_task: 16
+    timeout_min: 1440
+  job:
+    name: searlAnt

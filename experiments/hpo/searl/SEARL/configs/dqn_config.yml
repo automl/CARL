@@ -1,0 +1,49 @@
+dqn:
+  optimizer:                    'adam'
+  lr_actor:                     0.0001
+  rm_capacity:                  1000000
+  batch_size:                   128
+  gamma:                        0.99
+  soft_update:                  True
+
+  num_frames:                   1000000
+  replay_initial:               10000
+  start_timesteps:              5000
+  eval_episodes:                10
+
+  eval_freq:                    10000
+
+  reset_target:                 False
+  recreate_optim:               False
+  min_eval_steps:               250
+
+seed:
+  numpy:                        123
+  torch:                        123
+  env:                          123
+
+env:
+  name:                         'PongNoFrameskip-v4' # 'FreewayNoFrameskip-v4', 'EnduroNoFrameskip-v4', 'BoxingNoFrameskip-v4', 'RoadRunnerNoFrameskip-v4',
+
+expt:
+  project_name:                 'searl'
+  session_name:                 'baseline'
+  experiment_name:              'default_dqn'
+
+support:
+  save_models:                   False
+
+actor:
+  channel_size:       [32, 64, 64]
+  kernal_size:        [8, 4, 3]
+  stride_size:        [4, 2, 1]
+  hidden_size:        [128]
+  num_atoms:          51
+  Vmin:               -10
+  Vmax:               10
+  mlp_activation:     "relu"
+  cnn_activation:     "relu"
+  layer_norm:         False
+
+
+

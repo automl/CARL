@@ -18,8 +18,8 @@ DEFAULT_CONTEXT = {
     "gravity": 0.0025,  # unit?
     "start_position": -0.5,
     "start_position_std": 0.1,
-    "start_velocity": 0.0,
-    "start_velocity_std": 0.0,
+    "start_velocity": 0.,
+    "start_velocity_std": 0.1,
     # "min_position_start": -0.6,
     # "max_position_start": -0.4,
     # "min_velocity_start": 0.,
@@ -54,9 +54,9 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         # self.max_velocity_start = 0.
         self.position_start = -0.5
         self.position_start_std = 0.1
-        self.velocity_start = 0.0
-        self.velocity_start_std = 0.0
-
+        self.velocity_start = 0.
+        self.velocity_start_std = 0.1
+        
     def reset_state(self):
         return np.array(
             [

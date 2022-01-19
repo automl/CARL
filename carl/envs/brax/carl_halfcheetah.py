@@ -47,6 +47,7 @@ class CARLHalfcheetah(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_encoder: Optional[ContextEncoder] = None,
+        max_episode_length: int = 1000,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(
@@ -65,6 +66,7 @@ class CARLHalfcheetah(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
+            max_episode_length=max_episode_length,
             dict_observation_space=dict_observation_space,
             context_encoder=context_encoder,
         )

@@ -6,6 +6,8 @@ from carl.envs.rna.learna.src.learna.environment import (
 )
 import numpy as np
 from typing import Optional, Dict
+from gym import spaces
+from carl.utils.trial_logger import TrialLogger
 
 from carl.envs.rna.carl_rna_definitions import (
     DEFAULT_CONTEXT,

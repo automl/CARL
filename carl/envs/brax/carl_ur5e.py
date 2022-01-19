@@ -53,6 +53,7 @@ class CARLUr5e(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_encoder: Optional[ContextEncoder] = None,
+        max_episode_length: int = 1000,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(
@@ -73,6 +74,7 @@ class CARLUr5e(CARLEnv):
             state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
             context_encoder=context_encoder,
+            max_episode_length=max_episode_length,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
