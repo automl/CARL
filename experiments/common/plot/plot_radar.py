@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from experiments.common.eval.plotting import radar_factory
+from experiments.common.plot.plotting import radar_factory
 
 env_context_feature_names = {
     'CARLMountainCarEnv': ['force',

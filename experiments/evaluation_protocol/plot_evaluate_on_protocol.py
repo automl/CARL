@@ -12,7 +12,7 @@ import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
-from experiments.common.eval.plotting_style import set_rc_params
+from experiments.common.plot.plotting_style import set_rc_params
 
 from experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_contexts_LUT, \
     read_ep_contexts_LUT, gather_ep_results

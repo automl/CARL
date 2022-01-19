@@ -4,7 +4,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle, Patch
 from pathlib import Path
 
-from experiments.common.eval.plotting_style import set_rc_params
+from experiments.common.plot.plotting_style import set_rc_params
 
 from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol, ContextFeature
 
