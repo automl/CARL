@@ -5,18 +5,19 @@ from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtrans
 import seaborn as sns
+import pandas as pd
 
 from experiments.common.eval.gather_data import gather_results
 
 
 if __name__ == '__main__':
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
-    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLMountainCarEnv"
+    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLMountainCarEnv"
     # # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/box2d/CARLBipedalWalkerEnv"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
-    path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
-    path = "/home/benjamin/Dokumente/code/tmp/CARL/carl/results/rerun/base_vs_context/brax/CARLHalfcheetah"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
+    # path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
+    # path = "/home/benjamin/Dokumente/code/tmp/CARL/carl/results/rerun/base_vs_context/brax/CARLHalfcheetah"
     results = gather_results(path=path)
     # results2 = gather_results(path=path2)
     # results = pd.concat([results, results2])
@@ -51,7 +52,7 @@ if __name__ == '__main__':
         if plot_across_contextfeatures:
             figsize = (10, 3)
     labelfontsize = 12
-    titlefontsize = 12
+    titlefontsize = 12 if not plot_across_contextfeatures else 10
     ticklabelsize = 10
     legendfontsize = 10
 
@@ -112,7 +113,7 @@ if __name__ == '__main__':
             # sort along number of context features
             ids = np.array([x for x, y in sorted(enumerate(group_ids), key=lambda x: x[1].count(","))])
             group_ids = np.array(group_ids)[ids]
-            group_dfs = np.array(group_dfs)[ids]
+            group_dfs = [df for i, df in enumerate(group_dfs) if i in ids]
         for i, (group_id, group_df) in enumerate(zip(group_ids, group_dfs)):
             if type(axes) == list or type(axes) == np.ndarray:
                 ax = axes[i]
@@ -204,5 +205,6 @@ if __name__ == '__main__':
 
         fig_fn = f"evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
         fig_ffn = Path(path) / fig_fn
-        # fig.savefig(fig_ffn, bbox_inches="tight")
+        fig.savefig(fig_ffn, bbox_inches="tight")
+        print("saved at", fig_ffn)
         plt.show()
