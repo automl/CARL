@@ -74,7 +74,7 @@ def train(cfg: DictConfig):
         wandb.log({"eval/contexts": eval_table}, step=0)
 
     env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
-    eval_env = EnvCls(contexts=eval_contexts)
+    eval_env = EnvCls(contexts=eval_contexts, context_encoder=get_encoder(cfg))
     env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
