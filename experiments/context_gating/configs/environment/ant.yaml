@@ -1,3 +1,8 @@
 # @package _global_
 
 env: CARLAnt
+
+batch_size: 256
+replay_capacity: 1000000
+eval_episodes: 10
+eval_freq: 50000
