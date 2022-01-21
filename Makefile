@@ -85,7 +85,7 @@ clean: clean-doc clean-build
 
 # Build a distribution in ./dist
 build:
-	$(PYTHON) setup.py bdist
+	$(PYTHON) setup.py sdist
 
 doc:
 	$(MAKE) -C ${DOCDIR} all
