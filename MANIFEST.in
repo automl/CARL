@@ -1,6 +1,8 @@
 include LICENSE
 include carl/py.typed
 
+prune test*
+
 # Sprites for Mario
-recursive-include carl/envs/mario/sprites
+include carl/envs/mario/sprites/*
 
