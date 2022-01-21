@@ -24,8 +24,7 @@ env:
 
   # Arguments used for pytest
   pytest-args: >-
-    --timeout=300
-    -s
+    --durations=10  # Show 10 slowest tests
 
   # Arguments used for code-cov which is later used to annotate PR's on github
   code-cov-args: >-
