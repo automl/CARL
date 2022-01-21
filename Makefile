@@ -4,7 +4,7 @@
 # These have been configured to only really run short tasks. Longer form tasks
 # are usually completed in github actions.
 
-.PHONY: help install-dev clean clean-doc clean-build test build doc publish
+.PHONY: help install-dev check format pre-commit clean build clean-doc clean-build test doc publish
 
 help:
 	@echo "Makefile CARL"
@@ -14,9 +14,8 @@ help:
 	@echo "* pre-commit       to run the pre-commit check"
 	@echo "* clean            to clean the dist and doc build files"
 	@echo "* build            to build a dist"
+	@echo "* test             to run the tests"
 	@echo "* doc              to generate and view the html files"
-	@echo "* linkcheck        to check the documentation links"
-	@echo "* examples         to run and generate the examples"
 	@echo "* publish          to help publish the current branch to pypi"
 
 PYTHON ?= python
@@ -31,7 +30,6 @@ PYDOCSTYLE ?= pydocstyle
 MYPY ?= mypy
 PRECOMMIT ?= pre-commit
 FLAKE8 ?= flake8
-PYTEST ?= pytest
 
 DIR := ${CURDIR}
 DIST := ${CURDIR}/dist
