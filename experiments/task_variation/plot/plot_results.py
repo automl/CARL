@@ -4,109 +4,25 @@ import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Optional, Any
+from typing import Optional, Any, Dict, Union
 import matplotlib as mpl
 import numpy as np
 from experiments.common.plot.plotting_style import set_rc_params
 
-if __name__ == "__main__":
-    experiment = "hidden_vs_visible"
 
-    experiment_settings = {
-        "compounding": {
-            "filters": {
-                "group": "hidden_context",
-                "state": "finished"
-            },
-            "config_entries": {
-                "group",
-                "contexts.context_feature_args",
-                "carl.state_context_features",
-                "contexts.default_sample_std_percentage",
-            },
-            "plotting": {
-                "xname": "_step",
-                "yname": "eval/return",
-                "hue": "contexts.context_feature_args",
-                "legendtitle": "Varying Context Feature",
-                "xlabel": "step",
-                "ylabel": "mean reward",
-                "group": None,  # "contexts.default_sample_std_percentage"
-            }
-        },
-        "hidden_vs_visible": {
-            "filters": {
-                "contexts.default_sample_std_percentage": {"$in": [0.5]},
-                "group": {"$in": ["hidden_context", "concat_context"]},
-                "state": "finished"
-            },
-            "config_entries": {
-                "group",
-                "contexts.context_feature_args",
-                "carl.state_context_features",
-                "contexts.default_sample_std_percentage",
-            },
-            "plotting": {
-                "xname": "_step",
-                "yname": "eval/return",
-                "hue": "group",
-                "legendtitle": "Visibility",
-                "xlabel": "step",
-                "ylabel": "mean reward",
-                "group": "contexts.context_feature_args",
-            }
-        },
-        "task_variation": {
-            "filters": {
-                "group": {"$in": ["hidden_context", "concat_context"]},
-                "state": "finished"
-            },
-            "config_entries": {
-                "group",
-                "contexts.context_feature_args",
-                "carl.state_context_features",
-                "contexts.default_sample_std_percentage",
-            },
-            "plotting": {
-                "xname": "_step",
-                "yname": "eval/return",
-                "hue": "contexts.context_feature_args",
-                "legendtitle": "Varying Context Feature",
-                "xlabel": "step",
-                "ylabel": "mean reward\nacross contexts $\mathcal{C}_{train}$",
-                "group": ["group", "contexts.default_sample_std_percentage"],
-                "xticks": [0, 250_000, 500_000],
-                "xticklabels": ["0", "250k", "500k"]
-            }
-        },
-        "context_gating": {
-            "filters": {
-                "config.carl.gaussian_noise_std_percentage": {"$in": [0.4]},
-                "config.carl.scale_context_features": "no",
-                "state": "finished",
-            },
-            "config_entries": {
-                "group",
-                "contexts.context_feature_args",
-                "carl.state_context_features",
-                "contexts.default_sample_std_percentage",
-            }
+def load_data(experiment_setting: Dict, df_fname: Union[str, Path], reload_data: bool = False, groups: Optional[Dict] = None):
+    if groups is None:
+        groups = {
+            "hidden_context": "hidden",
+            "concat_context": "concat",
+            "context_gating": "gating",
         }
-    }
-    metrics = ["eval/return"]
-    groups = {
-        "hidden_context": "hidden",
-        "concat_context": "concat",
-        "context_gating": "gating",
-    }
-
-    df_fname = Path(".") / f"data_{experiment}.csv"
-
-    if not df_fname.is_file():
+    df_fname = Path(df_fname)
+    if not df_fname.is_file() or reload_data:
         df_fname.parent.mkdir(parents=True, exist_ok=True)
 
-        filters = experiment_settings[experiment]["filters"]
-        config_entries = experiment_settings[experiment]["config_entries"]
+        filters = experiment_setting["filters"]
+        config_entries = experiment_setting["config_entries"]
 
         api = wandb.Api()
         runs = api.runs(
@@ -114,7 +30,6 @@ if __name__ == "__main__":
             filters=filters
         )
         dfs = []
-
         runs = list(runs)
         for run in tqdm(runs):
             df = pd.DataFrame()
@@ -140,6 +55,142 @@ if __name__ == "__main__":
     else:
         df = pd.read_csv(df_fname)
 
+    return df
+
+
+def set_legend(
+        fig,
+        ax,
+        legendtitle: Optional[str] = None,
+        legendfontsize: Optional[int] = None,
+        ncols: Optional[int] = None
+):
+    legend = ax.get_legend()
+    legend.set_title(legendtitle)
+    handles, labels = ax.get_legend_handles_labels()
+    key = lambda t: t[0]
+    labels, handles = zip(*sorted(zip(labels, handles), key=key))
+    if experiment == "compounding":
+        key = lambda x: x[0].count(",")
+        labels, handles = zip(*sorted(zip(labels, handles), key=key))
+    labels = list(labels)
+    handles = list(handles)
+    if ncols is None:
+        ncols = len(handles)
+    legend.remove()
+    legend = fig.legend(
+        handles=handles,
+        labels=labels,
+        loc='lower center',
+        title=legendtitle,
+        ncol=ncols,
+        fontsize=legendfontsize,
+        columnspacing=0.5,
+        handletextpad=0.5,
+        handlelength=1.5,
+        bbox_to_anchor=(0.6, 0.205)
+    )
+    return legend
+
+
+if __name__ == "__main__":
+    experiment = "hidden_vs_visible"
+    reload_data = False
+
+    experiment_settings = {
+        "compounding": {
+            "filters": {
+                "group": "hidden_context",
+                "state": "finished"
+            },
+            "config_entries": {
+                "group",
+                "contexts.context_feature_args",
+                "carl.state_context_features",
+                "contexts.default_sample_std_percentage",
+                "seed"
+            },
+            "plotting": {
+                "xname": "_step",
+                "yname": "eval/return",
+                "hue": "contexts.context_feature_args",
+                "legendtitle": "Varying Context Feature",
+                "xlabel": "step",
+                "ylabel": "mean reward",
+                "group": None,  # "contexts.default_sample_std_percentage"
+            }
+        },
+        "hidden_vs_visible": {
+            "filters": {
+                # "config.contexts.default_sample_std_percentage": {"$in": [0.5]},
+                "group": {"$in": ["hidden_context", "concat_context"]},
+                "state": "finished"
+            },
+            "config_entries": {
+                "group",
+                "contexts.context_feature_args",
+                "carl.state_context_features",
+                "contexts.default_sample_std_percentage",
+                "seed"
+            },
+            "plotting": {
+                "xname": "_step",
+                "yname": "eval/return",
+                "hue": "group",
+                "legendtitle": "Visibility",
+                "xlabel": "step",
+                "ylabel": "mean reward",
+                "group": "contexts.context_feature_args",
+                "xticks": [0, 250_000, 500_000],
+                "xticklabels": ["0", "250k", "500k"],
+                # "style": "contexts.default_sample_std_percentage",
+            }
+        },
+        "task_variation": {
+            "filters": {
+                "group": {"$in": ["hidden_context", "concat_context"]},
+                "state": "finished"
+            },
+            "config_entries": {
+                "group",
+                "contexts.context_feature_args",
+                "carl.state_context_features",
+                "contexts.default_sample_std_percentage",
+                "seed"
+            },
+            "plotting": {
+                "xname": "_step",
+                "yname": "eval/return",
+                "hue": "contexts.context_feature_args",
+                "legendtitle": "Varying Context Feature",
+                "xlabel": "step",
+                "ylabel": "mean reward\nacross contexts $\mathcal{C}_{train}$",
+                "group": ["group", "contexts.default_sample_std_percentage"],
+                "xticks": [0, 250_000, 500_000],
+                "xticklabels": ["0", "250k", "500k"]
+            }
+        },
+        "context_gating": {
+            "filters": {
+                "config.carl.gaussian_noise_std_percentage": {"$in": [0.4]},
+                "config.carl.scale_context_features": "no",
+                "state": "finished",
+            },
+            "config_entries": {
+                "group",
+                "contexts.context_feature_args",
+                "carl.state_context_features",
+                "contexts.default_sample_std_percentage",
+                "seed"
+            }
+        }
+    }
+    metrics = ["eval/return"]
+
+    df_fname = Path(".") / f"data_{experiment}.csv"
+    experiment_setting = experiment_settings[experiment]
+    df = load_data(experiment_setting=experiment_setting, reload_data=reload_data, df_fname=df_fname)
+
     no_varying_context_feature_name = "None"
     no_context_feature_varying_color = "black"
     legendfontsize = 10
@@ -156,6 +207,22 @@ if __name__ == "__main__":
         df = df[~ids]
     exp = experiment_settings[experiment]
 
+    if experiment == "hidden_vs_visible" or experiment == "task_variation":
+        ids = df["contexts.context_feature_args"] == no_varying_context_feature_name
+        df = df[~ids]
+
+        # filter concat: concat all
+        df["carl.state_context_features"].fillna("None", inplace=True)
+        ids = np.logical_and(df["carl.state_context_features"] == "None", df["group"] == "concat")
+        df = df[~ids]
+
+    if experiment == "hidden_vs_visible":
+        # plot only one std
+        std = 0.5
+        ids = df["contexts.default_sample_std_percentage"] == std
+        df = df[ids]
+
+
 
     def plgetter(name: str) -> Optional[Any]:
         return exp["plotting"].get(name)
@@ -170,6 +237,7 @@ if __name__ == "__main__":
     groupkey = plgetter("group")
     xticks = plgetter("xticks")
     xticklabels = plgetter("xticklabels")
+    style = plgetter("style")
     if groupkey is None:
         group_ids = [None]
         group_dfs = [df]
@@ -213,7 +281,7 @@ if __name__ == "__main__":
 
             for j, (subgroup_id, subgroup_df) in enumerate(subgroups):
                 ax = axes[j]
-                ax = sns.lineplot(data=subgroup_df, x=xname, y=yname, hue=hue, palette=palette, ax=ax)
+                ax = sns.lineplot(data=subgroup_df, x=xname, y=yname, hue=hue, palette=palette, ax=ax, style=style)
                 ax.set_xlabel(xlabel)
                 if j == 0:
                     ax.set_ylabel(ylabel)
@@ -266,16 +334,25 @@ if __name__ == "__main__":
             plt.show()
 
     else:
+        if experiment == "hidden_vs_visible":
+            figsize = (6, 3)
+            dpi = 300
+            fig = plt.figure(figsize=figsize, dpi=dpi)
+            axes = fig.subplots(nrows=1, ncols=len(groups), sharey=True)
+
         for i, (group_id, group_df) in enumerate(groups):
             group_str = "" if group_id is None else f"_{groupkey}{group_id}"
             axtitle = group_id if group_id is not None else axtitle
             fig_fname = df_fname.parent / ("plot_" + experiment + group_str + ".png")
-            figsize = (4, 3)
-            dpi = 300
-            fig = plt.figure(figsize=figsize, dpi=dpi)
-            ax = fig.add_subplot(111)
+            if experiment == "hidden_vs_visible":
+                ax = axes[i]
+            else:
+                figsize = (4, 3)
+                dpi = 300
+                fig = plt.figure(figsize=figsize, dpi=dpi)
+                ax = fig.add_subplot(111)
 
-            ax = sns.lineplot(data=group_df, x=xname, y=yname, hue=hue, palette=palette)
+            ax = sns.lineplot(data=group_df, x=xname, y=yname, hue=hue, palette=palette, ax=ax, style=style)
 
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
@@ -318,7 +395,28 @@ if __name__ == "__main__":
 
             xlim = group_df[xname].min(), group_df[xname].max()
             ax.set_xlim(*xlim)
+            if xticks is not None:
+                ax.set_xticks(xticks)
+                ax.ticklabel_format(axis="x", style="scientific")
+            if xticklabels is not None:
+                ax.set_xticklabels(xticklabels)
 
+            if experiment == "hidden_vs_visible":
+                if i != 1:
+                    ax.get_legend().remove()
+                else:
+                    legend = set_legend(
+                        fig=fig,
+                        ax=ax,
+                        legendtitle=legendtitle,
+                        legendfontsize=legendfontsize,
+                        ncols=1
+                    )
+                continue
+            fig.set_tight_layout(True)
+            fig.savefig(fig_fname)
+            plt.show()
+        if experiment == "hidden_vs_visible":
             fig.set_tight_layout(True)
             fig.savefig(fig_fname)
             plt.show()
