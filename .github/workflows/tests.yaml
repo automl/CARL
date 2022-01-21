@@ -7,13 +7,13 @@ on:
   # When a push occurs on either of these branches
   push:
     branches:
-      - master
+      - main
       - development
 
   # When a push occurs on a PR that targets these branches
   pull_request:
     branches:
-      - master
+      - main
       - development
 
   schedule:
@@ -25,7 +25,6 @@ env:
   # Arguments used for pytest
   pytest-args: >-
     --timeout=300
-    --timeout-method=thread
     -s
 
   # Arguments used for code-cov which is later used to annotate PR's on github
