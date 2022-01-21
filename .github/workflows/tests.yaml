@@ -83,15 +83,15 @@ jobs:
       if: matrix.kind == 'conda'
       run: |
         # Miniconda is available in $CONDA env var
-        $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 swig python=${{ matrix.python-version }}
+        $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
         $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
-        $CONDA/envs/testenv/bin/pip3 install -e .[test]
+        $CONDA/envs/testenv/bin/pip3 install -e .[dev]
 
     - name: Source install
       if: matrix.kind == 'source'
       run: |
         python -m pip install --upgrade pip
-        pip install -e .[test]
+        pip install -e .[dev]
 
     - name: Dist install
       if: matrix.kind == 'dist'
@@ -99,7 +99,7 @@ jobs:
         python -m pip install --upgrade pip
         python setup.py sdist
         last_dist=$(ls -t dist/CARL-*.tar.gz | head -n 1)
-        pip install $last_dist[test]
+        pip install $last_dist[dev]
 
     - name: Store git status
       id: status-before
