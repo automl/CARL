@@ -65,3 +65,26 @@ ignore_missing_imports = false # prefer explicit ignores
 disallow_untyped_defs = true # All functions must have types
 disallow_untyped_decorators = true # ... even decorators
 disallow_incomplete_defs = true # ...all types
+
+[[tool.mypy.overrides]]
+module = [
+    "torch.*",
+    "Box2D.*",
+    "configargparse.*",
+    "brax.*",
+    "jax.*",
+    "IPython.*",
+    "py4j.*",
+    "cv2.*",
+    "seaborn.*",
+    "gym.*",
+    "google.protobuf.*",
+    "numpyencoder.*",
+    "pyglet.*",
+    "matplotlib.*",
+    "pandas.*",
+    "PIL.*",
+    "xvfbwrapper.*",
+    "scipy.*",
+]
+ignore_missing_imports = true
