@@ -4,11 +4,11 @@
 [tool.pytest.ini_options]
 testpaths = ["test"]
 minversion = "3.9"
-#addopts = "--cov=CARL"
+addopts = "--cov=carl"
 
 [tool.coverage.run]
 branch = true
-context = "CARL"
+context = "carl"
 
 [tool.coverage.report]
 show_missing = true
