@@ -13,3 +13,5 @@ carl/runscripts/generated
 docs/html
 docs/apidoc
 CARL.egg-info
+.mypy_cache
+.pytest_cache
