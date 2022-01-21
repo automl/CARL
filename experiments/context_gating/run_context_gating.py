@@ -13,6 +13,7 @@ from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
+from hydra.core.hydra_config import HydraConfig
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 import torch as th
@@ -46,6 +47,13 @@ def train(cfg: DictConfig):
         dir=os.getcwd(),
         config=dict_cfg,
     )
+    hydra_cfg = HydraConfig.get()
+    command = f"{hydra_cfg.job.name}.py " + " ".join(hydra_cfg.overrides.task)
+    if not OmegaConf.is_missing(hydra_cfg.job, "id"):
+        slurm_id = hydra_cfg.job.id
+    else:
+        slurm_id = None
+    wandb.config.update({"command": command, "slurm_id": slurm_id})
     set_seed_everywhere(cfg.seed)
 
     EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
