@@ -100,7 +100,7 @@ class CARLEnv(Wrapper):
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
-        if state_context_features is not None:
+        if state_context_features:
             if (
                 state_context_features == "changing_context_features"
                 or state_context_features[0] == "changing_context_features"
