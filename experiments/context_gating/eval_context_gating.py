@@ -10,8 +10,7 @@ def main():
     runs = api.runs(
         "tnt/carl",
         filters={
-            "config.carl.gaussian_noise_std_percentage": {"$in": [0.4]},
-            "config.carl.scale_context_features": "no",
+            "config.contexts.default_sample_std_percentage": {"$in": [0.5]},
             "state": "finished",
         },
     )
@@ -20,13 +19,15 @@ def main():
         "group",
         "contexts.context_feature_args",
         "carl.state_context_features",
-        "carl.gaussian_noise_std_percentage",
+        "contexts.default_sample_std_percentage",
+        "seed"
     ]
     metrics = ["eval/return"]
     groups = {
         "hidden_context": "hidden",
         "concat_context": "concat",
         "context_gating": "gating",
+        "context_encoder": "encoder"
     }
     runs = list(runs)
     for run in tqdm(runs):
