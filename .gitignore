@@ -12,3 +12,4 @@ slurm.sh
 carl/runscripts/generated
 docs/html
 docs/apidoc
+CARL.egg-info

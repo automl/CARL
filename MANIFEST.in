@@ -1,0 +1,6 @@
+include LICENSE
+include carl/py.typed
+
+# Sprites for Mario
+recursive-include carl/envs/mario/sprites
+
