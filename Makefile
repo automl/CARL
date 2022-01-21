@@ -33,7 +33,7 @@ FLAKE8 ?= flake8
 
 DIR := ${CURDIR}
 DIST := ${CURDIR}/dist
-DOCDIR := ${DIR}/doc
+DOCDIR := ${DIR}/docs
 INDEX_HTML := file://${DOCDIR}/html/build/index.html
 
 install-dev:
