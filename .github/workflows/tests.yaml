@@ -101,11 +101,6 @@ jobs:
         last_dist=$(ls -t dist/CARL-*.tar.gz | head -n 1)
         pip install $last_dist[dev]
 
-    - name: Store git status
-      id: status-before
-      run: |
-        echo "::set-output name=BEFORE::$(git status --porcelain -b)"
-
     - name: Tests
       timeout-minutes: 60
       run: |
@@ -120,18 +115,6 @@ jobs:
           $PYTHON -m pytest ${{ env.pytest-args }} ${{ env.code-cov-args }} test
         else
           $PYTHON -m pytest ${{ env.pytest-args }} test
-        fi
-
-    - name: Check for files left behind by test
-      if: ${{ always() }}
-      run: |
-        before="${{ steps.status-before.outputs.BEFORE }}"
-        after="$(git status --porcelain -b)"
-        if [[ "$before" != "$after" ]]; then
-            echo "git status from before: $before"
-            echo "git status from after: $after"
-            echo "Not all generated files have been deleted!"
-            exit 1
         fi
 
     - name: Upload coverage
