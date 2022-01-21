@@ -24,12 +24,12 @@ env:
 
   # Arguments used for pytest
   pytest-args: >-
-    --durations=10  # Show 10 slowest tests
+    --durations=10
 
   # Arguments used for code-cov which is later used to annotate PR's on github
   code-cov-args: >-
-    --cov=carl  # The module to check coverage of
-    --cov-report=xml  # The required format by `code-cov`
+    --cov=carl
+    --cov-report=xml
 
 jobs:
 
