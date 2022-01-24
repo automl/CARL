@@ -59,7 +59,7 @@ def log_wandb(train_monitor_env: coax.wrappers.TrainMonitor):
 
 def check_wandb_exists(cfg):
 
-    ignore_fields = ["encoder"]
+    ignore_fields = ["encoder", "action_noise"]
     query_config = {}
     for key, value in cfg.items():
         if key in ignore_fields:

@@ -47,21 +47,28 @@ def td3(cfg, env, eval_env):
         q2, pi_targ_list=[pi_targ], q_targ_list=[q1_targ, q2_targ],
         loss_function=coax.value_losses.mse, optimizer=optax.adam(cfg.learning_rate))
     determ_pg = coax.policy_objectives.DeterministicPG(
-        pi, q1_targ, optimizer=optax.adam(cfg.learning_rate / 10.0)
+        pi, q1_targ, optimizer=optax.adam(cfg.learning_rate)
     )
 
     # action noise
-    noise = coax.utils.OrnsteinUhlenbeckNoise(**cfg.noise_kwargs)
+    if cfg.action_noise.type == "ornsteinuhlenbeck":
+        noise = coax.utils.OrnsteinUhlenbeckNoise(**cfg.action_noise.kwargs)
+    else:
+        noise = None
 
     # train
     while env.T < cfg.max_num_frames:
         s = env.reset()
-        noise.reset()
-        noise.sigma *= cfg.noise_decay  # slowly decrease noise scale
+
+        if isinstance(noise, coax.utils.OrnsteinUhlenbeckNoise):
+            noise.reset()
+            noise.sigma *= cfg.noise_decay  # slowly decrease noise scale
 
         for t in range(env.env.cutoff):
-            a = noise(pi(s))
-            s_next, r, done, info = env.step(a)
+            a = pi(s)
+            if noise is not None:
+                a = noise(a)
+            s_next, r, done, _ = env.step(a)
 
             # trace rewards and add transition to replay buffer
             tracer.add(s, a, r, done)
@@ -72,7 +79,9 @@ def td3(cfg, env, eval_env):
             if len(buffer) >= cfg.warmup_num_frames:
                 transition_batch = buffer.sample(batch_size=cfg.batch_size)
 
-                metrics = {"OrnsteinUhlenbeckNoise/sigma": noise.sigma}
+                metrics = {}
+                if isinstance(noise, coax.utils.OrnsteinUhlenbeckNoise):
+                    metrics["OrnsteinUhlenbeckNoise/sigma"] = noise.sigma
 
                 qlearning = qlearning1 if jax.random.bernoulli(
                     q1.rng) else qlearning2
