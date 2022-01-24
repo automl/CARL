@@ -18,6 +18,7 @@ from experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_
     read_ep_contexts_LUT, gather_ep_results
 from experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
 from experiments.evaluation_protocol.evaluation_protocol import ContextFeature
+from experiments.evaluation_protocol.plot_traintest_distributions import plot_evaluation_protocol
 
 
 def get_ep_mplpatches(
@@ -140,7 +141,7 @@ def get_ep_mplpatches(
     return patches
 
 
-def add_colorbar_to_ax(vmin, vmax, cmap, label):
+def add_colorbar_to_ax(ax, vmin, vmax, cmap, label):
     norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size='5%', pad=0.05)
@@ -203,7 +204,7 @@ if __name__ == '__main__':
     draw_agg_per_region = True
     agg_per_region = "mean"
     plot_train = False
-    plot_hiddenvisible = False
+    plot_hiddenvisible = True
 
     results = gather_ep_results(path=path)
     
@@ -256,12 +257,15 @@ if __name__ == '__main__':
         perf_ptp = perf_max - perf_min
 
     if plot_hiddenvisible:
-        figsize = (12, 2) if draw_agg_per_region else (18, 6)
+        figsize = (6, 6) if draw_agg_per_region else (18, 6)
         fig = plt.figure(figsize=figsize, dpi=300)
         nrows = 1
         n_visibilities = results["context_visible"].nunique()
-        axes_set = fig.subplots(nrows=nrows, ncols=n_protocols * n_visibilities, sharex=True, sharey=True)
-        axes_set = axes_set.reshape((n_visibilities, -1))
+        axes_set = fig.subplots(nrows=n_visibilities + 1, ncols=n_protocols, sharex=True, sharey=True)
+        axes_set = axes_set.reshape((n_visibilities + 1, -1))
+        offset = 1
+
+
 
     maingroups = results.groupby("context_visible")
     for k, (visibility, maingroup_df) in enumerate(maingroups):
@@ -273,7 +277,7 @@ if __name__ == '__main__':
             nrows = 1
             axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
         else:
-            axes = axes_set[k]
+            axes = axes_set[k + offset]
 
         context_distribution_types = maingroup_df["context_distribution_type"].unique()
         groups = maingroup_df.groupby("mode")
@@ -410,21 +414,36 @@ if __name__ == '__main__':
 
             # Draw colorbar
             colorbar_label = "Episode Reward"
-            if draw_agg_per_region: # and i == len(groups) - 1:
-                colorbar = add_colorbar_to_ax(perf_min, perf_max, cmap, colorbar_label)
-                if i != len(groups) - 1 or (plot_hiddenvisible and k == 0):
+            if draw_agg_per_region:  # and i == len(groups) - 1:
+                colorbar = add_colorbar_to_ax(
+                    ax=ax, vmin=perf_min, vmax=perf_max, cmap=cmap, label=colorbar_label)
+                if i != len(groups) - 1:
                     colorbar.remove()
             else:
-                colorbar = add_colorbar_to_ax(episode_reward_min, episode_reward_max, cmap, colorbar_label)
+                colorbar = add_colorbar_to_ax(
+                    ax=ax, vmin=episode_reward_min, vmax=episode_reward_max, cmap=cmap, label=colorbar_label)
                 solved_threshold = get_solved_threshold(env_name=env)
                 if solved_threshold is not None:
                     colorbar.add_lines(levels=[solved_threshold], colors=["black"], linewidths=[2])
 
             # Add axis descriptions
-            ax.set_xlabel(cf0.name)
+            if k == 1 and plot_hiddenvisible:
+                ax.set_xlabel(cf0.name)
             if i == 0:
                 ax.set_ylabel(cf1.name)
-            ax.set_title(mode)
+
+            if not plot_hiddenvisible:
+                ax.set_title(mode)
+            else:
+                unit_x = cf0.mid - cf0.lower
+                unit_y = cf1.mid - cf1.lower
+                aspect = unit_x / unit_y
+                # ax.set_aspect(aspect=aspect)
+
+            xticks = [cf0.lower, cf0.mid, cf0.upper]
+            ax.set_xticks(xticks)
+            yticks = [cf1.lower, cf1.mid, cf1.upper]
+            ax.set_yticks(yticks)
 
             # if plot_hiddenvisible:
             #     unit_x = cf0.mid - cf0.lower
@@ -441,6 +460,41 @@ if __name__ == '__main__':
             fig.savefig(fig_fname, bbox_inches="tight")
 
     if plot_hiddenvisible:
+        axes = axes_set[0]
+        legend_handles = plot_evaluation_protocol(
+            context_features=context_features,
+            seed=1, n_contexts=100, axes=axes, set_aspect=False)
+        # make space for colorbar
+        for ax in axes:
+            colorbar = add_colorbar_to_ax(ax=ax, vmin=perf_min, vmax=perf_max, cmap=cmap, label=colorbar_label)
+            colorbar.remove()
+
+        # legend
+        ncols = 1
+        title_fontsize = None
+        bbox_to_anchor = (0.9, 0.6)
+        facecolor = None
+        framealpha = None
+        legend_title = None
+        legendfontsize = 12
+        labels = [l.get_label().replace(" ", "\n") for l in legend_handles]
+        legend = fig.legend(
+            labels=labels,
+            handles=legend_handles,
+            loc='lower center',
+            title=legend_title,
+            ncol=1,
+            fontsize=legendfontsize - 2,
+            columnspacing=0.5,
+            handletextpad=0.5,
+            handlelength=1.5,
+            bbox_to_anchor=bbox_to_anchor,
+            title_fontsize=title_fontsize,
+            facecolor=facecolor,
+            framealpha=framealpha,
+        )
+
+
         fig.set_tight_layout(True)
         plt.show()
 
