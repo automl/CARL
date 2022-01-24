@@ -430,8 +430,8 @@ class CARLEnv(Wrapper):
                     context_upper_bounds = context_upper_bounds[ids]
 
                 if self.context_encoder is not None:
-                    context_lower_bounds = -np.inf * np.ones(1)
-                    context_upper_bounds = np.inf * np.ones(1)
+                    context_lower_bounds = -np.inf * np.ones(self.context_encoder.latent_dim)
+                    context_upper_bounds = np.inf * np.ones(self.context_encoder.latent_dim)
 
                 if self.dict_observation_space:
                     self.env.observation_space = spaces.Dict(
@@ -483,11 +483,6 @@ class CARLEnv(Wrapper):
         # Post-processing to get an array from tensors, irrespective
         # of the latent size
         context_reps = np.array([t.detach().numpy() for t in context_reps])
-        context_reps = context_reps.reshape(
-            context_reps.shape[0], context_reps.shape[-1]
-        )
-        if context_reps.shape[1] == 1:
-            context_reps = context_reps.reshape(context_reps.shape[0])
 
         return context_reps
 
