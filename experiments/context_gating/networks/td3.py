@@ -39,7 +39,9 @@ def pi_func(cfg, env):
                 )
             )
             mu = state_seq(S)
-        return {"mu": mu, "logvar": jnp.full_like(mu, -10)}
+        if cfg.tanh_policy:
+            mu = jax.nn.tanh(mu)
+        return {"mu": mu, "logvar": jnp.full_like(mu, cfg.pi_log_sigma)}
 
     return pi
 

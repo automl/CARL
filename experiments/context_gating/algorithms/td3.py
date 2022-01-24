@@ -51,13 +51,18 @@ def td3(cfg, env, eval_env):
     )
 
     # action noise
-    noise = coax.utils.OrnsteinUhlenbeckNoise(**cfg.noise_kwargs)
+    if cfg.action_noise.type == "ornsteinuhlenbeck":
+        noise = coax.utils.OrnsteinUhlenbeckNoise(**cfg.action_noise.kwargs)
+    else: 
+        noise = lambda a: a
 
     # train
     while env.T < cfg.max_num_frames:
         s = env.reset()
-        noise.reset()
-        noise.sigma *= cfg.noise_decay  # slowly decrease noise scale
+
+        if isinstance(noise, coax.utils.OrnsteinUhlenbeckNoise):
+            noise.reset()
+            noise.sigma *= cfg.noise_decay  # slowly decrease noise scale
 
         for t in range(env.env.cutoff):
             a = noise(pi(s))
@@ -72,7 +77,9 @@ def td3(cfg, env, eval_env):
             if len(buffer) >= cfg.warmup_num_frames:
                 transition_batch = buffer.sample(batch_size=cfg.batch_size)
 
-                metrics = {"OrnsteinUhlenbeckNoise/sigma": noise.sigma}
+                metrics = {}
+                if isinstance(noise, coax.utils.OrnsteinUhlenbeckNoise):
+                    metrics["OrnsteinUhlenbeckNoise/sigma"] = noise.sigma
 
                 qlearning = qlearning1 if jax.random.bernoulli(
                     q1.rng) else qlearning2
