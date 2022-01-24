@@ -9,13 +9,16 @@ from experiments.common.plot.plotting_style import set_rc_params
 from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol, ContextFeature
 
 
-def plot_evaluation_protocol(context_features, seed, n_contexts):
+def plot_evaluation_protocol(context_features, seed, n_contexts, axes=None, set_aspect: bool = True):
     set_rc_params()
 
     modes = ["A", "B", "C"]
     n_protocols = len(modes)
-    fig = plt.figure(figsize=(6, 2), dpi=300)
-    axes = fig.subplots(nrows=1, ncols=n_protocols + 1, sharex=True, sharey=True)
+    is_standalone = False
+    if axes is None:
+        is_standalone = True
+        fig = plt.figure(figsize=(6, 2), dpi=300)
+        axes = fig.subplots(nrows=1, ncols=n_protocols + 1, sharex=True, sharey=True)
     for i in range(n_protocols):
         ax = axes[i]
         mode = modes[i]
@@ -112,7 +115,7 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
 
         # Plot train context
         ax = sns.scatterplot(data=contexts_train, x=cf0.name, y=cf1.name, color=color_T, ax=ax, edgecolor=color_T,
-                             s=markersize)
+                             s=markersize*1.5)
 
         # Extrapolation single
         ax = sns.scatterplot(data=contexts_ES, x=cf0.name, y=cf1.name,
@@ -141,10 +144,11 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
         if i == 0:
             ax.set_ylabel(cf1.name)
         ax.set_title(mode)
-        unit_x = cf0.mid - cf0.lower
-        unit_y = cf1.mid - cf1.lower
-        aspect = unit_x / unit_y
-        ax.set_aspect(aspect=aspect)
+        if set_aspect:
+            unit_x = cf0.mid - cf0.lower
+            unit_y = cf1.mid - cf1.lower
+            aspect = unit_x / unit_y
+            ax.set_aspect(aspect=aspect)
         yticks = [cf1.lower, cf1.mid, cf1.upper]
         ax.set_yticks(yticks)
 
@@ -159,17 +163,21 @@ def plot_evaluation_protocol(context_features, seed, n_contexts):
         Patch(label="Extrapolation (Single Factor)", facecolor=color_ES),
         Patch(label="Extrapolation (Both Factors)", facecolor=color_EB),
     ]
-    ax = axes[-1]
-    ax.set_axis_off()
-    ax.legend(handles=legend_elements, loc="center", fontsize=8)
 
-    # Adjust spaces for savin plot
-    fig.subplots_adjust(wspace=0.2)
-    fig.savefig(Path("figures") / f"evaluation_protocol_traintest_distributions_seed{seed}.png", dpi=300, bbox_inches="tight")
+    if is_standalone:
+        ax = axes[-1]
+        ax.set_axis_off()
+        ax.legend(handles=legend_elements, loc="center", fontsize=8)
 
-    # Set tight layout for viewing in IDE
-    fig.set_tight_layout(True)
-    plt.show()
+        # Adjust spaces for savin plot
+        fig.subplots_adjust(wspace=0.2)
+        fig.savefig(Path("figures") / f"evaluation_protocol_traintest_distributions_seed{seed}.png", dpi=300, bbox_inches="tight")
+
+        # Set tight layout for viewing in IDE
+        fig.set_tight_layout(True)
+        plt.show()
+
+    return legend_elements
 
 
 if __name__ == '__main__':
