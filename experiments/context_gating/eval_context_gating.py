@@ -6,8 +6,8 @@ from tqdm import tqdm
 from pathlib import Path
 
 
-def load_data_context_gating(fname: Path):
-    if not fname.is_file():
+def load_data_context_gating(fname: Path, download: bool = False):
+    if not fname.is_file() or download:
         api = wandb.Api()
         runs = api.runs(
             "tnt/carl",
@@ -15,7 +15,7 @@ def load_data_context_gating(fname: Path):
                 "config.contexts.default_sample_std_percentage": {"$in": [0.1, 0.25, 0.5]},
                 "state": "finished",
                 "config.env": "CARLPendulumEnv",
-                "group": {"$in": ["hidden_context", "concat_contet", "context_gating", "context_encoder"]},
+                "group": {"$nin": ["encoder_opt"]},
             },
         )
         dfs = []
