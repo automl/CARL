@@ -52,7 +52,7 @@ def td3(cfg, env, eval_env):
 
     # action noise
     if cfg.action_noise.type == "ornsteinuhlenbeck":
-        noise = coax.utils.OrnsteinUhlenbeckNoise(**cfg.action_noise.kwargs)
+        noise = coax.utils.OrnsteinUhlenbeckNoise(random_seed=cfg.seed, **cfg.action_noise.kwargs)
     else:
         noise = None
 
