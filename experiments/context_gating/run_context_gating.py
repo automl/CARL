@@ -43,7 +43,7 @@ def check_config_valid(cfg):
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    if not check_config_valid(cfg) or check_wandb_exists(dict_cfg):
+    if (not check_config_valid(cfg) or check_wandb_exists(dict_cfg)) and not cfg.debug:
         print(f"Skipping run with cfg {dict_cfg}")
         return
     wandb.init(
