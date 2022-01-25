@@ -15,11 +15,9 @@ from omegaconf import DictConfig
 import pandas as pd
 from sklearn.model_selection import KFold
 
-step = 0
 base_dir = os.getcwd()
 
-
-@hydra.main("./configs", "hyperband")
+@hydra.main("./configs", "single_encoder")
 def main(cfg: DictConfig) -> None:
 
     global base_dir
@@ -49,11 +47,10 @@ def main(cfg: DictConfig) -> None:
         global step
 
         print('\n')
-        print(f"Iter: {step}")
         for key in kwargs:
             print(key, kwargs[key])
 
-        iter_dir = os.path.join(out_dir, f"iter_{step}")
+        iter_dir = os.path.join(out_dir)
         if not os.path.exists(iter_dir):
             os.mkdir(os.path.join(iter_dir))
         else:
@@ -140,51 +137,19 @@ def main(cfg: DictConfig) -> None:
         print(f"Mean Validation Losses: {(mean_val_losses)}")
 
         # Save the model with the best validation loss
+
         print(f'Saving the model with the best validation loss at index: {np.nanargmin(mean_val_losses)}')
         th.save(models[np.nanargmin(mean_val_losses)], os.path.join(iter_dir, "model.zip"))
 
         with open(os.path.join(iter_dir, "losses.pkl"), "wb") as f:
             pickle.dump(losses, f)
 
-        step = step + 1
-
-    # Create a sampling strategy
-    strategy = HyperbandSearch(
-        real={
-            "rate": {
-                "begin": cfg.hyperband.real.rate.begin,
-                "end": cfg.hyperband.real.rate.end,
-                "prior": cfg.hyperband.real.rate.prior,
-            },
-            # "decay": {
-            #     "begin": cfg.hyperband.real.decay.begin,
-            #     "end": cfg.hyperband.real.decay.end,
-            #     "prior": cfg.hyperband.real.decay.prior,
-            # },
-        },
-        integer={
-            "batch": {
-                "begin": cfg.hyperband.integer.batch.begin,  #
-                "end": cfg.hyperband.integer.batch.end,
-                "prior": cfg.hyperband.integer.batch.prior,
-            }
-        },
-        search_config={
-            "max_resource": cfg.hyperband.search_config.max_resource,
-            "eta": cfg.hyperband.search_config.eta,
-        },
-        seed_id=cfg.hyperband.seed,
-    )
-
-    # Generate the configs using the strategy and dump them
-    configs = strategy.ask()
-    with open(os.path.join(out_dir, "configs.json"), "w") as f:
-        json.dump(configs, f, indent=4)
-
-
-    # Train the model with the generated configs
-    for c in configs:
-        train_model(**c["params"])
+    c = {
+        "batch": cfg.encoder.batch,
+        "rate": cfg.encoder.rate,
+    }
+    
+    train_model(**c)
 
    
 if __name__ == "__main__":

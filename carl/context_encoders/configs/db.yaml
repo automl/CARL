@@ -1,2 +1,2 @@
-out_file: "./database/example_60k.npy"
-json_file: "./database/Pendulum/contexts_train.json"
+out_file: "./database/MountainCarContinuous/new_60k.npy"
+json_file: "./database/MountainCarContinuous/contexts_train.json"
