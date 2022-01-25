@@ -1,0 +1,28 @@
+encoder:
+  outdir: './tmp/Hyperband/Ant/AE_Test'
+  context_dataset: './database/Ant/new_60k.npy'
+  model: ContextAE
+  input_dim: 7
+  latent_dim: 1
+  hidden_dim: [5,3]
+  epochs: 100
+  val_epochs: 10
+  split: 0.8
+  M_N: 0.005
+  kfolds: 5
+
+hyperband:
+  real:
+    rate:
+      begin: 0.001
+      end: 0.5
+      prior: 'uniform'
+  integer:
+    batch:
+      begin: 30
+      end: 128
+      prior: 'log-uniform'
+  search_config:
+    max_resource: 14
+    eta: 3
+  seed: 42

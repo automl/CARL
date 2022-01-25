@@ -1,0 +1,112 @@
+#######################################
+###       Logging Configuration     ###
+#######################################
+expt:
+  project_name:                 "searl"
+  session_name:                 "neuroevolution"
+  experiment_name:              "default_searl_dqn"
+
+
+#######################################
+###      NEVO Configuration         ###
+#######################################
+nevo:
+  population_size:              10
+  tournament_size:              3
+  selection:                    True
+  mutation:                     True
+  training:                     True
+  elitism:                      True
+  min_train_time:               250
+  worker:                       2
+  reuse_batch:                  1
+  ind_memory:                   False
+  init_random:                  False
+
+
+mutation:
+  no_mutation:                  0.2
+  parameters:                   0.2
+  architecture:                 0.2
+  activation:                   0.2
+  rl_hyperparam:                0.2
+  rl_hp_selection:              ['lr_actor']
+  new_layer_prob:               0.2
+  mutation_sd:                  0.1
+
+
+train:
+  replay_memory_size:           2000000
+  num_frames:                   2000000
+  td3_double_q:                 False
+  evo_warm_up:                  1
+  min_train_steps:              1000
+  max_train_steps:              50000
+
+
+rl:
+  train_frames_fraction:        0.5 # 5000 train_iternations
+  gamma:                        0.99
+  soft_update:                  True
+  tau:                          0.005
+  batch_size:                   128
+  lr_actor:                     0.0001
+  optimizer:                    "adam" ##  ["adam", "adamax", "rmsprop", "sdg"]
+  start_timesteps:              10000
+
+  rm_capacity: 2000000
+
+  num_frames: 50000000
+  replay_initial: 10000
+  eval_episodes: 10
+
+  eval_freq: 10000
+
+  reset_target: False
+  recreate_optim: False
+  min_eval_steps: 200
+
+  num_atoms: 51
+  Vmin: -10
+  Vmax: 10
+
+
+seed:
+  replay_memory:                123
+  evaluation:                   123
+  mutation:                     123
+  training:                     123
+  torch:                        123
+  numpy:                        123
+
+
+#######################################
+###    Environment Configuration    ###
+#######################################
+env:
+  name:                         'PongNoFrameskip-v4'
+
+
+eval:
+  eval_episodes:                1
+  min_eval_steps:               250
+  exploration_noise:            0.1     # Default 0.1
+  test_episodes:                10
+  test_seed:                    123
+
+
+#######################################
+###  Actor Starting Configuration   ###
+#######################################
+actor:
+  channel_size:       [32, 32]
+  kernal_size:        [8, 4]
+  stride_size:        [4, 2]
+  hidden_size:        [128]
+  num_atoms:          51
+  Vmin:               -10
+  Vmax:               10
+  mlp_activation:     "relu"
+  cnn_activation:     "relu"
+  layer_norm:         False
+

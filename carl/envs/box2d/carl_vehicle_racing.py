@@ -2,6 +2,7 @@ import numpy as np
 from gym.envs.box2d import CarRacing
 from typing import Dict, Optional, Union, List
 import pyglet
+
 pyglet.options["debug_gl"] = False
 from pyglet import gl
 from carl.envs.carl_env import CARLEnv
@@ -42,6 +43,8 @@ from carl.envs.box2d.parking_garage.bus import BusLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.bus import FWDBusLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
 
+from carl.context_encoders import ContextEncoder
+
 PARKING_GARAGE_DICT = {
     # Racing car
     "RaceCar": RaceCar,
@@ -53,7 +56,6 @@ PARKING_GARAGE_DICT = {
     "RaceCarLargeTrailer": RaceCarLargeTrailer,
     "FWDRaceCarLargeTrailer": FWDRaceCarLargeTrailer,
     "AWDRaceCarLargeTrailer": AWDRaceCarLargeTrailer,
-
     # Street car
     "StreetCar": StreetCar,
     "FWDStreetCar": FWDStreetCar,
@@ -64,7 +66,6 @@ PARKING_GARAGE_DICT = {
     "StreetCarLargeTrailer": StreetCarLargeTrailer,
     "FWDStreetCarLargeTrailer": FWDStreetCarLargeTrailer,
     "AWDStreetCarLargeTrailer": AWDStreetCarLargeTrailer,
-
     # Bus
     "Bus": Bus,
     "FWDBus": FWDBus,
@@ -75,7 +76,6 @@ PARKING_GARAGE_DICT = {
     "BusLargeTrailer": BusLargeTrailer,
     "FWDBusLargeTrailer": FWDBusLargeTrailer,
     "AWDBusLargeTrailer": AWDBusLargeTrailer,
-
     # Tuk Tuk :)
     "TukTuk": TukTuk,
     "TukTukSmallTrailer": TukTukSmallTrailer,
@@ -117,7 +117,9 @@ class CustomCarRacingEnv(CarRacing):
                 )
         self.car = self.vehicle_class(self.world, *self.track[0][1:4])
 
-        for i in range(49):   # this sets up the environment and resolves any initial violations of geometry
+        for i in range(
+            49
+        ):  # this sets up the environment and resolves any initial violations of geometry
             self.step(None)
         return self.step(None)[0]
 
@@ -176,7 +178,7 @@ class CustomCarRacingEnv(CarRacing):
         # Custom render to handle different amounts of wheels
         vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # ABS sensors
         for i in range(len(self.car.wheels)):
-            vertical_ind(7+i, 0.01 * self.car.wheels[i].omega, (0.0+i*0.1, 0, 1))
+            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))
         horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))
         horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))
         vl = pyglet.graphics.vertex_list(
@@ -189,18 +191,19 @@ class CustomCarRacingEnv(CarRacing):
 
 class CARLVehicleRacingEnv(CARLEnv):
     def __init__(
-            self,
-            env: CustomCarRacingEnv = CustomCarRacingEnv(),
-            contexts: Optional[Dict[Union[str, int], Dict]] = None,
-            instance_mode: str = "random",
-            hide_context: bool = True,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            state_context_features: Optional[List[str]] = None,
-            dict_observation_space: bool = False,
+        self,
+        env: CustomCarRacingEnv = CustomCarRacingEnv(),
+        contexts: Optional[Dict[Union[str, int], Dict]] = None,
+        instance_mode: str = "random",
+        hide_context: bool = True,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        state_context_features: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 
@@ -232,16 +235,19 @@ class CARLVehicleRacingEnv(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space
+            dict_observation_space=dict_observation_space,
+            context_encoder=context_encoder,
         )
-        self.whitelist_gaussian_noise = [k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES]
+        self.whitelist_gaussian_noise = [
+            k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES
+        ]
 
     def _update_context(self):
         vehicle_class_index = self.context["VEHICLE"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from pyglet.window import key
     import time
 
@@ -260,8 +266,7 @@ if __name__ == '__main__':
         if k == key.UP:
             a[1] = +1.0
         if k == key.DOWN:
-            a[2] = +1.
-
+            a[2] = +1.0
 
     def key_release(k, mod):
         if k == key.LEFT and a[0] == -1.0:
@@ -272,7 +277,6 @@ if __name__ == '__main__':
             a[1] = 0
         if k == key.DOWN:
             a[2] = 0
-
 
     contexts = {i: {"VEHICLE": i} for i in range(len(VEHICLE_NAMES))}
     env = CARLVehicleRacingEnv(contexts=contexts)

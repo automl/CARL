@@ -1,0 +1,50 @@
+td3:
+  gamma:                        0.99
+  tau:                          0.005
+  lr_actor:                     0.001
+  lr_critic:                    0.001
+  batch_size:                   100
+  double_q:                     True
+  clip_grad_norm:               100
+  td3_policy_noise:             0.2     # False or TD3 default: 0.2
+  td3_noise_clip:               0.5     # default 0.5
+  td3_update_freq:              2       # 1 or TD3 default: 2
+  optimizer:                    'adam'
+  rm_capacity:                  1000000
+  eval_freq:                    5000
+  start_timesteps:              10000
+  exploration_noise:            0.1
+  eval_episodes:                10
+  max_timesteps:                2000000
+  reset_target:                 False
+  recreate_optim:               False
+
+seed:
+  numpy:                        123
+  torch:                        123
+  env:                          123
+
+env:
+  name:                         'HalfCheetah-v2'
+
+expt:
+  project_name:                 'searl'
+  session_name:                 'baseline'
+  experiment_name:              'default_td3'
+
+support:
+  save_models:                    False
+
+actor:
+  hidden_size:                    [128]
+  activation:                     'relu' # 'sigmoid' 'softplus',
+  output_activation:              'tanh'
+  layer_norm:                     True
+  output_vanish:                  False
+
+critic:
+  hidden_size:                    [128]
+  activation:                     'relu' # 'sigmoid' 'softplus'
+  output_activation:              'linear'
+  layer_norm:                     True
+  output_vanish:                  True

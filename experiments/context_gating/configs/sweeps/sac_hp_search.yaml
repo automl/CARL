@@ -1,8 +1,8 @@
 # @package _global_
 # see https://hydra.cc/docs/plugins/optuna_sweeper/#search-space-configuration
 defaults:
-  - override hydra/sweeper: optuna
-  - override hydra/sweeper/sampler: tpe
+  - override /hydra/sweeper: optuna
+  - override /hydra/sweeper/sampler: tpe
 
 group: sac_hp_search
 
@@ -37,6 +37,10 @@ hydra:
       replay_capacity:
         type: categorical
         choices: [25000, 50000, 100000, 200000]
-      batch_size:
+#      batch_size:
+#        type: categorical
+#        choices: [64, 128, 256, 512]
+      network.width:
         type: categorical
-        choices: [64, 128, 256, 512]
+        choices: [32, 64, 128, 256]
+
