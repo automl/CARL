@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 
 import coax
 import numpy as onp
+import pandas as pd
 import wandb
 
 
@@ -59,13 +60,11 @@ def log_wandb(train_monitor_env: coax.wrappers.TrainMonitor):
 
 def check_wandb_exists(cfg, unique_fields: List[str]):
 
+    flat_cfg = list(pd.json_normalize(cfg).T.to_dict().values())[0]
     query_config = {}
-    for key, value in cfg.items():
+    for key, value in flat_cfg.items():
         if key not in unique_fields:
             continue
-        if isinstance(value, (list, tuple)):
-            raise ValueError('list and tuple not supported in query')
-
         query_config[key] = value
 
     query_config_wandb = {"config.{}".format(
