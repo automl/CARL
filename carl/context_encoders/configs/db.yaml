@@ -1,2 +1,0 @@
-out_file: "./database/MountainCarContinuous/new_60k.npy"
-json_file: "./database/MountainCarContinuous/contexts_train.json"
