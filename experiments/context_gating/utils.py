@@ -82,12 +82,12 @@ def check_wandb_exists(cfg, unique_fields: List[str]):
 
     found_run = False
     for run in runs:
-        if cfg.env == "CARLPendulumEnv":
+        if cfg["env"] == "CARLPendulumEnv":
             episode = run.summary['train/episode'] if 'train/episode' in run.summary else -1
             if episode != 2488:
                 # run not completed
                 continue
-        elif cfg.env == "CARLAnt":
+        elif cfg["env"] == "CARLAnt":
             episode = run.summary['train/episode'] if 'train/episode' in run.summary else -1
             if episode < 500:
                 # run not completed
