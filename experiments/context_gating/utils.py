@@ -1,6 +1,6 @@
 from pathlib import Path
 import random
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import coax
 import numpy as onp
@@ -57,12 +57,11 @@ def log_wandb(train_monitor_env: coax.wrappers.TrainMonitor):
     wandb.log(metrics, step=train_monitor_env.T)
 
 
-def check_wandb_exists(cfg):
+def check_wandb_exists(cfg, unique_fields: List[str]):
 
-    ignore_fields = ["encoder", "action_noise"]
     query_config = {}
     for key, value in cfg.items():
-        if key in ignore_fields:
+        if key not in unique_fields:
             continue
         if isinstance(value, (list, tuple)):
             raise ValueError('list and tuple not supported in query')

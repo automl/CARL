@@ -32,6 +32,7 @@ def get_encoder(cfg) -> ContextEncoder:
 
     return model
 
+
 def check_config_valid(cfg):
     valid = True
     if cfg.carl.hide_context and cfg.carl.state_context_features:
@@ -40,10 +41,11 @@ def check_config_valid(cfg):
         valid = False
     return valid
 
+
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    if (not check_config_valid(cfg) or check_wandb_exists(dict_cfg)) and not cfg.debug:
+    if (not check_config_valid(cfg) or check_wandb_exists(dict_cfg, unique_fields=["env", "seed", "group", "contexts.context_feature_args", "contexts.default_sample_std_percentage", "carl.state_context_features"])) and not cfg.debug:
         print(f"Skipping run with cfg {dict_cfg}")
         return
     wandb.init(
