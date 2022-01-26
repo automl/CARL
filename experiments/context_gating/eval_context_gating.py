@@ -6,16 +6,16 @@ from tqdm import tqdm
 from pathlib import Path
 
 
-def load_data_context_gating(fname: Path, download: bool = False):
+def load_data_context_gating(fname: Path, download: bool = False, env: str = "CARLPendulumEnv"):
     if not fname.is_file() or download:
         api = wandb.Api()
         runs = api.runs(
             "tnt/carl",
             filters={
                 "config.contexts.default_sample_std_percentage": {"$in": [0.1, 0.25, 0.5]},
-                "state": "finished",
-                "config.env": "CARLPendulumEnv",
-                "group": {"$nin": ["encoder_opt"]},
+                "state":  {"$nin": ["crashed"]},
+                "config.env": env,
+                # "group": {"$nin": ["encoder_opt"]},
             },
         )
         dfs = []
@@ -31,7 +31,9 @@ def load_data_context_gating(fname: Path, download: bool = False):
             "hidden_context": "hidden",
             "concat_context": "concat",
             "context_gating": "gating",
-            "context_encoder": "encoder"
+            "context_encoder": "encoder",
+            "encoder_opt": "encoder2d",
+            "Ant_encoder": "encoder2d"
         }
         runs = list(runs)
         for run in tqdm(runs):
@@ -39,6 +41,8 @@ def load_data_context_gating(fname: Path, download: bool = False):
             for i, row in run.history(keys=metrics).iterrows():
                 if all([metric in row for metric in metrics]):
                     df = df.append(row, ignore_index=True)
+            df["timestamp"] = run.summary["_timestamp"]
+            df["name"] = run.name
             for entry in config_entries:
                 entry_list = entry.split(".")
                 config_entry = run.config
@@ -46,7 +50,7 @@ def load_data_context_gating(fname: Path, download: bool = False):
                     config_entry = config_entry[e]
                 if isinstance(config_entry, (list, tuple)):
                     config_entry = ", ".join(config_entry)
-                if entry == "group":
+                if entry == "group" and config_entry in groups:
                     df[entry] = groups[config_entry]
                 else:
                     df[entry] = config_entry
