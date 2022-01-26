@@ -6,23 +6,28 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as mtrans
 import seaborn as sns
 import pandas as pd
+from typing import Union, Dict
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from experiments.common.eval.gather_data import gather_results
 
 
-def plot_hue(group_df, key_huegroup, ax, xname, yname, color_palette_name):
+def plot_hue(group_df, key_huegroup, ax, xname, yname, colors: Union[str, Dict]):
     groups_sub = group_df.groupby(key_huegroup)
     n = len(groups_sub)
-    colors = sns.color_palette(color_palette_name, n)
+    if type(colors) == str:
+        colors = sns.color_palette(color_palette_name, n)
     legend_handles = []
     labels = []
     for j, (df_id, subset_group_df) in enumerate(groups_sub):
         n_seeds = subset_group_df['seed'].nunique()
         msg = f"{plot_id}, {group_id}, {df_id}: n_seeds={n_seeds}"
         print(msg)
-        color = colors[j]
+        color = list(colors.values())[j]
         if df_id == default_name:
             color = color_default_context
+        else:
+            color = colors[df_id]
         ax = sns.lineplot(data=subset_group_df, x=xname, y=yname, ax=ax, color=color, marker='', hue=None)
         legend_handles.append(Line2D([0], [0], color=color))
         label = df_id
@@ -52,7 +57,7 @@ if __name__ == '__main__':
     results = pd.concat([results, results2])
     del results2
 
-    experiment = "compounding"
+    experiment = "compoundingn"
     paperversion = True
     logx = False
 
@@ -70,7 +75,8 @@ if __name__ == '__main__':
     color_palette_name = "colorblind"
     color_default_context = "black"
 
-    figsize = (6, 3)
+    figsize = (4, 3)
+    figsize_c = (2.5, 3)  # figsize for compounding variations
     labelfontsize = 12
     ticklabelsize = 10
     legendfontsize = 10
@@ -99,7 +105,7 @@ if __name__ == '__main__':
     for (plot_id, plot_df) in plotgroups:
         fig = plt.figure(figsize=figsize, dpi=200)
         nrows = 1
-        ncols = plot_df[key_axgroup].nunique() + 1
+        ncols = plot_df[key_axgroup].nunique()
         axes = fig.subplots(nrows=nrows, ncols=ncols, sharey=True)
 
         # legendtitle
@@ -107,9 +113,20 @@ if __name__ == '__main__':
         xlabel = None
         ylabel = None
         groups = plot_df.groupby(key_axgroup)
-        xmin = plot_df['step'].min()
-        xmax = plot_df['step'].max()
+        xmin = plot_df[xname].min()
+        xmax = plot_df[xname].max()
         xlims = (xmin, xmax)
+        # ymin = plot_df[yname].min()
+        # ymax = plot_df[yname].max()
+        # ylims = (ymin, ymax)
+
+        if key_huegroup is None:
+            colors = color_palette_name
+        else:
+            hues = plot_df[key_huegroup].unique()
+            colors = sns.color_palette(color_palette_name, len(hues))
+            colors = {k: v for k, v in zip(hues, colors)}
+
         for i, (group_id, group_df) in enumerate(groups):
             if type(axes) == list or type(axes) == np.ndarray:
                 ax = axes[i]
@@ -123,8 +140,10 @@ if __name__ == '__main__':
             df_c = df_c.append(group_df[group_df["context_feature_args"] == "None"])
             df_c = df_c.append(group_df[group_df["context_feature_args"] == "m"])
 
+            # ylims = (df_c[yname].min(), df_c[yname].max())
+
             ax, labels, legend_handles = plot_hue(
-                group_df, key_huegroup, ax, xname, yname, color_palette_name
+                group_df, key_huegroup, ax, xname, yname, colors
             )
 
             # Annotations
@@ -141,10 +160,11 @@ if __name__ == '__main__':
             if ylabel:
                 ax.set_ylabel(ylabel, fontsize=labelfontsize)
 
-            ax.set_xlim(*xlims)
             if logx:
                 ax.set_xscale("log")
             ax.tick_params(labelsize=ticklabelsize)
+            ax.set_xlim(*xlims)
+            # ylims = ax.get_ylim()
 
             # Sort labels, put default name at front
             labels, legend_handles = sort_legend_handles(labels, legend_handles, default_name)
@@ -152,7 +172,7 @@ if __name__ == '__main__':
             if i == 1:
                 ncols = len(legend_handles)
                 title_fontsize = None
-                bbox_to_anchor = (0.35, 0.205)
+                bbox_to_anchor = (0.55, 0.205)
                 facecolor = None
                 framealpha = None
                 legend = fig.legend(
@@ -172,23 +192,39 @@ if __name__ == '__main__':
                 )
 
             if i == len(groups) - 1:
-                # Plot compounding variations
+                # plot compounding
+                fig_c = plt.figure(figsize=figsize_c, dpi=200)
+                ax = fig_c.add_subplot(111)
                 ax, labels, legend_handles = plot_hue(
-                    df_c, key_huegroup, axes[-1], xname, yname, color_palette_name
+                    df_c, key_huegroup, ax, xname, yname, colors
                 )
+                ylims = ax.get_ylim()
+                for axi in axes:
+                    axi.set_ylim(*ylims)
+                # ax.set_ylim(*ylims)
                 title = f"$\sigma_{{rel}}={group_id}$"
                 ax.set_title(title)
+                ylabel = "mean return\nacross contexts $\mathcal{C}_{train}$"
+                ax.set_ylabel(ylabel, fontsize=labelfontsize)
+
+                # Make space for legend
+                divider = make_axes_locatable(ax)
+                cax = divider.append_axes('right', size=0.7, pad=0.0)
+                cax.set_axis_off()
+
+                # Plot legend
                 labels, legend_handles = sort_legend_handles(labels, legend_handles, default_name)
+                labels = [l.replace("m, l, dt, ", "m, l, dt,\n") for l in labels]
                 ncols = len(legend_handles)
                 title_fontsize = None
                 bbox_to_anchor = (0.75, 0.205)
                 facecolor = None
                 framealpha = None
-                legend = fig.legend(
+                legend = fig_c.legend(
                     handles=legend_handles,
                     labels=labels,
                     loc='lower center',
-                    title=legend_title,
+                    title=None,  # legend_title,
                     ncol=1,
                     fontsize=legendfontsize - 2,
                     columnspacing=0.5,
@@ -202,13 +238,17 @@ if __name__ == '__main__':
 
 
         fig.set_tight_layout(True)
+        fig_c.set_tight_layout(True)
 
         if experiment is not None:
             exp_str = str(experiment) + "__"
         else:
             exp_str = ""
-        fig_fn = f"{exp_str}evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
+        fig_fn = f"taskvariation_evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
         fig_ffn = Path(path) / fig_fn
-        # fig.savefig(fig_ffn, bbox_inches="tight")
+        fig.savefig(fig_ffn, bbox_inches="tight")
+        fig_fn = f"compounding_evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
+        fig_ffn = Path(path) / fig_fn
+        fig_c.savefig(fig_ffn, bbox_inches="tight")
         print("saved at", fig_ffn)
         plt.show()

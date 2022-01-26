@@ -141,14 +141,15 @@ def get_ep_mplpatches(
     return patches
 
 
-def add_colorbar_to_ax(ax, vmin, vmax, cmap, label):
+def add_colorbar_to_ax(ax, vmin, vmax, cmap, label, fontsize: int = 10):
     norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size='5%', pad=0.05)
     colorbar = fig.colorbar(
         ax=ax, cax=cax, mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap), orientation='vertical',
-        label=label
+        label=label,
     )
+    colorbar.set_label(label, fontsize=fontsize)
     return colorbar
 
 
@@ -257,7 +258,7 @@ if __name__ == '__main__':
         perf_ptp = perf_max - perf_min
 
     if plot_hiddenvisible:
-        figsize = (6, 6) if draw_agg_per_region else (18, 6)
+        figsize = (6, 4) if draw_agg_per_region else (18, 6)
         fig = plt.figure(figsize=figsize, dpi=300)
         nrows = 1
         n_visibilities = results["context_visible"].nunique()
@@ -472,11 +473,11 @@ if __name__ == '__main__':
         # legend
         ncols = 1
         title_fontsize = None
-        bbox_to_anchor = (0.9, 0.6)
+        bbox_to_anchor = (0.9, 0.5)
         facecolor = None
         framealpha = None
         legend_title = None
-        legendfontsize = 12
+        legendfontsize = 10
         labels = [l.get_label().replace(" ", "\n") for l in legend_handles]
         legend = fig.legend(
             labels=labels,
