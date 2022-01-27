@@ -1,3 +1,12 @@
+# ICML 2022
+This repository corresponds to the ICML submission "Contextualize Me – The Case for Context in Reinforcement Learning".
+In addition to the CARL benchmarks, you can find the code to reproduce all our experiments. The "experiments" directory lists the different experiment categories where you can find the training and plotting scripts, e.g. "experiments/context_gating" for the comparison between cGATE and context concatenation.
+
+If you want to run the experiments, we recommend you use the provided environment.yaml file to create a conda environment instead of the benchmark installation below. To do so, make sure you have anaconda installed and run:
+```bash
+conda env create -f environment.yaml
+```
+
 <img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
 
 # – The Benchmark Library
@@ -6,7 +15,6 @@ to several well-known RL environments.
 It's designed to test your agent's generalization capabilities
 in all scenarios where intra-task generalization is important.
 
-Feel free to check out our [paper](https://arxiv.org/abs/2110.02102) and our short [blog post](https://www.automl.org/carl-a-benchmark-to-study-generalization-in-reinforcement-learning/)!
 
 ## Benchmarks
 Benchmarks include:
@@ -28,8 +36,6 @@ Benchmarks include:
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
 
-For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
-   
 
 ## Installation
 We recommend you use a virtual environment (e.g. Anaconda) to 
@@ -68,25 +74,6 @@ CARL contextually extends the environment by making the context visible and conf
 
 ![CARL contextually extends Brax' Fetch.](./docs/source/figures/concept.png)
 
-## Cite Us
-If you use CARL in your research, please cite our paper on the benchmark:
-
-```bibtex
-@inproceedings { BenEim2021a,
-  author = {Carolin Benjamins and 
-            Theresa Eimer and 
-            Frederik Schubert and 
-            André Biedenkapp and 
-            Bodo Rosenhahn and Frank Hutter and 
-            Marius Lindauer},
-  title = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
-  booktitle = {NeurIPS 2021 Workshop on Ecological Theory of Reinforcement Learning},
-  year = {2021},
-  month = dec
-}
-```
-
-You can find the code and experiments for this paper in the `neurips_ecorl_workshop_2021` branch.
 
 ## References
 [OpenAI gym, Brockman et al., 2016. arXiv preprint arXiv:1606.01540](https://arxiv.org/pdf/1606.01540.pdf)
