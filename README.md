@@ -1,3 +1,12 @@
+# ICML 2022
+This repository corresponds to the ICML submission "Contextualize Me – The Case for Context in Reinforcement Learning".
+In addition to the CARL benchmarks, you can find the code to reproduce all our experiments. The "experiments" directory lists the different experiment categories where you can find the training and plotting scripts, e.g. "experiments/context_gating" for the comparison between cGATE and context concatenation.
+
+If you want to run the experiments, we recommend you use the provided environment.yaml file to create a conda environment instead of the benchmark installation below. To do so, make sure you have anaconda installed and run:
+```bash
+conda env create -f environment.yaml
+```
+
 <img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
 
 # – The Benchmark Library
