@@ -36,8 +36,6 @@ Benchmarks include:
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
 
-For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
-   
 
 ## Installation
 We recommend you use a virtual environment (e.g. Anaconda) to 
