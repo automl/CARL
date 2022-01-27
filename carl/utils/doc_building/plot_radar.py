@@ -6,6 +6,8 @@ if __name__ == "__main__":
 
     from carl.utils.doc_building.plotting import radar_factory
 
+    plot_legend = True
+
     env_context_feature_names = {
         "CARLMountainCarEnv": [
             "force",
@@ -292,12 +294,18 @@ if __name__ == "__main__":
 
     figtitle = "Environments"
     N = len(cols_plot)
+    hue = ""
     theta = radar_factory(N, frame="polygon")
 
     figsize = (10, 2.5)
+    ncols = 4
+    nrows = 1
+    if plot_legend:
+        figsize = (10, 4)
+        nrows = 2
     dpi = 250
     fig, axs = plt.subplots(
-        figsize=figsize, nrows=1, ncols=4, subplot_kw=dict(projection="radar"), dpi=dpi
+        figsize=figsize, nrows=nrows, ncols=ncols, subplot_kw=dict(projection="radar"), dpi=dpi
     )
     # fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.99, bottom=0.01)
 
@@ -318,19 +326,23 @@ if __name__ == "__main__":
         ax.set_title(
             title,
             weight="normal",
-            size="medium",  # position=(0.5, 0.25), transform=ax.transAxes,
+            # size="medium",  # position=(0.5, 0.25), transform=ax.transAxes,
             horizontalalignment="center",
             verticalalignment="center",
             pad=15,
             fontsize=12,
         )
         for i, (d, color) in enumerate(zip(plot_data, colors)):
-            ax.plot(theta, d, color=color, label=labels[i])
+            label = labels[i]
+            label = label.replace("CARL", "")
+            label = label.replace("Env", "")
+            ax.plot(theta, d, color=color, label=label)
             ax.fill(theta, d, facecolor=color, alpha=0.25)
             ax.set_varlabels(
                 xticklabels, horizontalalignment="center", verticalalignment="center"
             )
-        # ax.legend(loc=(0.25, -.5), labelspacing=0.1, fontsize='small')
+        if plot_legend:
+            ax.legend(loc="lower center", bbox_to_anchor=(0.5, -1.), labelspacing=0.1, fontsize='small')
         rticks = np.linspace(0, 1, 5)
         ax.set_rticks(rticks)
         plt.setp(ax.get_yticklabels(), visible=False)
@@ -343,8 +355,14 @@ if __name__ == "__main__":
     # fig.text(0.5, 0.965, figtitle,
     #          horizontalalignment='center', color='black', weight='bold',
     #          size='large')
+
+    if plot_legend:
+        for ax in axs[1]:
+            ax.set_axis_off()
+
     fig.set_tight_layout(True)
 
-    figfname = "utils/radar_env_space.png"
+    legendstr = "" if not plot_legend else "_withlegend"
+    figfname = f"radar_env_space{legendstr}.png"
     fig.savefig(figfname, bbox_inches="tight")
     plt.show()

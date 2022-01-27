@@ -40,6 +40,10 @@ df = filter_group(df, ["concat", "encoder2d", "gating"])
 df_group = df["group"].copy()
 df_group[df["group"] == "encoder2d"] = "encoder"
 df["group"] = df_group
+df_group = df["group"].copy()
+df_group[df["group"] == "gating"] = "cGate"
+df["group"] = df_group
+
 
 df["contexts.context_feature_args"].fillna("None", inplace=True)
 df["contexts.context_feature_args"].replace("", "None", inplace=True)
@@ -97,6 +101,11 @@ if env == "CARLPendulumEnv":
     #     ["max_speed, m, l, g, dt"],
     # ]
 elif env == "CARLAnt":
+    ids = np.logical_and(df["contexts.context_feature_args"] == 'joint_stiffness, gravity, friction, angular_damping, actuator_strength, joint_angular_damping, torso_mass', df["group"] == "encoder")
+    df = df[~ids]
+
+    style = "name"
+
     filter_cfs = [
         ["None"],
         ["friction", "torso_mass", "gravity"],
@@ -104,6 +113,8 @@ elif env == "CARLAnt":
         ["None", "friction", "torso_mass", "gravity", "friction, torso_mass, gravity"]
     ]
 elif env == "CARLMountainCarContinuousEnv":
+    style = "name"
+
     filter_cfs = [
         ["None"],
         ["power", "max_speed"],
