@@ -1,6 +1,3 @@
-# cRL_HPO
-This is the companion repo for out EcoRL workshop Paper 'Hyperparameters in Contextual RL are Highly Situational'. For our results and insights, please check out the paper itself.
-
 ## Installation
 If you do not have a virtual environment, we recommend to create and activate a virtual environment (e.g. Anaconda) first.
 We recommend to use python 3.9 under Linux.
