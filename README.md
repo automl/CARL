@@ -6,6 +6,7 @@ If you want to run the experiments, we recommend you use the provided environmen
 ```bash
 conda env create -f environment.yaml
 ```
+Please note, all experiments have been run & tested on Linux systems only.
 
 <img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
 
