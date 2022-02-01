@@ -1,9 +1,10 @@
+from typing import Tuple
+
 import atexit
 import os
 import socket
 import sys
 from contextlib import closing
-from typing import Tuple
 
 from py4j.java_gateway import JavaGateway
 from xvfbwrapper import Xvfb

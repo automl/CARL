@@ -1,12 +1,13 @@
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
-from typing import Tuple, Dict, List, Any
+from matplotlib.lines import Line2D
 from matplotlib.patches import Circle, RegularPolygon
 from matplotlib.path import Path
 from matplotlib.projections import register_projection
 from matplotlib.projections.polar import PolarAxes
 from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
-from matplotlib.lines import Line2D
 
 
 def radar_factory(num_vars: int, frame: str = "circle") -> np.ndarray:

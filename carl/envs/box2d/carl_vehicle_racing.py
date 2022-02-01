@@ -1,9 +1,8 @@
-from typing import Dict, List, Optional, Union, Any, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 import numpy as np
 import pyglet
 from gym.envs.box2d import CarRacing
-
 from gym.envs.box2d.car_dynamics import Car
 from pyglet import gl
 
@@ -90,7 +89,9 @@ class CustomCarRacingEnv(CarRacing):
     def __init__(self, vehicle_class: Type[Car] = Car, verbose: int = 1):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
-        self.car = self.vehicle_class(self.world, *self.track[0][1:4])  # already set a car to please mypy
+        self.car = self.vehicle_class(
+            self.world, *self.track[0][1:4]
+        )  # already set a car to please mypy
 
     def reset(self) -> np.ndarray:
         self._destroy()

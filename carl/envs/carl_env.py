@@ -197,7 +197,9 @@ class CARLEnv(Wrapper):
         state = self.build_context_adaptive_state(state)
         return state
 
-    def build_context_adaptive_state(self, state: List[float], context_feature_values: Optional[List[float]] = None) -> List[float]:
+    def build_context_adaptive_state(
+        self, state: List[float], context_feature_values: Optional[List[float]] = None
+    ) -> List[float]:
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context

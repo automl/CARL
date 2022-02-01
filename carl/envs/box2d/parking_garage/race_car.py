@@ -1,16 +1,14 @@
 import numpy as np
-from Box2D.b2 import (  # noqa: F401
-    circleShape,  # noqa: F401
-    contactListener,  # noqa: F401
-    distanceJointDef,  # noqa: F401
-    edgeShape,  # noqa: F401
-    fixtureDef,  # noqa: F401
-    polygonShape,  # noqa: F401
-    prismaticJointDef,  # noqa: F401
-    revoluteJointDef,  # noqa: F401
-    ropeJointDef,  # noqa: F401
-    shape,  # noqa: F401
-)
+from Box2D.b2 import circleShape  # noqa: F401
+from Box2D.b2 import contactListener  # noqa: F401
+from Box2D.b2 import distanceJointDef  # noqa: F401
+from Box2D.b2 import edgeShape  # noqa: F401
+from Box2D.b2 import fixtureDef  # noqa: F401
+from Box2D.b2 import polygonShape  # noqa: F401
+from Box2D.b2 import prismaticJointDef  # noqa: F401
+from Box2D.b2 import revoluteJointDef  # noqa: F401
+from Box2D.b2 import ropeJointDef  # noqa: F401
+from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gym.envs.box2d.car_dynamics import Car
 
 __author__ = "André Biedenkapp"

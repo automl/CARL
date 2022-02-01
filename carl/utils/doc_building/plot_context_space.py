@@ -6,8 +6,9 @@ Boxplot
 - number of CFs changing the reward
 """
 if __name__ == "__main__":
-    from pathlib import Path
     from typing import List
+
+    from pathlib import Path
 
     import matplotlib.pyplot as plt
     import numpy as np

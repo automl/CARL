@@ -1,5 +1,6 @@
+from typing import Dict, Tuple
+
 from pathlib import Path
-from typing import Tuple, Dict
 
 import numpy as np
 import pandas as pd

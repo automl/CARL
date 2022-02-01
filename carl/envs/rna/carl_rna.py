@@ -1,7 +1,7 @@
-from typing import Dict, Optional, Tuple, Any
+from typing import Any, Dict, Optional, Tuple
 
-import numpy as np
 import gym
+import numpy as np
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.carl_rna_definitions import (

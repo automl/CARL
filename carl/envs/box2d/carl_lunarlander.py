@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import Box2D
 import numpy as np
@@ -74,7 +74,9 @@ CONTEXT_BOUNDS = {
 
 class CustomLunarLanderEnv(lunar_lander.LunarLander):
     def __init__(
-        self, gravity: Tuple[float, float] = (0, -10), high_gameover_penalty: bool = False
+        self,
+        gravity: Tuple[float, float] = (0, -10),
+        high_gameover_penalty: bool = False,
     ):
         EzPickle.__init__(self)
         self.high_gameover_penalty = high_gameover_penalty
@@ -208,7 +210,10 @@ class CARLLunarLanderEnv(CARLEnv):
 
 
 def demo_heuristic_lander(
-        env: Union[CARLLunarLanderEnv, lunar_lander], seed: Optional[int] = None, render: bool = False) -> float:
+    env: Union[CARLLunarLanderEnv, lunar_lander],
+    seed: Optional[int] = None,
+    render: bool = False,
+) -> float:
     """
     Copied from LunarLander
     """

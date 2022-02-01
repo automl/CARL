@@ -124,7 +124,9 @@ def reachability_map(
     return reachability_map, playable
 
 
-def check_blocked(level: List[str], i: int, j: int, dh: int, dv: int, right: bool) -> int:
+def check_blocked(
+    level: List[str], i: int, j: int, dh: int, dv: int, right: bool
+) -> int:
     """
     Checks for a given position, level and direction if a blockade exists in the range specified by dh and dv.
     :param level: The level in ASCII form

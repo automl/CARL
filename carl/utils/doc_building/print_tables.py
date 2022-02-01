@@ -9,7 +9,9 @@ if __name__ == "__main__":
 
     import carl.envs
 
-    def plot_context_feature_freq(context_feature_names: List[str], fname: str = "") -> None:
+    def plot_context_feature_freq(
+        context_feature_names: List[str], fname: str = ""
+    ) -> None:
         filter_cf_names = True
         if filter_cf_names:
             aliases = {
@@ -192,7 +194,9 @@ if __name__ == "__main__":
             file.write(table_str)
 
     # plot_context_feature_freq(context_feature_names=context_feature_names, fname="utils/context_feature_freq.png")
-    def plot_statistics(env_names: List[str], n_context_features: int, fname: str = "") -> None:
+    def plot_statistics(
+        env_names: List[str], n_context_features: int, fname: str = ""
+    ) -> None:
         fig = plt.figure(figsize=(5, 7), dpi=200)
         ax = fig.add_subplot(111)
         ax.barh(env_names, n_context_features)

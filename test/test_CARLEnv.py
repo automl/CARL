@@ -179,13 +179,15 @@ class TestEpisodeTermination(unittest.TestCase):
 
 class TestContextFeatureScaling(unittest.TestCase):
     def test_context_feature_scaling_no(self):
-        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            scale_context_features="no",
+        env = (
+            CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                scale_context_features="no",
+            )
         )
 
     def test_context_feature_scaling_by_mean(self):
@@ -265,13 +267,15 @@ class TestContextFeatureScaling(unittest.TestCase):
             )
 
     def test_context_feature_scaling_unknown_step(self):
-        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            scale_context_features="no",
+        env = (
+            CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                scale_context_features="no",
+            )
         )
 
         env.reset()
@@ -283,31 +287,37 @@ class TestContextFeatureScaling(unittest.TestCase):
 
 class TestInstanceModes(unittest.TestCase):
     def test_instance_mode_random(self):
-        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            instance_mode="random",
+        env = (
+            CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                instance_mode="random",
+            )
         )
 
     def test_instance_mode_roundrobin(self):
-        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            instance_mode="rr",
+        env = (
+            CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                instance_mode="rr",
+            )
         )
-        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            instance_mode="roundrobin",
+        env = (
+            CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                instance_mode="roundrobin",
+            )
         )
 
     def test_instance_mode_unknown(self):
