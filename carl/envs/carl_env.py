@@ -350,7 +350,8 @@ class CARLEnv(Wrapper):
         Raises
         ------
         ValueError:
-            If (env.)observation space is not gym.spaces.Box and the context should not be hidden (hide_context = False).
+            If (env.)observation space is not gym.spaces.Box and the context should not be hidden
+            (hide_context = False).
 
         Returns
         -------

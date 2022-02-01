@@ -1,5 +1,4 @@
 import numpy as np
-from gym import spaces
 
 try:
     from carl.envs.mario.toad_gan import generate_initial_noise

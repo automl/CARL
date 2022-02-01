@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, RegularPolygon
 from matplotlib.path import Path

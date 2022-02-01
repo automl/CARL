@@ -7,7 +7,7 @@ if __name__ == "__main__":
     import seaborn as sns
     from matplotlib.offsetbox import AnchoredText
 
-    from carl.envs import *
+    import carl.envs
 
     def plot_context_feature_freq(context_feature_names: List[str], fname: str = ""):
         filter_cf_names = True
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
         plt.show()
 
-    global_vars = vars()
+    global_vars = vars(carl.envs)
     vars = {
         k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k
     }
@@ -197,7 +197,7 @@ if __name__ == "__main__":
         ax = fig.add_subplot(111)
         ax.barh(env_names, n_context_features)
         ax.set_yticklabels(env_names, ha="right", fontsize=8)
-        ax.set_title(f"TODO", fontsize=10)
+        ax.set_title("TODO", fontsize=10)
         ax.grid(axis="x", which="both")
 
         fig.set_tight_layout(True)

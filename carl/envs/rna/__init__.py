@@ -1,3 +1,4 @@
+# flake8: noqa: F401
 try:
     from carl.envs.rna.carl_rna import CARLRnaDesignEnv
     from carl.envs.rna.carl_rna_definitions import (

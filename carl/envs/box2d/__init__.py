@@ -1,3 +1,4 @@
+# flake8: noqa: F401
 from carl.envs.box2d.carl_bipedal_walker import (
     CONTEXT_BOUNDS as CARLBipedalWalkerEnv_bounds,
 )

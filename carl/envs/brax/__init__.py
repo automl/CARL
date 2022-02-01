@@ -1,3 +1,4 @@
+# flake8: noqa: F401
 # Contexts and bounds by name
 from carl.envs.brax.carl_ant import CONTEXT_BOUNDS as CARLAnt_bounds
 from carl.envs.brax.carl_ant import DEFAULT_CONTEXT as CARLAnt_defaults

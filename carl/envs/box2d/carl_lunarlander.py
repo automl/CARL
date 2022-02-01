@@ -15,9 +15,6 @@ from carl.utils.trial_logger import TrialLogger
 # import pyglet
 # pyglet.options["shadow_window"] = False
 
-
-
-
 # TODO debug/test this environment by looking at rendering!
 
 DEFAULT_CONTEXT = {

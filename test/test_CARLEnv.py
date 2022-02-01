@@ -179,7 +179,7 @@ class TestEpisodeTermination(unittest.TestCase):
 
 class TestContextFeatureScaling(unittest.TestCase):
     def test_context_feature_scaling_no(self):
-        env = CARLPendulumEnv(
+        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
             contexts={},
             hide_context=False,
             add_gaussian_noise_to_context=False,
@@ -243,7 +243,7 @@ class TestContextFeatureScaling(unittest.TestCase):
 
     def test_context_feature_scaling_by_default_nodefcontext(self):
         with self.assertRaises(ValueError):
-            env = CARLPendulumEnv(
+            env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
                 contexts={},
                 hide_context=False,
                 add_gaussian_noise_to_context=False,
@@ -255,7 +255,7 @@ class TestContextFeatureScaling(unittest.TestCase):
 
     def test_context_feature_scaling_unknown_init(self):
         with self.assertRaises(ValueError):
-            env = CARLPendulumEnv(
+            env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
                 contexts={},
                 hide_context=False,
                 add_gaussian_noise_to_context=False,
@@ -265,7 +265,7 @@ class TestContextFeatureScaling(unittest.TestCase):
             )
 
     def test_context_feature_scaling_unknown_step(self):
-        env = CARLPendulumEnv(
+        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
             contexts={},
             hide_context=False,
             add_gaussian_noise_to_context=False,
@@ -283,7 +283,7 @@ class TestContextFeatureScaling(unittest.TestCase):
 
 class TestInstanceModes(unittest.TestCase):
     def test_instance_mode_random(self):
-        env = CARLPendulumEnv(
+        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
             contexts={},
             hide_context=False,
             add_gaussian_noise_to_context=False,
@@ -293,7 +293,7 @@ class TestInstanceModes(unittest.TestCase):
         )
 
     def test_instance_mode_roundrobin(self):
-        env = CARLPendulumEnv(
+        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
             contexts={},
             hide_context=False,
             add_gaussian_noise_to_context=False,
@@ -301,7 +301,7 @@ class TestInstanceModes(unittest.TestCase):
             state_context_features=None,
             instance_mode="rr",
         )
-        env = CARLPendulumEnv(
+        env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
             contexts={},
             hide_context=False,
             add_gaussian_noise_to_context=False,
@@ -312,7 +312,7 @@ class TestInstanceModes(unittest.TestCase):
 
     def test_instance_mode_unknown(self):
         with self.assertRaises(ValueError):
-            env = CARLPendulumEnv(
+            env = CARLPendulumEnv(  # noqa: F841 local variable is assigned to but never used
                 contexts={},
                 hide_context=False,
                 add_gaussian_noise_to_context=False,

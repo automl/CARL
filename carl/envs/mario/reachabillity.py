@@ -14,9 +14,11 @@ ignored = ["M", "F", "|", "E", "g", "k", "r", "y", "G", "K", "R", "Y", "*", "B",
 
 def remove_ignored(level: List[str]) -> Tuple[List, Tuple[int, int], Tuple[int, int]]:
     """
-    Replaces all ignored tokens with the empty token in a level. In case of Mario and the flag the coordinates of the blocks below are returned and they are also replaced.
+    Replaces all ignored tokens with the empty token in a level. In case of Mario and the flag the coordinates of the
+        blocks below are returned and they are also replaced.
     :param level: a level in ASCII form
-    :return: the level in ASCII form with the ignored tokens replaced and the coordinates of the block below Mario and the flag if existing
+    :return: the level in ASCII form with the ignored tokens replaced and the coordinates of the block below Mario and
+        the flag if existing
     """
     new_level = []
     mario = (-1, -1)
@@ -50,10 +52,13 @@ def reachability_map(
     Levels are generated without Mario and the flag and as such the algorithm is not including these.
     :param level: The level (slice) as a list containing the ASCII strings of each level row
     :param shape: The level shape
-    :param has_mario: As levels are expected to be generated without Mario, this option has to be set to search for Mario as a starting point
-    :param has_flag: As levels are expected to be generated without the flag, this option has to be set to determine playability via reaching the flag
+    :param has_mario: As levels are expected to be generated without Mario, this option has to be set to search for
+        Mario as a starting point
+    :param has_flag: As levels are expected to be generated without the flag, this option has to be set to determine
+        playability via reaching the flag
     :param check_outside: If this option is set, playability will check if the player can reach the outside
-    :return: A numpy array where a 0 indicates an unreachable block and a 1 denotes a reachable block; a boolean indicating if the level can be finished by the player
+    :return: A numpy array where a 0 indicates an unreachable block and a 1 denotes a reachable block;
+        a boolean indicating if the level can be finished by the player
     """
 
     level, mario, flag = remove_ignored(level)
@@ -201,13 +206,15 @@ def mark(
     check_outside: bool = False,
 ) -> Tuple[bool, List[Tuple[int, int]], bool]:
     """
-    For a given position and a level this will mark all tiles reachable from the given position and collect all these positions for further use.
+    For a given position and a level this will mark all tiles reachable from the given position and collect all
+        these positions for further use.
     :param level: The level (slice) as a list containing the ASCII strings of each level row
     :param map: The current reachability map where the reachable tiles will be marked
     :param i: x coordinate
     :param j: y coordinate
     :param check_outside: if the algorithm should indicate that the player can reach the right outside of the level
-    :return: A boolean indicating if any tile can be reached from this position, a list of all reachable positions and if the outside can be reached
+    :return: A boolean indicating if any tile can be reached from this position, a list of all reachable positions and
+        if the outside can be reached
     """
     found_first = False
     reach_outside = False

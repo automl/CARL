@@ -5,7 +5,6 @@ import os
 import sys
 from dataclasses import dataclass
 
-import numpy as np
 import torch
 
 from carl.envs.mario.generate_sample import generate_sample, generate_spatial_noise

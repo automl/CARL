@@ -1,18 +1,15 @@
-import math
-
-import Box2D
 import numpy as np
-from Box2D.b2 import (
-    circleShape,
-    contactListener,
-    distanceJointDef,
-    edgeShape,
-    fixtureDef,
-    polygonShape,
-    prismaticJointDef,
-    revoluteJointDef,
-    ropeJointDef,
-    shape,
+from Box2D.b2 import (  # noqa: F401
+    circleShape,  # noqa: F401
+    contactListener,  # noqa: F401
+    distanceJointDef,  # noqa: F401
+    edgeShape,  # noqa: F401
+    fixtureDef,  # noqa: F401
+    polygonShape,  # noqa: F401
+    prismaticJointDef,  # noqa: F401
+    revoluteJointDef,  # noqa: F401
+    ropeJointDef,  # noqa: F401
+    shape,  # noqa: F401
 )
 from gym.envs.box2d.car_dynamics import Car
 
@@ -92,7 +89,7 @@ class StreetCar(Car):
         self._init_extra_params()
         self.world = world
 
-        ##### SETUP MAIN BODY ####
+        ##### SETUP MAIN BODY ####  # noqa: E266
         self.hull = self.world.CreateDynamicBody(
             position=(init_x, init_y),
             angle=init_angle,
@@ -175,7 +172,7 @@ class StreetCar(Car):
             w.userData = w
             self.wheels.append(w)
 
-        ##### SETUP SMALL TRAILER ####
+        ##### SETUP SMALL TRAILER ####  # noqa: E266
         if self.trailer_type == 1:
             self.trailer = self.world.CreateDynamicBody(
                 angle=init_angle,
@@ -246,7 +243,7 @@ class StreetCar(Car):
                 self.wheels.append(w)
             self.drawlist = self.wheels + [self.hull, self.trailer]
 
-        ##### SETUP LARGE TRAILER ####
+        ##### SETUP LARGE TRAILER ####  # noqa: E266
         elif self.trailer_type == 2:
             self.trailer_axel = self.world.CreateDynamicBody(
                 angle=init_angle,

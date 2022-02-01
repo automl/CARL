@@ -4,7 +4,6 @@ import numpy as np
 import pyglet
 from gym.envs.box2d import CarRacing
 
-pyglet.options["debug_gl"] = False
 from gym.envs.box2d.car_dynamics import Car
 from pyglet import gl
 

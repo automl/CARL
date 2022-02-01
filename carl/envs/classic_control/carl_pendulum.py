@@ -75,7 +75,7 @@ class CARLPendulumEnv(CARLEnv):
     def _update_context(self):
         self.env.max_speed = self.context["max_speed"]
         self.env.dt = self.context["dt"]
-        self.env.l = self.context["l"]
+        self.env.l = self.context["l"]  # noqa: E741 ambiguous variable name
         self.env.m = self.context["m"]
         self.env.g = self.context["g"]
 

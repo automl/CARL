@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from gym import spaces
 
-from carl.envs import *
+import carl.envs
 
 # JUST FOR DOCS / is dynamic in code!!
 MARIO_OBSERVATION_SPACE = spaces.Box(
@@ -21,7 +21,7 @@ def build():
     outdir = filepath.parent.parent.parent.parent / "docs/source/environments/data"
     print("Build environment overview table.")
     # Create snapshot
-    local_vars = globals().copy()
+    local_vars = vars(carl.envs)
 
     k_env_family = "Env. Family"
     k_env_name = "Name"

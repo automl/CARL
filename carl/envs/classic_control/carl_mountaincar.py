@@ -61,8 +61,8 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
             [
                 self.np_random.normal(self.position_start, self.position_start_std),
                 self.np_random.normal(self.velocity_start, self.velocity_start_std)
-                # self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),  # sample start position
-                # self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)   # sample start velocity
+                # self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),
+                # self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)
             ]
         )
 

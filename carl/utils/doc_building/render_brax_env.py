@@ -1,17 +1,8 @@
 if __name__ == "__main__":
-    import functools
-    import os
-    from datetime import datetime
-
-    import brax
     import jax
-    import jax.numpy as jnp
-    import matplotlib.pyplot as plt
     from brax import envs
     from brax.io import html
-    from brax.training import ppo, sac
-    from IPython.display import HTML, IFrame, clear_output, display
-    from jax.tools import colab_tpu
+    from IPython.display import HTML
 
     env_name = "fetch"  # @param ['ant', 'humanoid', 'fetch', 'grasp', 'halfcheetah', 'ur5e', 'reacher']
     env_fn = envs.create_fn(env_name=env_name)

@@ -13,9 +13,9 @@ if __name__ == "__main__":
     import pandas as pd
     import seaborn as sns
 
-    from carl.envs import *
+    import carl.envs
 
-    global_vars = vars()
+    global_vars = vars(carl.envs)
     vars = {
         k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k
     }

@@ -248,8 +248,8 @@ def demo_heuristic(env):
             print("leg1 " + str(["{:+0.2f}".format(x) for x in s[9:14]]))
         steps += 1
 
-        contact0 = s[8]
-        contact1 = s[13]
+        contact0 = s[8]  # noqa: F841
+        contact1 = s[13]  # noqa: F841
         moving_s_base = 4 + 5 * moving_leg
         supporting_s_base = 4 + 5 * supporting_leg
 
@@ -310,8 +310,6 @@ def demo_heuristic(env):
 
 if __name__ == "__main__":
     # Heurisic: suboptimal, have no notion of balance.
-    import numpy as np
-
     env = CARLBipedalWalkerEnv(add_gaussian_noise_to_context=True)
     for i in range(3):
         demo_heuristic(env)
