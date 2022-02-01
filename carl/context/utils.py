@@ -1,8 +1,11 @@
+from typing import Dict, List, Tuple
+
 import numpy as np
-from typing import List, Dict, Tuple
 
 
-def get_context_bounds(context_keys: List[str], context_bounds: Dict[str, Tuple[float]]):
+def get_context_bounds(
+    context_keys: List[str], context_bounds: Dict[str, Tuple[float]]
+):
     """
     Get context bounds for specific features.
 
@@ -32,7 +35,7 @@ def get_context_bounds(context_keys: List[str], context_bounds: Dict[str, Tuple[
     return lower_bounds, upper_bounds
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     DEFAULT_CONTEXT = {
         "min_position": -1.2,  # unit?
         "max_position": 0.6,  # unit?
@@ -43,8 +46,8 @@ if __name__ == '__main__':
         "gravity": 0.0025,  # unit?
         "min_position_start": -0.6,
         "max_position_start": -0.4,
-        "min_velocity_start": 0.,
-        "max_velocity_start": 0.,
+        "min_velocity_start": 0.0,
+        "max_velocity_start": 0.0,
     }
 
     CONTEXT_BOUNDS = {

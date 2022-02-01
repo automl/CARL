@@ -1,65 +1,58 @@
-from typing import Dict, Optional, List
-import numpy as np
+from typing import Dict, List, Optional
 
 import Box2D
+import numpy as np
+from Box2D.b2 import edgeShape, fixtureDef, polygonShape
 from gym import spaces
-from gym.utils import EzPickle
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
-from Box2D.b2 import (edgeShape, fixtureDef, polygonShape)
+from gym.utils import EzPickle
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 
-
 DEFAULT_CONTEXT = {
     "FPS": 50,
-    "SCALE": 30.0,   # affects how fast-paced the game is, forces should be adjusted as well
-
+    "SCALE": 30.0,  # affects how fast-paced the game is, forces should be adjusted as well
     "GRAVITY_X": 0,
     "GRAVITY_Y": -10,
-
     # surroundings
     "FRICTION": 2.5,
-    "TERRAIN_STEP": 14/30.0,
+    "TERRAIN_STEP": 14 / 30.0,
     "TERRAIN_LENGTH": 200,  # in steps
-    "TERRAIN_HEIGHT": 600/30/4,  # VIEWPORT_H/SCALE/4
+    "TERRAIN_HEIGHT": 600 / 30 / 4,  # VIEWPORT_H/SCALE/4
     "TERRAIN_GRASS": 10,  # low long are grass spots, in steps
-    "TERRAIN_STARTPAD": 20,    # in steps
-
+    "TERRAIN_STARTPAD": 20,  # in steps
     # walker
     "MOTORS_TORQUE": 80,
     "SPEED_HIP": 4,
     "SPEED_KNEE": 6,
-    "LIDAR_RANGE": 160/30.0,
-    "LEG_DOWN": -8/30.0,
-    "LEG_W": 8/30.0,
-    "LEG_H": 34/30.0,
-
+    "LIDAR_RANGE": 160 / 30.0,
+    "LEG_DOWN": -8 / 30.0,
+    "LEG_W": 8 / 30.0,
+    "LEG_H": 34 / 30.0,
     # absolute value of random force applied to walker at start of episode
     "INITIAL_RANDOM": 5,
-
-
     # Size of world
     "VIEWPORT_W": 600,
     "VIEWPORT_H": 400,
-
-
 }
 
 # TODO make bounds more generous for all Box2D envs?
 CONTEXT_BOUNDS = {
     "FPS": (1, 500, float),
-    "SCALE": (1, 100, float),   # affects how fast-paced the game is, forces should be adjusted as well
-
+    "SCALE": (
+        1,
+        100,
+        float,
+    ),  # affects how fast-paced the game is, forces should be adjusted as well
     # surroundings
     "FRICTION": (0, 10, float),
     "TERRAIN_STEP": (0.25, 1, float),
     "TERRAIN_LENGTH": (100, 500, int),  # in steps
     "TERRAIN_HEIGHT": (3, 10, float),  # VIEWPORT_H/SCALE/4
     "TERRAIN_GRASS": (5, 15, int),  # low long are grass spots, in steps
-    "TERRAIN_STARTPAD": (10, 30, int),    # in steps
-
+    "TERRAIN_STARTPAD": (10, 30, int),  # in steps
     # walker
     "MOTORS_TORQUE": (0, 200, float),
     "SPEED_HIP": (1e-6, 15, float),
@@ -68,22 +61,25 @@ CONTEXT_BOUNDS = {
     "LEG_DOWN": (-2, -0.25, float),
     "LEG_W": (0.25, 0.5, float),
     "LEG_H": (0.25, 2, float),
-
     # absolute value of random force applied to walker at start of episode
     "INITIAL_RANDOM": (0, 50, float),
-
     # Size of world
     "VIEWPORT_W": (400, 1000, int),
     "VIEWPORT_H": (200, 800, int),
-
     "GRAVITY_X": (-20, 20, float),  # unit: m/s²
-    "GRAVITY_Y": (-20, -0.01, float),   # the y-component of gravity must be smaller than 0 because otherwise the
-                                        # body leaves the frame by going up
+    "GRAVITY_Y": (
+        -20,
+        -0.01,
+        float,
+    ),  # the y-component of gravity must be smaller than 0 because otherwise the
+    # body leaves the frame by going up
 }
 
 
 class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
-    def __init__(self, gravity: (float, float) = (0, -10)):  # TODO actually we dont need a custom env because the gravity can be adjusted afterwards
+    def __init__(
+        self, gravity: (float, float) = (0, -10)
+    ):  # TODO actually we dont need a custom env because the gravity can be adjusted afterwards
         EzPickle.__init__(self)
         self.seed()
         self.viewer = None
@@ -95,17 +91,12 @@ class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
         self.prev_shaping = None
 
         self.fd_polygon = fixtureDef(
-            shape=polygonShape(vertices=
-                               [(0, 0),
-                                (1, 0),
-                                (1, -1),
-                                (0, -1)]),
-            friction=bpw.FRICTION)
+            shape=polygonShape(vertices=[(0, 0), (1, 0), (1, -1), (0, -1)]),
+            friction=bpw.FRICTION,
+        )
 
         self.fd_edge = fixtureDef(
-            shape=edgeShape(vertices=
-                            [(0, 0),
-                             (1, 1)]),
+            shape=edgeShape(vertices=[(0, 0), (1, 1)]),
             friction=bpw.FRICTION,
             categoryBits=0x0001,
         )
@@ -113,24 +104,26 @@ class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
         self.reset()
 
         high = np.array([np.inf] * 24)
-        self.action_space = spaces.Box(np.array([-1, -1, -1, -1]), np.array([1, 1, 1, 1]), dtype=np.float32)
+        self.action_space = spaces.Box(
+            np.array([-1, -1, -1, -1]), np.array([1, 1, 1, 1]), dtype=np.float32
+        )
         self.observation_space = spaces.Box(-high, high, dtype=np.float32)
 
 
 class CARLBipedalWalkerEnv(CARLEnv):
     def __init__(
-            self,
-            env: Optional[CustomBipedalWalkerEnv] = None,
-            contexts: Dict[str, Dict] = {},
-            instance_mode: str = "rr",
-            hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.05,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            state_context_features: Optional[List[str]] = None,
-            dict_observation_space: bool = False,
+        self,
+        env: Optional[CustomBipedalWalkerEnv] = None,
+        contexts: Dict[str, Dict] = {},
+        instance_mode: str = "rr",
+        hide_context: bool = False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.05,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        state_context_features: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
     ):
         """
 
@@ -157,17 +150,20 @@ class CARLBipedalWalkerEnv(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space
-
+            dict_observation_space=dict_observation_space,
         )
-        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
+        self.whitelist_gaussian_noise = list(
+            DEFAULT_CONTEXT.keys()
+        )  # allow to augment all values
 
     def _update_context(self):
         bpw.FPS = self.context["FPS"]
         bpw.SCALE = self.context["SCALE"]
         bpw.FRICTION = self.context["FRICTION"]
         bpw.TERRAIN_STEP = self.context["TERRAIN_STEP"]
-        bpw.TERRAIN_LENGTH = int(self.context["TERRAIN_LENGTH"])  # TODO do this automatically
+        bpw.TERRAIN_LENGTH = int(
+            self.context["TERRAIN_LENGTH"]
+        )  # TODO do this automatically
         bpw.TERRAIN_HEIGHT = self.context["TERRAIN_HEIGHT"]
         bpw.TERRAIN_GRASS = self.context["TERRAIN_GRASS"]
         bpw.TERRAIN_STARTPAD = self.context["TERRAIN_STARTPAD"]
@@ -190,41 +186,41 @@ class CARLBipedalWalkerEnv(CARLEnv):
 
         # Important for building terrain
         self.env.fd_polygon = fixtureDef(
-            shape=polygonShape(vertices=
-                               [(0, 0),
-                                (1, 0),
-                                (1, -1),
-                                (0, -1)]),
-            friction=bipedal_walker.FRICTION)
+            shape=polygonShape(vertices=[(0, 0), (1, 0), (1, -1), (0, -1)]),
+            friction=bipedal_walker.FRICTION,
+        )
         self.env.fd_edge = fixtureDef(
-            shape=edgeShape(vertices=
-                            [(0, 0),
-                             (1, 1)]),
+            shape=edgeShape(vertices=[(0, 0), (1, 1)]),
             friction=bipedal_walker.FRICTION,
             categoryBits=0x0001,
         )
 
         bpw.HULL_FD = fixtureDef(
-            shape=polygonShape(vertices=[(x / bpw.SCALE, y / bpw.SCALE) for x, y in bpw.HULL_POLY]),
+            shape=polygonShape(
+                vertices=[(x / bpw.SCALE, y / bpw.SCALE) for x, y in bpw.HULL_POLY]
+            ),
             density=5.0,
             friction=0.1,
             categoryBits=0x0020,
             maskBits=0x001,  # collide only with ground
-            restitution=0.0)  # 0.99 bouncy
+            restitution=0.0,
+        )  # 0.99 bouncy
 
         bpw.LEG_FD = fixtureDef(
             shape=polygonShape(box=(bpw.LEG_W / 2, bpw.LEG_H / 2)),
             density=1.0,
             restitution=0.0,
             categoryBits=0x0020,
-            maskBits=0x001)
+            maskBits=0x001,
+        )
 
         bpw.LOWER_FD = fixtureDef(
             shape=polygonShape(box=(0.8 * bpw.LEG_W / 2, bpw.LEG_H / 2)),
             density=1.0,
             restitution=0.0,
             categoryBits=0x0020,
-            maskBits=0x001)
+            maskBits=0x001,
+        )
 
         self.env.world.gravity = gravity
 
@@ -266,7 +262,8 @@ def demo_heuristic(env):
             hip_targ[moving_leg] = 1.1
             knee_targ[moving_leg] = -0.6
             supporting_knee_angle += 0.03
-            if s[2] > SPEED: supporting_knee_angle += 0.03
+            if s[2] > SPEED:
+                supporting_knee_angle += 0.03
             supporting_knee_angle = min(supporting_knee_angle, SUPPORT_KNEE_ANGLE)
             knee_targ[supporting_leg] = supporting_knee_angle
             if s[supporting_s_base + 0] < 0.10:  # supporting leg is behind
@@ -286,10 +283,14 @@ def demo_heuristic(env):
                 moving_leg = 1 - moving_leg
                 supporting_leg = 1 - moving_leg
 
-        if hip_targ[0]: hip_todo[0] = 0.9 * (hip_targ[0] - s[4]) - 0.25 * s[5]
-        if hip_targ[1]: hip_todo[1] = 0.9 * (hip_targ[1] - s[9]) - 0.25 * s[10]
-        if knee_targ[0]: knee_todo[0] = 4.0 * (knee_targ[0] - s[6]) - 0.25 * s[7]
-        if knee_targ[1]: knee_todo[1] = 4.0 * (knee_targ[1] - s[11]) - 0.25 * s[12]
+        if hip_targ[0]:
+            hip_todo[0] = 0.9 * (hip_targ[0] - s[4]) - 0.25 * s[5]
+        if hip_targ[1]:
+            hip_todo[1] = 0.9 * (hip_targ[1] - s[9]) - 0.25 * s[10]
+        if knee_targ[0]:
+            knee_todo[0] = 4.0 * (knee_targ[0] - s[6]) - 0.25 * s[7]
+        if knee_targ[1]:
+            knee_todo[1] = 4.0 * (knee_targ[1] - s[11]) - 0.25 * s[12]
 
         hip_todo[0] -= 0.9 * (0 - s[0]) - 1.5 * s[1]  # PID to keep head strait
         hip_todo[1] -= 0.9 * (0 - s[0]) - 1.5 * s[1]
@@ -303,14 +304,15 @@ def demo_heuristic(env):
         a = np.clip(0.5 * a, -1.0, 1.0)
 
         env.render()
-        if done: break
+        if done:
+            break
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     # Heurisic: suboptimal, have no notion of balance.
     import numpy as np
+
     env = CARLBipedalWalkerEnv(add_gaussian_noise_to_context=True)
     for i in range(3):
         demo_heuristic(env)
     env.close()
-

@@ -3,9 +3,9 @@ import os
 import socket
 import sys
 from contextlib import closing
-from xvfbwrapper import Xvfb
 
 from py4j.java_gateway import JavaGateway
+from xvfbwrapper import Xvfb
 
 MARIO_AI_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "Mario-AI-Framework")

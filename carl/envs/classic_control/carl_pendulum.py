@@ -1,18 +1,18 @@
-import numpy as np
-from typing import Dict, Optional, List
+from typing import Dict, List, Optional
+
 import gym
 import gym.envs.classic_control as gccenvs
+import numpy as np
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 
-
 DEFAULT_CONTEXT = {
-    "max_speed": 8.,
-    "dt":  0.05,
+    "max_speed": 8.0,
+    "dt": 0.05,
     "g": 10.0,
-    "m": 1.,
-    "l": 1.,
+    "m": 1.0,
+    "l": 1.0,
 }
 
 CONTEXT_BOUNDS = {
@@ -26,19 +26,19 @@ CONTEXT_BOUNDS = {
 
 class CARLPendulumEnv(CARLEnv):
     def __init__(
-            self,
-            env: gym.Env = gccenvs.pendulum.PendulumEnv(),
-            contexts: Dict[str, Dict] = {},
-            instance_mode: str = "rr",
-            hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
-            state_context_features: Optional[List[str]] = None,
-            dict_observation_space: bool = False,
+        self,
+        env: gym.Env = gccenvs.pendulum.PendulumEnv(),
+        contexts: Dict[str, Dict] = {},
+        instance_mode: str = "rr",
+        hide_context: bool = False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
+        state_context_features: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
     ):
         """
         Max torque is not a context feature because it changes the action space.
@@ -66,9 +66,11 @@ class CARLPendulumEnv(CARLEnv):
             default_context=default_context,
             max_episode_length=max_episode_length,
             state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space
+            dict_observation_space=dict_observation_space,
         )
-        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
+        self.whitelist_gaussian_noise = list(
+            DEFAULT_CONTEXT.keys()
+        )  # allow to augment all values
 
     def _update_context(self):
         self.env.max_speed = self.context["max_speed"]
@@ -77,5 +79,5 @@ class CARLPendulumEnv(CARLEnv):
         self.env.m = self.context["m"]
         self.env.g = self.context["g"]
 
-        high = np.array([1., 1., self.max_speed], dtype=np.float32)
+        high = np.array([1.0, 1.0, self.max_speed], dtype=np.float32)
         self.build_observation_space(-high, high, CONTEXT_BOUNDS)

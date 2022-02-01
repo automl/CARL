@@ -1,4 +1,5 @@
 import unittest
+
 import numpy as np
 
 from carl.envs import *
@@ -16,5 +17,3 @@ class TestInitEnvs(unittest.TestCase):
                 except Exception as e:
                     print(f"Cannot instantiate {var} environment.")
                     raise e
-
-

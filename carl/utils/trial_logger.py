@@ -1,6 +1,8 @@
-from typing import Union, Dict, Any
-from pathlib import Path
+from typing import Any, Dict, Union
+
 import argparse
+from pathlib import Path
+
 import configargparse
 import pandas as pd
 
@@ -25,12 +27,13 @@ class TrialLogger(object):
         hyperparameters
 
     """
+
     def __init__(
-            self,
-            logdir: Union[str, Path],
-            parser: configargparse.ArgParser,
-            trial_setup_args: argparse.Namespace,
-            add_context_feature_names_to_logdir: bool = False,
+        self,
+        logdir: Union[str, Path],
+        parser: configargparse.ArgParser,
+        trial_setup_args: argparse.Namespace,
+        add_context_feature_names_to_logdir: bool = False,
     ):
         """
 
@@ -59,11 +62,15 @@ class TrialLogger(object):
         agent = trial_setup_args.agent
         if add_context_feature_names_to_logdir:
             context_feature_args = trial_setup_args.context_feature_args
-            names = [n for n in context_feature_args if "std" not in n and "mean" not in n]  # TODO make sure to exclude numbers
+            names = [
+                n for n in context_feature_args if "std" not in n and "mean" not in n
+            ]  # TODO make sure to exclude numbers
             context_feature_dirname = "default"
             if names:
-                context_feature_dirname = names[0] if len(names) == 1 else "__".join(names)
-            self.logdir = Path(logdir) / context_feature_dirname/f"{agent}_{seed}"
+                context_feature_dirname = (
+                    names[0] if len(names) == 1 else "__".join(names)
+                )
+            self.logdir = Path(logdir) / context_feature_dirname / f"{agent}_{seed}"
         else:
             self.logdir = Path(logdir) / f"{agent}_{seed}"
         self.logdir.mkdir(parents=True, exist_ok=True)
@@ -84,7 +91,9 @@ class TrialLogger(object):
 
         """
         output_file_paths = [str(self.trial_setup_fn)]
-        self.parser.write_config_file(parsed_namespace=self.trial_setup_args, output_file_paths=output_file_paths)
+        self.parser.write_config_file(
+            parsed_namespace=self.trial_setup_args, output_file_paths=output_file_paths
+        )
 
     def write_context(self, episode: int, step: int, context: Dict[Any, Any]):
         """
@@ -124,8 +133,5 @@ class TrialLogger(object):
             sep=",",
             header=write_header,
             index=False,
-            mode=mode
+            mode=mode,
         )
-
-
-
