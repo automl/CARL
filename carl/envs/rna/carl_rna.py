@@ -22,7 +22,7 @@ class CARLRnaDesignEnv(CARLEnv):
         self,
         env: Optional[gym.Env] = None,
         data_location: str = "carl/envs/rna/learna/data",
-        contexts: Dict[str, Dict] = {},
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
@@ -62,6 +62,7 @@ class CARLRnaDesignEnv(CARLEnv):
         # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
         # with the context.
         env.data_location = data_location
+        self.env = env
         super().__init__(
             env=env,
             contexts=contexts,

@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 import gym
 import gym.envs.classic_control as gccenvs
@@ -84,7 +84,7 @@ class CARLMountainCarEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = CustomMountainCarEnv(),
-        contexts: Dict[str, Dict] = {},
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,

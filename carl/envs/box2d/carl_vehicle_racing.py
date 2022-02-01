@@ -187,7 +187,7 @@ class CARLVehicleRacingEnv(CARLEnv):
     def __init__(
         self,
         env: CustomCarRacingEnv = CustomCarRacingEnv(),
-        contexts: Optional[Dict[Union[str, int], Dict]] = None,
+        contexts: Optional[Dict[Union[str, int], Dict[Any, Any]]] = None,
         instance_mode: str = "random",
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,

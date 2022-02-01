@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, List, Optional, Union, Tuple, Any
 
 import Box2D
 import numpy as np
@@ -135,7 +135,7 @@ class CARLLunarLanderEnv(CARLEnv):
     def __init__(
         self,
         env: Optional[CustomLunarLanderEnv] = None,
-        contexts: Dict[str, Dict] = {},
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,

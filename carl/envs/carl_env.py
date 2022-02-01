@@ -197,7 +197,7 @@ class CARLEnv(Wrapper):
         state = self.build_context_adaptive_state(state)
         return state
 
-    def build_context_adaptive_state(self, state, context_feature_values=None):
+    def build_context_adaptive_state(self, state: List[float], context_feature_values: Optional[List[float]] = None) -> List[float]:
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
@@ -326,7 +326,7 @@ class CARLEnv(Wrapper):
         env_lower_bounds: Optional[Union[List, np.array]] = None,
         env_upper_bounds: Optional[Union[List, np.array]] = None,
         context_bounds: Optional[Dict[str, Tuple[float]]] = None,
-    ):
+    ) -> None:
         """
         Build observation space of environment.
 
@@ -358,6 +358,7 @@ class CARLEnv(Wrapper):
         None
 
         """
+        self.observation_space: gym.spaces.Space
         if (
             not self.dict_observation_space
             and not isinstance(self.observation_space, spaces.Box)

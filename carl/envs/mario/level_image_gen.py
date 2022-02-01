@@ -8,7 +8,7 @@ class LevelImageGen:
     """Generates PIL Image files from Super Mario Bros. ascii levels.
     Initialize once and then use LevelImageGen.render() to generate images."""
 
-    def __init__(self, sprite_path):
+    def __init__(self, sprite_path: str):
         """sprite_path: path to the folder of sprite files, e.g. 'mario/sprites/'"""
 
         # Load Graphics (assumes sprite_path points to "img" folder of Mario-AI-Framework or provided sprites folder

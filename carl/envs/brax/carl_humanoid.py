@@ -37,7 +37,7 @@ class CARLHumanoid(CARLEnv):
     def __init__(
         self,
         env: Humanoid = Humanoid(),
-        contexts: Dict[str, Dict] = {},
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,

@@ -4,8 +4,8 @@ import numpy as np
 
 
 def get_context_bounds(
-    context_keys: List[str], context_bounds: Dict[str, Tuple[float]]
-):
+    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, float]]
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Get context bounds for specific features.
 
@@ -15,7 +15,7 @@ def get_context_bounds(
     ----------
     context_keys: List[str]
         Names of context features.
-    context_bounds: Dict[str, Tuple[float]]
+    context_bounds: Dict[str, Tuple[float, float, float]]
         Dictionary containing lower and upper bound as a tuple, e.g., "context_feature_name": (-np.inf, np.inf)).
 
     Returns

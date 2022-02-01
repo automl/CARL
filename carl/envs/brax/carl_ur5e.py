@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 
 import copy
 import json
@@ -43,7 +43,7 @@ class CARLUr5e(CARLEnv):
     def __init__(
         self,
         env: Ur5e = Ur5e(),
-        contexts: Dict[str, Dict] = {},
+        contexts: Dict[Union[str, int], Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,

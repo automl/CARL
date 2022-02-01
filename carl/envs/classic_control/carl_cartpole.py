@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import gym
 import numpy as np
@@ -34,7 +34,7 @@ class CARLCartPoleEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = CartPoleEnv(),
-        contexts: Dict[str, Dict] = {},
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
