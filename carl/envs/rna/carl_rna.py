@@ -1,6 +1,7 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple, Any
 
 import numpy as np
+import gym
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.carl_rna_definitions import (
@@ -19,7 +20,7 @@ from carl.utils.trial_logger import TrialLogger
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env=None,
+        env: Optional[gym.Env] = None,
         data_location: str = "carl/envs/rna/learna/data",
         contexts: Dict[str, Dict] = {},
         instance_mode: str = "rr",
@@ -74,7 +75,7 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
-    def step(self, action):
+    def step(self, action: Any) -> Tuple[np.ndarray, float, bool, Dict]:
         # Step function has a different name in this env
         state, reward, done = self.env.execute(action)
         if not self.hide_context:
@@ -82,7 +83,7 @@ class CARLRnaDesignEnv(CARLEnv):
         self.step_counter += 1
         return state, reward, done, {}
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.env.data_location,

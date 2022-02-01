@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import gym
 import gym.envs.classic_control as gccenvs
@@ -56,7 +56,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.velocity_start = 0.0
         self.velocity_start_std = 0.0
 
-    def reset_state(self):
+    def reset_state(self) -> np.ndarray:
         return np.array(
             [
                 self.np_random.normal(self.position_start, self.position_start_std),
@@ -66,11 +66,11 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
             ]
         )
 
-    def reset(self):
+    def reset(self) -> np.ndarray:
         self.state = self.reset_state().squeeze()
         return self.state
 
-    def step(self, action):
+    def step(self, action: int) -> Tuple[np.ndarray, float, bool, Dict]:
         state, reward, done, info = super().step(action)
         return (
             state.squeeze(),
@@ -126,7 +126,7 @@ class CARLMountainCarEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]

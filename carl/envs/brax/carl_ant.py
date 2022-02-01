@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import copy
 import json
@@ -40,8 +40,8 @@ class CARLAnt(CARLEnv):
         self,
         env: Ant = Ant(),
         contexts: Dict[str, Dict] = {},
-        instance_mode="rr",
-        hide_context=False,
+        instance_mode: str = "rr",
+        hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -73,7 +73,7 @@ class CARLAnt(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
@@ -91,7 +91,7 @@ class CARLAnt(CARLEnv):
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if name in ["sys", "__getstate__"]:
             return getattr(self.env._environment, name)
         else:

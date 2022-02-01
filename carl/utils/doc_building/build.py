@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Tuple, Dict
 
 import numpy as np
 import pandas as pd
@@ -16,7 +17,7 @@ MARIO_OBSERVATION_SPACE = spaces.Box(
 MARIO_ACTION_SPACE = spaces.Discrete(n=10)
 
 
-def build():
+def build() -> Tuple[pd.DataFrame, Dict, Dict]:
     filepath = Path(__file__)
     outdir = filepath.parent.parent.parent.parent / "docs/source/environments/data"
     print("Build environment overview table.")

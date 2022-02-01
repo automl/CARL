@@ -48,7 +48,7 @@ class CustomMountainCarContinuousEnv(
         self.min_velocity_start = 0.0
         self.max_velocity_start = 0.0
 
-    def reset_state(self):
+    def reset_state(self) -> np.ndarray:
         return np.array(
             [
                 self.np_random.uniform(
@@ -107,7 +107,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]

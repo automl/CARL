@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any, Tuple, Type
 
 import numpy as np
 import pyglet
@@ -87,18 +87,18 @@ CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
 
 class CustomCarRacingEnv(CarRacing):
-    def __init__(self, vehicle_class: type(Car) = Car, verbose=1):
+    def __init__(self, vehicle_class: Type[Car] = Car, verbose: int = 1):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
-        self.car = None
+        self.car = self.vehicle_class(self.world, *self.track[0][1:4])  # already set a car to please mypy
 
-    def reset(self):
+    def reset(self) -> np.ndarray:
         self._destroy()
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly = []
+        self.road_poly = []  # type: List
 
         while True:
             success = self._create_track()
@@ -117,14 +117,14 @@ class CustomCarRacingEnv(CarRacing):
             self.step(None)
         return self.step(None)[0]
 
-    def render_indicators(self, W, H):
+    def render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing
         s = W / 40.0
         h = H / 40.0
         colors = [0, 0, 0, 1] * 4
         polygons = [W, 0, 0, W, 5 * h, 0, 0, 5 * h, 0, 0, 0, 0]
 
-        def vertical_ind(place, val, color):
+        def vertical_ind(place: int, val: int, color: Tuple) -> None:
             colors.extend([color[0], color[1], color[2], 1] * 4)
             polygons.extend(
                 [
@@ -143,7 +143,7 @@ class CustomCarRacingEnv(CarRacing):
                 ]
             )
 
-        def horiz_ind(place, val, color):
+        def horiz_ind(place: int, val: int, color: Tuple) -> None:
             colors.extend([color[0], color[1], color[2], 1] * 4)
             polygons.extend(
                 [
@@ -234,7 +234,7 @@ class CARLVehicleRacingEnv(CARLEnv):
             k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES
         ]
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         vehicle_class_index = self.context["VEHICLE"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
 
@@ -246,7 +246,7 @@ if __name__ == "__main__":
 
     a = np.array([0.0, 0.0, 0.0])
 
-    def key_press(k, mod):
+    def key_press(k: int, mod: Any) -> None:
         global restart
         if k == 0xFF0D:
             restart = True
@@ -261,7 +261,7 @@ if __name__ == "__main__":
         if k == key.DOWN:
             a[2] = +1.0
 
-    def key_release(k, mod):
+    def key_release(k: int, mod: Any) -> None:
         if k == key.LEFT and a[0] == -1.0:
             a[0] = 0
         if k == key.RIGHT and a[0] == +1.0:

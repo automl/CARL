@@ -3,6 +3,7 @@ if __name__ == "__main__":
     import numpy as np
     import pandas as pd
     import seaborn as sns
+    from typing import List
 
     from carl.utils.doc_building.plotting import radar_factory
 
@@ -235,7 +236,7 @@ if __name__ == "__main__":
         "misc": ["CARLMarioEnv", "CARLRnaDesignEnv"],
     }
 
-    data = []
+    data = []  # type: List[pd.DataFrame]
     for env_type in env_types:
         envs = env_types[env_type]
 

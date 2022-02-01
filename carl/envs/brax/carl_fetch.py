@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import copy
 import json
@@ -44,8 +44,8 @@ class CARLFetch(CARLEnv):
         self,
         env: Fetch = Fetch(),
         contexts: Dict[str, Dict] = {},
-        instance_mode="rr",
-        hide_context=False,
+        instance_mode: str = "rr",
+        hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -77,7 +77,7 @@ class CARLFetch(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
@@ -99,7 +99,7 @@ class CARLFetch(CARLEnv):
         self.env.target_radius = self.context["target_radius"]
         self.env.target_distance = self.context["target_distance"]
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if name in [
             "sys",
             "target_distance",

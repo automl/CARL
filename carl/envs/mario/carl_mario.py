@@ -45,7 +45,7 @@ class CARLMarioEnv(CARLEnv):
         self.levels = []
         self._update_context()
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         if not self.levels:
             for context in self.contexts.values():
                 level = generate_level(
@@ -60,7 +60,7 @@ class CARLMarioEnv(CARLEnv):
         self.env.mario_inertia = self.context["mario_inertia"]
         self.env.levels = [self.levels[self.context_index]]
 
-    def _log_context(self):
+    def _log_context(self) -> None:
         if self.logger:
             loggable_context = {k: v for k, v in self.context.items() if k != "noise"}
             self.logger.write_context(

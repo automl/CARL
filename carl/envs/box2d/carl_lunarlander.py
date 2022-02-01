@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union, Tuple
 
 import Box2D
 import numpy as np
@@ -74,7 +74,7 @@ CONTEXT_BOUNDS = {
 
 class CustomLunarLanderEnv(lunar_lander.LunarLander):
     def __init__(
-        self, gravity: (float, float) = (0, -10), high_gameover_penalty: bool = False
+        self, gravity: Tuple[float, float] = (0, -10), high_gameover_penalty: bool = False
     ):
         EzPickle.__init__(self)
         self.high_gameover_penalty = high_gameover_penalty
@@ -84,7 +84,7 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
         self.world = Box2D.b2World(gravity=gravity)
         self.moon = None
         self.lander = None
-        self.particles = []
+        self.particles = []  # type: List
 
         self.prev_reward = None
 
@@ -110,7 +110,7 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
             reward = -10000
         return state, reward, done, info
 
-    def seed(self, seed=None):
+    def seed(self, seed: Optional[int] = None) -> List[int]:
         self.np_random, seed = seeding.np_random(seed)
         self.active_seed = seed
         return [seed]
@@ -181,7 +181,7 @@ class CARLLunarLanderEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         lunar_lander.FPS = self.context["FPS"]
         lunar_lander.SCALE = self.context["SCALE"]
         lunar_lander.MAIN_ENGINE_POWER = self.context["MAIN_ENGINE_POWER"]
@@ -207,7 +207,8 @@ class CARLLunarLanderEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic_lander(env, seed=None, render=False):
+def demo_heuristic_lander(
+        env: Union[CARLLunarLanderEnv, lunar_lander], seed: Optional[int] = None, render: bool = False) -> float:
     """
     Copied from LunarLander
     """

@@ -81,7 +81,7 @@ class TrialLogger(object):
         self.context_history_fn = self.logdir / "context_history.csv"
         self.prepared_context_history_file = False
 
-    def write_trial_setup(self):
+    def write_trial_setup(self) -> None:
         """
         Write trial setup to file with path logdir / "trial_setup.ini".
 

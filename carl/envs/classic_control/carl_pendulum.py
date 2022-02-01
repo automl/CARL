@@ -72,7 +72,7 @@ class CARLPendulumEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.max_speed = self.context["max_speed"]
         self.env.dt = self.context["dt"]
         self.env.l = self.context["l"]  # noqa: E741 ambiguous variable name

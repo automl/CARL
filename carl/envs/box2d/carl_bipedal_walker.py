@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union, Tuple
 
 import Box2D
 import numpy as np
@@ -78,7 +78,7 @@ CONTEXT_BOUNDS = {
 
 class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
     def __init__(
-        self, gravity: (float, float) = (0, -10)
+        self, gravity: Tuple[float, float] = (0, -10)
     ):  # TODO actually we dont need a custom env because the gravity can be adjusted afterwards
         EzPickle.__init__(self)
         self.seed()
@@ -225,7 +225,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic(env):
+def demo_heuristic(env: Union[CARLBipedalWalkerEnv, bipedal_walker]) -> None:
     env.reset()
     steps = 0
     total_reward = 0

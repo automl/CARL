@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import copy
 import json
@@ -38,8 +38,8 @@ class CARLHumanoid(CARLEnv):
         self,
         env: Humanoid = Humanoid(),
         contexts: Dict[str, Dict] = {},
-        instance_mode="rr",
-        hide_context=False,
+        instance_mode: str = "rr",
+        hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -71,7 +71,7 @@ class CARLHumanoid(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
@@ -91,7 +91,7 @@ class CARLHumanoid(CARLEnv):
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if name in ["sys", "body", "mass", "inertia"]:
             return getattr(self.env._environment, name)
         else:

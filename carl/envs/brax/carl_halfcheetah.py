@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import copy
 import json
@@ -71,7 +71,7 @@ class CARLHalfcheetah(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
@@ -87,7 +87,7 @@ class CARLHalfcheetah(CARLEnv):
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if name in ["sys"]:
             return getattr(self.env._environment, name)
         else:

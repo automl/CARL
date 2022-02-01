@@ -90,7 +90,7 @@ class CARLAcrobotEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.LINK_LENGTH_1 = self.context["link_length_1"]
         self.env.LINK_LENGTH_2 = self.context["link_length_2"]
         self.env.LINK_MASS_1 = self.context["link_mass_1"]

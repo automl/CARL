@@ -66,7 +66,7 @@ class CARLCartPoleEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.gravity = self.context["gravity"]
         self.env.masscart = self.context["masscart"]
         self.env.masspole = self.context["masspole"]

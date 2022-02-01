@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, Any
 
 import json
 import os
@@ -173,7 +173,7 @@ class CARLEnv(Wrapper):
         self.build_observation_space()
         self._update_context()
 
-    def reset(self, **kwargs):
+    def reset(self, **kwargs: Dict) -> Any:
         """
         Reset environment.
 
@@ -222,7 +222,7 @@ class CARLEnv(Wrapper):
                 state = np.concatenate((state, context_values))
         return state
 
-    def step(self, action) -> Tuple[Any, Any, bool, Dict]:
+    def step(self, action: Any) -> Tuple[Any, Any, bool, Dict]:
         """
         Step the environment.
 
@@ -268,7 +268,7 @@ class CARLEnv(Wrapper):
             done = True
         return state, reward, done, info
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it
         # We need this because our CARLEnv has underscore class methods which would
         # through an error otherwise
@@ -280,7 +280,7 @@ class CARLEnv(Wrapper):
             )
         return getattr(self.env, name)
 
-    def _progress_instance(self):
+    def _progress_instance(self) -> None:
         """
         Progress instance.
 
@@ -433,7 +433,7 @@ class CARLEnv(Wrapper):
                 self.env.observation_space
             )  # make sure it is the same object
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         """
         Update the context feature values of the environment.
 
@@ -444,7 +444,7 @@ class CARLEnv(Wrapper):
         """
         raise NotImplementedError
 
-    def _log_context(self):
+    def _log_context(self) -> None:
         """
         Log context.
 

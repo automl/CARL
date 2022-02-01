@@ -7,6 +7,7 @@ Boxplot
 """
 if __name__ == "__main__":
     from pathlib import Path
+    from typing import List
 
     import matplotlib.pyplot as plt
     import numpy as np
@@ -23,8 +24,8 @@ if __name__ == "__main__":
 
     env_context_feature_names = {}
 
-    context_feature_names = []
-    dfs = []
+    context_feature_names = []  # type: List[str]
+    dfs = []  # type: List[pd.DataFrame]
     n_context_features_per_env = []
     n_float_cfs = 0
     for env_name in env_names:
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     n_reward_changing = 7
     n_dynami_changing = 129
 
-    env_names.append(["CARLMarioEnv", "CARLRnaDesignEnv"])
+    env_names.extend(["CARLMarioEnv", "CARLRnaDesignEnv"])
     n_context_features += 3 + 5
     n_float_cfs += 0 + 0  # integers == continuous?
 
