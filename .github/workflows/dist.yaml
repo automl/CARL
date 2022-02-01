@@ -1,0 +1,56 @@
+name: dist-check
+
+on:
+  # Manually triggerable in github
+  workflow_dispatch:
+
+  # When a push occurs on either of these branches
+  push:
+    branches:
+      - main
+      - development
+
+  # When a push occurs on a PR that targets these branches
+  pull_request:
+    branches:
+      - main
+      - development
+
+jobs:
+  dist:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v2
+      with:
+        submodules: "recursive"
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Build dist
+      run: |
+        python setup.py sdist
+
+    - name: Twine check
+      run: |
+        pip install twine
+        last_dist=$(ls -t dist/CARL-*.tar.gz | head -n 1)
+        twine_output=`twine check "$last_dist"`
+        if [[ "$twine_output" != "Checking $last_dist: PASSED" ]]; then echo $twine_output && exit 1;fi
+
+    - name: Install dist
+      run: |
+        last_dist=$(ls -t dist/CARL-*.tar.gz | head -n 1)
+        pip install $last_dist
+
+    - name: PEP 561 Compliance
+      run: |
+        pip install mypy
+        cd ..  # required to use the installed version of CARL
+        # Note this doesnt perform mypy checks, only
+        # that the types are exported
+        if ! mypy -c "import carl"; then exit 1; fi
