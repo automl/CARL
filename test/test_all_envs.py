@@ -13,9 +13,9 @@ class TestInitEnvs(unittest.TestCase):
         for varname, var in global_vars.items():
             if mustinclude in varname and not np.any([f in varname for f in forbidden]):
                 try:
-                    env = (
+                    env = (  # noqa: F841 local variable is assigned to but never used
                         var()
-                    )  # noqa: F841 local variable is assigned to but never used
+                    )
                 except Exception as e:
                     print(f"Cannot instantiate {var} environment.")
                     raise e
