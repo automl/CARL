@@ -12,7 +12,7 @@ empty = "-"
 ignored = ["M", "F", "|", "E", "g", "k", "r", "y", "G", "K", "R", "Y", "*", "B", "o"]
 
 
-def remove_ignored(level: List[str]):
+def remove_ignored(level: List[str]) -> Tuple[List, Tuple[int, int], Tuple[int, int]]:
     """
     Replaces all ignored tokens with the empty token in a level. In case of Mario and the flag the coordinates of the blocks below are returned and they are also replaced.
     :param level: a level in ASCII form
@@ -42,7 +42,7 @@ def reachability_map(
     has_mario: bool = False,
     has_flag: bool = False,
     check_outside: bool = False,
-):
+) -> Tuple[np.ndarray, bool]:
     """
     This creates a numpy 2D array containing the reachability map for a given ASCII-Level.
     Every solid block will have a 1 if Mario can stand on it and can reach the tile and a 0 else.
@@ -119,7 +119,7 @@ def reachability_map(
     return reachability_map, playable
 
 
-def check_blocked(level: List[str], i: int, j: int, dh: int, dv: int, right: bool):
+def check_blocked(level: List[str], i: int, j: int, dh: int, dv: int, right: bool) -> int:
     """
     Checks for a given position, level and direction if a blockade exists in the range specified by dh and dv.
     :param level: The level in ASCII form
@@ -162,7 +162,7 @@ def check_down(
     dh: int,
     check_outside: bool,
     right: bool,
-):
+) -> Tuple[bool, bool, List[Tuple[int, int]]]:
     drop = 1
     found_first = False
     reach_outside = False
@@ -199,7 +199,7 @@ def mark(
     i: int,
     j: int,
     check_outside: bool = False,
-):
+) -> Tuple[bool, List[Tuple[int, int]], bool]:
     """
     For a given position and a level this will mark all tiles reachable from the given position and collect all these positions for further use.
     :param level: The level (slice) as a list containing the ASCII strings of each level row
