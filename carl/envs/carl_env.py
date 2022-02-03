@@ -4,6 +4,7 @@ from gym import spaces
 import numpy as np
 import os
 import json
+import inspect
 from typing import Dict, Tuple, Union, List, Optional, Any
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.utils import get_context_bounds
@@ -95,7 +96,13 @@ class CARLEnv(Wrapper):
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
         if context_selector is None:
             self.context_selector = RoundRobinSelector(contexts=contexts)
-        elif context_selector == AbstractSelector:
+        elif isinstance(context_selector, AbstractSelector):
+            self.context_selector = context_selector
+        elif inspect.isclass(context_selector) and issubclass(context_selector, AbstractSelector):
+            if context_selector_kwargs is None:
+                context_selector_kwargs = {}
+            _context_selector_kwargs = {"contexts": contexts}
+            context_selector_kwargs.update(_context_selector_kwargs)
             self.context_selector = context_selector(**context_selector_kwargs)
         else:
             raise ValueError(f"Context selector must be None or an AbstractSelector class or instance. "
