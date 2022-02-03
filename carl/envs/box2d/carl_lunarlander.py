@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Union
 
 # import pyglet
 # pyglet.options["shadow_window"] = False
