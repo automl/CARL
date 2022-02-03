@@ -1,5 +1,8 @@
 import unittest
 import numpy as np
+from typing import Dict, Any
+
+from carl.utils.types import Context
 
 from carl.envs.classic_control.carl_pendulum import CARLPendulumEnv
 
@@ -281,45 +284,50 @@ class TestContextFeatureScaling(unittest.TestCase):
             next_obs, reward, done, info = env.step(action=action)
 
 
-class TestInstanceModes(unittest.TestCase):
-    def test_instance_mode_random(self):
-        env = CARLPendulumEnv(
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            instance_mode="random"
-        )
+class TestContextSelection(unittest.TestCase):
+    @staticmethod
+    def generate_contexts() -> Dict[Any, Context]:
+        keys = "abc"
+        context = {"max_speed": 8., "dt": 0.03, "g": 10.0, "m": 1., "l": 1.8}
+        contexts = {k: context for k in keys}
+        return contexts
 
-    def test_instance_mode_roundrobin(self):
-        env = CARLPendulumEnv(
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            instance_mode="rr"
-        )
-        env = CARLPendulumEnv(
-            contexts={},
-            hide_context=False,
-            add_gaussian_noise_to_context=False,
-            gaussian_noise_std_percentage=0.01,
-            state_context_features=None,
-            instance_mode="roundrobin"
-        )
+    def test_default_selector(self):
+        from carl.context.selection import RoundRobinSelector
+        contexts = self.generate_contexts()
+        env = CARLPendulumEnv(contexts=contexts)
 
-    def test_instance_mode_unknown(self):
+        env.reset()
+        self.assertEqual(type(env.context_selector), RoundRobinSelector)
+        self.assertEqual(env.context_selector.n_calls, 1)
+
+        env.reset()
+        self.assertEqual(env.context_selector.contexts_keys[env.context_selector.context_id], "b")
+
+    def test_roundrobin_selector_init(self):
+        from carl.context.selection import RoundRobinSelector
+        contexts = self.generate_contexts()
+        env = CARLPendulumEnv(contexts=contexts, context_selector=RoundRobinSelector(contexts=contexts))
+        self.assertEqual(type(env.context_selector), RoundRobinSelector)
+
+    def test_random_selector_init(self):
+        from carl.context.selection import RandomSelector
+        contexts = self.generate_contexts()
+        env = CARLPendulumEnv(
+            contexts=contexts,
+            context_selector=RandomSelector(contexts=contexts))
+        self.assertEqual(type(env.context_selector), RandomSelector)
+
+    def test_random_selectorclass_init(self):
+        from carl.context.selection import RandomSelector
+        contexts = self.generate_contexts()
+        env = CARLPendulumEnv(contexts=contexts, context_selector=RandomSelector)
+        self.assertEqual(type(env.context_selector), RandomSelector)
+
+    def test_unknown_selector_init(self):
         with self.assertRaises(ValueError):
-            env = CARLPendulumEnv(
-                contexts={},
-                hide_context=False,
-                add_gaussian_noise_to_context=False,
-                gaussian_noise_std_percentage=0.01,
-                state_context_features=None,
-                instance_mode="bork"
-            )
+            contexts = self.generate_contexts()
+            env = CARLPendulumEnv(contexts=contexts, context_selector="bork")
 
 
 if __name__ == '__main__':
