@@ -7,9 +7,10 @@ from brax.envs.fetch import Fetch, _SYSTEM_CONFIG
 from carl.envs.carl_env import CARLEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 from numpyencoder import NumpyEncoder
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 5000,
@@ -41,7 +42,6 @@ class CARLFetch(CARLEnv):
             self,
             env: Fetch = Fetch(),
             contexts: Dict[str, Dict] = {},
-            instance_mode="rr",
             hide_context=False,
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
@@ -50,6 +50,8 @@ class CARLFetch(CARLEnv):
             default_context: Optional[Dict] = DEFAULT_CONTEXT,
             state_context_features: Optional[List[str]] = None,
             dict_observation_space: bool = False,
+            context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+            context_selector_kwargs: Optional[Dict] = None,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(text_format.Parse(_SYSTEM_CONFIG, brax.Config()))
@@ -58,7 +60,6 @@ class CARLFetch(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -66,7 +67,9 @@ class CARLFetch(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space
+            dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 

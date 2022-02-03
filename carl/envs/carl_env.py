@@ -8,6 +8,7 @@ from typing import Dict, Tuple, Union, List, Optional, Any
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector, RoundRobinSelector
 
 
 class CARLEnv(Wrapper):
@@ -27,8 +28,6 @@ class CARLEnv(Wrapper):
     contexts: Dict[Any, Dict[Any, Any]]
         Dict of contexts/instances. Key are context id, values are contexts as
         Dict[context feature id, context feature value].
-    instance_mode: str, default="rr"
-        Instance sampling mode. Available modes are 'random' or 'rr'/'roundrobin'.
     hide_context: bool = False
         If False, the context will be appended to the original environment's state.
     add_gaussian_noise_to_context: bool = False
@@ -52,6 +51,11 @@ class CARLEnv(Wrapper):
         If the context is visible to the agent (hide_context=False), the context features are appended to the state.
         state_context_features specifies which of the context features are appended to the state. The default is
         appending all context features.
+    context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]]
+        Context selector (object of) class, e.g., can be RoundRobinSelector (default) or RandomSelector.
+        Should subclass AbstractSelector.
+    context_selector_kwargs: Optional[Dict]
+        Optional kwargs for context selector class.
 
     Raises
     ------
@@ -68,7 +72,6 @@ class CARLEnv(Wrapper):
             self,
             env: gym.Env,
             contexts: Dict[Any, Dict[Any, Any]],
-            instance_mode: str = "rr",
             hide_context: bool = False,
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
@@ -78,19 +81,25 @@ class CARLEnv(Wrapper):
             default_context: Optional[Dict] = None,
             state_context_features: Optional[List[str]] = None,
             dict_observation_space: bool = False,
+            context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+            context_selector_kwargs: Optional[Dict] = None,
     ):
         super().__init__(env=env)
         # Gather args
         self.contexts = contexts
-        if instance_mode not in self.available_instance_modes:
-            raise ValueError(f"instance_mode '{instance_mode}' not in '{self.available_instance_modes}'.")
-        self.instance_mode = instance_mode
         self.hide_context = hide_context
         self.dict_observation_space = dict_observation_space
         self.cutoff = max_episode_length
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
+        if context_selector is None:
+            self.context_selector = RoundRobinSelector(contexts=contexts)
+        elif context_selector == AbstractSelector:
+            self.context_selector = context_selector(**context_selector_kwargs)
+        else:
+            raise ValueError(f"Context selector must be None or an AbstractSelector class or instance. "
+                             f"Got type {type(context_selector)}.")
         if state_context_features is not None:
             if state_context_features == "changing_context_features" or state_context_features[0] == "changing_context_features":
                 # if we have only one context the context features do not change during training
@@ -259,15 +268,16 @@ class CARLEnv(Wrapper):
         None
 
         """
-        if self.instance_mode == "random":
-            # TODO pass seed?
-            self.context_index = np.random.choice(np.arange(len(self.contexts.keys())))
-        elif self.instance_mode in ["rr", "roundrobin"]:
-            self.context_index = (self.context_index + 1) % len(self.contexts.keys())
-        else:
-            raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
-        contexts_keys = list(self.contexts.keys())
-        context = self.contexts[contexts_keys[self.context_index]]
+        # if self.instance_mode == "random":
+        #     # TODO pass seed?
+        #     self.context_index = np.random.choice(np.arange(len(self.contexts.keys())))
+        # elif self.instance_mode in ["rr", "roundrobin"]:
+        #     self.context_index = (self.context_index + 1) % len(self.contexts.keys())
+        # else:
+        #     raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
+        # contexts_keys = list(self.contexts.keys())
+        # context = self.contexts[contexts_keys[self.context_index]]
+        context = self.context_selector.select()
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}

@@ -1,9 +1,10 @@
 import gym
 import numpy as np
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 from gym.envs.classic_control import CartPoleEnv
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "gravity": 9.8,
@@ -29,7 +30,6 @@ class CARLCartPoleEnv(CARLEnv):
             self,
             env: gym.Env = CartPoleEnv(),
             contexts: Dict[str, Dict] = {},
-            instance_mode: str = "rr",
             hide_context: bool = False,
             add_gaussian_noise_to_context: bool = False,
             gaussian_noise_std_percentage: float = 0.01,
@@ -39,13 +39,14 @@ class CARLCartPoleEnv(CARLEnv):
             max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
             state_context_features: Optional[List[str]] = None,
             dict_observation_space: bool = False,
+            context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+            context_selector_kwargs: Optional[Dict] = None,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -54,7 +55,9 @@ class CARLCartPoleEnv(CARLEnv):
             default_context=default_context,
             max_episode_length=max_episode_length,
             state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space
+            dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
 
