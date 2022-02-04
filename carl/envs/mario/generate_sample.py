@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.nn.functional import interpolate
 
+
 # Generates a noise tensor. Uses torch.randn.
 def generate_spatial_noise(size, device="cpu"):
     return torch.randn(size, device=device, dtype=torch.float32)
@@ -62,7 +63,7 @@ def generate_sample(
             if initial_noise is not None:
                 z_curr = initial_noise.float().to(device)
             else:
-                z_curr =  generate_spatial_noise(
+                z_curr = generate_spatial_noise(
                     [1, channels, int(round(nzx)), int(round(nzy))], device=device
                 )
             z_curr = m(z_curr)
@@ -104,7 +105,7 @@ def generate_sample(
 
 
 def one_hot_to_ascii_level(level, tokens):
-    """ Converts a full token level tensor to an ascii level. """
+    """Converts a full token level tensor to an ascii level."""
     ascii_level = []
     for i in range(level.shape[2]):
         line = ""

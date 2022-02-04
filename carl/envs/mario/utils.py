@@ -1,11 +1,13 @@
+from typing import Tuple
+
 import atexit
 import os
 import socket
 import sys
 from contextlib import closing
-from xvfbwrapper import Xvfb
 
 from py4j.java_gateway import JavaGateway
+from xvfbwrapper import Xvfb
 
 MARIO_AI_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "Mario-AI-Framework")
@@ -21,7 +23,7 @@ def find_free_port() -> int:
         return s.getsockname()[1]
 
 
-def load_level(level_name: str = "lvl-1.txt"):
+def load_level(level_name: str = "lvl-1.txt") -> str:
     prefix = (
         os.path.join(MARIO_AI_PATH, "levels", "original")
         if level_name.startswith("lvl-")
@@ -32,7 +34,7 @@ def load_level(level_name: str = "lvl-1.txt"):
     return level
 
 
-def get_port():
+def get_port() -> int:
     global _gateway
     global _port
     if _gateway is None:
@@ -40,7 +42,7 @@ def get_port():
     return _port
 
 
-def launch_gateway():
+def launch_gateway() -> Tuple[JavaGateway, int]:
     vdisplay = Xvfb(width=1280, height=740, colordepth=16)
     vdisplay.start()
     atexit.register(lambda: vdisplay.stop())

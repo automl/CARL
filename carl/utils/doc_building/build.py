@@ -1,28 +1,32 @@
-from carl.envs import *
-import pandas as pd
-import numpy as np
+from typing import Dict, Tuple
+
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 from gym import spaces
+
+import carl.envs
 
 # JUST FOR DOCS / is dynamic in code!!
 MARIO_OBSERVATION_SPACE = spaces.Box(
-            low=0,
-            high=255,
-            shape=[4, 64, 64],
-            dtype=np.uint8,
-        )  # is dynamic in code
+    low=0,
+    high=255,
+    shape=[4, 64, 64],
+    dtype=np.uint8,
+)  # is dynamic in code
 MARIO_ACTION_SPACE = spaces.Discrete(n=10)
 
 
-def build():
+def build() -> Tuple[pd.DataFrame, Dict, Dict]:
     filepath = Path(__file__)
     outdir = filepath.parent.parent.parent.parent / "docs/source/environments/data"
     print("Build environment overview table.")
     # Create snapshot
-    local_vars = globals().copy()
+    local_vars = vars(carl.envs)
 
     k_env_family = "Env. Family"
-    k_env_name =  "Name"
+    k_env_name = "Name"
     k_n_context_features = "# Context Features"
     k_action_space = "Action Space"
     k_obs_space = "Obs. Space"
@@ -64,12 +68,13 @@ def build():
     # Add RNA and Mario Information
     env_families = ["RNA", "Mario"]
     env_names = ["CARLRnaDesignEnv", "CARLMarioEnv"]
-    from carl.envs.rna.carl_rna_definitions import DEFAULT_CONTEXT as rna_defaults
-    from carl.envs.rna.carl_rna_definitions import CONTEXT_BOUNDS as rna_bounds
-    from carl.envs.rna.carl_rna_definitions import ACTION_SPACE as rna_A
-    from carl.envs.rna.carl_rna_definitions import OBSERVATION_SPACE as rna_O
-    from carl.envs.mario.carl_mario_definitions import DEFAULT_CONTEXT as mario_defaults
     from carl.envs.mario.carl_mario_definitions import CONTEXT_BOUNDS as mario_bounds
+    from carl.envs.mario.carl_mario_definitions import DEFAULT_CONTEXT as mario_defaults
+    from carl.envs.rna.carl_rna_definitions import ACTION_SPACE as rna_A
+    from carl.envs.rna.carl_rna_definitions import CONTEXT_BOUNDS as rna_bounds
+    from carl.envs.rna.carl_rna_definitions import DEFAULT_CONTEXT as rna_defaults
+    from carl.envs.rna.carl_rna_definitions import OBSERVATION_SPACE as rna_O
+
     unicorn_defaults = [rna_defaults, mario_defaults]
     N_context_features = [len(c) for c in unicorn_defaults]
     action_spaces = [rna_A, MARIO_ACTION_SPACE]
@@ -118,12 +123,10 @@ def build():
         context_def_df = pd.concat([defaults_df, bounds_df], axis=1)
         context_def_df.to_csv(fname)
 
-
     print("Done!")
 
     return df, defaults_entries, bounds_entries
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     df, defaults_entries, bounds_entries = build()
-

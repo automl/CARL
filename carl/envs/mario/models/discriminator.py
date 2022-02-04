@@ -1,13 +1,13 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from .conv_block import ConvBlock
 
 
 class Level_WDiscriminator(nn.Module):
-    """ Patch based Discriminator. Uses Namespace opt. """
+    """Patch based Discriminator. Uses Namespace opt."""
+
     def __init__(self, opt):
         super().__init__()
         self.is_cuda = torch.cuda.is_available()

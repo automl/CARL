@@ -1,11 +1,15 @@
+# flake8: noqa: W605
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
-from typing import List, Dict, Any, Tuple
 from scipy.stats import norm
 
 from carl import envs
 
 
-def get_default_context_and_bounds(env_name: str) -> Tuple[Dict[Any, Any], Dict[Any, Any]]:
+def get_default_context_and_bounds(
+    env_name: str,
+) -> Tuple[Dict[Any, Any], Dict[Any, Any]]:
     """
     Get context feature defaults and bounds for environment.
 
@@ -38,11 +42,11 @@ def get_default_context_and_bounds(env_name: str) -> Tuple[Dict[Any, Any], Dict[
 
 
 def sample_contexts(
-        env_name: str,
-        context_feature_args: List[str],
-        num_contexts: int,
-        default_sample_std_percentage: float = 0.05,
-        fallback_sample_std: float = 0.1,
+    env_name: str,
+    context_feature_args: List[str],
+    num_contexts: int,
+    default_sample_std_percentage: float = 0.05,
+    fallback_sample_std: float = 0.1,
 ) -> Dict[int, Dict[str, Any]]:
     """
     Sample contexts.
@@ -57,8 +61,8 @@ def sample_contexts(
 
     :math:`x_{cf, default}`: Default context feature value
 
-    :math:`\sigma_{rel}`: Relative standard deviation, parametrized in  `context_feature_args` by providing e.g.
-    `["<context_feature_name>_std", "0.05"]`.
+    :math:`\sigma_{rel}`: Relative standard deviation, parametrized in  `context_feature_args`
+        by providing e.g. `["<context_feature_name>_std", "0.05"]`.
 
     Examples
     --------
@@ -113,12 +117,20 @@ def sample_contexts(
     for context_feature_name in env_defaults.keys():
         if context_feature_name in context_feature_args:
             if f"{context_feature_name}_mean" in context_feature_args:
-                sample_mean = float(context_feature_args[context_feature_args.index(f"{context_feature_name}_mean")+1])
+                sample_mean = float(
+                    context_feature_args[
+                        context_feature_args.index(f"{context_feature_name}_mean") + 1
+                    ]
+                )
             else:
                 sample_mean = env_defaults[context_feature_name]
 
             if f"{context_feature_name}_std" in context_feature_args:
-                sample_std = float(context_feature_args[context_feature_args.index(f"{context_feature_name}_std")+1])
+                sample_std = float(
+                    context_feature_args[
+                        context_feature_args.index(f"{context_feature_name}_std") + 1
+                    ]
+                )
             else:
                 sample_std = default_sample_std_percentage * np.abs(sample_mean)
 
@@ -144,7 +156,9 @@ def sample_contexts(
                 context_feature_type = sample_dists[k][1]
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
                 if context_feature_type == list:
-                    length = np.random.randint(5e5)  # TODO should we allow lists to be this long? or should we parametrize this?
+                    length = np.random.randint(
+                        5e5
+                    )  # TODO should we allow lists to be this long? or should we parametrize this?
                     arg_class = sample_dists[k][1][1]
                     context_list = random_variable.rvs(size=length)
                     context_list = np.clip(context_list, lower_bound, upper_bound)
