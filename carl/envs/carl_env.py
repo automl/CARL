@@ -275,15 +275,6 @@ class CARLEnv(Wrapper):
         None
 
         """
-        # if self.instance_mode == "random":
-        #     # TODO pass seed?
-        #     self.context_index = np.random.choice(np.arange(len(self.contexts.keys())))
-        # elif self.instance_mode in ["rr", "roundrobin"]:
-        #     self.context_index = (self.context_index + 1) % len(self.contexts.keys())
-        # else:
-        #     raise ValueError(f"Instance mode '{self.instance_mode}' not a valid choice.")
-        # contexts_keys = list(self.contexts.keys())
-        # context = self.contexts[contexts_keys[self.context_index]]
         context = self.context_selector.select()
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
