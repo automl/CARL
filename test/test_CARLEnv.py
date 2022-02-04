@@ -212,7 +212,7 @@ class TestContextFeatureScaling(unittest.TestCase):
         state, reward, done, info = env.step(action=action)
         n_c = len(contexts["0"])
         scaled_contexts = state[-n_c:]
-        target = np.array([8/12, 0.03/0.045, 10/15, 1/1.5, 1.8/2.7])
+        target = np.array([16/12, 0.06/0.045, 20/15, 2/1.5, 3.6/2.7])
         self.assertTrue(np.all(target == scaled_contexts), f"target {target} != actual {scaled_contexts}")
 
     def test_context_feature_scaling_by_default(self):
