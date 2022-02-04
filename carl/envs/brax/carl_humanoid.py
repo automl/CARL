@@ -8,7 +8,10 @@ import jax.numpy as jnp
 import numpy as np
 from brax.envs.humanoid import _SYSTEM_CONFIG, Humanoid
 from brax.envs.wrappers import GymWrapper
-from brax.physics import bodies
+from brax.envs.humanoid import Humanoid, _SYSTEM_CONFIG
+from brax.physics.base import take
+
+from carl.envs.carl_env import CARLEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from numpyencoder import NumpyEncoder
@@ -87,7 +90,7 @@ class CARLHumanoid(CARLEnv):
         )
         self.env.sys = brax.System(protobuf_config)
         body = bodies.Body.from_config(protobuf_config)
-        body = jnp.take(body, body.idx[:-1])  # skip the floor body
+        body = take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 
