@@ -225,7 +225,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic(env: Union[CARLBipedalWalkerEnv, bipedal_walker]) -> None:
+def demo_heuristic(env: Union[CARLBipedalWalkerEnv, bipedal_walker.BipedalWalker]) -> None:
     env.reset()
     steps = 0
     total_reward = 0

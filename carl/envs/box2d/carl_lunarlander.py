@@ -210,7 +210,7 @@ class CARLLunarLanderEnv(CARLEnv):
 
 
 def demo_heuristic_lander(
-    env: Union[CARLLunarLanderEnv, lunar_lander],
+    env: Union[CARLLunarLanderEnv, lunar_lander.LunarLander, lunar_lander.LunarLanderContinuous],
     seed: Optional[int] = None,
     render: bool = False,
 ) -> float:

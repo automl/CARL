@@ -89,9 +89,6 @@ class CustomCarRacingEnv(CarRacing):
     def __init__(self, vehicle_class: Type[Car] = Car, verbose: int = 1):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
-        self.car = self.vehicle_class(
-            self.world, *self.track[0][1:4]
-        )  # already set a car to please mypy
 
     def reset(self) -> np.ndarray:
         self._destroy()
