@@ -3,15 +3,13 @@ from typing import Any, Dict, List, Optional
 import copy
 import json
 
-import brax
-import jax.numpy as jnp
 import numpy as np
-from brax.envs.humanoid import _SYSTEM_CONFIG, Humanoid
+import brax
+from brax import jumpy as jp
 from brax.envs.wrappers import GymWrapper
 from brax.envs.humanoid import Humanoid, _SYSTEM_CONFIG
-from brax.physics.base import take
+from brax.physics import bodies
 
-from carl.envs.carl_env import CARLEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from numpyencoder import NumpyEncoder
@@ -89,8 +87,8 @@ class CARLHumanoid(CARLEnv):
             json.dumps(config, cls=NumpyEncoder), brax.Config()
         )
         self.env.sys = brax.System(protobuf_config)
-        body = bodies.Body.from_config(protobuf_config)
-        body = take(body, body.idx[:-1])  # skip the floor body
+        body = bodies.Body(config=protobuf_config)
+        body = jp.take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 
