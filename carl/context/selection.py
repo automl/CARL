@@ -94,7 +94,7 @@ class RoundRobinSelector(AbstractSelector):
         return context, self.context_id
 
 
-class ManualSelector(AbstractSelector):
+class CustomSelector(AbstractSelector):
     def __init__(self, contexts: Dict[Any, Context], selector_function: callable):
         super().__init__(contexts=contexts)
         self.selector_function = selector_function

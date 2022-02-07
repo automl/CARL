@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from typing import Dict, Any
 from carl.utils.types import Context
-from carl.context.selection import RoundRobinSelector, RandomSelector, AbstractSelector, ManualSelector
+from carl.context.selection import RoundRobinSelector, RandomSelector, AbstractSelector, CustomSelector
 
 
 def dummy_select(dummy):
@@ -67,7 +67,7 @@ class TestSelectors(unittest.TestCase):
             return inst.contexts[inst.contexts_keys[context_id]], context_id
 
         contexts = self.generate_contexts()
-        selector = ManualSelector(contexts=contexts, selector_function=selector_function)
+        selector = CustomSelector(contexts=contexts, selector_function=selector_function)
 
         selector.select()
         self.assertEqual(selector.context_id, 1)
