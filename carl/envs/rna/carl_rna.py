@@ -92,6 +92,8 @@ class CARLRnaDesignEnv(CARLEnv):
             data_dir=self.data_location,
             target_structure_ids=self.context["target_structure_ids"],
         )
+        #debug brackets
+        dot_brackets = ["..((..))."]
         print("dot brackets parsed")
         env_config = RnaDesignEnvironmentConfig(
             mutation_threshold=self.context["mutation_threshold"],
