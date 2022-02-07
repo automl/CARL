@@ -23,7 +23,8 @@ CONTEXT_BOUNDS = {
         np.inf,
         [list, int],
     ),  # This is conditional on the dataset (and also a list)
-    "solvers":
+    #FIXME: depends on the dataset
+    "solvers": None
 }
 ACTION_SPACE = spaces.Discrete(4)
 OBSERVATION_SPACE = spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.ones(11))
