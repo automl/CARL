@@ -16,7 +16,8 @@ from carl.envs.rna.learna.src.learna.environment import (
 )
 from carl.utils.trial_logger import TrialLogger
 
-class RnaGymWrapper(gym.wrapper):
+
+class RnaGymWrapper(gym.Wrapper):
     def __init__(self, env):
         super().__init__(env=env)
 
