@@ -31,12 +31,15 @@ class AbstractSelector(object):
         Context id of current selected context. Is None at first.
 
     """
+
     def __init__(self, contexts: Dict[Any, Context]):
         self.contexts: Dict[Any, Context] = contexts
         self.context_ids: List[int] = list(np.arange(len(contexts)))
         self.contexts_keys: List[Any] = list(contexts.keys())
         self.n_calls: int = 0
-        self.context_id: Optional[int] = None  # holds index of current context (integer index of context keys)
+        self.context_id: Optional[
+            int
+        ] = None  # holds index of current context (integer index of context keys)
 
     @abstractmethod
     def _select(self) -> Tuple[Context, int]:
@@ -73,6 +76,7 @@ class RandomSelector(AbstractSelector):
     """
     Random Context Selector.
     """
+
     def _select(self):
         # TODO seed?
         context_id = np.random.choice(self.context_ids)
@@ -86,6 +90,7 @@ class RoundRobinSelector(AbstractSelector):
 
     Iterate through all contexts and then start at the first again.
     """
+
     def _select(self):
         if self.context_id is None:
             self.context_id = -1
@@ -123,7 +128,12 @@ class CustomSelector(AbstractSelector):
     This custom selector selects a context id based on the number of times `select` has been called.
 
     """
-    def __init__(self, contexts: Dict[Any, Context], selector_function: Callable[[AbstractSelector], Tuple[Context, int]]):
+
+    def __init__(
+        self,
+        contexts: Dict[Any, Context],
+        selector_function: Callable[[AbstractSelector], Tuple[Context, int]],
+    ):
         super().__init__(contexts=contexts)
         self.selector_function = selector_function
 
