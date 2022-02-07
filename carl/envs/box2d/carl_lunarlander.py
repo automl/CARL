@@ -1,36 +1,33 @@
-import numpy as np
-from typing import Dict, Optional, List, Union
-
-# import pyglet
-# pyglet.options["shadow_window"] = False
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import Box2D
+import numpy as np
+from gym import spaces
+
 # from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revoluteJointDef, contactListener)
 from gym.envs.box2d import lunar_lander
 from gym.envs.box2d.lunar_lander import heuristic
-from gym import spaces
-from gym.utils import seeding, EzPickle
+from gym.utils import EzPickle, seeding
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
+# import pyglet
+# pyglet.options["shadow_window"] = False
+
 # TODO debug/test this environment by looking at rendering!
 
 DEFAULT_CONTEXT = {
     "FPS": 50,
-    "SCALE": 30.0,   # affects how fast-paced the game is, forces should be adjusted as well
-
+    "SCALE": 30.0,  # affects how fast-paced the game is, forces should be adjusted as well
     # Engine powers
     "MAIN_ENGINE_POWER": 13.0,
     "SIDE_ENGINE_POWER": 0.6,
-
     # random force on lunar lander body on reset
-    "INITIAL_RANDOM": 1000.0,   # Set 1500 to make game harder
-
+    "INITIAL_RANDOM": 1000.0,  # Set 1500 to make game harder
     "GRAVITY_X": 0,
     "GRAVITY_Y": -10,
-
     # lunar lander body specification
     "LEG_AWAY": 20,
     "LEG_DOWN": 18,
@@ -39,7 +36,6 @@ DEFAULT_CONTEXT = {
     "LEG_SPRING_TORQUE": 40,
     "SIDE_ENGINE_HEIGHT": 14.0,
     "SIDE_ENGINE_AWAY": 12.0,
-
     # Size of world
     "VIEWPORT_W": 600,
     "VIEWPORT_H": 400,
@@ -47,17 +43,22 @@ DEFAULT_CONTEXT = {
 
 CONTEXT_BOUNDS = {
     "FPS": (1, 500, float),
-    "SCALE": (1, 100, float),   # affects how fast-paced the game is, forces should be adjusted as well
+    "SCALE": (
+        1,
+        100,
+        float,
+    ),  # affects how fast-paced the game is, forces should be adjusted as well
     "MAIN_ENGINE_POWER": (0, 50, float),
     "SIDE_ENGINE_POWER": (0, 50, float),
-
     # random force on lunar lander body on reset
-    "INITIAL_RANDOM": (0, 2000, float),   # Set 1500 to make game harder
-
+    "INITIAL_RANDOM": (0, 2000, float),  # Set 1500 to make game harder
     "GRAVITY_X": (-20, 20, float),  # unit: m/s²
-    "GRAVITY_Y": (-20, -0.01, float),   # the y-component of gravity must be smaller than 0 because otherwise the
-                                 # lunarlander leaves the frame by going up
-
+    "GRAVITY_Y": (
+        -20,
+        -0.01,
+        float,
+    ),  # the y-component of gravity must be smaller than 0 because otherwise the
+    # lunarlander leaves the frame by going up
     # lunar lander body specification
     "LEG_AWAY": (0, 50, float),
     "LEG_DOWN": (0, 50, float),
@@ -66,7 +67,6 @@ CONTEXT_BOUNDS = {
     "LEG_SPRING_TORQUE": (0, 100, float),
     "SIDE_ENGINE_HEIGHT": (1, 20, float),
     "SIDE_ENGINE_AWAY": (1, 20, float),
-
     # Size of world
     "VIEWPORT_W": (400, 1000, int),
     "VIEWPORT_H": (200, 800, int),
@@ -74,7 +74,11 @@ CONTEXT_BOUNDS = {
 
 
 class CustomLunarLanderEnv(lunar_lander.LunarLander):
-    def __init__(self, gravity: (float, float) = (0, -10), high_gameover_penalty: bool = False):
+    def __init__(
+        self,
+        gravity: Tuple[float, float] = (0, -10),
+        high_gameover_penalty: bool = False,
+    ):
         EzPickle.__init__(self)
         self.high_gameover_penalty = high_gameover_penalty
         self.active_seed = self.seed()
@@ -83,12 +87,14 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
         self.world = Box2D.b2World(gravity=gravity)
         self.moon = None
         self.lander = None
-        self.particles = []
+        self.particles = []  # type: List
 
         self.prev_reward = None
 
         # useful range is -1 .. +1, but spikes can be higher
-        self.observation_space = spaces.Box(-np.inf, np.inf, shape=(8,), dtype=np.float32)
+        self.observation_space = spaces.Box(
+            -np.inf, np.inf, shape=(8,), dtype=np.float32
+        )
 
         if self.continuous:
             # Action is two floats [main engine, left-right engines].
@@ -107,7 +113,7 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
             reward = -10000
         return state, reward, done, info
 
-    def seed(self, seed=None):
+    def seed(self, seed: Optional[int] = None) -> List[int]:
         self.np_random, seed = seeding.np_random(seed)
         self.active_seed = seed
         return [seed]
@@ -130,21 +136,21 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
 
 class CARLLunarLanderEnv(CARLEnv):
     def __init__(
-            self,
-            env: Optional[CustomLunarLanderEnv] = None,
-            contexts: Dict[str, Dict] = {},
-            hide_context: bool = False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.05,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            state_context_features: Optional[List[str]] = None,
-            max_episode_length: int = 1000,
-            high_gameover_penalty: bool = False,
-            dict_observation_space: bool = False,
-            context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
-            context_selector_kwargs: Optional[Dict] = None,
+        self,
+        env: Optional[CustomLunarLanderEnv] = None,
+        contexts: Dict[Any, Dict[Any, Any]] = {},
+        hide_context: bool = False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.05,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        state_context_features: Optional[List[str]] = None,
+        max_episode_length: int = 1000,
+        high_gameover_penalty: bool = False,
+        dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
     ):
         """
 
@@ -176,9 +182,11 @@ class CARLLunarLanderEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs
         )
-        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
+        self.whitelist_gaussian_noise = list(
+            DEFAULT_CONTEXT.keys()
+        )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         lunar_lander.FPS = self.context["FPS"]
         lunar_lander.SCALE = self.context["SCALE"]
         lunar_lander.MAIN_ENGINE_POWER = self.context["MAIN_ENGINE_POWER"]
@@ -204,7 +212,11 @@ class CARLLunarLanderEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic_lander(env, seed=None, render=False):
+def demo_heuristic_lander(
+    env: Union[CARLLunarLanderEnv, lunar_lander.LunarLander, lunar_lander.LunarLanderContinuous],
+    seed: Optional[int] = None,
+    render: bool = False,
+) -> float:
     """
     Copied from LunarLander
     """
@@ -223,7 +235,7 @@ def demo_heuristic_lander(env, seed=None, render=False):
             if not still_open:
                 break
 
-        if done:# or steps % 20 == 0:
+        if done:  # or steps % 20 == 0:
             # print("observations:", " ".join(["{:+0.2f}".format(x) for x in s]))
             print("step {} total_reward {:+0.2f}".format(steps, total_reward))
         steps += 1
@@ -232,8 +244,12 @@ def demo_heuristic_lander(env, seed=None, render=False):
     return total_reward
 
 
-if __name__ == '__main__':
-    env = CARLLunarLanderEnv(hide_context=False, add_gaussian_noise_to_context=True, gaussian_noise_std_percentage=0.1)
+if __name__ == "__main__":
+    env = CARLLunarLanderEnv(
+        hide_context=False,
+        add_gaussian_noise_to_context=True,
+        gaussian_noise_std_percentage=0.1,
+    )
     # env.render()  # initialize viewer. otherwise weird bug.
     # env = ll.LunarLander()
     # env = CustomLunarLanderEnv()

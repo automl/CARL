@@ -1,14 +1,17 @@
-import numpy as np
+from typing import Any, Dict, List, Optional, Union
+
 import copy
 import json
+
 import brax
+import numpy as np
+from brax.envs.ur5e import _SYSTEM_CONFIG, Ur5e
 from brax.envs.wrappers import GymWrapper
-from brax.envs.ur5e import Ur5e, _SYSTEM_CONFIG
-from carl.envs.carl_env import CARLEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
-from typing import Optional, Dict, List, Union
 from numpyencoder import NumpyEncoder
+
+from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
@@ -21,7 +24,7 @@ DEFAULT_CONTEXT = {
     "joint_angular_damping": 50,
     "target_radius": 0.02,
     "target_distance": 0.5,
-    "torso_mass": 1.,
+    "torso_mass": 1.0,
 }
 
 CONTEXT_BOUNDS = {
@@ -33,7 +36,7 @@ CONTEXT_BOUNDS = {
     "joint_angular_damping": (0, 360, float),
     "target_radius": (0.01, np.inf, float),
     "target_distance": (0.01, np.inf, float),
-    "torso_mass": (0, np.inf, float)
+    "torso_mass": (0, np.inf, float),
 }
 
 
@@ -54,7 +57,9 @@ class CARLUr5e(CARLEnv):
             context_selector_kwargs: Optional[Dict] = None,
     ):
         env = GymWrapper(env)
-        self.base_config = MessageToDict(text_format.Parse(_SYSTEM_CONFIG, brax.Config()))
+        self.base_config = MessageToDict(
+            text_format.Parse(_SYSTEM_CONFIG, brax.Config())
+        )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
@@ -71,28 +76,40 @@ class CARLUr5e(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
         )
-        self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT.keys())  # allow to augment all values
+        self.whitelist_gaussian_noise = list(
+            DEFAULT_CONTEXT.keys()
+        )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
         config["angularDamping"] = self.context["angular_damping"]
         for j in range(len(config["joints"])):
-            config["joints"][j]["angularDamping"] = self.context["joint_angular_damping"]
+            config["joints"][j]["angularDamping"] = self.context[
+                "joint_angular_damping"
+            ]
             config["joints"][j]["stiffness"] = self.context["joint_stiffness"]
         for a in range(len(config["actuators"])):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config()))
-        self.env.target_idx = self.env.sys.body_idx['Target']
-        self.env.torso_idx = self.env.sys.body_idx['wrist_3_link']
+        self.env.sys = brax.System(
+            json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
+        )
+        self.env.target_idx = self.env.sys.body_idx["Target"]
+        self.env.torso_idx = self.env.sys.body_idx["wrist_3_link"]
         self.env.target_radius = self.context["target_radius"]
         self.env.target_distance = self.context["target_distance"]
 
-    def __getattr__(self, name):
-        if name in ["sys", "target_idx", "torso_idx", "target_radius", "target_distance"]:
+    def __getattr__(self, name: str) -> Any:
+        if name in [
+            "sys",
+            "target_idx",
+            "torso_idx",
+            "target_radius",
+            "target_distance",
+        ]:
             return getattr(self.env._environment, name)
         else:
             return getattr(self, name)
