@@ -9,7 +9,7 @@ DEFAULT_CONTEXT = {
     "reward_exponent": 1,
     "state_radius": 5,
     "dataset": "eterna",
-    "target_structure_ids": 0,
+    "target_structure_ids": None,
     # if solvers is set to 'None', all solvers are eligible
     "solvers": None
 }
