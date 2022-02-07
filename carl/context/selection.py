@@ -1,7 +1,7 @@
 from abc import abstractmethod
 import numpy as np
 from carl.utils.types import Context
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Dict, Any, Optional, Tuple, List, Callable
 
 
 class AbstractSelector(object):
@@ -95,7 +95,35 @@ class RoundRobinSelector(AbstractSelector):
 
 
 class CustomSelector(AbstractSelector):
-    def __init__(self, contexts: Dict[Any, Context], selector_function: callable):
+    """
+    Custom selector.
+
+    Pass an individual function implementing selection logic. Could also be implemented by subclassing
+    `AbstractSelector`.
+
+    Parameters
+    ----------
+    contexts: Dict[Any, Context]
+        Set of contexts.
+    selector_function: callable
+        Function receiving a pointer to the selector implementing selection logic.
+        See example below.
+
+    Examples
+    --------
+    >>> def selector_function(inst: AbstractSelector) -> Tuple[Context, int]:
+    >>>     if inst.n_calls == 0:
+    >>>         context_id = 1
+    >>>     else:
+    >>>         context_id = 0
+    >>>     return inst.contexts[inst.contexts_keys[context_id]], context_id
+    >>> contexts = ...
+    >>> selector = CustomSelector(contexts=contexts, selector_function=selector_function)
+
+    This custom selector selects a context id based on the number of times `select` has been called.
+
+    """
+    def __init__(self, contexts: Dict[Any, Context], selector_function: Callable[[AbstractSelector], Tuple[Context, int]]):
         super().__init__(contexts=contexts)
         self.selector_function = selector_function
 
