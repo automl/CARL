@@ -16,15 +16,13 @@ from carl.envs.rna.learna.src.learna.environment import (
 )
 from carl.utils.trial_logger import TrialLogger
 
-class RenameStepFunctionWrapper(object):
-    def __init__(self, obj):
-        self.obj = obj
+class RnaGymWrapper(gym.wrapper):
+    def __init__(self, env):
+        super().__init__(env=env)
 
-    def __getattr__(self, name):
-        if name.startswith("step"):
-            return lambda: getattr(self.obj, "execute")
-        else:
-            return getattr(self.obj, name)
+    def step(self, action):
+        state, done, reward = self.env.execute(action)
+        return state, reward, done, {}
 
 
 class CARLRnaDesignEnv(CARLEnv):
@@ -69,7 +67,7 @@ class CARLRnaDesignEnv(CARLEnv):
         env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
-        self.env = env
+        env = RnaGymWrapper(env)
         # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
         # with the context.
         self.data_location = data_location
@@ -85,7 +83,6 @@ class CARLRnaDesignEnv(CARLEnv):
             default_context=default_context,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
-        self.env.step = RenameStepFunctionWrapper(self.env)
 
    # def step(self, action: Any) -> Tuple[np.ndarray, float, bool, Dict]:
    #     # Step function has a different name in this env
@@ -106,4 +103,4 @@ class CARLRnaDesignEnv(CARLEnv):
             reward_exponent=self.context["reward_exponent"],
             state_radius=self.context["state_radius"],
         )
-        self.env = RnaDesignEnvironment(dot_brackets, env_config)
+        self.env = RnaGymWrapper(RnaDesignEnvironment(dot_brackets, env_config))
