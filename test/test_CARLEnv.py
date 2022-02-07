@@ -213,8 +213,11 @@ class TestContextFeatureScaling(unittest.TestCase):
         state, reward, done, info = env.step(action=action)
         n_c = len(contexts["0"])
         scaled_contexts = state[-n_c:]
-        target = np.array([16/12, 0.06/0.045, 20/15, 2/1.5, 3.6/2.7])
-        self.assertTrue(np.all(target == scaled_contexts), f"target {target} != actual {scaled_contexts}")
+        target = np.array([16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7])
+        self.assertTrue(
+            np.all(target == scaled_contexts),
+            f"target {target} != actual {scaled_contexts}",
+        )
 
     def test_context_feature_scaling_by_default(self):
         default_context = {
@@ -289,12 +292,13 @@ class TestContextSelection(unittest.TestCase):
     @staticmethod
     def generate_contexts() -> Dict[Any, Context]:
         keys = "abc"
-        context = {"max_speed": 8., "dt": 0.03, "g": 10.0, "m": 1., "l": 1.8}
+        context = {"max_speed": 8.0, "dt": 0.03, "g": 10.0, "m": 1.0, "l": 1.8}
         contexts = {k: context for k in keys}
         return contexts
 
     def test_default_selector(self):
         from carl.context.selection import RoundRobinSelector
+
         contexts = self.generate_contexts()
         env = CARLPendulumEnv(contexts=contexts)
 
@@ -303,24 +307,31 @@ class TestContextSelection(unittest.TestCase):
         self.assertEqual(env.context_selector.n_calls, 1)
 
         env.reset()
-        self.assertEqual(env.context_selector.contexts_keys[env.context_selector.context_id], "b")
+        self.assertEqual(
+            env.context_selector.contexts_keys[env.context_selector.context_id], "b"
+        )
 
     def test_roundrobin_selector_init(self):
         from carl.context.selection import RoundRobinSelector
+
         contexts = self.generate_contexts()
-        env = CARLPendulumEnv(contexts=contexts, context_selector=RoundRobinSelector(contexts=contexts))
+        env = CARLPendulumEnv(
+            contexts=contexts, context_selector=RoundRobinSelector(contexts=contexts)
+        )
         self.assertEqual(type(env.context_selector), RoundRobinSelector)
 
     def test_random_selector_init(self):
         from carl.context.selection import RandomSelector
+
         contexts = self.generate_contexts()
         env = CARLPendulumEnv(
-            contexts=contexts,
-            context_selector=RandomSelector(contexts=contexts))
+            contexts=contexts, context_selector=RandomSelector(contexts=contexts)
+        )
         self.assertEqual(type(env.context_selector), RandomSelector)
 
     def test_random_selectorclass_init(self):
         from carl.context.selection import RandomSelector
+
         contexts = self.generate_contexts()
         env = CARLPendulumEnv(contexts=contexts, context_selector=RandomSelector)
         self.assertEqual(type(env.context_selector), RandomSelector)
