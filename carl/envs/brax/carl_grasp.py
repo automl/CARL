@@ -13,6 +13,7 @@ from numpyencoder import NumpyEncoder
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 5000,
@@ -74,7 +75,6 @@ class CARLGrasp(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            dict_observation_space=dict_observation_space,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
