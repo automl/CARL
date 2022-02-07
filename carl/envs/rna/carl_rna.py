@@ -91,14 +91,6 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
-   # def step(self, action: Any) -> Tuple[np.ndarray, float, bool, Dict]:
-   #     # Step function has a different name in this env
-   #     state, reward, done = self.env.execute(action)
-   #     if not self.hide_context:
-   #         state = np.concatenate((state, np.array(list(self.context.values()))))
-   #     self.step_counter += 1
-   #     return state, reward, done, {}
-
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
