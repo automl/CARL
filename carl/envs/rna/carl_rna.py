@@ -59,10 +59,10 @@ class CARLRnaDesignEnv(CARLEnv):
         env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
+        self.env = env
         # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
         # with the context.
-        env.data_location = data_location
-        self.env = env
+        self.data_location = data_location
         super().__init__(
             env=env,
             contexts=contexts,
@@ -88,7 +88,7 @@ class CARLRnaDesignEnv(CARLEnv):
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
-            data_dir=self.env.data_location,
+            data_dir=self.data_location,
             target_structure_ids=self.context["target_structure_ids"],
         )
         env_config = RnaDesignEnvironmentConfig(
