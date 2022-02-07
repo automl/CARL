@@ -86,14 +86,18 @@ class CARLRnaDesignEnv(CARLEnv):
    #     return state, reward, done, {}
 
     def _update_context(self) -> None:
+        print("before dot brackets")
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.data_location,
             target_structure_ids=self.context["target_structure_ids"],
         )
+        print("dot brackets parsed")
         env_config = RnaDesignEnvironmentConfig(
             mutation_threshold=self.context["mutation_threshold"],
             reward_exponent=self.context["reward_exponent"],
             state_radius=self.context["state_radius"],
         )
+        print("env config done")
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
+        print("env configured")
