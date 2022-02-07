@@ -87,7 +87,7 @@ class CARLHumanoid(CARLEnv):
             json.dumps(config, cls=NumpyEncoder), brax.Config()
         )
         self.env.sys = brax.System(protobuf_config)
-        body = bodies.Body(config=protobuf_config)
+        body = bodies.Body(config=self.env.sys.config)
         body = jp.take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
