@@ -11,6 +11,7 @@ from gym.utils import EzPickle, seeding
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 # import pyglet
 # pyglet.options["shadow_window"] = False
@@ -138,7 +139,6 @@ class CARLLunarLanderEnv(CARLEnv):
         self,
         env: Optional[CustomLunarLanderEnv] = None,
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        instance_mode: str = "rr",
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.05,
@@ -149,6 +149,8 @@ class CARLLunarLanderEnv(CARLEnv):
         max_episode_length: int = 1000,
         high_gameover_penalty: bool = False,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
     ):
         """
 
@@ -168,7 +170,6 @@ class CARLLunarLanderEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -178,6 +179,8 @@ class CARLLunarLanderEnv(CARLEnv):
             state_context_features=state_context_features,
             max_episode_length=max_episode_length,
             dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()

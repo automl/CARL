@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 import gym
 import numpy as np
@@ -15,21 +15,23 @@ from carl.envs.rna.learna.src.learna.environment import (
     RnaDesignEnvironmentConfig,
 )
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env: Optional[gym.Env] = None,
+        env = None,
         data_location: str = "carl/envs/rna/learna/data",
-        contexts: Dict[Any, Dict[Any, Any]] = {},
-        instance_mode: str = "rr",
+        contexts: Dict[str, Dict] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
     ):
         """
 
@@ -66,13 +68,14 @@ class CARLRnaDesignEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
             scale_context_features=scale_context_features,
             default_context=default_context,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 

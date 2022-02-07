@@ -37,6 +37,7 @@ from carl.envs.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -186,7 +187,6 @@ class CARLVehicleRacingEnv(CARLEnv):
         self,
         env: CustomCarRacingEnv = CustomCarRacingEnv(),
         contexts: Optional[Dict[Union[str, int], Dict[Any, Any]]] = None,
-        instance_mode: str = "random",
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -195,6 +195,8 @@ class CARLVehicleRacingEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
     ):
         """
 
@@ -218,7 +220,6 @@ class CARLVehicleRacingEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -227,6 +228,8 @@ class CARLVehicleRacingEnv(CARLEnv):
             default_context=default_context,
             state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
         )
         self.whitelist_gaussian_noise = [
             k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES
