@@ -58,7 +58,7 @@ class TestSelectors(unittest.TestCase):
         self.assertEqual(selector.context_id, 0)
         self.assertEqual(selector.contexts_keys[selector.context_id], "a")
 
-    def test_manual_selector(self):
+    def test_custom_selector(self):
         def selector_function(inst: AbstractSelector):
             if inst.n_calls == 0:
                 context_id = 1
