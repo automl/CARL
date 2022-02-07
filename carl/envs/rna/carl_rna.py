@@ -25,6 +25,12 @@ class RnaGymWrapper(object):
         state, done, reward = self.env.execute(action)
         return state, reward, done, {}
 
+    def __getattr__(self, name):
+        if not name == "env":
+            return getattr(self.env, name)
+        else:
+            return self.env
+
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
