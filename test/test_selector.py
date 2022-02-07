@@ -1,8 +1,13 @@
 import unittest
+from unittest.mock import patch
 
 from typing import Dict, Any
 from carl.utils.types import Context
-from carl.context.selection import RoundRobinSelector, RandomSelector, AbstractSelector
+from carl.context.selection import RoundRobinSelector, RandomSelector, AbstractSelector, ManualSelector
+
+
+def dummy_select(dummy):
+    return None, None
 
 
 class TestSelectors(unittest.TestCase):
@@ -14,6 +19,7 @@ class TestSelectors(unittest.TestCase):
         contexts = {k: v for k, v in zip(keys, values)}
         return contexts
 
+    @patch.object(AbstractSelector, '_select', dummy_select)
     def test_abstract_selector(self):
         contexts = self.generate_contexts()
         selector = AbstractSelector(contexts=contexts)
@@ -34,7 +40,7 @@ class TestSelectors(unittest.TestCase):
         contexts = self.generate_contexts()
         selector = RoundRobinSelector(contexts=contexts)
 
-        self.assertEqual(selector.context_id, -1)
+        self.assertEqual(None, selector.context_id)
 
         selector.select()
         self.assertEqual(selector.context_id, 0)
@@ -47,6 +53,25 @@ class TestSelectors(unittest.TestCase):
         selector.select()
         self.assertEqual(selector.context_id, 2)
         self.assertEqual(selector.contexts_keys[selector.context_id], "c")
+
+        selector.select()
+        self.assertEqual(selector.context_id, 0)
+        self.assertEqual(selector.contexts_keys[selector.context_id], "a")
+
+    def test_manual_selector(self):
+        def selector_function(inst: AbstractSelector):
+            if inst.n_calls == 0:
+                context_id = 1
+            else:
+                context_id = 0
+            return inst.contexts[inst.contexts_keys[context_id]], context_id
+
+        contexts = self.generate_contexts()
+        selector = ManualSelector(contexts=contexts, selector_function=selector_function)
+
+        selector.select()
+        self.assertEqual(selector.context_id, 1)
+        self.assertEqual(selector.contexts_keys[selector.context_id], "b")
 
         selector.select()
         self.assertEqual(selector.context_id, 0)

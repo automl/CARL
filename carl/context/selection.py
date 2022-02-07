@@ -92,3 +92,14 @@ class RoundRobinSelector(AbstractSelector):
         self.context_id = (self.context_id + 1) % len(self.contexts)
         context = self.contexts[self.contexts_keys[self.context_id]]
         return context, self.context_id
+
+
+class ManualSelector(AbstractSelector):
+    def __init__(self, contexts: Dict[Any, Context], selector_function: callable):
+        super().__init__(contexts=contexts)
+        self.selector_function = selector_function
+
+    def _select(self):
+        context, context_id = self.selector_function(inst=self)
+        self.context_id = context_id
+        return context, context_id
