@@ -96,10 +96,10 @@ class CARLGrasp(CARLEnv):
         self.env.sys = brax.System(
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
-        self.env.object_idx = self.env.sys.body_idx["Object"]
-        self.env.target_idx = self.env.sys.body_idx["Target"]
-        self.env.hand_idx = self.env.sys.body_idx["HandThumbProximal"]
-        self.env.palm_idx = self.env.sys.body_idx["HandPalm"]
+        self.env.object_idx = self.env.sys.body.index["Object"]
+        self.env.target_idx = self.env.sys.body.index["Target"]
+        self.env.hand_idx = self.env.sys.body.index["HandThumbProximal"]
+        self.env.palm_idx = self.env.sys.body.index["HandPalm"]
         self.env.target_radius = self.context["target_radius"]
         self.env.target_distance = self.context["target_distance"]
         self.env.target_height = self.context["target_height"]

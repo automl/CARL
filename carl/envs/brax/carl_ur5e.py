@@ -97,8 +97,8 @@ class CARLUr5e(CARLEnv):
         self.env.sys = brax.System(
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
-        self.env.target_idx = self.env.sys.body_idx["Target"]
-        self.env.torso_idx = self.env.sys.body_idx["wrist_3_link"]
+        self.env.target_idx = self.env.sys.body.index["Target"]
+        self.env.torso_idx = self.env.sys.body.index["wrist_3_link"]
         self.env.target_radius = self.context["target_radius"]
         self.env.target_distance = self.context["target_distance"]
 
