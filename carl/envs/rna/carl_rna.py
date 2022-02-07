@@ -16,6 +16,16 @@ from carl.envs.rna.learna.src.learna.environment import (
 )
 from carl.utils.trial_logger import TrialLogger
 
+class RenameStepFunctionWrapper(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __getattr__(self, name):
+        if name.startswith("step"):
+            return lambda: getattr(self.obj, "execute")
+        else:
+            return getattr(self.obj, name)
+
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
@@ -75,7 +85,7 @@ class CARLRnaDesignEnv(CARLEnv):
             default_context=default_context,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
-        self.env.step = self.env.execute
+        self.env.step = RenameStepFunctionWrapper(self.env)
 
    # def step(self, action: Any) -> Tuple[np.ndarray, float, bool, Dict]:
    #     # Step function has a different name in this env
@@ -86,20 +96,14 @@ class CARLRnaDesignEnv(CARLEnv):
    #     return state, reward, done, {}
 
     def _update_context(self) -> None:
-        print("before dot brackets")
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.data_location,
             target_structure_ids=self.context["target_structure_ids"],
         )
-        #debug brackets
-        dot_brackets = ["..((..))."]
-        print("dot brackets parsed")
         env_config = RnaDesignEnvironmentConfig(
             mutation_threshold=self.context["mutation_threshold"],
             reward_exponent=self.context["reward_exponent"],
             state_radius=self.context["state_radius"],
         )
-        print("env config done")
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
-        print("env configured")

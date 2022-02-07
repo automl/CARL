@@ -192,13 +192,9 @@ class CARLEnv(Wrapper):
         self.step_counter = 0
         self._progress_instance()
         self._update_context()
-        print("context updated")
         self._log_context()
-        print("context logged")
         state = self.env.reset(**kwargs)
-        print("reset done")
         state = self.build_context_adaptive_state(state)
-        print("state constructed")
         return state
 
     def build_context_adaptive_state(
