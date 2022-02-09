@@ -95,7 +95,6 @@ class CGateActor(Actor):
         self,
         observation_space: gym.spaces.Space,
         action_space: gym.spaces.Space,
-        net_arch: List[int],
         features_extractor: nn.Module,
         features_dim: int,
         activation_fn: Type[nn.Module] = nn.ReLU,
@@ -112,7 +111,6 @@ class CGateActor(Actor):
             squash_output=True,
         )
 
-        self.net_arch = net_arch
         self.features_dim = features_dim
         self.activation_fn = activation_fn
 
@@ -146,9 +144,10 @@ class CGateCritic(ContinuousCritic):
         head_width: int = 256,
         **kwargs
     ):
-        super().__init__(
-            observation_space,
-            action_space,
+        BaseModel.__init__(
+            self,
+            observation_space=observation_space,
+            action_space=action_space,
             features_extractor=features_extractor,
             normalize_images=normalize_images,
         )
@@ -166,7 +165,7 @@ class CGateCritic(ContinuousCritic):
                 n_context_features=n_context_features,
                 context_branch_width=context_branch_width
             )
-            critic_head = get_actor_head(
+            critic_head = get_critic_head(
                 context_branch_width=context_branch_width, head_width=head_width)
             q_net = nn.Sequential(
                 observation_extractor,
@@ -184,7 +183,6 @@ class CGatePolicy(TD3Policy):
         lr_schedule: Schedule,
         features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
-        normalize_images: bool = True,
         optimizer_class: Type[th.optim.Optimizer] = th.optim.Adam,
         optimizer_kwargs: Optional[Dict[str, Any]] = None,
         n_critics: int = 2,
@@ -205,8 +203,6 @@ class CGatePolicy(TD3Policy):
         self.net_args = {
             "observation_space": self.observation_space,
             "action_space": self.action_space,
-            "activation_fn": self.activation_fn,
-            "normalize_images": normalize_images,
             "context_branch_width": context_branch_width,
             "head_width": head_width
 
