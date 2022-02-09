@@ -7,7 +7,7 @@ from torch import nn
 from stable_baselines3.common.preprocessing import get_flattened_obs_dim
 from stable_baselines3.common.policies import BasePolicy, BaseModel
 from stable_baselines3.common.preprocessing import get_action_dim, is_image_space, maybe_transpose, preprocess_obs, get_flattened_obs_dim
-from stable_baselines3.td3.policies import TD3Policy, Actor, ContinuousCritic
+from stable_baselines3.td3.policies import TD3Policy, Actor, ContinuousCritic, CombinedExtractor
 from stable_baselines3.common.type_aliases import TensorDict, Schedule
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor, FlattenExtractor
 
@@ -54,7 +54,9 @@ class CGateFeatureExtractor(nn.Module):
         encoded_tensor_list = []
         for key, extractor in self.extractors.items():
             encoded_tensor_list.append(extractor(observations[key]))
-        return th.mul(encoded_tensor_list)
+        if type(encoded_tensor_list[0]) == dict:
+            print(encoded_tensor_list[0])
+        return th.mul(*encoded_tensor_list)
 
 
 def get_actor_head(action_dim: int, context_branch_width: int = 256, head_width: int = 256):
@@ -174,6 +176,27 @@ class CGateCritic(ContinuousCritic):
             self.add_module(f"qf{idx}", q_net)
             self.q_networks.append(q_net)
 
+    def forward(self, obs: TensorDict, actions: th.Tensor) -> Tuple[th.Tensor, ...]:
+        obs["state"] = th.cat([obs["state"], actions], dim=1)  # concat actions to state
+        qvalue_input = obs
+        return tuple(q_net(qvalue_input) for q_net in self.q_networks)
+
+
+class DummyExtractor(BaseFeaturesExtractor):
+    """
+    Feature extract that flatten the input.
+    Used as a placeholder when feature extraction is not needed.
+
+    :param observation_space:
+    """
+
+    def __init__(self, observation_space: gym.Space):
+        super(DummyExtractor, self).__init__(observation_space, get_flattened_obs_dim(observation_space))
+        self.flatten = nn.Flatten()
+
+    def forward(self, observations: Union[th.Tensor, TensorDict]) -> Union[th.Tensor, TensorDict]:
+        return observations
+
 
 class CGatePolicy(TD3Policy):
     def __init__(
@@ -181,7 +204,7 @@ class CGatePolicy(TD3Policy):
         observation_space: gym.spaces.Space,
         action_space: gym.spaces.Space,
         lr_schedule: Schedule,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[BaseFeaturesExtractor] = DummyExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         optimizer_class: Type[th.optim.Optimizer] = th.optim.Adam,
         optimizer_kwargs: Optional[Dict[str, Any]] = None,
