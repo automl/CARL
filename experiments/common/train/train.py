@@ -40,6 +40,7 @@ from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
 from experiments.common.utils.json_utils import lazy_json_dump
 from experiments.evaluation_protocol.evaluation_protocol_utils import get_train_contexts
+from experiments.common.train.policies.cgate import CGatePolicy
 
 
 def str2bool(v):
@@ -241,6 +242,15 @@ def get_parser() -> configargparse.ArgumentParser:
         help="Evaluation protocols from Kirk et al., 2021."
     )
 
+    parser.add_argument(
+        "--use_cgate",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        default=False,
+        help="If true, use cGate architecture."
+    )
+
     return parser
 
 
@@ -274,6 +284,7 @@ def set_hps(
         env_name: str,
         agent_name: str,
         hp_fn: Optional[str],
+        use_cgate: bool = False,
         opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None
 ):
     hyperparams = {}
@@ -347,9 +358,14 @@ def set_hps(
                 "policy_kwargs": dict(log_std_init=-3, net_arch=[400, 300]),
             }
         hyperparams["n_envs"] = 1
+
     if opt_hyperparams is not None:
         for k in opt_hyperparams:
             hyperparams[k] = opt_hyperparams[k]
+
+    if use_cgate:
+        hyperparams["policy"] = CGatePolicy
+        hyperparams["policy_kwargs"] = dict()
 
     return hyperparams, env_wrapper, normalize_kwargs, schedule_kwargs
 
@@ -464,6 +480,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         agent_name=args.agent,
         hp_fn=args.hp_file,
         opt_hyperparams=opt_hyperparams,
+        use_cgate=args.use_cgate
     )
     hp_content = {
         "hyperparameters": hyperparams,
@@ -503,7 +520,8 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         logger=env_logger,
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features,
-        state_context_features=args.state_context_features
+        state_context_features=args.state_context_features,
+        dict_observation_space=args.use_cgate
     )
     env, eval_env = get_env(
         env_name=args.env,
@@ -541,7 +559,6 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
 
     # Instantiate Agent
     model = agent_cls(env=env, verbose=1, seed=args.seed, **hyperparams)
-    model.set_logger(logger.stable_baselines_logger)
     final_ep_mean_reward = None
     if schedule_kwargs is not None and schedule_kwargs["use_schedule"] == True:
         switching_point = schedule_kwargs["switching_point"]
