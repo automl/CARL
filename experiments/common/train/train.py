@@ -40,7 +40,7 @@ from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
 from experiments.common.utils.json_utils import lazy_json_dump
 from experiments.evaluation_protocol.evaluation_protocol_utils import get_train_contexts
-from experiments.common.train.policies.cgate import CGatePolicy
+from experiments.common.train.policies.cgate import get_cgate_policy
 
 
 def str2bool(v):
@@ -364,7 +364,7 @@ def set_hps(
             hyperparams[k] = opt_hyperparams[k]
 
     if use_cgate:
-        hyperparams["policy"] = CGatePolicy
+        hyperparams["policy"] = get_cgate_policy(agent_name=agent_name)
         hyperparams["policy_kwargs"] = dict()
 
     return hyperparams, env_wrapper, normalize_kwargs, schedule_kwargs
