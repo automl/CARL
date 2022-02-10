@@ -608,6 +608,8 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
 
 
 if __name__ == '__main__':
+    import gym
+    gym.logger.set_level(40)
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
     ret = main(args, unknown_args, parser)
