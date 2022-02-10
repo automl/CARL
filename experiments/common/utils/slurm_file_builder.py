@@ -10,24 +10,25 @@ if "runscripts" in cwd:
 
 #########################################################################
 job_name = "CARL"
-env = "CARLHalfcheetah"
-envtype = "brax"
+env = "CARLPendulumEnv"
+envtype = "classic_control"
 default_sample_std_percentage = 0.1
 hide_context = True
 vec_env_cls = "DummyVecEnv"
-agent = "PPO"
-n_timesteps = 5_000_000
+agent = "DDPG"
+n_timesteps = 1_000_000
 state_context_features = "changing_context_features"
 no_eval = False
 hp_opt = False
-use_cpu = False
+use_cpu = True
 on_luis = False
+use_cgate = True
 follow_evaluation_protocol = False
 luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 time = "12:00:00" if use_cpu else "24:00:00"
 tnt_cpu_partition = "short"
-outdirbase = "results/rerun"
+outdirbase = "results/cGate"
 if follow_evaluation_protocol:
     outdirbase = "results/evaluation_protocol"
 #########################################################################
@@ -43,7 +44,7 @@ iteration_list = [
         {
             "name": "default_sample_std_percentage",
             "id": "std",
-            "values": [0.1]#, 0.25, 0.5]
+            "values": [0.1, 0.25, 0.5]
         },
         {
             "name": "hide_context",
@@ -81,7 +82,7 @@ if follow_evaluation_protocol:
         }
     ]
 
-runfile = "train.py" if not hp_opt else "training/hp_opt.py"
+runfile = "experiments/common/train/train.py" if not hp_opt else "training/hp_opt.py"
 exptype = "base_vs_context" if not hp_opt else "optimized"
 
 print(env)
@@ -104,8 +105,9 @@ else:
 mail_user = "benjamin@tnt.uni-hannover.de" if not on_luis else "benjamins@tnt.uni-hannover.de"
 output_filename = "slurmout/slurm-%j.out"
 mem_per_cpu = "2000M" if "Racing" not in env else "8000M"
-basecommand = f"cd carl\n{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
-              f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/ppo.yml"
+basecommand = f"{xvfb_str}python {runfile} --num_contexts 100 --steps {n_timesteps} " \
+              f"--add_context_feature_names_to_logdir --hp_file training/hyperparameters/ppo.yml " \
+              f"--use_cgate {use_cgate}"
 cpus_per_task = "16"
 pre_command = ""
 post_command = ""
