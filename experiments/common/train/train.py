@@ -432,6 +432,12 @@ def get_env(
 
 
 def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
+    print(args)
+    if args.hide_context is False and args.use_cgate:
+        msg = "Skip run because hide_context is False and use_cgate is True. When using cGate, the context " \
+              "is always visible. Set hide_context to True if you want to use cGate."
+        print(msg)
+        return None
     # Manipulate args
     if args.follow_evaluation_protocol:
         args.context_feature_args = []
