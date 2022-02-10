@@ -54,8 +54,6 @@ class CGateFeatureExtractor(nn.Module):
         encoded_tensor_list = []
         for key, extractor in self.extractors.items():
             encoded_tensor_list.append(extractor(observations[key]))
-        if type(encoded_tensor_list[0]) == dict:
-            print(encoded_tensor_list[0])
         return th.mul(*encoded_tensor_list)
 
 
@@ -177,9 +175,23 @@ class CGateCritic(ContinuousCritic):
             self.q_networks.append(q_net)
 
     def forward(self, obs: TensorDict, actions: th.Tensor) -> Tuple[th.Tensor, ...]:
-        obs["state"] = th.cat([obs["state"], actions], dim=1)  # concat actions to state
-        qvalue_input = obs
+        # copy observations because obs are a reference
+        # if not copied, the actor will receive the concatenated vector of state and action
+        qvalue_input = obs.copy()
+        qvalue_input["state"] = th.cat([qvalue_input["state"], actions], dim=1)  # concat actions to state
         return tuple(q_net(qvalue_input) for q_net in self.q_networks)
+
+    def q1_forward(self, obs: TensorDict, actions: th.Tensor) -> th.Tensor:
+        """
+        Only predict the Q-value using the first network.
+        This allows to reduce computation when all the estimates are not needed
+        (e.g. when updating the policy in TD3).
+        """
+        # with th.no_grad():
+        #     features = self.extract_features(obs)
+        qvalue_input = obs.copy()
+        qvalue_input["state"] = th.cat([qvalue_input["state"], actions], dim=1)  # concat actions to state
+        return self.q_networks[0](qvalue_input)
 
 
 class DummyExtractor(BaseFeaturesExtractor):
