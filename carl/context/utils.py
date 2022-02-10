@@ -3,7 +3,7 @@ from typing import List, Dict, Tuple
 
 
 def get_context_bounds(
-    context_keys: List[str], context_bounds: Dict[str, Tuple[float]]
+    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, type]]
 ):
     """
     Get context bounds for specific features.
