@@ -16,15 +16,25 @@ if __name__ == '__main__':
     # # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/box2d/CARLBipedalWalkerEnv"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLPendulumEnv"
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
-    path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
+    path2 = None
+    # path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
+    # path2 = "/home/benjamin/Dokumente/code/tmp/CARL/results/cGate/base_vs_context/classic_control/CARLPendulumEnv"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/carl/results/rerun/base_vs_context/brax/CARLHalfcheetah"
-    results = gather_results(path=path)
-    results2 = gather_results(path=path2)
-    results = pd.concat([results, results2])
 
-    experiment = "compounding"
+    savepath = path
+    results = gather_results(path=path)
+    if path2 is not None:
+        savepath = path2
+        results2 = gather_results(path=path2)
+        if "cGate" in path2:
+            results["context_visible"] = results["context_visible"].apply(str)
+            results2["context_visible"] = "cGate"
+        results = pd.concat([results, results2])
+        results.reset_index(inplace=True)
+
+    experiment = "normal"  # "compounding"
     paperversion = True
-    plot_across_contextfeatures = False
+    plot_across_contextfeatures = True
     plot_across_magnitudes = not plot_across_contextfeatures
     logx = False
 
@@ -144,6 +154,7 @@ if __name__ == '__main__':
             legend_handles = []
             labels = []
             for j, (df_id, subset_group_df) in enumerate(groups_sub):
+                subset_group_df.reset_index(inplace=True)
                 n_seeds = subset_group_df['seed'].nunique()
                 msg = f"{plot_id}, {group_id}, {df_id}: n_seeds={n_seeds}"
                 print(msg)
@@ -160,7 +171,10 @@ if __name__ == '__main__':
                 legend_handles.append(Line2D([0], [0], color=color))
                 label = df_id
                 if plot_across_contextfeatures:
-                    label = "visible" if label else "hidden"
+                    if type(label) == str:
+                        label = label
+                    elif type(label) == bool:
+                        label = "visible" if label else "hidden"
                 labels.append(label)
 
             # Annotations
@@ -250,7 +264,7 @@ if __name__ == '__main__':
         else:
             exp_str = ""
         fig_fn = f"{exp_str}evalmeanrew__{env_name}__{key_plotgroup}-{plot_id}.png"
-        fig_ffn = Path(path) / fig_fn
+        fig_ffn = Path(savepath) / fig_fn
         fig.savefig(fig_ffn, bbox_inches="tight")
         print("saved at", fig_ffn)
         plt.show()
