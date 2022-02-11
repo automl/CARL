@@ -398,6 +398,11 @@ class CARLEnv(Wrapper):
             # do not touch pixel state
             pass
         else:
+            if self.context is None:
+                context_keys = list(list(self.contexts.values())[0].keys())
+            else:
+                context_keys = list(self.context.keys())
+
             if env_lower_bounds is None and env_upper_bounds is None:
                 obs_dim = obs_shape[0]
                 env_lower_bounds = -np.inf * np.ones(obs_dim)
@@ -407,11 +412,32 @@ class CARLEnv(Wrapper):
                 self.state_context_features is not None
                 and len(self.state_context_features) == 0
             ):
-                self.env.observation_space = spaces.Box(
-                    env_lower_bounds,
-                    env_upper_bounds,
-                    dtype=np.float32,
-                )
+                # TODO get rid of the spaghetti please
+                if self.dict_observation_space:
+                    context_lower_bounds, context_upper_bounds = get_context_bounds(
+                        context_keys, context_bounds
+                    )
+                    self.env.observation_space = spaces.Dict(
+                        {
+                            "state": spaces.Box(
+                                low=env_lower_bounds,
+                                high=env_upper_bounds,
+                                dtype=np.float32,
+                            ),
+                            "context": spaces.Box(
+                                low=context_lower_bounds,
+                                high=context_upper_bounds,
+                                dtype=np.float32,
+                            ),
+                        }
+                    )
+
+                else:
+                    self.env.observation_space = spaces.Box(
+                        env_lower_bounds,
+                        env_upper_bounds,
+                        dtype=np.float32,
+                    )
             else:
                 context_keys = list(self.context.keys())
                 if context_bounds is None:
