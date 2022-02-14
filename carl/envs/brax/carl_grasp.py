@@ -6,7 +6,7 @@ import json
 import brax
 import numpy as np
 from brax.envs.grasp import _SYSTEM_CONFIG, Grasp
-from brax.envs.wrappers import GymWrapper
+from brax.envs.wrappers import GymWrapper, VectorWrapper, VectorGymWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from numpyencoder import NumpyEncoder
@@ -44,6 +44,7 @@ class CARLGrasp(CARLEnv):
     def __init__(
         self,
         env: Grasp = Grasp(),
+        n_envs: int = 1,
         contexts: Dict[str, Dict] = {},
         hide_context=False,
         add_gaussian_noise_to_context: bool = False,
@@ -56,7 +57,11 @@ class CARLGrasp(CARLEnv):
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
-        env = GymWrapper(env)
+        if n_envs == 1:
+            env = GymWrapper(env)
+        else:
+            env = VectorGymWrapper(VectorWrapper(env, n_envs))
+
         self.base_config = MessageToDict(
             text_format.Parse(_SYSTEM_CONFIG, brax.Config())
         )
@@ -64,6 +69,7 @@ class CARLGrasp(CARLEnv):
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
             env=env,
+            n_envs=n_envs,
             contexts=contexts,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
