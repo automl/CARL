@@ -75,7 +75,8 @@ class CARLEnv(Wrapper):
     def __init__(
         self,
         env: gym.Env,
-        contexts: Dict[Any, Dict[Any, Any]],
+        n_envs: int = 1,
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -183,7 +184,8 @@ class CARLEnv(Wrapper):
             self.context_feature_scale_factors[
                 self.context_feature_scale_factors == 0
             ] = 1  # otherwise value / scale_factor = nan
-
+       
+        self.vectorized = n_envs > 1
         self.build_observation_space()
         self._update_context()
 
@@ -232,8 +234,11 @@ class CARLEnv(Wrapper):
                         for k in self.state_context_features
                     ]
                 )
+
             if self.dict_observation_space:
                 state = dict(state=state, context=context_values)
+            elif self.vectorized:
+                state = np.array([np.concatenate((s, context_values)) for s in state])
             else:
                 state = np.concatenate((state, context_values))
         return state
