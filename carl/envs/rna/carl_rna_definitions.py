@@ -8,7 +8,7 @@ DEFAULT_CONTEXT = {
     "mutation_threshold": 5,
     "reward_exponent": 1,
     "state_radius": 5,
-    "dataset": "eterna",
+    "dataset": "rfam_taneda",
     "target_structure_ids": None,
     # if solvers is set to 'None', all solvers are eligible
     "solvers": None

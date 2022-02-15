@@ -92,6 +92,8 @@ class CARLRnaDesignEnv(CARLEnv):
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
     def _update_context(self) -> None:
+        #FIXME: this obviously can't be hardcoded, but needs to be full path
+        self.data_location = "/home/eimer/Dokumente/git/CARL/carl/envs/rna/learna/data"
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.data_location,

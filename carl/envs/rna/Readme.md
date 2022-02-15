@@ -32,3 +32,4 @@ mv data/rfam_learn/train data/rfam_learn_train
 rm -rf data/rfam_learn
 ```
 
+If everything went well, you should see .rna files in the target data folders. By default, the env will try to parse them out of carl/envs/rna/learna/data/<datasetname>, so make sure to specify a different path upon initialization if you want to relocate the data. 
