@@ -77,44 +77,10 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CustomBipedalWalkerEnv(bipedal_walker.BipedalWalker):
-    def __init__(
-        self, gravity: Tuple[float, float] = (0, -10)
-    ):  # TODO actually we dont need a custom env because the gravity can be adjusted afterwards
-        EzPickle.__init__(self)
-        self.seed()
-        self.viewer = None
-
-        self.world = Box2D.b2World(gravity=gravity)
-        self.terrain = None
-        self.hull = None
-
-        self.prev_shaping = None
-
-        self.fd_polygon = fixtureDef(
-            shape=polygonShape(vertices=[(0, 0), (1, 0), (1, -1), (0, -1)]),
-            friction=bpw.FRICTION,
-        )
-
-        self.fd_edge = fixtureDef(
-            shape=edgeShape(vertices=[(0, 0), (1, 1)]),
-            friction=bpw.FRICTION,
-            categoryBits=0x0001,
-        )
-
-        self.reset()
-
-        high = np.array([np.inf] * 24)
-        self.action_space = spaces.Box(
-            np.array([-1, -1, -1, -1]), np.array([1, 1, 1, 1]), dtype=np.float32
-        )
-        self.observation_space = spaces.Box(-high, high, dtype=np.float32)
-
-
 class CARLBipedalWalkerEnv(CARLEnv):
     def __init__(
         self,
-        env: Optional[CustomBipedalWalkerEnv] = None,
+        env: Optional[bipedal_walker.BipedalWalker] = None,
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
@@ -138,7 +104,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         instance_mode: str, optional
         """
         if env is None:
-            env = CustomBipedalWalkerEnv()
+            env = bipedal_walker.BipedalWalker()
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
