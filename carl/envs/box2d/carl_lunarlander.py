@@ -77,12 +77,14 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
     def __init__(
         self,
         gravity: Tuple[float, float] = (0, -10),
+        continuous: bool = False,
         high_gameover_penalty: bool = False,
     ):
         EzPickle.__init__(self)
         self.high_gameover_penalty = high_gameover_penalty
         self.active_seed = self.seed()
         self.viewer = None
+        self.continuous = continuous
 
         self.world = Box2D.b2World(gravity=gravity)
         self.moon = None
@@ -117,21 +119,6 @@ class CustomLunarLanderEnv(lunar_lander.LunarLander):
         self.np_random, seed = seeding.np_random(seed)
         self.active_seed = seed
         return [seed]
-
-    # def _destroy(self):
-    #     if not self.moon: return
-    #     self.world.contactListener = None
-    #     self._clean_particles(True)
-    #     bodies = [self.moon, self.lander] + self.legs
-    #     # safe destroy because before calling destroy we already created a new world
-    #     # which does not have the bodies anymore
-    #     safe_destroy(self.world, bodies)
-    #     self.moon = None
-    #     self.lander = None
-    #
-    # def _clean_particles(self, all):
-    #     while self.particles and (all or self.particles[0].ttl < 0):
-    #         safe_destroy(self.world, [self.particles.pop(0)])
 
 
 class CARLLunarLanderEnv(CARLEnv):
