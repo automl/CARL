@@ -28,7 +28,7 @@ luis_user_name = "nhmlbenc"  # can be empty string if not on LUIS
 branch_name = "HP_opt"
 time = "12:00:00" if use_cpu else "24:00:00"
 tnt_cpu_partition = "short"
-outdirbase = "results/cGate"
+outdirbase = "results/cGate2"
 if follow_evaluation_protocol:
     outdirbase = "results/evaluation_protocol"
 #########################################################################

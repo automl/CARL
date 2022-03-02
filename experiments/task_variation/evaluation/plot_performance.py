@@ -18,7 +18,7 @@ if __name__ == '__main__':
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
     path2 = None
     # path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
-    # path2 = "/home/benjamin/Dokumente/code/tmp/CARL/results/cGate/base_vs_context/classic_control/CARLPendulumEnv"
+    path2 = "/home/benjamin/Dokumente/code/tmp/CARL/results/cGate2/base_vs_context/classic_control/CARLPendulumEnv"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/carl/results/rerun/base_vs_context/brax/CARLHalfcheetah"
 
     savepath = path
