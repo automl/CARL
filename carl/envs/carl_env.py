@@ -7,13 +7,17 @@ import inspect
 import gym
 import numpy as np
 from gym import Wrapper, spaces
-import jaxlib
-import jax.numpy as jnp
 
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector, RoundRobinSelector
+
+import importlib
+brax_spec = importlib.util.find_spec("brax")
+if brax_spec is not None:
+    import jaxlib
+    import jax.numpy as jnp
 
 
 class CARLEnv(Wrapper):
@@ -219,8 +223,9 @@ class CARLEnv(Wrapper):
         self, state: List[float], context_feature_values: Optional[List[float]] = None
     ) -> List[float]:
         tnp = np
-        if type(state) == jaxlib.xla_extension.DeviceArray:
-            tnp = jnp
+        if brax_spec is not None:
+            if type(state) == jaxlib.xla_extension.DeviceArray:
+                tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
