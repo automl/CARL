@@ -1,0 +1,11 @@
+# @package _global_
+group: cgate_sb3
+carl:
+  use_cgate: true
+
+agent:
+  kwargs:
+    policy:
+      _target_: experiments.common.train.policies.cgate.get_cgate_policy
+      agent_name: ${agent.name}
+    policy_kwargs: {}
