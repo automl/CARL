@@ -176,6 +176,7 @@ def main(cfg: DictConfig):
     if "train_freq" in agent_kwargs:
         agent_kwargs["train_freq"] = tuple(agent_kwargs["train_freq"])
         print(agent_kwargs["train_freq"], agent_kwargs["train_freq"][0], type(agent_kwargs["train_freq"][0]))
+    agent_kwargs["tensorboard_log"] = str(output_dir)
     print(agent_kwargs)
     model = agent_cls(env=env, verbose=2, **agent_kwargs)
     model.set_logger(stable_baselines_logger)
