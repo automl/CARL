@@ -22,7 +22,10 @@ agent:
     train_freq:
       - !!int 1
       - "episode"
-    learning_rate: !!float 1e-3
+    learning_rate:
+      _target_: experiments.common.train.schedules.CosineAnnealingLRSchedule
+      lr_min: 1e-4
+      lr_max: 1e-3
     seed: ${seed}
     policy_kwargs:
       net_arch: [400, 300]
