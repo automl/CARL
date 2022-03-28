@@ -83,22 +83,24 @@ def main(cfg: DictConfig):
         + "_"
         + os.path.basename(HydraConfig.get().run.dir)
     )
-    cfg.wandb_id = hydra_job
+    cfg.wandb.id = hydra_job
 
     run = wandb.init(
-        id=cfg.wandb_id,
+        id=cfg.wandb.id,
         resume="allow",
-        mode="offline" if cfg.debug else None,
+        mode="offline" if cfg.wandb.debug else None,
         project="carl",
         settings=wandb.Settings(start_method="thread"),
-        job_type=cfg.job_type,
-        entity=cfg.entity,
-        group=cfg.group,
+        job_type=cfg.wandb.job_type,
+        entity=cfg.wandb.entity,
+        group=cfg.wandb.group,
         dir=os.getcwd(),
         config=OmegaConf.to_container(cfg, resolve=True, enum_to_str=True),
         sync_tensorboard=True,
         monitor_gym=True,
         save_code=True,
+        tags=cfg.wandb.tags,
+        notes=cfg.wandb.notes,
     )
     hydra_cfg = HydraConfig.get()
     command = f"{hydra_cfg.job.name}.py " + " ".join(hydra_cfg.overrides.task)

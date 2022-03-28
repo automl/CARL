@@ -1,5 +1,6 @@
 # @package _global_
-group: cgate_sb3
+wandb:
+  group: cgate_sb3
 carl:
   use_cgate: true
 
