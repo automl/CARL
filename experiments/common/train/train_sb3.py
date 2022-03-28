@@ -178,6 +178,8 @@ def main(cfg: DictConfig):
         agent_kwargs["train_freq"] = tuple(agent_kwargs["train_freq"])
         print(agent_kwargs["train_freq"], agent_kwargs["train_freq"][0], type(agent_kwargs["train_freq"][0]))
     agent_kwargs["tensorboard_log"] = str(output_dir)
+    if "learning_rate" in agent_kwargs and type(agent_kwargs["learning_rate"]) != float:
+        agent_kwargs["learning_rate"] = hydra.utils.instantiate(agent_kwargs["learning_rate"])
     print(agent_kwargs)
     model = agent_cls(env=env, verbose=2, **agent_kwargs)
     model.set_logger(stable_baselines_logger)
