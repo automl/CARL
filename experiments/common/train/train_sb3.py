@@ -90,6 +90,7 @@ def main(cfg: DictConfig):
         resume="allow",
         mode="offline" if cfg.debug else None,
         project="carl",
+        settings=wandb.Settings(start_method="thread"),
         job_type=cfg.job_type,
         entity=cfg.entity,
         group=cfg.group,
