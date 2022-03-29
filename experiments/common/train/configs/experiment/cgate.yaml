@@ -9,4 +9,6 @@ agent:
     policy:
       _target_: experiments.common.train.policies.cgate.get_cgate_policy
       agent_name: ${agent.name}
-    policy_kwargs: {}
+    policy_kwargs:
+      context_branch_width: 512
+      head_width: 512
