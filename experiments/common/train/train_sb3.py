@@ -172,7 +172,10 @@ def main(cfg: DictConfig):
     agent_cls = getattr(stable_baselines3, cfg.agent.name)
     agent_kwargs = OmegaConf.to_container(cfg=cfg.agent.kwargs, resolve=True)
     agent_kwargs["seed"] = int(agent_kwargs["seed"])
-    agent_kwargs["action_noise"] = hydra.utils.instantiate(agent_kwargs["action_noise"])
+    if "action_noise" in agent_kwargs:
+        if "mean" in agent_kwargs["action_noise"]:
+            agent_kwargs["action_noise"]["mean"] = np.array(agent_kwargs["action_noise"]["mean"])
+        agent_kwargs["action_noise"] = hydra.utils.instantiate(agent_kwargs["action_noise"])
     if cfg.carl.use_cgate:
         agent_kwargs["policy"] = hydra.utils.call(agent_kwargs["policy"])
         agent_kwargs["policy_kwargs"] = {}  # Fix bc not overriden by experiment/cgate
