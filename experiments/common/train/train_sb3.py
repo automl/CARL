@@ -3,10 +3,12 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from rich import print, inspect
 from wandb.integration.sb3 import WandbCallback
 import wandb
 import numpy as np
+import string
+import random
+from rich import print, inspect
 
 import hydra
 from hydra.core.hydra_config import HydraConfig
@@ -23,6 +25,9 @@ from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
 from carl.context.sampling import sample_contexts
 
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def check_config_valid(cfg):
     valid = True
@@ -83,7 +88,7 @@ def main(cfg: DictConfig):
         + "_"
         + os.path.basename(HydraConfig.get().run.dir)
     )
-    cfg.wandb.id = hydra_job
+    cfg.wandb.id = hydra_job + "_" + id_generator()
 
     run = wandb.init(
         id=cfg.wandb.id,
