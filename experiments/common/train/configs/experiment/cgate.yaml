@@ -11,4 +11,4 @@ agent:
       agent_name: ${agent.name}
     policy_kwargs:
       context_branch_width: 512
-      head_width: ${context_branch_width}
+      head_width: ${agent.kwargs.policy_kwargs.context_branch_width}
