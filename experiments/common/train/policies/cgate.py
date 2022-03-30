@@ -224,6 +224,7 @@ class CGatePolicy(TD3Policy):
         share_features_extractor: bool = True,
         context_branch_width: int = 256,
         head_width: int = 256,
+        **kwargs,
     ):
         super(TD3Policy, self).__init__(
             observation_space,

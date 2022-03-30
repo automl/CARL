@@ -178,7 +178,6 @@ def main(cfg: DictConfig):
         agent_kwargs["action_noise"] = hydra.utils.instantiate(agent_kwargs["action_noise"])
     if cfg.carl.use_cgate:
         agent_kwargs["policy"] = hydra.utils.call(agent_kwargs["policy"])
-        agent_kwargs["policy_kwargs"] = {}  # Fix bc not overriden by experiment/cgate
     if "train_freq" in agent_kwargs:
         agent_kwargs["train_freq"] = tuple(agent_kwargs["train_freq"])
         print(agent_kwargs["train_freq"], agent_kwargs["train_freq"][0], type(agent_kwargs["train_freq"][0]))
