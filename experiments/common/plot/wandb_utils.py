@@ -9,7 +9,9 @@ from operator import getitem
 from rich import print, inspect
 
 
-def collect_metric_history(run: wandb.apis.public.Run, metrics: List[str]) -> pd.DataFrame:
+def collect_metric_history(
+    run: wandb.apis.public.Run, metrics: List[str]
+) -> pd.DataFrame:
     """
     Collect the metric history (progress over time/steps) from a wandb run.
 
@@ -60,7 +62,9 @@ def add_scalardict_to_df(scalardict: Dict[str, Any], df: pd.DataFrame) -> pd.Dat
     return df
 
 
-def collect_config(run: wandb.apis.public.Run, config_entries: Optional[List[str]] = None) -> Dict[str, Any]:
+def collect_config(
+    run: wandb.apis.public.Run, config_entries: Optional[List[str]] = None
+) -> Dict[str, Any]:
     """
     Filter config.
 
@@ -76,10 +80,10 @@ def collect_config(run: wandb.apis.public.Run, config_entries: Optional[List[str
     Dict[str, Any]
         Config
     """
-    config = {k: v for k, v in run.config.items() if not k.startswith('_')}
+    config = {k: v for k, v in run.config.items() if not k.startswith("_")}
 
     # flatten config (dot-separated keys)
-    config = pd.json_normalize(config, sep='.').to_dict(orient='records')[0]
+    config = pd.json_normalize(config, sep=".").to_dict(orient="records")[0]
 
     if config_entries is not None:
         # filter
@@ -107,10 +111,7 @@ def load_wandb(
 
     if not df_fname.is_file() or redownload:
         api = wandb.Api()
-        runs = api.runs(
-            project_name,
-            filters=filters
-        )
+        runs = api.runs(project_name, filters=filters)
 
         dfs = []
         runs = list(runs)
