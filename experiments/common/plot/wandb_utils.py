@@ -126,8 +126,10 @@ def load_wandb(
                 dfs.append(df)
         data = pd.concat(dfs)
         data.reset_index(inplace=True, drop=True)
-        data.to_csv(df_fname)
+        data.to_csv(df_fname, index=False)
     else:
         data = pd.read_csv(df_fname)
+        if "Unnamed: 0" in data:
+            del data["Unnamed: 0"]
 
     return data
