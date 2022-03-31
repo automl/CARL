@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Optional, Union
 from omegaconf import DictConfig, OmegaConf
 from functools import reduce
 from operator import getitem
-from rich import print
+from rich import print, inspect
 
 
 def collect_metric_history(run: wandb.apis.public.Run, metrics: List[str]) -> pd.DataFrame:
@@ -115,6 +115,8 @@ def load_wandb(
         dfs = []
         runs = list(runs)
         for run in tqdm(runs):
+            # print(vars(run))
+            # inspect(run)
             df = collect_metric_history(run=run, metrics=metrics)
             metadata = collect_metadata(run=run)
             df = add_scalardict_to_df(scalardict=metadata, df=df)
@@ -129,32 +131,3 @@ def load_wandb(
         data = pd.read_csv(df_fname)
 
     return data
-
-
-if __name__ == '__main__':
-    from datetime import datetime
-    # Data for cgate sb3 HPO
-    # Pendulum 0.1 dt
-    project_name = "tnt/carl"
-    df_fname = "data/cgate_sb3_hpo.csv"
-    config_entries = [
-        "seed"
-        "agent.kwargs.learning_rate",
-        "agent.kwargs.policy_kwargs.context_branch_width"
-    ]
-    metrics = ["rollout/ep_rew_mean"]
-    timestamp = datetime(2022, 3, 30, hour=17, minute=28, second=0,).timestamp()
-    filters = {
-        "state": "finished",
-        "createdAt": {"$gt": timestamp}
-    }
-    redownload = False
-
-    data = load_wandb(
-        project_name=project_name,
-        df_fname=df_fname,
-        filters=filters,
-        redownload=redownload,
-        metrics=metrics,
-        config_entries=config_entries,
-    )
