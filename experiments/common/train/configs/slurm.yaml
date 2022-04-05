@@ -5,7 +5,7 @@ defaults:
 hydra:
   launcher:
     partition: cpu_short
-    cpus_per_task: 8
+    cpus_per_task: 2
     gres: null
     setup:
       - unset WANDB_DIR
