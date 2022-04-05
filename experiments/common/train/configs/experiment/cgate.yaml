@@ -2,6 +2,8 @@
 wandb:
   group: cgate_sb3
 carl:
+  env_kwargs:
+    hide_context: false
   use_cgate: true
 
 
