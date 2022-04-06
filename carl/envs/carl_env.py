@@ -13,6 +13,12 @@ from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 
+import importlib
+brax_spec = importlib.util.find_spec("brax")
+if brax_spec is not None:
+    import jaxlib
+    import jax.numpy as jnp
+
 
 class CARLEnv(Wrapper):
     """
@@ -216,10 +222,14 @@ class CARLEnv(Wrapper):
     def build_context_adaptive_state(
         self, state: List[float], context_feature_values: Optional[List[float]] = None
     ) -> List[float]:
+        tnp = np
+        if brax_spec is not None:
+            if type(state) == jaxlib.xla_extension.DeviceArray:
+                tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
-                context_values = np.array(list(self.context.values()))
+                context_values = tnp.array(list(self.context.values()))
             else:
                 # use potentially modified context
                 context_values = context_feature_values
@@ -228,7 +238,7 @@ class CARLEnv(Wrapper):
                 # if self.state_context_features is an empty list, the context values will also be empty and we
                 # get the correct state
                 context_keys = list(self.context.keys())
-                context_values = np.array(
+                context_values = tnp.array(
                     [
                         context_values[context_keys.index(k)]
                         for k in self.state_context_features
@@ -238,9 +248,9 @@ class CARLEnv(Wrapper):
             if self.dict_observation_space:
                 state = dict(state=state, context=context_values)
             elif self.vectorized:
-                state = np.array([np.concatenate((s, context_values)) for s in state])
+                state = tnp.array([np.concatenate((s, context_values)) for s in state])
             else:
-                state = np.concatenate((state, context_values))
+                state = tnp.concatenate((state, context_values))
         return state
 
     def step(self, action: Any) -> Tuple[Any, Any, bool, Dict]:
