@@ -69,7 +69,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         contexts: Dict[str, Dict] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
-        add_gaussian_noise_to_context: bool = True,
+        add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
