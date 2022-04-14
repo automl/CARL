@@ -1,8 +1,9 @@
+from typing import Any, Dict, List, Literal, cast
+
 import os
 import random
 import socket
 from collections import deque
-from typing import Any, Dict, List, Literal, cast
 
 import cv2
 import gym
@@ -10,6 +11,7 @@ import numpy as np
 from gym import spaces
 from gym.utils import seeding
 from py4j.java_gateway import GatewayParameters, JavaGateway
+
 from carl.envs.mario.level_image_gen import LevelImageGen
 
 from .mario_game import MarioGame

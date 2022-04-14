@@ -1,0 +1,12 @@
+[flake8]
+show-source = True
+max-line-length = 120
+extend-exclude =
+    venv
+    .venv
+    build
+extend-ignore =
+    # No whitespace before ':' in [x : y]
+    E203
+    # No lambdas — too strict
+    E731

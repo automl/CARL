@@ -1,11 +1,12 @@
+from typing import Optional
+
 import functools
 import os
 import sys
 from dataclasses import dataclass
-from typing import Optional
 
-import numpy as np
 import torch
+
 from carl.envs.mario.generate_sample import generate_sample, generate_spatial_noise
 from carl.envs.mario.reachabillity import reachability_map
 
@@ -89,7 +90,7 @@ def generate_level(
             **vars(toad_gan),
             scale_h=width / toad_gan.original_width,
             scale_v=height / toad_gan.original_height,
-            initial_noise=initial_noise
+            initial_noise=initial_noise,
         )
         if filter_unplayable and tries < 100:
             _, playable = reachability_map(

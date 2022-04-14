@@ -1,19 +1,14 @@
 import numpy as np
-import math
-import Box2D
-from Box2D.b2 import (
-    edgeShape,
-    circleShape,
-    fixtureDef,
-    polygonShape,
-    revoluteJointDef,
-    contactListener,
-    shape,
-    prismaticJointDef,
-    ropeJointDef,
-    fixtureDef,
-    distanceJointDef,
-)
+from Box2D.b2 import circleShape  # noqa: F401
+from Box2D.b2 import contactListener  # noqa: F401
+from Box2D.b2 import distanceJointDef  # noqa: F401
+from Box2D.b2 import edgeShape  # noqa: F401
+from Box2D.b2 import fixtureDef  # noqa: F401
+from Box2D.b2 import polygonShape  # noqa: F401
+from Box2D.b2 import prismaticJointDef  # noqa: F401
+from Box2D.b2 import revoluteJointDef  # noqa: F401
+from Box2D.b2 import ropeJointDef  # noqa: F401
+from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gym.envs.box2d.car_dynamics import Car
 
 __author__ = "André Biedenkapp"
@@ -70,7 +65,7 @@ class TukTuk(Car):
         self._init_extra_params()
         self.world = world
 
-        ##### SETUP MAIN BODY ####
+        ##### SETUP MAIN BODY ####  # noqa: E266
         self.hull = self.world.CreateDynamicBody(
             position=(init_x, init_y),
             angle=init_angle,
@@ -147,7 +142,7 @@ class TukTuk(Car):
             w.userData = w
             self.wheels.append(w)
 
-        ##### SETUP SMALL TRAILER ####
+        ##### SETUP SMALL TRAILER ####  # noqa: E266
         if self.trailer_type == 1:
             self.trailer = self.world.CreateDynamicBody(
                 angle=init_angle,
@@ -218,7 +213,7 @@ class TukTuk(Car):
                 self.wheels.append(w)
             self.drawlist = self.wheels + [self.hull, self.trailer]
 
-        ##### SETUP LARGE TRAILER ####
+        ##### SETUP LARGE TRAILER ####  # noqa: E266
         elif self.trailer_type == 2:
             raise NotImplementedError
         else:

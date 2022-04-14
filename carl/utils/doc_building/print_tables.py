@@ -1,14 +1,17 @@
 if __name__ == "__main__":
-    import numpy as np
     from typing import List
-    from carl.envs import *
 
     import matplotlib.pyplot as plt
-    from matplotlib.offsetbox import AnchoredText
-    import seaborn as sns
+    import numpy as np
     import pandas as pd
+    import seaborn as sns
+    from matplotlib.offsetbox import AnchoredText
 
-    def plot_context_feature_freq(context_feature_names: List[str], fname: str = ""):
+    import carl.envs
+
+    def plot_context_feature_freq(
+        context_feature_names: List[str], fname: str = ""
+    ) -> None:
         filter_cf_names = True
         if filter_cf_names:
             aliases = {
@@ -91,7 +94,7 @@ if __name__ == "__main__":
 
         plt.show()
 
-    global_vars = vars()
+    global_vars = vars(carl.envs)
     vars = {
         k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k
     }
@@ -191,12 +194,14 @@ if __name__ == "__main__":
             file.write(table_str)
 
     # plot_context_feature_freq(context_feature_names=context_feature_names, fname="utils/context_feature_freq.png")
-    def plot_statistics(env_names, n_context_features, fname: str = ""):
+    def plot_statistics(
+        env_names: List[str], n_context_features: int, fname: str = ""
+    ) -> None:
         fig = plt.figure(figsize=(5, 7), dpi=200)
         ax = fig.add_subplot(111)
         ax.barh(env_names, n_context_features)
         ax.set_yticklabels(env_names, ha="right", fontsize=8)
-        ax.set_title(f"TODO", fontsize=10)
+        ax.set_title("TODO", fontsize=10)
         ax.grid(axis="x", which="both")
 
         fig.set_tight_layout(True)

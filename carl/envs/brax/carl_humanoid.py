@@ -1,19 +1,22 @@
-import numpy as np
+from typing import Any, Dict, List, Optional, Union
+
 import copy
 import json
 
+import numpy as np
 import brax
-from brax.physics import bodies
-import jax.numpy as jnp
-from brax.envs.wrappers import GymWrapper
+from brax import jumpy as jp
+from brax.envs.wrappers import GymWrapper, VectorWrapper, VectorGymWrapper
 from brax.envs.humanoid import Humanoid, _SYSTEM_CONFIG
+from brax.physics import bodies
 
-from carl.envs.carl_env import CARLEnv
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
-from typing import Optional, Dict, List
 from numpyencoder import NumpyEncoder
+
+from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 from carl.context_encoders import ContextEncoder
 
@@ -38,8 +41,8 @@ class CARLHumanoid(CARLEnv):
     def __init__(
         self,
         env: Humanoid = Humanoid(),
+        n_envs: int = 1,
         contexts: Dict[str, Dict] = {},
-        instance_mode="rr",
         hide_context=False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -48,10 +51,16 @@ class CARLHumanoid(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
         context_encoder: Optional[ContextEncoder] = None,
         max_episode_length: int = 1000,
     ):
-        env = GymWrapper(env)
+        if n_envs == 1:
+            env = GymWrapper(env)
+        else:
+            env = VectorGymWrapper(VectorWrapper(env, n_envs))
+
         self.base_config = MessageToDict(
             text_format.Parse(_SYSTEM_CONFIG, brax.Config())
         )
@@ -59,8 +68,8 @@ class CARLHumanoid(CARLEnv):
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
             env=env,
+            n_envs=n_envs,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -71,12 +80,14 @@ class CARLHumanoid(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_encoder=context_encoder,
             max_episode_length=max_episode_length,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
@@ -91,12 +102,12 @@ class CARLHumanoid(CARLEnv):
             json.dumps(config, cls=NumpyEncoder), brax.Config()
         )
         self.env.sys = brax.System(protobuf_config)
-        body = bodies.Body.from_config(protobuf_config)
-        body = jnp.take(body, body.idx[:-1])  # skip the floor body
+        body = bodies.Body(config=self.env.sys.config)
+        body = jp.take(body, body.idx[:-1])  # skip the floor body
         self.env.mass = body.mass.reshape(-1, 1)
         self.env.inertia = body.inertia
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if name in ["sys", "body", "mass", "inertia"]:
             return getattr(self.env._environment, name)
         else:

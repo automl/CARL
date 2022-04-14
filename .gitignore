@@ -12,6 +12,7 @@ slurm.sh
 carl/runscripts/generated
 docs/html
 docs/apidoc
-outputs/
-*.egg
-*.egg-info/
+CARL.egg-info
+.mypy_cache
+.pytest_cache
+.coverage

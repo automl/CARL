@@ -1,10 +1,12 @@
-import numpy as np
-from typing import Dict, Optional, List
+from typing import Any, Dict, List, Optional, Union
+
 import gym
 import gym.envs.classic_control as gccenvs
+import numpy as np
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 from carl.context_encoders import ContextEncoder
 
 
@@ -29,8 +31,7 @@ class CARLPendulumEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = gccenvs.pendulum.PendulumEnv(),
-        contexts: Dict[str, Dict] = {},
-        instance_mode: str = "rr",
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -40,6 +41,8 @@ class CARLPendulumEnv(CARLEnv):
         max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
         context_encoder: Optional[ContextEncoder] = None,
     ):
         """
@@ -59,7 +62,6 @@ class CARLPendulumEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -70,15 +72,17 @@ class CARLPendulumEnv(CARLEnv):
             state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
             context_encoder=context_encoder,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.max_speed = self.context["max_speed"]
         self.env.dt = self.context["dt"]
-        self.env.l = self.context["l"]
+        self.env.l = self.context["l"]  # noqa: E741 ambiguous variable name
         self.env.m = self.context["m"]
         self.env.g = self.context["g"]
 

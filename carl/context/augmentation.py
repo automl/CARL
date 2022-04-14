@@ -1,5 +1,6 @@
+from typing import List, Union
+
 import numpy as np
-from typing import Union, List
 
 
 def add_gaussian_noise(

@@ -1,47 +1,45 @@
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
+
 import numpy as np
-from gym.envs.box2d import CarRacing
-from typing import Dict, Optional, Union, List
 import pyglet
 
 pyglet.options["debug_gl"] = False
-from pyglet import gl
-from carl.envs.carl_env import CARLEnv
-from carl.utils.trial_logger import TrialLogger
-
+from gym.envs.box2d import CarRacing
 from gym.envs.box2d.car_dynamics import Car
+from pyglet import gl
 
-from carl.envs.box2d.parking_garage.race_car import RaceCar
-from carl.envs.box2d.parking_garage.race_car import FWDRaceCar  # as Car
+from carl.envs.box2d.parking_garage.bus import AWDBus  # as Car
+from carl.envs.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.bus import AWDBusSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.bus import Bus  # as Car
+from carl.envs.box2d.parking_garage.bus import BusLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.bus import BusSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.bus import FWDBus  # as Car
+from carl.envs.box2d.parking_garage.bus import FWDBusLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.bus import FWDBusSmallTrailer  # as Car
 from carl.envs.box2d.parking_garage.race_car import AWDRaceCar  # as Car
-from carl.envs.box2d.parking_garage.race_car import RaceCarSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.race_car import RaceCarLargeTrailer  # as Car
-from carl.envs.box2d.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.race_car import AWDRaceCarLargeTrailer  # as Car
-
-from carl.envs.box2d.parking_garage.street_car import StreetCar  # as Car
-from carl.envs.box2d.parking_garage.street_car import FWDStreetCar  # as Car
+from carl.envs.box2d.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.race_car import FWDRaceCar  # as Car
+from carl.envs.box2d.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.race_car import RaceCarLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.race_car import RaceCarSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.race_car import RaceCar
 from carl.envs.box2d.parking_garage.street_car import AWDStreetCar  # as Car
-from carl.envs.box2d.parking_garage.street_car import StreetCarSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.street_car import StreetCarLargeTrailer  # as Car
-from carl.envs.box2d.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.street_car import AWDStreetCarLargeTrailer  # as Car
-
+from carl.envs.box2d.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.street_car import FWDStreetCar  # as Car
+from carl.envs.box2d.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
+from carl.envs.box2d.parking_garage.street_car import StreetCar  # as Car
+from carl.envs.box2d.parking_garage.street_car import StreetCarLargeTrailer  # as Car
+from carl.envs.box2d.parking_garage.street_car import StreetCarSmallTrailer  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
-
-from carl.envs.box2d.parking_garage.bus import Bus  # as Car
-from carl.envs.box2d.parking_garage.bus import FWDBus  # as Car
-from carl.envs.box2d.parking_garage.bus import AWDBus  # as Car
-from carl.envs.box2d.parking_garage.bus import BusSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.bus import FWDBusSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.bus import AWDBusSmallTrailer  # as Car
-from carl.envs.box2d.parking_garage.bus import BusLargeTrailer  # as Car
-from carl.envs.box2d.parking_garage.bus import FWDBusLargeTrailer  # as Car
-from carl.envs.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
+from carl.envs.carl_env import CARLEnv
+from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 
 from carl.context_encoders import ContextEncoder
 
@@ -93,18 +91,17 @@ CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
 
 class CustomCarRacingEnv(CarRacing):
-    def __init__(self, vehicle_class: type(Car) = Car, verbose=1):
+    def __init__(self, vehicle_class: Type[Car] = Car, verbose: int = 1):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
-        self.car = None
 
-    def reset(self):
+    def reset(self) -> np.ndarray:
         self._destroy()
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly = []
+        self.road_poly = []  # type: List
 
         while True:
             success = self._create_track()
@@ -123,14 +120,14 @@ class CustomCarRacingEnv(CarRacing):
             self.step(None)
         return self.step(None)[0]
 
-    def render_indicators(self, W, H):
+    def render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing
         s = W / 40.0
         h = H / 40.0
         colors = [0, 0, 0, 1] * 4
         polygons = [W, 0, 0, W, 5 * h, 0, 0, 5 * h, 0, 0, 0, 0]
 
-        def vertical_ind(place, val, color):
+        def vertical_ind(place: int, val: int, color: Tuple) -> None:
             colors.extend([color[0], color[1], color[2], 1] * 4)
             polygons.extend(
                 [
@@ -149,7 +146,7 @@ class CustomCarRacingEnv(CarRacing):
                 ]
             )
 
-        def horiz_ind(place, val, color):
+        def horiz_ind(place: int, val: int, color: Tuple) -> None:
             colors.extend([color[0], color[1], color[2], 1] * 4)
             polygons.extend(
                 [
@@ -193,8 +190,7 @@ class CARLVehicleRacingEnv(CARLEnv):
     def __init__(
         self,
         env: CustomCarRacingEnv = CustomCarRacingEnv(),
-        contexts: Optional[Dict[Union[str, int], Dict]] = None,
-        instance_mode: str = "random",
+        contexts: Optional[Dict[Union[str, int], Dict[Any, Any]]] = None,
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -203,6 +199,8 @@ class CARLVehicleRacingEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
         context_encoder: Optional[ContextEncoder] = None,
     ):
         """
@@ -227,7 +225,6 @@ class CARLVehicleRacingEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -236,24 +233,27 @@ class CARLVehicleRacingEnv(CARLEnv):
             default_context=default_context,
             state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
             context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = [
             k for k in DEFAULT_CONTEXT.keys() if k not in CATEGORICAL_CONTEXT_FEATURES
         ]
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         vehicle_class_index = self.context["VEHICLE"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
 
 
 if __name__ == "__main__":
-    from pyglet.window import key
     import time
+
+    from pyglet.window import key
 
     a = np.array([0.0, 0.0, 0.0])
 
-    def key_press(k, mod):
+    def key_press(k: int, mod: Any) -> None:
         global restart
         if k == 0xFF0D:
             restart = True
@@ -268,7 +268,7 @@ if __name__ == "__main__":
         if k == key.DOWN:
             a[2] = +1.0
 
-    def key_release(k, mod):
+    def key_release(k: int, mod: Any) -> None:
         if k == key.LEFT and a[0] == -1.0:
             a[0] = 0
         if k == key.RIGHT and a[0] == +1.0:

@@ -1,13 +1,3 @@
-# ICML 2022
-This repository corresponds to the ICML submission "Contextualize Me – The Case for Context in Reinforcement Learning".
-In addition to the CARL benchmarks, you can find the code to reproduce all our experiments. The "experiments" directory lists the different experiment categories where you can find the training and plotting scripts, e.g. "experiments/context_gating" for the comparison between cGATE and context concatenation.
-
-If you want to run the experiments, we recommend you use the provided environment.yaml file to create a conda environment instead of the benchmark installation below. To do so, make sure you have anaconda installed and run:
-```bash
-conda env create -f environment.yaml
-```
-Please note, all experiments have been run & tested on Linux systems only.
-
 <img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
 
 # – The Benchmark Library
@@ -16,6 +6,7 @@ to several well-known RL environments.
 It's designed to test your agent's generalization capabilities
 in all scenarios where intra-task generalization is important.
 
+Feel free to check out our [paper](https://arxiv.org/abs/2110.02102) and our short [blog post](https://www.automl.org/carl-a-benchmark-to-study-generalization-in-reinforcement-learning/)!
 
 ## Benchmarks
 Benchmarks include:
@@ -37,9 +28,11 @@ Benchmarks include:
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
 
+For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
+
 
 ## Installation
-We recommend you use a virtual environment (e.g. Anaconda) to 
+We recommend you use a virtual environment (e.g. Anaconda) to
 install CARL and its dependencies. We recommend and test with python 3.9 under Linux.
 
 First, clone our repository and install the basic requirements:
@@ -48,15 +41,18 @@ git clone https://github.com/automl/CARL.git --recursive
 cd CARL
 pip install .
 ```
+
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
 pip install -e .[box2d, brax, rna, mario]
 ```
+
 These may not be compatible with Windows systems. Box2D environment may need to be installed via conda on MacOS systems:
 ```bash
 conda install -c conda-forge gym-box2d
 ```
-In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible. 
+
+In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
 Mario at this point, however, will not run on any operation system besides Linux
 
 To install the additional requirements for ToadGAN:
@@ -71,16 +67,32 @@ make requirements
 make data
 ```
 ## CARL's Contextual Extension
-CARL contextually extends the environment by making the context visible and configurable. During training we therefore can encounter different contexts and train for generalization. We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different instiations can be achieved by setting the context features to different values. 
+CARL contextually extends the environment by making the context visible and configurable.
+During training we therefore can encounter different contexts and train for generalization.
+We exemplarily show how Brax' Fetch is extended and embedded by CARL.
+Different instiations can be achieved by setting the context features to different values.
 
 ![CARL contextually extends Brax' Fetch.](./docs/source/figures/concept.png)
 
+## Cite Us
+If you use CARL in your research, please cite our paper on the benchmark:
+```bibtex
+@inproceedings{BenEim2021a,
+    title     = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
+    author    = {Carolin Benjamins and Theresa Eimer and Frederik Schubert and André Biedenkapp and Bodo Rosenhahn and Frank Hutter and Marius Lindauer},
+    booktitle = {NeurIPS 2021 Workshop on Ecological Theory of Reinforcement Learning},
+    year      = {2021},
+    month     = dec
+}
+```
+
+You can find the code and experiments for this paper in the `neurips_ecorl_workshop_2021` branch.
 
 ## References
 [OpenAI gym, Brockman et al., 2016. arXiv preprint arXiv:1606.01540](https://arxiv.org/pdf/1606.01540.pdf)
 
-[Brax -- A Differentiable Physics Engine for Large Scale 
-Rigid Body Simulation, Freeman et al., NeurIPS 2021 (Dataset & 
+[Brax -- A Differentiable Physics Engine for Large Scale
+Rigid Body Simulation, Freeman et al., NeurIPS 2021 (Dataset &
 Benchmarking Track)](https://arxiv.org/pdf/2106.13281.pdf)
 
 [TOAD-GAN: Coherent Style Level Generation from a Single Example,
@@ -89,8 +101,8 @@ Awiszus et al., AIIDE 2020](https://arxiv.org/pdf/2008.01531.pdf)
 [Learning to Design RNA, Runge et al., ICRL 2019](https://arxiv.org/pdf/1812.11951.pdf)
 
 ## License
-CARL falls under the Apache License 2.0 (see file 'LICENSE') as is permitted by all 
+CARL falls under the Apache License 2.0 (see file 'LICENSE') as is permitted by all
 work that we use. This includes CARLMario, which is not based on the Nintendo Game, but on
 TOAD-GAN and TOAD-GUI running under an MIT license. They in turn make use of the Mario AI framework
-(https://github.com/amidos2006/Mario-AI-Framework). This is not the original game but a replica, 
-explicitly built for research purposes and includes a copyright notice (https://github.com/amidos2006/Mario-AI-Framework#copyrights ). 
+(https://github.com/amidos2006/Mario-AI-Framework). This is not the original game but a replica,
+explicitly built for research purposes and includes a copyright notice (https://github.com/amidos2006/Mario-AI-Framework#copyrights ).

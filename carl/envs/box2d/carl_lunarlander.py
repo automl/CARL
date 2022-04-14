@@ -1,20 +1,23 @@
-import numpy as np
-from typing import Dict, Optional, List
-
-# import pyglet
-# pyglet.options["shadow_window"] = False
+from typing import Any, Dict, List, Optional, Tuple, Union, TypeVar
 
 import Box2D
+import numpy as np
+from gym import spaces
+from gym import Wrapper
 
-# from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revoluteJointDef, contactListener)
 from gym.envs.box2d import lunar_lander
 from gym.envs.box2d.lunar_lander import heuristic
-from gym import spaces
-from gym.utils import seeding, EzPickle
-from carl import context_encoders
+from gym.utils import EzPickle, seeding
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
+
+ObsType = TypeVar("ObsType")
+ActType = TypeVar("ActType")
+
+# import pyglet
+# pyglet.options["shadow_window"] = False
 
 from carl.context_encoders import ContextEncoder
 
@@ -75,71 +78,36 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CustomLunarLanderEnv(lunar_lander.LunarLander):
+class LunarLanderEnv(Wrapper):
     def __init__(
-        self, gravity: (float, float) = (0, -10), high_gameover_penalty: bool = False
+            self,
+            env: Optional[lunar_lander.LunarLander] = None,
+            high_gameover_penalty: bool = False,
     ):
-        EzPickle.__init__(self)
+        if env is None:
+            env = lunar_lander.LunarLander()
+        super().__init__(env=env)
+
         self.high_gameover_penalty = high_gameover_penalty
-        self.active_seed = self.seed()
-        self.viewer = None
+        self.active_seed = None
 
-        self.world = Box2D.b2World(gravity=gravity)
-        self.moon = None
-        self.lander = None
-        self.particles = []
-
-        self.prev_reward = None
-
-        # useful range is -1 .. +1, but spikes can be higher
-        self.observation_space = spaces.Box(
-            -np.inf, np.inf, shape=(8,), dtype=np.float32
-        )
-
-        if self.continuous:
-            # Action is two floats [main engine, left-right engines].
-            # Main engine: -1..0 off, 0..+1 throttle from 50% to 100% power. Engine can't work with less than 50% power.
-            # Left-right:  -1.0..-0.5 fire left engine, +0.5..+1.0 fire right engine, -0.5..0.5 off
-            self.action_space = spaces.Box(-1, +1, (2,), dtype=np.float32)
-        else:
-            # Nop, fire left engine, main engine, right engine
-            self.action_space = spaces.Discrete(4)
-
-        self.reset()
-
-    def step(self, action):
-        state, reward, done, info = super().step(action)
-        if self.game_over and self.high_gameover_penalty:
+    def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
+        state, reward, done, info = self.env.step(action)
+        if self.env.game_over and self.high_gameover_penalty:
             reward = -10000
         return state, reward, done, info
 
     def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
-        self.active_seed = seed
-        return [seed]
-
-    # def _destroy(self):
-    #     if not self.moon: return
-    #     self.world.contactListener = None
-    #     self._clean_particles(True)
-    #     bodies = [self.moon, self.lander] + self.legs
-    #     # safe destroy because before calling destroy we already created a new world
-    #     # which does not have the bodies anymore
-    #     safe_destroy(self.world, bodies)
-    #     self.moon = None
-    #     self.lander = None
-    #
-    # def _clean_particles(self, all):
-    #     while self.particles and (all or self.particles[0].ttl < 0):
-    #         safe_destroy(self.world, [self.particles.pop(0)])
+        seed_ = self.env.seed(seed)
+        self.active_seed = seed_[0]
+        return seed_
 
 
 class CARLLunarLanderEnv(CARLEnv):
     def __init__(
         self,
-        env: Optional[CustomLunarLanderEnv] = None,
-        contexts: Dict[str, Dict] = {},
-        instance_mode: str = "rr",
+        env: Optional[LunarLanderEnv] = None,
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.05,
@@ -150,6 +118,8 @@ class CARLLunarLanderEnv(CARLEnv):
         max_episode_length: int = 1000,
         high_gameover_penalty: bool = False,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
         context_encoder: Optional[ContextEncoder] = None,
     ):
         """
@@ -164,13 +134,12 @@ class CARLLunarLanderEnv(CARLEnv):
         """
         if env is None:
             # env = lunar_lander.LunarLander()
-            env = CustomLunarLanderEnv(high_gameover_penalty=high_gameover_penalty)
+            env = LunarLanderEnv(high_gameover_penalty=high_gameover_penalty)
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -180,13 +149,15 @@ class CARLLunarLanderEnv(CARLEnv):
             state_context_features=state_context_features,
             max_episode_length=max_episode_length,
             dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs
             context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         lunar_lander.FPS = self.context["FPS"]
         lunar_lander.SCALE = self.context["SCALE"]
         lunar_lander.MAIN_ENGINE_POWER = self.context["MAIN_ENGINE_POWER"]
@@ -212,7 +183,11 @@ class CARLLunarLanderEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic_lander(env, seed=None, render=False):
+def demo_heuristic_lander(
+    env: Union[CARLLunarLanderEnv, lunar_lander.LunarLander, lunar_lander.LunarLanderContinuous],
+    seed: Optional[int] = None,
+    render: bool = False,
+) -> float:
     """
     Copied from LunarLander
     """

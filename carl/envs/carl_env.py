@@ -1,13 +1,17 @@
-import gym
-from gym import Wrapper
-from gym import spaces
-import numpy as np
-import os
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import json
-from typing import Dict, Tuple, Union, List, Optional, Any
+import os
+import inspect
+
+import gym
+import numpy as np
+from gym import Wrapper, spaces
+
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector, RoundRobinSelector
 
 from carl.context_encoders import ContextEncoder
 import torch as th
@@ -30,8 +34,6 @@ class CARLEnv(Wrapper):
     contexts: Dict[Any, Dict[Any, Any]]
         Dict of contexts/instances. Key are context id, values are contexts as
         Dict[context feature id, context feature value].
-    instance_mode: str, default="rr"
-        Instance sampling mode. Available modes are 'random' or 'rr'/'roundrobin'.
     hide_context: bool = False
         If False, the context will be appended to the original environment's state.
     add_gaussian_noise_to_context: bool = False
@@ -55,6 +57,11 @@ class CARLEnv(Wrapper):
         If the context is visible to the agent (hide_context=False), the context features are appended to the state.
         state_context_features specifies which of the context features are appended to the state. The default is
         appending all context features.
+    context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]]
+        Context selector (object of) class, e.g., can be RoundRobinSelector (default) or RandomSelector.
+        Should subclass AbstractSelector.
+    context_selector_kwargs: Optional[Dict]
+        Optional kwargs for context selector class.
 
     Raises
     ------
@@ -71,8 +78,8 @@ class CARLEnv(Wrapper):
     def __init__(
         self,
         env: gym.Env,
-        contexts: Dict[Any, Dict[Any, Any]],
-        instance_mode: str = "rr",
+        n_envs: int = 1,
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -82,25 +89,33 @@ class CARLEnv(Wrapper):
         default_context: Optional[Dict] = None,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_encoder: Optional[ContextEncoder] = None,  # encoder of the base type
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
+            context_encoder: Optional[ContextEncoder] = None,  # encoder of the base type
     ):
         super().__init__(env=env)
         # Gather args
         self.contexts = contexts
-        self.context_encoder = context_encoder
-
-        if instance_mode not in self.available_instance_modes:
-            raise ValueError(
-                f"instance_mode '{instance_mode}' not in '{self.available_instance_modes}'."
-            )
-        self.instance_mode = instance_mode
         self.hide_context = hide_context
         self.dict_observation_space = dict_observation_space
         self.cutoff = max_episode_length
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
-        if state_context_features:
+        if context_selector is None:
+            self.context_selector = RoundRobinSelector(contexts=contexts)
+        elif isinstance(context_selector, AbstractSelector):
+            self.context_selector = context_selector
+        elif inspect.isclass(context_selector) and issubclass(context_selector, AbstractSelector):
+            if context_selector_kwargs is None:
+                context_selector_kwargs = {}
+            _context_selector_kwargs = {"contexts": contexts}
+            context_selector_kwargs.update(_context_selector_kwargs)
+            self.context_selector = context_selector(**context_selector_kwargs)
+        else:
+            raise ValueError(f"Context selector must be None or an AbstractSelector class or instance. "
+                             f"Got type {type(context_selector)}.")
+        if state_context_features is not None:
             if (
                 state_context_features == "changing_context_features"
                 or state_context_features[0] == "changing_context_features"
@@ -174,10 +189,11 @@ class CARLEnv(Wrapper):
                 self.context_feature_scale_factors == 0
             ] = 1  # otherwise value / scale_factor = nan
 
+        self.vectorized = n_envs > 1
         self.build_observation_space()
         self._update_context()
 
-    def reset(self, **kwargs):
+    def reset(self, **kwargs: Dict) -> Any:
         """
         Reset environment.
 
@@ -201,7 +217,9 @@ class CARLEnv(Wrapper):
         state = self.build_context_adaptive_state(state)
         return state
 
-    def build_context_adaptive_state(self, state, context_feature_values=None):
+    def build_context_adaptive_state(
+        self, state: List[float], context_feature_values: Optional[List[float]] = None
+    ) -> List[float]:
         """
         Add context to state if visible
 
@@ -239,11 +257,13 @@ class CARLEnv(Wrapper):
 
             if self.dict_observation_space:
                 state = dict(state=state, context=context_values)
+            elif self.vectorized:
+                state = np.array([np.concatenate((s, context_values)) for s in state])
             else:
                 state = np.concatenate((state, context_values))
         return state
 
-    def step(self, action) -> Tuple[Any, Any, bool, Dict]:
+    def step(self, action: Any) -> Tuple[Any, Any, bool, Dict]:
         """
         Step the environment.
 
@@ -289,7 +309,7 @@ class CARLEnv(Wrapper):
             done = True
         return state, reward, done, info
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it
         # We need this because our CARLEnv has underscore class methods which would
         # through an error otherwise
@@ -301,7 +321,7 @@ class CARLEnv(Wrapper):
             )
         return getattr(self.env, name)
 
-    def _progress_instance(self):
+    def _progress_instance(self) -> None:
         """
         Progress instance.
 
@@ -316,17 +336,7 @@ class CARLEnv(Wrapper):
         None
 
         """
-        if self.instance_mode == "random":
-            # TODO pass seed?
-            self.context_index = np.random.choice(np.arange(len(self.contexts.keys())))
-        elif self.instance_mode in ["rr", "roundrobin"]:
-            self.context_index = (self.context_index + 1) % len(self.contexts.keys())
-        else:
-            raise ValueError(
-                f"Instance mode '{self.instance_mode}' not a valid choice."
-            )
-        contexts_keys = list(self.contexts.keys())
-        context = self.contexts[contexts_keys[self.context_index]]
+        context = self.context_selector.select()
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
@@ -347,7 +357,7 @@ class CARLEnv(Wrapper):
         env_lower_bounds: Optional[Union[List, np.array]] = None,
         env_upper_bounds: Optional[Union[List, np.array]] = None,
         context_bounds: Optional[Dict[str, Tuple[float]]] = None,
-    ):
+    ) -> None:
         """
         Build observation space of environment.
 
@@ -371,13 +381,15 @@ class CARLEnv(Wrapper):
         Raises
         ------
         ValueError:
-            If (env.)observation space is not gym.spaces.Box and the context should not be hidden (hide_context = False).
+            If (env.)observation space is not gym.spaces.Box and the context should not be hidden
+            (hide_context = False).
 
         Returns
         -------
         None
 
         """
+        self.observation_space: gym.spaces.Space
         if (
             not self.dict_observation_space
             and not isinstance(self.observation_space, spaces.Box)
@@ -474,7 +486,6 @@ class CARLEnv(Wrapper):
                             ),
                         }
                     )
-
                 else:
                     low = np.concatenate((env_lower_bounds, context_lower_bounds))
                     high = np.concatenate((env_upper_bounds, context_upper_bounds))
@@ -512,7 +523,7 @@ class CARLEnv(Wrapper):
 
         return context_reps
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         """
         Update the context feature values of the environment.
 
@@ -523,7 +534,7 @@ class CARLEnv(Wrapper):
         """
         raise NotImplementedError
 
-    def _log_context(self):
+    def _log_context(self) -> None:
         """
         Log context.
 

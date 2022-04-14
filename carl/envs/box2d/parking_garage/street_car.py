@@ -1,19 +1,17 @@
-import numpy as np
-import math
+from typing import List
+
 import Box2D
-from Box2D.b2 import (
-    edgeShape,
-    circleShape,
-    fixtureDef,
-    polygonShape,
-    revoluteJointDef,
-    contactListener,
-    shape,
-    prismaticJointDef,
-    ropeJointDef,
-    fixtureDef,
-    distanceJointDef,
-)
+import numpy as np
+from Box2D.b2 import circleShape  # noqa: F401
+from Box2D.b2 import contactListener  # noqa: F401
+from Box2D.b2 import distanceJointDef  # noqa: F401
+from Box2D.b2 import edgeShape  # noqa: F401
+from Box2D.b2 import fixtureDef  # noqa: F401
+from Box2D.b2 import polygonShape  # noqa: F401
+from Box2D.b2 import prismaticJointDef  # noqa: F401
+from Box2D.b2 import revoluteJointDef  # noqa: F401
+from Box2D.b2 import ropeJointDef  # noqa: F401
+from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gym.envs.box2d.car_dynamics import Car
 
 __author__ = "André Biedenkapp"
@@ -81,18 +79,20 @@ class StreetCar(Car):
     Different body to the original OpenAI car. We also added a brake bias with 40% front and 60% rear break bias
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
             0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large
         )
 
-    def __init__(self, world, init_angle, init_x, init_y):
+    def __init__(
+        self, world: Box2D.b2World, init_angle: float, init_x: int, init_y: int
+    ):
         self._init_extra_params()
         self.world = world
 
-        ##### SETUP MAIN BODY ####
+        ##### SETUP MAIN BODY ####  # noqa: E266
         self.hull = self.world.CreateDynamicBody(
             position=(init_x, init_y),
             angle=init_angle,
@@ -175,7 +175,7 @@ class StreetCar(Car):
             w.userData = w
             self.wheels.append(w)
 
-        ##### SETUP SMALL TRAILER ####
+        ##### SETUP SMALL TRAILER ####  # noqa: E266
         if self.trailer_type == 1:
             self.trailer = self.world.CreateDynamicBody(
                 angle=init_angle,
@@ -246,7 +246,7 @@ class StreetCar(Car):
                 self.wheels.append(w)
             self.drawlist = self.wheels + [self.hull, self.trailer]
 
-        ##### SETUP LARGE TRAILER ####
+        ##### SETUP LARGE TRAILER ####  # noqa: E266
         elif self.trailer_type == 2:
             self.trailer_axel = self.world.CreateDynamicBody(
                 angle=init_angle,
@@ -363,9 +363,9 @@ class StreetCar(Car):
             self.drawlist = self.wheels + [self.hull, self.trailer, self.trailer_axel]
         else:
             self.drawlist = self.wheels + [self.hull]
-        self.particles = []
+        self.particles = []  # type: List
 
-    def gas(self, gas):
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -385,7 +385,7 @@ class StreetCar(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b):
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
@@ -401,7 +401,7 @@ class StreetCar(Car):
             for w in self.wheels[4:]:
                 w.brake = b * 0.8
 
-    def steer(self, s):
+    def steer(self, s: float) -> None:
         """control: steer
 
         Args:
@@ -409,7 +409,7 @@ class StreetCar(Car):
         self.wheels[0].steer = s
         self.wheels[1].steer = s
 
-    def step(self, dt):
+    def step(self, dt: float) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
         Engin powers or other fixed parameters
@@ -517,7 +517,7 @@ class FWDStreetCar(StreetCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -530,7 +530,7 @@ class AWDStreetCar(StreetCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -543,7 +543,7 @@ class StreetCarSmallTrailer(StreetCar):
     StreetCar with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -556,7 +556,7 @@ class FWDStreetCarSmallTrailer(StreetCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -569,7 +569,7 @@ class AWDStreetCarSmallTrailer(StreetCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -582,7 +582,7 @@ class StreetCarLargeTrailer(StreetCar):
     StreetCar with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -595,7 +595,7 @@ class FWDStreetCarLargeTrailer(StreetCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -608,7 +608,7 @@ class AWDStreetCarLargeTrailer(StreetCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (

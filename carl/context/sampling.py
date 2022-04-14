@@ -1,5 +1,7 @@
+# flake8: noqa: W605
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
-from typing import List, Dict, Any, Tuple
 from scipy.stats import norm
 
 from carl import envs
@@ -59,8 +61,8 @@ def sample_contexts(
 
     :math:`x_{cf, default}`: Default context feature value
 
-    :math:`\sigma_{rel}`: Relative standard deviation, parametrized in  `context_feature_args` by providing e.g.
-    `["<context_feature_name>_std", "0.05"]`.
+    :math:`\sigma_{rel}`: Relative standard deviation, parametrized in  `context_feature_args`
+        by providing e.g. `["<context_feature_name>_std", "0.05"]`.
 
     Examples
     --------

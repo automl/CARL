@@ -1,3 +1,4 @@
+# flake8: noqa: F401
 import warnings
 
 try:

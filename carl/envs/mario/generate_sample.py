@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.nn.functional import interpolate
 
+
 # Generates a noise tensor. Uses torch.randn.
 def generate_spatial_noise(size, device="cpu"):
     return torch.randn(size, device=device, dtype=torch.float32)

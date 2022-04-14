@@ -1,7 +1,5 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class ConvBlock(nn.Sequential):

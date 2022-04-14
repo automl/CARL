@@ -1,9 +1,12 @@
+from typing import Any, Dict, List, Optional, Union
+
 import gym
 import numpy as np
-from typing import Optional, Dict, List
 from gym.envs.classic_control import AcrobotEnv
+
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.context.selection import AbstractSelector
 from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
@@ -57,8 +60,7 @@ class CARLAcrobotEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = AcrobotEnv(),
-        contexts: Dict[str, Dict] = {},
-        instance_mode: str = "rr",
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -68,6 +70,8 @@ class CARLAcrobotEnv(CARLEnv):
         max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
+        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector_kwargs: Optional[Dict] = None,
         context_encoder: Optional[ContextEncoder] = None,
     ):
         if not contexts:
@@ -75,7 +79,6 @@ class CARLAcrobotEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            instance_mode=instance_mode,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
@@ -85,13 +88,16 @@ class CARLAcrobotEnv(CARLEnv):
             max_episode_length=max_episode_length,
             state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
+            context_selector=context_selector,
+            context_selector_kwargs=context_selector_kwargs,
+            dict_observation_space=dict_observation_space,
             context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         self.env.LINK_LENGTH_1 = self.context["link_length_1"]
         self.env.LINK_LENGTH_2 = self.context["link_length_2"]
         self.env.LINK_MASS_1 = self.context["link_mass_1"]
