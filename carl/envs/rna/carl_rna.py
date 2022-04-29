@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional, Tuple
 
 import gym
 import numpy as np
+import os
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.carl_rna_definitions import (
@@ -20,9 +21,15 @@ from carl.utils.trial_logger import TrialLogger
 class RnaGymWrapper(object):
     def __init__(self, env):
         self.env = env
+        
+    def reset(self):
+        state = self.env.reset()
+        state = np.array(state).flatten()
+        return state
 
     def step(self, action):
         state, done, reward = self.env.execute(action)
+        state = np.array(state).flatten()
         return state, reward, done, {}
 
     def __getattr__(self, name):
@@ -36,7 +43,7 @@ class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env: Optional[gym.Env] = None,
-        data_location: str = "carl/envs/rna/learna/data",
+        data_location: str = "envs/rna/learna/data",
         contexts: Dict[Any, Dict[Any, Any]] = {},
         instance_mode: str = "rr",
         hide_context: bool = False,
@@ -56,6 +63,8 @@ class CARLRnaDesignEnv(CARLEnv):
             Different contexts / different environment parameter settings.
         instance_mode: str, optional
         """
+        self.data_location = os.path.abspath(data_location)
+
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         if env is None:
@@ -75,9 +84,7 @@ class CARLRnaDesignEnv(CARLEnv):
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
         env = RnaGymWrapper(env)
-        # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
-        # with the context.
-        self.data_location = data_location
+
         super().__init__(
             env=env,
             contexts=contexts,
@@ -92,8 +99,8 @@ class CARLRnaDesignEnv(CARLEnv):
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
     def _update_context(self) -> None:
-        #FIXME: this obviously can't be hardcoded, but needs to be full path
-        self.data_location = "/home/eimer/Dokumente/git/CARL/carl/envs/rna/learna/data"
+        print(self.context)
+        #self.data_location = "/home/eimer/Dokumente/git/CARL/carl/envs/rna/learna/data"
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.data_location,
