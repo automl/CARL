@@ -20,6 +20,7 @@ brax_spec = importlib.util.find_spec("brax")
 found = brax_spec is not None
 if found:
     from carl.envs.brax import *
+    pass
 else:
     warnings.warn(
         "Module 'Brax' not found. If you want to use these environments, please follow the installation guide."
@@ -32,7 +33,7 @@ except:
         "Module 'Mario' not found. Please follow installation guide for ToadGAN environment."
     )
 
-RNA_spec = importlib.util.find_spec("RNA")
+RNA_spec = importlib.util.find_spec("viennarna")
 found = RNA_spec is not None
 if found:
     from carl.envs.rna import *
