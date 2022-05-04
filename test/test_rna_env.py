@@ -2,8 +2,7 @@ import unittest
 
 import numpy as np
 
-from carl.envs import CARLRnaDesignEnv
-from carl.envs.rna.carl_rna import RnaGymWrapper
+from carl.envs.rna.carl_rna import CARLRnaDesignEnv, RnaGymWrapper
 
 
 class TestRNA(unittest.TestCase):
