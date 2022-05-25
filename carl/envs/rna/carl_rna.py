@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional, Tuple, Union
 
 import gym
 import numpy as np
+import os
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.carl_rna_definitions import (
@@ -27,11 +28,32 @@ from carl.utils.trial_logger import TrialLogger
 from carl.context_encoders import ContextEncoder
 
 
+class RnaGymWrapper(object):
+    def __init__(self, env):
+        self.env = env
+        
+    def reset(self):
+        state = self.env.reset()
+        state = np.array(state).flatten()
+        return state
+
+    def step(self, action):
+        state, done, reward = self.env.execute(action)
+        state = np.array(state).flatten()
+        return state, reward, done, {}
+
+    def __getattr__(self, name):
+        if not name == "env":
+            return getattr(self.env, name)
+        else:
+            return self.env
+
+
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env = None,
-        data_location: str = "carl/envs/rna/learna/data",
+        data_location: str = "envs/rna/learna/data",
         contexts: Dict[str, Dict] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
@@ -53,6 +75,8 @@ class CARLRnaDesignEnv(CARLEnv):
             Different contexts / different environment parameter settings.
         instance_mode: str, optional
         """
+        self.data_location = os.path.abspath(data_location)
+
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         if env is None:
@@ -71,10 +95,8 @@ class CARLRnaDesignEnv(CARLEnv):
         env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
         env.metadata = {}
-        # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
-        # with the context.
-        env.data_location = data_location
-        self.env = env
+        env = RnaGymWrapper(env)
+
         super().__init__(
             env=env,
             contexts=contexts,
@@ -90,18 +112,10 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
-    def step(self, action: Any) -> Tuple[np.ndarray, float, bool, Dict]:
-        # Step function has a different name in this env
-        state, reward, done = self.env.execute(action)
-        if not self.hide_context:
-            state = np.concatenate((state, np.array(list(self.context.values()))))
-        self.step_counter += 1
-        return state, reward, done, {}
-
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
-            data_dir=self.env.data_location,
+            data_dir=self.data_location,
             target_structure_ids=self.context["target_structure_ids"],
         )
         env_config = RnaDesignEnvironmentConfig(
@@ -109,4 +123,4 @@ class CARLRnaDesignEnv(CARLEnv):
             reward_exponent=self.context["reward_exponent"],
             state_radius=self.context["state_radius"],
         )
-        self.env = RnaDesignEnvironment(dot_brackets, env_config)
+        self.env = RnaGymWrapper(RnaDesignEnvironment(dot_brackets, env_config))

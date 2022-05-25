@@ -60,12 +60,9 @@ To install the additional requirements for ToadGAN:
 javac carl/envs/mario/Mario-AI-Framework/**/*.java
 ```
 
-If you want to use the RNA design environment:
-```bash
-cd carl/envs/rna/learna
-make requirements
-make data
-```
+If you want to use the RNA design environment, you also need to download the RNA data
+in addition to installing the dependencies. Please follow the instructions in carl/envs/rna.
+
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable.
 During training we therefore can encounter different contexts and train for generalization.
