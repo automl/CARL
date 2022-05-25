@@ -112,9 +112,9 @@ jobs:
         fi
 
         if [ ${{ matrix.code-cov }} ]; then
-          $PYTHON -m pytest ${{ env.pytest-args }} ${{ env.code-cov-args }} test
+          $PYTHON -m pytest ${{ env.pytest-args }} ${{ env.code-cov-args }} --ignore=test/local_only test
         else
-          $PYTHON -m pytest ${{ env.pytest-args }} test
+          $PYTHON -m pytest ${{ env.pytest-args }} --ignore=test/local_only test
         fi
 
     - name: Upload coverage
