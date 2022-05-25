@@ -167,6 +167,11 @@ def sample_contexts(
                     choices = env_bounds[k][3]
                     choice = np.random.choice(choices)
                     c[k] = choice
+                elif context_feature_type == "conditional":
+                    condition = env_bounds[k][4]
+                    choices = env_bounds[k][3][condition]
+                    choice = np.random.choice(choices)
+                    c[k] = choice
                 else:
                     c[k] = random_variable.rvs(size=1)[0]  # sample variable
                     c[k] = np.clip(c[k], lower_bound, upper_bound)  # check bounds
