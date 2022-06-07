@@ -51,7 +51,7 @@ class MujocoToGymWrapper(gym.Env):
         reward = timestep.reward
         discount = timestep.discount
         if isinstance(self.observation_space, spaces.Box):
-            observation = self.observation_to_box(timestep.observation)
+            observation = timestep.observation["observations"]
         else:
             raise NotImplementedError
         info = {
@@ -71,19 +71,10 @@ class MujocoToGymWrapper(gym.Env):
         super(MujocoToGymWrapper, self).reset(seed=seed, return_info=return_info, options=options)
         timestep = self.env.reset()
         if isinstance(self.observation_space, spaces.Box):
-            observation = self.observation_to_box(timestep.observation)
+            observation = timestep.observation["observations"]
         else:
             raise NotImplementedError
         return observation
-
-    def observation_to_box(self, observation):
-        observations = []
-        for v in observation.values():
-            observations.extend(v)
-        observation_array = np.array(observations, dtype=self.observation_space.dtype)
-        # TODO make sure observations are within bounds
-        # observation_array = np.clip(observation_array, self.observation_space.low, self.observation_space.high)
-        return observation_array
 
     def render(self, mode="human"):
         """Renders the environment.
@@ -127,6 +118,6 @@ class MujocoToGymWrapper(gym.Env):
         if mode == "human":
             raise NotImplementedError
         elif mode == "rgb_array":
-            return self.env._physics.render(camera_id=1)
+            return self.env.physics.render(camera_id=1)
         else:
             raise NotImplementedError

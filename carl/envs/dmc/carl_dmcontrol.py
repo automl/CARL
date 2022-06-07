@@ -1,6 +1,9 @@
 import warnings
 from typing import Any, Dict, List, TypeVar, Union, Optional
 
+import numpy as np
+from dm_control import suite
+
 import gym
 from gym.envs.classic_control import CartPoleEnv
 
@@ -9,9 +12,10 @@ from carl.envs.dmc.wrappers import MujocoToGymWrapper
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
+from carl.envs.dmc.wrappers import ActType, ObsType
 
-ObsType = TypeVar("ObsType")
-ActType = TypeVar("ActType")
+# ObsType = TypeVar("ObsType")
+# ActType = TypeVar("ActType")
 
 
 """
@@ -126,13 +130,19 @@ WORLD_PARAMETERS = (
 )
 
 
-DEFAULT_CONTEXT = {}
+DEFAULT_CONTEXT = {
+    "gravity": -9.81
+}
+
+CONTEXT_BOUNDS = {
+    "gravity": (0.1, np.inf, float)
+}
 
 
-class CARLDmc(CARLEnv):
+class CARLDmcEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CartPoleEnv(),
+        env: gym.Env,
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -142,7 +152,7 @@ class CARLDmc(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
-        dict_observation_space: bool = True,
+        dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -169,10 +179,12 @@ class CARLDmc(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self) -> None:
-        # TODO change parameters of moving model (actuator force etc)
-        for context_name, context_value in self.context:
-            if context_name in WORLD_PARAMETERS:
-                setattr(self.env.physics.model.opt, context_name, context_value)
-            else:
-                warnings.warn(f"Unknown context feature {context_name}.")
+def load_dmc_env(domain_name, task_name, task_kwargs=None, environment_kwargs=None,
+                 visualize_reward=False):
+    return suite.load(
+        domain_name=domain_name,
+        task_name=task_name,
+        task_kwargs=task_kwargs,
+        environment_kwargs=environment_kwargs,
+        visualize_reward=visualize_reward,
+    )
