@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Union
+from typing import Tuple, Optional, Union, TypeVar
 
 import dm_control.rl
 import gym
@@ -6,8 +6,8 @@ import numpy as np
 from dm_env import StepType
 from gym import spaces
 
-from carl.envs.dmc.carl_dmcontrol import ActType, ObsType
-
+ObsType = TypeVar("ObsType")
+ActType = TypeVar("ActType")
 
 class MujocoToGymWrapper(gym.Env):
     def __init__(self, env: dm_control.rl.control.Environment):
@@ -50,7 +50,10 @@ class MujocoToGymWrapper(gym.Env):
         step_type: StepType = timestep.step_type
         reward = timestep.reward
         discount = timestep.discount
-        observation = timestep.observation
+        if isinstance(self.observation_space, spaces.Box):
+            observation = self.observation_to_box(timestep.observation)
+        else:
+            raise NotImplementedError
         info = {
             "step_type": step_type,
             "discount": discount
@@ -67,7 +70,20 @@ class MujocoToGymWrapper(gym.Env):
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         super(MujocoToGymWrapper, self).reset(seed=seed, return_info=return_info, options=options)
         timestep = self.env.reset()
-        return timestep.observation
+        if isinstance(self.observation_space, spaces.Box):
+            observation = self.observation_to_box(timestep.observation)
+        else:
+            raise NotImplementedError
+        return observation
+
+    def observation_to_box(self, observation):
+        observations = []
+        for v in observation.values():
+            observations.extend(v)
+        observation_array = np.array(observations, dtype=self.observation_space.dtype)
+        # TODO make sure observations are within bounds
+        # observation_array = np.clip(observation_array, self.observation_space.low, self.observation_space.high)
+        return observation_array
 
     def render(self, mode="human"):
         """Renders the environment.
@@ -106,5 +122,11 @@ class MujocoToGymWrapper(gym.Env):
                 else:
                     super(MyEnv, self).render(mode=mode) # just raise an exception
         """
-        # TODO render mujoco
-        pass
+        # TODO render mujoco human version
+
+        if mode == "human":
+            raise NotImplementedError
+        elif mode == "rgb_array":
+            return self.env._physics.render(camera_id=1)
+        else:
+            raise NotImplementedError
