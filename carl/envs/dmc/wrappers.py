@@ -1,6 +1,6 @@
 from typing import Tuple, Optional, Union, TypeVar
 
-import dm_control.rl
+from dm_control.rl.control import Environment
 import gym
 import numpy as np
 from dm_env import StepType
@@ -10,7 +10,7 @@ ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
 
 class MujocoToGymWrapper(gym.Env):
-    def __init__(self, env: dm_control.rl.control.Environment):
+    def __init__(self, env: Environment):
         # TODO set seeds
         self.env = env
 
