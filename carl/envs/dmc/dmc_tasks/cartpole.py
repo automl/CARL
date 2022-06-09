@@ -76,9 +76,7 @@ def swingup_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
       mjcf.append(etree.Element("option", magnetic=" ".join([str(i) for i in context["magnetic"]])))
     if "wind" not in keys:
       mjcf.append(etree.Element("option", wind=" ".join([str(i) for i in context["wind"]])))
-
     xml_string = etree.tostring(mjcf, pretty_print=True)
-    print(xml_string)
     
   physics = Physics.from_xml_string(xml_string, assets)
   task = Balance(swing_up=True, sparse=False, random=random)
