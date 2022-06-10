@@ -6,36 +6,8 @@ from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.wrappers import MujocoToGymWrapper
 from carl.envs.dmc.utils import load_dmc_env
-from carl.envs.carl_env import CARLEnv
+from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
-
-"""
-Physics options (defaults for CartPole):
-|           apirate = 100.0                                                │
-│         collision = 0                                                    │
-│              cone = 0                                                    │
-│           density = 0.0                                                  │
-│      disableflags = 0                                                    │
-│       enableflags = 0                                                    │
-│           gravity = array([ 0.  ,  0.  , -9.81])                         │
-│          impratio = 1.0                                                  │
-│        integrator = 0                                                    │
-│        iterations = 100                                                  │
-│          jacobian = 2                                                    │
-│          magnetic = array([ 0. , -0.5,  0. ])                            │
-│    mpr_iterations = 50                                                   │
-│     mpr_tolerance = 1e-06                                                │
-│ noslip_iterations = 0                                                    │
-│  noslip_tolerance = 1e-06                                                │
-│          o_margin = 0.0                                                  │
-│          o_solimp = array([9.0e-01, 9.5e-01, 1.0e-03, 5.0e-01, 2.0e+00]) │
-│          o_solref = array([0.02, 1.  ])                                  │
-│            solver = 2                                                    │
-│          timestep = 0.0025                                               │
-│         tolerance = 1e-08                                                │
-│         viscosity = 0.0                                                  │
-│              wind = array([0., 0., 0.])                                  |
-"""
 
 DEFAULT_CONTEXT = {
     "gravity_x": 0.,
@@ -72,7 +44,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLDmcCartPoleEnv(CARLEnv):
+class CARLDmcCartPoleEnv(CARLDmcEnv):
     def __init__(
         self,
         domain: str = "cartpole",
@@ -118,10 +90,3 @@ class CARLDmcCartPoleEnv(CARLEnv):
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
-    
-    def _update_context(self) -> None:
-        if self.dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(domain_name=self.domain, task_name=self.task, context=self.context, environment_kwargs={"flat_observation": True})
-            self.env = MujocoToGymWrapper(env)
