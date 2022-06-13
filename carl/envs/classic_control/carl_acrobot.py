@@ -90,7 +90,6 @@ class CARLAcrobotEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            dict_observation_space=dict_observation_space,
             context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(

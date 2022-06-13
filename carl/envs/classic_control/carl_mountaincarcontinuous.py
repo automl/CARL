@@ -107,7 +107,6 @@ class CARLMountainCarContinuousEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            state_context_features=state_context_features,
             context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(
