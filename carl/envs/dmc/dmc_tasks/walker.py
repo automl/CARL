@@ -47,51 +47,54 @@ def get_model_and_assets():
   return common.read_model('walker.xml'), common.ASSETS
 
 
+def adapt_context(xml_string, context):
+  """Adapts and returns the xml_string of the model with the given context."""
+  mjcf = etree.fromstring(xml_string)
+  damping = mjcf.find("./default/joint")
+  damping.set("damping", str(context["joint_damping"]))
+  friction = mjcf.find("./default/geom")
+  friction.set("friction", " ".join([
+    str(context["friction_tangential"]), 
+    str(context["friction_torsional"]), 
+    str(context["friction_rolling"])])
+  )
+  actuators = mjcf.findall("./actuator/motor")
+  for actuator in actuators:
+    gear = actuator.get("gear")
+    actuator.set("gear", str(int(float(gear) * context["actuator_strength"])))
+  keys = []
+  options = mjcf.findall("./option")
+  gravity = " ".join([str(context["gravity_x"]), str(context["gravity_y"]), str(context["gravity_z"])])
+  magnetic = " ".join([str(context["magnetic_x"]), str(context["magnetic_y"]), str(context["magnetic_z"])])
+  wind = " ".join([str(context["wind_x"]), str(context["wind_y"]), str(context["wind_z"])])
+  for option in options:
+    for k, v in option.items():
+      keys.append(k)
+      if k == "gravity":
+        option.set("gravity", gravity)
+      elif k == "timestep":
+        option.set("timestep", str(context["timestep"]))
+      elif k == "magnetic":
+        option.set("magnetic", magnetic)
+      elif k == "wind":
+        option.set("wind", wind)
+  if "gravity" not in keys:
+    mjcf.append(etree.Element("option", gravity=gravity))
+  if "timestep" not in keys:
+    mjcf.append(etree.Element("option", timestep=str(context["timestep"])))
+  if "magnetic" not in keys:
+    mjcf.append(etree.Element("option", magnetic=magnetic))
+  if "wind" not in keys:
+    mjcf.append(etree.Element("option", wind=wind))
+  xml_string = etree.tostring(mjcf, pretty_print=True)
+  return xml_string
+
 @SUITE.add('benchmarking')
 def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
-  """Returns the Stand task."""
+  """Returns the Stand task with the adapted context."""
   xml_string, assets = get_model_and_assets()
   if context != {}:
-    mjcf = etree.fromstring(xml_string)
-    damping = mjcf.find("./default/joint")
-    damping.set("damping", str(context["joint_damping"]))
-    friction = mjcf.find("./default/geom")
-    friction.set("friction", " ".join([
-      str(context["friction_tangential"]), 
-      str(context["friction_torsional"]), 
-      str(context["friction_rolling"])])
-    )
-    actuators = mjcf.findall("./actuator/motor")
-    for actuator in actuators:
-      gear = actuator.get("gear")
-      actuator.set("gear", str(int(float(gear) * context["actuator_strength"])))
-    keys = []
-    options = mjcf.findall("./option")
-    gravity = " ".join([str(context["gravity_x"]), str(context["gravity_y"]), str(context["gravity_z"])])
-    magnetic = " ".join([str(context["magnetic_x"]), str(context["magnetic_y"]), str(context["magnetic_z"])])
-    wind = " ".join([str(context["wind_x"]), str(context["wind_y"]), str(context["wind_z"])])
-    for option in options:
-      for k, v in option.items():
-        keys.append(k)
-        if k == "gravity":
-          option.set("gravity", gravity)
-        elif k == "timestep":
-          option.set("timestep", str(context["timestep"]))
-        elif k == "magnetic":
-          option.set("magnetic", magnetic)
-        elif k == "wind":
-          option.set("wind", wind)
-    if "gravity" not in keys:
-      mjcf.append(etree.Element("option", gravity=gravity))
-    if "timestep" not in keys:
-      mjcf.append(etree.Element("option", timestep=str(context["timestep"])))
-    if "magnetic" not in keys:
-      mjcf.append(etree.Element("option", magnetic=magnetic))
-    if "wind" not in keys:
-      mjcf.append(etree.Element("option", wind=wind))
-    xml_string = etree.tostring(mjcf, pretty_print=True)
-    # print(xml_string.decode("utf-8"))
-    
+    xml_string = adapt_context(xml_string, context)
   physics = Physics.from_xml_string(xml_string, assets)
   task = PlanarWalker(move_speed=0, random=random)
   environment_kwargs = environment_kwargs or {}
@@ -100,27 +103,32 @@ def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, envir
       **environment_kwargs)
 
 
+@SUITE.add('benchmarking')
+def walk_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+  """Returns the Walk task with the adapted context."""
+  xml_string, assets = get_model_and_assets()
+  if context != {}:
+    xml_string = adapt_context(xml_string, context)
+  physics = Physics.from_xml_string(xml_string, assets)
+  task = PlanarWalker(move_speed=_WALK_SPEED, random=random)
+  environment_kwargs = environment_kwargs or {}
+  return control.Environment(
+      physics, task, time_limit=time_limit, control_timestep=_CONTROL_TIMESTEP,
+      **environment_kwargs)
 
-# @SUITE.add('benchmarking')
-# def walk(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
-#   """Returns the Walk task."""
-#   physics = Physics.from_xml_string(*get_model_and_assets())
-#   task = PlanarWalker(move_speed=_WALK_SPEED, random=random)
-#   environment_kwargs = environment_kwargs or {}
-#   return control.Environment(
-#       physics, task, time_limit=time_limit, control_timestep=_CONTROL_TIMESTEP,
-#       **environment_kwargs)
 
-
-# @SUITE.add('benchmarking')
-# def run(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
-#   """Returns the Run task."""
-#   physics = Physics.from_xml_string(*get_model_and_assets())
-#   task = PlanarWalker(move_speed=_RUN_SPEED, random=random)
-#   environment_kwargs = environment_kwargs or {}
-#   return control.Environment(
-#       physics, task, time_limit=time_limit, control_timestep=_CONTROL_TIMESTEP,
-#       **environment_kwargs)
+@SUITE.add('benchmarking')
+def run_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+  """Returns the Run task with the adapted context."""
+  xml_string, assets = get_model_and_assets()
+  if context != {}:
+    xml_string = adapt_context(xml_string, context)
+  physics = Physics.from_xml_string(xml_string, assets)
+  task = PlanarWalker(move_speed=_RUN_SPEED, random=random)
+  environment_kwargs = environment_kwargs or {}
+  return control.Environment(
+      physics, task, time_limit=time_limit, control_timestep=_CONTROL_TIMESTEP,
+      **environment_kwargs)
 
 
 class Physics(mujoco.Physics):
