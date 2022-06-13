@@ -14,11 +14,12 @@ DEFAULT_CONTEXT = {
     "gravity_x": 0.,
     "gravity_y": 0.,
     "gravity_z": -9.81,
-    "friction": 0.6,
-    "angular_damping": -0.05,
-    "actuator_strength": 1, # use this as scaling factor
-    "joint_angular_damping": 35,
-    "torso_mass": 10,
+    "friction_tangential": 0.7,
+    "friction_torsional": 0.1,
+    "friction_rolling": 0.1,
+    "actuator_strength": 1, # scale all actuators by this factor
+    "joint_damping": 0.1,
+    # "torso_mass": 10, # TODO find out if mass can be modified
     "timestep": 0.0025,  # Seconds between updates
     "magnetic_x": 0., # TODO decide if this is useful
     "magnetic_y": -0.5, 
@@ -33,11 +34,12 @@ CONTEXT_BOUNDS = {
     "gravity_x": (-0.1, -np.inf, float),
     "gravity_y": (-0.1, -np.inf, float),
     "gravity_z": (-0.1, -np.inf, float),
-    "friction": (-np.inf, np.inf, float),
-    "angular_damping": (-np.inf, np.inf, float),
+    "friction_tangential": (-np.inf, np.inf, float), # TODO can friction be negative here?
+    "friction_torsional": (-np.inf, np.inf, float),
+    "friction_rolling": (-np.inf, np.inf, float),
     "actuator_strength": (-np.inf, np.inf, float),
-    "joint_angular_damping": (0, np.inf, float),
-    "torso_mass": (0.1, np.inf, float),
+    "joint_damping": (0, np.inf, float),
+    # "torso_mass": (0.1, np.inf, float),
     "timestep": (0.001, 0.1, float,),  # TODO not sure how much it should be varied
     "magnetic_x": (-np.inf, np.inf, float),
     "magnetic_y": (-np.inf, np.inf, float),

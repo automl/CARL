@@ -53,15 +53,18 @@ def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, envir
   xml_string, assets = get_model_and_assets()
   if context != {}:
     mjcf = etree.fromstring(xml_string)
-    # pole = mjcf.find("./default/default/geom")
-    # pole.set("mass", str(context["masspole"]))
-    # pole.set("fromto", "0 0 0 0 0 " + str(context["pole_length"]))
-    # cart = mjcf.find("./worldbody/body/geom")
-    # cart.set("mass", str(context["masscart"]))
+    damping = mjcf.find("./default/joint")
+    damping.set("damping", str(context["joint_damping"]))
+    friction = mjcf.find("./default/geom")
+    friction.set("friction", " ".join([
+      str(context["friction_tangential"]), 
+      str(context["friction_torsional"]), 
+      str(context["friction_rolling"])])
+    )
     actuators = mjcf.findall("./actuator/motor")
     for actuator in actuators:
       gear = actuator.get("gear")
-      actuator.set("gear", str(gear * context["actuator_strength"]))
+      actuator.set("gear", str(int(float(gear) * context["actuator_strength"])))
     keys = []
     options = mjcf.findall("./option")
     gravity = " ".join([str(context["gravity_x"]), str(context["gravity_y"]), str(context["gravity_z"])])
@@ -87,7 +90,7 @@ def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, envir
     if "wind" not in keys:
       mjcf.append(etree.Element("option", wind=wind))
     xml_string = etree.tostring(mjcf, pretty_print=True)
-    print(xml_string)
+    # print(xml_string.decode("utf-8"))
     
   physics = Physics.from_xml_string(xml_string, assets)
   task = PlanarWalker(move_speed=0, random=random)
