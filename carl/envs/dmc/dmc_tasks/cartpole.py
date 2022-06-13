@@ -28,14 +28,11 @@ from dm_control.utils import containers
 from dm_control.utils import rewards
 from lxml import etree
 import numpy as np
-from dm_control import suite
+
 
 _DEFAULT_TIME_LIMIT = 10
 SUITE = containers.TaggedTasks()
 
-DEFAULT_CONTEXT = {
-  "gravity": -9.81,
-}
 
 def get_model_and_assets(num_poles=1):
   """Returns a tuple containing the model XML string and a dict of assets."""
