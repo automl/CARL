@@ -89,6 +89,7 @@ def adapt_context(xml_string, context):
   xml_string = etree.tostring(mjcf, pretty_print=True)
   return xml_string
 
+
 @SUITE.add('benchmarking')
 def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Stand task with the adapted context."""

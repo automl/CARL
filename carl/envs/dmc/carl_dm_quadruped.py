@@ -10,7 +10,7 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
 DEFAULT_CONTEXT = {
-    # "joint_stiffness": 5000, # TODO where to find this
+    "joint_stiffness": 5000,
     "gravity_x": 0.,
     "gravity_y": 0.,
     "gravity_z": -9.81,
@@ -20,7 +20,7 @@ DEFAULT_CONTEXT = {
     "actuator_strength": 1, # scale all actuators by this factor
     "joint_damping": 0.1,
     # "torso_mass": 10, # TODO find out if mass can be modified
-    "timestep": 0.0025,  # Seconds between updates
+    "timestep": 0.005,  # Seconds between updates
     "magnetic_x": 0., # TODO decide if this is useful
     "magnetic_y": -0.5, 
     "magnetic_z": 0.,
@@ -30,7 +30,7 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    # "joint_stiffness": (1, np.inf, float),
+    "joint_stiffness": (1, np.inf, float),
     "gravity_x": (-0.1, -np.inf, float),
     "gravity_y": (-0.1, -np.inf, float),
     "gravity_z": (-0.1, -np.inf, float),
@@ -49,11 +49,11 @@ CONTEXT_BOUNDS = {
     "wind_z": (-np.inf, np.inf, float),
 }
 
-class CARLDmcWalkerEnv(CARLDmcEnv):
+class CARLDmcQuadrupedEnv(CARLDmcEnv):
     def __init__(
         self,
-        domain: str = "walker",
-        task: str = "stand_context",
+        domain: str = "quadruped",
+        task: str = "walk_context",
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
