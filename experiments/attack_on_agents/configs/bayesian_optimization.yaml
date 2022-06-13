@@ -1,0 +1,6 @@
+# Budget for Bayesian Optimization
+# One run equals one agent evaluation with n_eval_episodes
+budget: 1000
+
+# Evaluation
+n_eval_episodes: 10
