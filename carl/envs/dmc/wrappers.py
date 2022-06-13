@@ -76,7 +76,7 @@ class MujocoToGymWrapper(gym.Env):
             raise NotImplementedError
         return observation
 
-    def render(self, mode="human"):
+    def render(self, mode="human", camera_id=0):
         """Renders the environment.
 
         The set of supported modes varies per environment. (And some
@@ -118,6 +118,6 @@ class MujocoToGymWrapper(gym.Env):
         if mode == "human":
             raise NotImplementedError
         elif mode == "rgb_array":
-            return self.env.physics.render(camera_id=1)
+            return self.env.physics.render(camera_id=camera_id)
         else:
             raise NotImplementedError
