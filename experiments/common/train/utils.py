@@ -32,8 +32,9 @@ def make_carl_env(cfg: DictConfig, contexts: Dict[str, Dict] = None, log_wandb: 
     env = getattr(carl.envs, cfg.env)(contexts=contexts, **cfg.carl.env_kwargs)
     env.seed(cfg.seed)
     # env.spec = gym.envs.registration.EnvSpec(cfg.env + "-v0")
-    for wrapper in cfg.env_wrappers:
-        env = hydra.utils.instantiate(wrapper, env)
+    if "env_wrappers" in cfg:
+        for wrapper in cfg.env_wrappers:
+            env = hydra.utils.instantiate(wrapper, env)
 
     # env = coax.wrappers.TrainMonitor(
     #     env, name=name or cfg.algo, tensorboard_dir=tensorboard_dir)
