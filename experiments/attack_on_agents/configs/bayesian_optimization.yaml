@@ -12,7 +12,7 @@ context_feature_search_space:
   hyperparameters:
     max_speed:
       lower: 1e-4
-      upper: 1e3
+      upper: 50
       default: 8.
       type: uniform_float
     dt:
