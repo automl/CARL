@@ -1,13 +1,12 @@
 defaults:
   - slurm
   - _self_
+  - bayesian_optimization
   - override hydra/job_logging: colorlog
   - override hydra/hydra_logging: colorlog
 
 seed: 0
 output_dir: ./tmp
-env: ???
-agent: ???
 
 wandb:
   id: null
@@ -52,6 +51,15 @@ carl:
     scale_context_features: "no" # by_mean, by_default
     state_context_features: null
     add_gaussian_noise_to_context: false
-    instance_mode: rr
     gaussian_noise_std_percentage: 0.0
   use_cgate: false
+
+# Agent
+agent: sac
+agent_checkpoint_path: null
+
+pi_warmup_num_frames: 7500
+pi_update_freq: 4
+
+network:
+  width: 32
