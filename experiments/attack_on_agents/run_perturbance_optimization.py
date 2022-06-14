@@ -2,6 +2,8 @@ import numpy as np
 from functools import partial
 import importlib
 from rich import print
+from pathlib import Path
+import time
 
 import hydra
 from omegaconf import DictConfig
@@ -19,25 +21,23 @@ from experiments.attack_on_agents.agent_creation import make_agent
 
 
 def evaluate(pi, env, num_episodes):
-    buffer = coax.experience_replay.SimpleReplayBuffer(
-        capacity=env.cutoff * num_episodes, random_seed=None  # we don't sample from it
-    )
     returns = []
-    for _ in range(num_episodes):
+    transitions = []
+    for i in range(num_episodes):
         ret = 0
         s = env.reset()
 
         for t in range(env.cutoff):
             a = pi.mean(s)  # use mean for exploitation  # TODO use mean?
             s_next, r, done, info = env.step(a)
-            transition = (s, a, r, done)
-            buffer.add(*transition)
+            transition = (i, s, a, r, done)
+            transitions.append(transition)
             ret += r
             if done:
                 break
             s = s_next
         returns.append(ret)
-    return returns, buffer
+    return returns, transitions
 
 
 def context_features_to_configuration_space(env_name: str) -> ConfigurationSpace:
@@ -75,16 +75,31 @@ def context_features_to_configuration_space(env_name: str) -> ConfigurationSpace
 
 def eval_agent(config_smac: Configuration, cfg: DictConfig) -> float:
     # Instantiate env
-    contexts = {"0": {k: config_smac[k] for k in config_smac}}
+    contexts = None
+    context = None
+    if config_smac is not None:
+        context = {k: config_smac[k] for k in config_smac}
+        contexts = {"0": context}
     eval_env = make_carl_env(cfg=cfg, contexts=contexts)
 
     # Instantiate agent
     policy = make_agent(cfg=cfg, env=eval_env)
 
-    returns, buffer = evaluate(policy, eval_env, cfg.n_eval_episodes)
+    returns, transitions = evaluate(policy, eval_env, cfg.n_eval_episodes)
+
+    mean_return = float(np.mean(returns))
+
+    run_data = np.array({
+        "context": context,
+        "returns": returns,
+        "transitions": transitions,
+        "performance": mean_return
+    })
+    fp = Path(f"./eval_data/eval_data_{time.time_ns()}.npz")
+    fp.parent.mkdir(exist_ok=True, parents=True)
+    run_data.dump(fp)
 
     # TODO normalize reward?
-    mean_return = float(np.mean(returns))
     return mean_return
 
 
@@ -118,6 +133,7 @@ def main(cfg: DictConfig):
         rng=np.random.RandomState(cfg.seed),
         acquisition_function=EI,  # or others like PI, LCB as acquisition functions
         tae_runner=tae_runner,
+        initial_design_kwargs={"init_budget": 2}
     )
 
     smac.optimize()
