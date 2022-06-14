@@ -108,6 +108,7 @@ class CARLEnv(Wrapper):
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
+        self.context_encoder = context_encoder
         if context_selector is None:
             self.context_selector = RoundRobinSelector(contexts=contexts)
         elif isinstance(context_selector, AbstractSelector):
