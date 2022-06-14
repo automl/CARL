@@ -95,7 +95,7 @@ Benchmarking Track)](https://arxiv.org/pdf/2106.13281.pdf)
 [TOAD-GAN: Coherent Style Level Generation from a Single Example,
 Awiszus et al., AIIDE 2020](https://arxiv.org/pdf/2008.01531.pdf)
 
-[Learning to Design RNA, Runge et al., ICRL 2019](https://arxiv.org/pdf/1812.11951.pdf)
+[Learning to Design RNA, Runge et al., ICLR 2019](https://arxiv.org/pdf/1812.11951.pdf)
 
 ## License
 CARL falls under the Apache License 2.0 (see file 'LICENSE') as is permitted by all
