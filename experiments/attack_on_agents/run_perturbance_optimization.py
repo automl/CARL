@@ -4,6 +4,7 @@ import importlib
 from rich import print
 from pathlib import Path
 import time
+from typing import Dict, Any
 
 import hydra
 from omegaconf import DictConfig
@@ -73,6 +74,13 @@ def context_features_to_configuration_space(env_name: str) -> ConfigurationSpace
     return configuration_space
 
 
+def get_default_context(env_name: str) -> Dict[Any, Any]:
+    env_cls = getattr(carl.envs, env_name)
+    env_module = importlib.import_module(env_cls.__module__)
+    context_def = getattr(env_module, "DEFAULT_CONTEXT")
+    return context_def
+
+
 def eval_agent(config_smac: Configuration, cfg: DictConfig) -> float:
     # Instantiate env
     contexts = None
@@ -126,6 +134,9 @@ def main(cfg: DictConfig):
     )
 
     tae_runner = create_tae_runner(cfg=cfg)
+    context_default = get_default_context()
+    performance_default = tae_runner(context_default)
+
     model_type = "gp"
     smac = SMAC4BB(
         scenario=scenario,
