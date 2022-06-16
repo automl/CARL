@@ -1,10 +1,15 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+print(sys.path)
 import numpy as np
 from functools import partial
 import importlib
 from rich import print
 from pathlib import Path
 import time
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 import hydra
 from omegaconf import DictConfig
@@ -81,7 +86,7 @@ def get_default_context(env_name: str) -> Dict[Any, Any]:
     return context_def
 
 
-def eval_agent(config_smac: Configuration, cfg: DictConfig) -> float:
+def eval_agent(config_smac: Configuration, cfg: DictConfig, file_id: Optional[str] = None) -> float:
     # Instantiate env
     contexts = None
     context = None
@@ -103,7 +108,9 @@ def eval_agent(config_smac: Configuration, cfg: DictConfig) -> float:
         "transitions": transitions,
         "performance": mean_return
     })
-    fp = Path(f"./eval_data/eval_data_{time.time_ns()}.npz")
+    if file_id is None:
+        file_id = time.time_ns()
+    fp = Path(f"./eval_data/eval_data_{file_id}.npz")
     fp.parent.mkdir(exist_ok=True, parents=True)
     run_data.dump(fp)
 
@@ -134,8 +141,8 @@ def main(cfg: DictConfig):
     )
 
     tae_runner = create_tae_runner(cfg=cfg)
-    context_default = get_default_context()
-    performance_default = tae_runner(context_default)
+    context_default = get_default_context(env_name=cfg.env)
+    performance_default = tae_runner(context_default, file_id="default")
 
     model_type = "gp"
     smac = SMAC4BB(
