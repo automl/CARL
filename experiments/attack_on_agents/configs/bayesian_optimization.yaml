@@ -1,10 +1,10 @@
 # @package _global_
 # Budget for Bayesian Optimization
 # One run equals one agent evaluation with n_eval_episodes
-budget: 20
+budget: 1000
 
 # Evaluation
-n_eval_episodes: 1
+n_eval_episodes: 5
 
 # Environment
 env: CARLPendulumEnv
