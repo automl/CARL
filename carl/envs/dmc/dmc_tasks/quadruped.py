@@ -25,6 +25,7 @@ from dm_control.suite import common
 from dm_control.utils import containers
 from dm_control.utils import rewards
 from dm_control.utils import xml_tools
+from carl.envs.dmc.dmc_tasks.utils import adapt_context
 from lxml import etree
 import numpy as np
 from scipy import ndimage
@@ -91,49 +92,6 @@ def make_model(floor_size=None, terrain=False, rangefinders=False,
       rf.getparent().remove(rf)
 
   return etree.tostring(mjcf, pretty_print=True)
-
-
-def adapt_context(xml_string, context):
-  """Adapts and returns the xml_string of the model with the given context."""
-  mjcf = etree.fromstring(xml_string)
-#   damping = mjcf.find("./default/joint")
-#   damping.set("damping", str(context["joint_damping"]))
-#   friction = mjcf.find("./default/geom")
-#   friction.set("friction", " ".join([
-#     str(context["friction_tangential"]), 
-#     str(context["friction_torsional"]), 
-#     str(context["friction_rolling"])])
-#   )
-#   actuators = mjcf.findall("./actuator/motor")
-#   for actuator in actuators:
-#     gear = actuator.get("gear")
-#     actuator.set("gear", str(int(float(gear) * context["actuator_strength"])))
-  keys = []
-  options = mjcf.findall("./option")
-  gravity = " ".join([str(context["gravity_x"]), str(context["gravity_y"]), str(context["gravity_z"])])
-  magnetic = " ".join([str(context["magnetic_x"]), str(context["magnetic_y"]), str(context["magnetic_z"])])
-  wind = " ".join([str(context["wind_x"]), str(context["wind_y"]), str(context["wind_z"])])
-  for option in options:
-    for k, v in option.items():
-      keys.append(k)
-      if k == "gravity":
-        option.set("gravity", gravity)
-      elif k == "timestep":
-        option.set("timestep", str(context["timestep"]))
-      elif k == "magnetic":
-        option.set("magnetic", magnetic)
-      elif k == "wind":
-        option.set("wind", wind)
-  if "gravity" not in keys:
-    mjcf.append(etree.Element("option", gravity=gravity))
-  if "timestep" not in keys:
-    mjcf.append(etree.Element("option", timestep=str(context["timestep"])))
-  if "magnetic" not in keys:
-    mjcf.append(etree.Element("option", magnetic=magnetic))
-  if "wind" not in keys:
-    mjcf.append(etree.Element("option", wind=wind))
-  xml_string = etree.tostring(mjcf, pretty_print=True)
-  return xml_string
 
 
 @SUITE.add()
