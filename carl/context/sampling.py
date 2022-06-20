@@ -1,15 +1,16 @@
 # flake8: noqa: W605
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Any
+import importlib
 
 import numpy as np
 from scipy.stats import norm
 
-from carl import envs
+import carl.envs
 
 
 def get_default_context_and_bounds(
     env_name: str,
-) -> Tuple[Dict[Any, Any], Dict[Any, Any]]:
+) -> Tuple[Dict[Any, Any], Dict[str, Tuple[Any, Any, type]]]:
     """
     Get context feature defaults and bounds for environment.
 
@@ -34,11 +35,11 @@ def get_default_context_and_bounds(
             categorical context features:
                 ``"VEHICLE": (None, None, "categorical", np.arange(0, len(PARKING_GARAGE)))``
     """
-    # TODO make less hacky / make explicit
-    env_defaults = getattr(envs, f"{env_name}_defaults")
-    env_bounds = getattr(envs, f"{env_name}_bounds")
-
-    return env_defaults, env_bounds
+    env_cls = getattr(carl.envs, env_name)
+    env_module = importlib.import_module(env_cls.__module__)
+    context_def = getattr(env_module, "DEFAULT_CONTEXT")
+    context_bounds = getattr(env_module, "CONTEXT_BOUNDS")
+    return context_def, context_bounds
 
 
 def sample_contexts(
