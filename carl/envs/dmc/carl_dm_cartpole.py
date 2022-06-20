@@ -10,34 +10,24 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
 DEFAULT_CONTEXT = {
-    "gravity_x": 0.,
-    "gravity_y": 0.,
-    "gravity_z": -9.81,
+    "gravity": -9.81,
     "masscart": 1.0,  # Should be seen as 100% and scaled accordingly
     "masspole": 0.1,  # Should be seen as 100% and scaled accordingly
     "pole_length": 1.0,  # Should be seen as 100% and scaled accordingly
-    "force_magnifier": 10.0,
+    "actuator_strength": 1.0,
     "timestep": 0.01,  # Seconds between updates
-    "magnetic_x": 0., # TODO decide if this is useful
-    "magnetic_y": -0.5, 
-    "magnetic_z": 0.,
-    "wind_x": 0., # TODO decide if this is useful
+    "wind_x": 0.,
     "wind_y": 0.,
     "wind_z": 0.,
 }
 
 CONTEXT_BOUNDS = {
-    "gravity_x": (-0.1, -np.inf, float),
-    "gravity_y": (-0.1, -np.inf, float),
-    "gravity_z": (-0.1, -np.inf, float),  # Negative gravity
+    "gravity": (-0.1, -np.inf, float),  # Negative gravity
     "masscart": (0.1, 10, float),  # Cart mass can be varied by a factor of 10
     "masspole": (0.01, 1, float),  # Pole mass can be varied by a factor of 10
     "pole_length": (0.05, 5, float),  # Pole length can be varied by a factor of 10
-    "force_magnifier": (1, 100, int),  # Force magnifier can be varied by a factor of 10
-    "timestep": (0.001, 0.1, float,),  # TODO not sure how much it should be varied
-    "magnetic_x": (-np.inf, np.inf, float),
-    "magnetic_y": (-np.inf, np.inf, float),
-    "magnetic_z": (-np.inf, np.inf, float),
+    "actuator_strength": (1, 100, int),  # Force magnifier can be varied by a factor of 10
+    "timestep": (0.001, 0.1, float,),
     "wind_x": (-np.inf, np.inf, float),
     "wind_y": (-np.inf, np.inf, float),
     "wind_z": (-np.inf, np.inf, float),

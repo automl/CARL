@@ -12,16 +12,16 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,
-    "friction_tangential": 0.7,
-    "friction_torsional": 0.1,
-    "friction_rolling": 0.1,
+    "friction_tangential": 1., # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1., # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1., # Scaling factor for rolling friction of all geoms (objects)
     "timestep": 0.0025,  # Seconds between updates
-    "joint_damping": 0.1,
+    "joint_damping": 1., # Scaling factor for all joints
     "joint_stiffness": 0.,
-    "actuator_strength": 1, # scaling factor for all actuators in the model
+    "actuator_strength": 1., # Scaling factor for all actuators in the model
     "density": 0.,
     "viscosity": 0.,
-    "geom_density": 1, # scaling factor for all geom (objects) densities
+    "geom_density": 1., # Scaling factor for all geom (objects) densities
     "wind_x": 0.,
     "wind_y": 0.,
     "wind_z": 0.,
