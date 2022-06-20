@@ -1,10 +1,28 @@
 from typing import Union, Optional
 from enum import Enum, IntEnum, auto
 from pathlib import Path
-
 import wandb
 
 from carl.context.sampling import get_default_context_and_bounds
+
+
+def log_contexts_wandb(train_contexts, eval_contexts):
+    table = wandb.Table(
+        columns=sorted(train_contexts[0].keys()),
+        data=[
+            [train_contexts[idx][key] for key in sorted(train_contexts[idx].keys())]
+            for idx in train_contexts.keys()
+        ],
+    )
+    wandb.log({"train/contexts": table}, step=0)
+    eval_table = wandb.Table(
+        columns=sorted(eval_contexts[0].keys()),
+        data=[
+            [eval_contexts[idx][key] for key in sorted(eval_contexts[idx].keys())]
+            for idx in eval_contexts.keys()
+        ],
+    )
+    wandb.log({"eval/contexts": eval_table}, step=0)
 
 
 class ContextDifficulty(Enum):
