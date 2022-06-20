@@ -23,7 +23,7 @@ from experiments.context_gating.utils import check_wandb_exists, set_seed_everyw
 from experiments.common.train.utils import make_env
 from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
-from experiments.carlbench.context_sampling import log_contexts_wandb
+from experiments.carlbench.context_logging import log_contexts_wandb
 from carl.context.sampling import sample_contexts
 
 
