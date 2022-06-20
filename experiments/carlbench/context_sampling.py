@@ -50,13 +50,33 @@ class ContextSampler(AbstractContextSampler):
             seed: int = 842,
             difficulty: str = "easy",
             n_samples: Union[str, int] = 100,
-            contexts_fn: str = "contexts.json",
             sigma_rel: Optional[float] = None,  # overrides difficulty
     ):
+        """
+        Sample contexts for training or evaluation.
+
+        Parameters
+        ----------
+        env_name : str
+            Name of the environment class, e.g. `CARLPendulumEnv`.
+        context_feature_names : Optional[Union[List[str], str]]
+            If None, then return default context `n_samples` times.
+            If `all`, then return contexts where all features are varied.
+            If List[str] (list of context feature names), return context features varied
+            as specified in the list, for the rest use default values.
+        seed : Optional[int]
+            Seed for sampling contexts.
+        difficulty : str = "easy"
+            Difficulty setting as expressed via different relative standard deviations.
+            Can be overriden by argument `sigma_rel`.
+        n_samples : Union[str, int] = 100
+            Number of contexts to draw. Can be integer or `small`, `medium` and `large`.
+        sigma_rel : Optional[float]
+            Relative standard deviation, overrides argument `difficulty`.
+        """
         super(ContextSampler, self).__init__()
         self.seed = seed
         self.contexts = None
-        self.contexts_fn = contexts_fn
         self.env_name = env_name
         self.C_def, self.C_bounds = get_default_context_and_bounds(env_name=self.env_name)
         if context_feature_names is None:
