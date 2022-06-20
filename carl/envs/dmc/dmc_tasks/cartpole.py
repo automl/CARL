@@ -51,11 +51,11 @@ def swingup_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
     cart = mjcf.find("./worldbody/body/geom")
     cart.set("mass", str(context["masscart"]))
     force = mjcf.find("./actuator/motor")
-    force.set("gear", str(context["force_magnifier"]))
+    gear = force.get("gear")
+    force.set("gear", str(int(float(gear) * context["actuator_strength"])))
     keys = []
     options = mjcf.findall("./option")
-    gravity = " ".join([str(context["gravity_x"]), str(context["gravity_y"]), str(context["gravity_z"])])
-    magnetic = " ".join([str(context["magnetic_x"]), str(context["magnetic_y"]), str(context["magnetic_z"])])
+    gravity = " ".join(["0", "0", str(context["gravity"])])
     wind = " ".join([str(context["wind_x"]), str(context["wind_y"]), str(context["wind_z"])])
     for option in options:
       for k, v in option.items():
@@ -64,16 +64,12 @@ def swingup_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
           option.set("gravity", gravity)
         elif k == "timestep":
           option.set("timestep", str(context["timestep"]))
-        elif k == "magnetic":
-          option.set("magnetic", magnetic)
         elif k == "wind":
           option.set("wind", wind)
     if "gravity" not in keys:
       mjcf.append(etree.Element("option", gravity=gravity))
     if "timestep" not in keys:
       mjcf.append(etree.Element("option", timestep=str(context["timestep"])))
-    if "magnetic" not in keys:
-      mjcf.append(etree.Element("option", magnetic=magnetic))
     if "wind" not in keys:
       mjcf.append(etree.Element("option", wind=wind))
     xml_string = etree.tostring(mjcf, pretty_print=True)

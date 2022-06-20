@@ -1,3 +1,4 @@
+from ast import JoinedStr
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
@@ -10,40 +11,34 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
 DEFAULT_CONTEXT = {
-    # "joint_stiffness": 5000, # TODO where to find this
-    "gravity_x": 0.,
-    "gravity_y": 0.,
-    "gravity_z": -9.81,
+    "gravity": -9.81,
     "friction_tangential": 0.7,
     "friction_torsional": 0.1,
     "friction_rolling": 0.1,
-    "actuator_strength": 1, # scale all actuators by this factor
-    "joint_damping": 0.1,
-    # "torso_mass": 10, # TODO find out if mass can be modified
     "timestep": 0.0025,  # Seconds between updates
-    "magnetic_x": 0., # TODO decide if this is useful
-    "magnetic_y": -0.5, 
-    "magnetic_z": 0.,
-    "wind_x": 0., # TODO decide if this is useful
+    "joint_damping": 0.1,
+    "joint_stiffness": 0.,
+    "actuator_strength": 1, # scaling factor for all actuators in the model
+    "density": 0.,
+    "viscosity": 0.,
+    "geom_density": 1, # scaling factor for all geom (objects) densities
+    "wind_x": 0.,
     "wind_y": 0.,
     "wind_z": 0.,
 }
 
 CONTEXT_BOUNDS = {
-    # "joint_stiffness": (1, np.inf, float),
-    "gravity_x": (-0.1, -np.inf, float),
-    "gravity_y": (-0.1, -np.inf, float),
-    "gravity_z": (-0.1, -np.inf, float),
-    "friction_tangential": (-np.inf, np.inf, float), # TODO can friction be negative here?
-    "friction_torsional": (-np.inf, np.inf, float),
-    "friction_rolling": (-np.inf, np.inf, float),
-    "actuator_strength": (-np.inf, np.inf, float),
+    "gravity": (-0.1, -np.inf, float),
+    "friction_tangential": (0, np.inf, float),
+    "friction_torsional": (0, np.inf, float),
+    "friction_rolling": (0, np.inf, float),
+    "timestep": (0.001, 0.1, float,),
     "joint_damping": (0, np.inf, float),
-    # "torso_mass": (0.1, np.inf, float),
-    "timestep": (0.001, 0.1, float,),  # TODO not sure how much it should be varied
-    "magnetic_x": (-np.inf, np.inf, float),
-    "magnetic_y": (-np.inf, np.inf, float),
-    "magnetic_z": (-np.inf, np.inf, float),
+    "joint_stiffness": (0, np.inf, float),
+    "actuator_strength": (0, np.inf, float),
+    "density": (0, np.inf, float),
+    "viscosity": (0, np.inf, float),
+    "geom_density": (0, np.inf, float),
     "wind_x": (-np.inf, np.inf, float),
     "wind_y": (-np.inf, np.inf, float),
     "wind_z": (-np.inf, np.inf, float),
