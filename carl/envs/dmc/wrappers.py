@@ -9,6 +9,7 @@ from gym import spaces
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
 
+
 class MujocoToGymWrapper(gym.Env):
     def __init__(self, env: Environment):
         # TODO set seeds
@@ -44,7 +45,8 @@ class MujocoToGymWrapper(gym.Env):
             observation (object): agent's observation of the current environment
             reward (float) : amount of reward returned after previous action
             done (bool): whether the episode has ended, in which case further step() calls will return undefined results
-            info (dict): contains auxiliary diagnostic information (helpful for debugging, logging, and sometimes learning)
+            info (dict): contains auxiliary diagnostic information
+                            (helpful for debugging, logging, and sometimes learning)
         """
         timestep = self.env.step(action=action)
         step_type: StepType = timestep.step_type

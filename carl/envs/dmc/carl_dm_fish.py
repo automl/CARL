@@ -10,17 +10,17 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
 DEFAULT_CONTEXT = {
-    "gravity": -9.81, # Gravity is disabled via flag
-    "friction_tangential": 1, # Scaling factor for tangential friction of all geoms (objects)
-    "friction_torsional": 1, # Scaling factor for torsional friction of all geoms (objects)
-    "friction_rolling": 1, # Scaling factor for rolling friction of all geoms (objects)
+    "gravity": -9.81,  # Gravity is disabled via flag
+    "friction_tangential": 1,  # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1,  # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1,  # Scaling factor for rolling friction of all geoms (objects)
     "timestep": 0.004,  # Seconds between updates
-    "joint_damping": 1., # Scaling factor for all joints
+    "joint_damping": 1.,  # Scaling factor for all joints
     "joint_stiffness": 0.,
-    "actuator_strength": 1, # Scaling factor for all actuators in the model
-    "density": 6000.,
+    "actuator_strength": 1,  # Scaling factor for all actuators in the model
+    "density": 5000.,
     "viscosity": 0.,
-    "geom_density": 1., # No effect, because no gravity
+    "geom_density": 1.,  # No effect, because no gravity
     "wind_x": 0.,
     "wind_y": 0.,
     "wind_z": 0.,
@@ -78,7 +78,13 @@ class CARLDmcFishEnv(CARLDmcEnv):
         if dict_observation_space:
             raise NotImplementedError
         else:
-            env = load_dmc_env(domain_name=domain, task_name=task, context={}, context_mask=[], environment_kwargs={"flat_observation": True})
+            env = load_dmc_env(
+                domain_name=domain,
+                task_name=task,
+                context={},
+                context_mask=[],
+                environment_kwargs={"flat_observation": True}
+            )
             env = MujocoToGymWrapper(env)
         super().__init__(
             env=env,

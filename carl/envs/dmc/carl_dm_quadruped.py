@@ -11,16 +11,16 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,
-    "friction_tangential": 1., # Scaling factor for tangential friction of all geoms (objects)
-    "friction_torsional": 1., # Scaling factor for torsional friction of all geoms (objects)
-    "friction_rolling": 1., # Scaling factor for rolling friction of all geoms (objects)
+    "friction_tangential": 1.,  # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1.,  # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1.,  # Scaling factor for rolling friction of all geoms (objects)
     "timestep": 0.005,  # Seconds between updates
-    "joint_damping": 1., # Scaling factor for all joints
+    "joint_damping": 1.,  # Scaling factor for all joints
     "joint_stiffness": 0.,
-    "actuator_strength": 1, # Scaling factor for all actuators in the model
+    "actuator_strength": 1,  # Scaling factor for all actuators in the model
     "density": 0.,
     "viscosity": 0.,
-    "geom_density": 1., # Scaling factor for all geom (objects) densities
+    "geom_density": 1.,  # Scaling factor for all geom (objects) densities
     "wind_x": 0.,
     "wind_y": 0.,
     "wind_z": 0.,
@@ -76,7 +76,13 @@ class CARLDmcQuadrupedEnv(CARLDmcEnv):
         if dict_observation_space:
             raise NotImplementedError
         else:
-            env = load_dmc_env(domain_name=domain, task_name=task, context={}, context_mask=[], environment_kwargs={"flat_observation": True})
+            env = load_dmc_env(
+                domain_name=domain,
+                task_name=task,
+                context={},
+                context_mask=[],
+                environment_kwargs={"flat_observation": True}
+            )
             env = MujocoToGymWrapper(env)
         super().__init__(
             env=env,

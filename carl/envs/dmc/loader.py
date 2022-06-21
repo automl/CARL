@@ -4,8 +4,9 @@ from dm_control import suite
 
 from carl.envs.dmc.dmc_tasks import walker, quadruped, fish
 
-_DOMAINS = {name: module for name, module in locals().items() 
+_DOMAINS = {name: module for name, module in locals().items()
             if inspect.ismodule(module) and hasattr(module, 'SUITE')}
+
 
 def load_dmc_env(domain_name, task_name, context={}, context_mask=[], task_kwargs=None, environment_kwargs=None,
                  visualize_reward=False):
