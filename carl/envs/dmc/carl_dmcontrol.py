@@ -11,7 +11,7 @@ from gym.envs.classic_control import CartPoleEnv
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.utils import load_dmc_env
+from carl.envs.dmc.loader import load_dmc_env
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
@@ -137,6 +137,7 @@ class CARLDmcEnv(CARLEnv):
         self,
         env: gym.Env,
         contexts: Dict[Any, Dict[Any, Any]],
+        context_mask: Optional[List[str]],
         hide_context: bool,
         add_gaussian_noise_to_context: bool,
         gaussian_noise_std_percentage: float,
@@ -151,6 +152,7 @@ class CARLDmcEnv(CARLEnv):
     ):
         # TODO can we have more than 1 env?
         # env = MujocoToGymWrapper(env)
+        self.context_mask = context_mask
         super().__init__(
             env=env,
             contexts=contexts,
@@ -171,5 +173,5 @@ class CARLDmcEnv(CARLEnv):
         if self.dict_observation_space:
             raise NotImplementedError
         else:
-            env = load_dmc_env(domain_name=self.domain, task_name=self.task, context=self.context, environment_kwargs={"flat_observation": True})
+            env = load_dmc_env(domain_name=self.domain, task_name=self.task, context=self.context, context_mask=self.context_mask, environment_kwargs={"flat_observation": True})
             self.env = MujocoToGymWrapper(env)

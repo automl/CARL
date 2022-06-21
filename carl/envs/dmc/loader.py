@@ -7,7 +7,7 @@ from carl.envs.dmc.dmc_tasks import cartpole, walker, quadruped, fish
 _DOMAINS = {name: module for name, module in locals().items() 
             if inspect.ismodule(module) and hasattr(module, 'SUITE')}
 
-def load_dmc_env(domain_name, task_name, context={}, task_kwargs=None, environment_kwargs=None,
+def load_dmc_env(domain_name, task_name, context={}, context_mask=[], task_kwargs=None, environment_kwargs=None,
                  visualize_reward=False):
 
     if domain_name in _DOMAINS:
@@ -33,5 +33,5 @@ def load_dmc_env(domain_name, task_name, context={}, task_kwargs=None, environme
             visualize_reward=visualize_reward,
         )
     else:
-        raise ValueError('Level {!r} does not exist in domain {!r}.'.format(
+        raise ValueError('Task {!r} does not exist in domain {!r}.'.format(
             task_name, domain_name))

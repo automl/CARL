@@ -5,7 +5,7 @@ import numpy as np
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.utils import load_dmc_env
+from carl.envs.dmc.loader import load_dmc_env
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
