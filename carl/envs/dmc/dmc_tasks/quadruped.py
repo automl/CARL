@@ -95,11 +95,11 @@ def make_model(floor_size=None, terrain=False, rangefinders=False,
 
 
 @SUITE.add()
-def walk_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def walk_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Walk task with the adapted context."""
   xml_string = make_model(floor_size=_DEFAULT_TIME_LIMIT * _WALK_SPEED)
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, common.ASSETS)
   task = Move(desired_speed=_WALK_SPEED, random=random)
   environment_kwargs = environment_kwargs or {}
@@ -109,11 +109,11 @@ def walk_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, enviro
 
 
 @SUITE.add()
-def run_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def run_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Run task with the adapted context."""
   xml_string = make_model(floor_size=_DEFAULT_TIME_LIMIT * _RUN_SPEED)
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, common.ASSETS)
   task = Move(desired_speed=_RUN_SPEED, random=random)
   environment_kwargs = environment_kwargs or {}
@@ -123,12 +123,12 @@ def run_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environ
 
 
 @SUITE.add()
-def escape_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
+def escape_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None,
            environment_kwargs=None):
   """Returns the Escape task with the adapted context."""
   xml_string = make_model(floor_size=40, terrain=True, rangefinders=True)
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, common.ASSETS)
   task = Escape(random=random)
   environment_kwargs = environment_kwargs or {}
@@ -138,11 +138,11 @@ def escape_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
 
 
 @SUITE.add()
-def fetch_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def fetch_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Fetch task with the adapted context."""
   xml_string = make_model(walls_and_ball=True)
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, common.ASSETS)
   task = Fetch(random=random)
   environment_kwargs = environment_kwargs or {}

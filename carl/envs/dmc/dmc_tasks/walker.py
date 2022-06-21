@@ -48,11 +48,11 @@ def get_model_and_assets():
 
 
 @SUITE.add('benchmarking')
-def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def stand_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Stand task with the adapted context."""
   xml_string, assets = get_model_and_assets()
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, assets)
   task = PlanarWalker(move_speed=0, random=random)
   environment_kwargs = environment_kwargs or {}
@@ -62,11 +62,11 @@ def stand_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, envir
 
 
 @SUITE.add('benchmarking')
-def walk_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def walk_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Walk task with the adapted context."""
   xml_string, assets = get_model_and_assets()
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, assets)
   task = PlanarWalker(move_speed=_WALK_SPEED, random=random)
   environment_kwargs = environment_kwargs or {}
@@ -76,11 +76,11 @@ def walk_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, enviro
 
 
 @SUITE.add('benchmarking')
-def run_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def run_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Run task with the adapted context."""
   xml_string, assets = get_model_and_assets()
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, assets)
   task = PlanarWalker(move_speed=_RUN_SPEED, random=random)
   environment_kwargs = environment_kwargs or {}

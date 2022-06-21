@@ -24,7 +24,7 @@ from dm_control.suite import common
 from dm_control.utils import containers
 from dm_control.utils import rewards
 import numpy as np
-from lxml import etree
+from carl.envs.dmc.dmc_tasks.utils import adapt_context
 
 
 _DEFAULT_TIME_LIMIT = 40
@@ -44,51 +44,13 @@ def get_model_and_assets():
   return common.read_model('fish.xml'), common.ASSETS
 
 
-def adapt_context(xml_string, context):
-  """Adapts and returns the xml_string of the model with the given context."""
-  mjcf = etree.fromstring(xml_string)
-  damping = mjcf.find("./default/default/joint")
-  damping.set("damping", str(context["joint_damping"]))
-#   friction = mjcf.find("./default/geom")
-#   friction.set("friction", " ".join([
-#     str(context["friction_tangential"]), 
-#     str(context["friction_torsional"]), 
-#     str(context["friction_rolling"])])
-#   )
-#   actuators = mjcf.findall("./actuator/motor")
-#   for actuator in actuators:
-#     gear = actuator.get("gear")
-#     actuator.set("gear", str(int(float(gear) * context["actuator_strength"])))
-  keys = []
-  options = mjcf.findall("./option")
-  magnetic = " ".join([str(context["magnetic_x"]), str(context["magnetic_y"]), str(context["magnetic_z"])])
-  wind = " ".join([str(context["wind_x"]), str(context["wind_y"]), str(context["wind_z"])])
-  for option in options:
-    for k, v in option.items():
-      keys.append(k)
-      if k == "timestep":
-        option.set("timestep", str(context["timestep"]))
-      elif k == "magnetic":
-        option.set("magnetic", magnetic)
-      elif k == "wind":
-        option.set("wind", wind)
-  if "timestep" not in keys:
-    mjcf.append(etree.Element("option", timestep=str(context["timestep"])))
-  if "magnetic" not in keys:
-    mjcf.append(etree.Element("option", magnetic=magnetic))
-  if "wind" not in keys:
-    mjcf.append(etree.Element("option", wind=wind))
-  xml_string = etree.tostring(mjcf, pretty_print=True)
-  return xml_string
-
-
 @SUITE.add('benchmarking')
-def upright_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
+def upright_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None,
             environment_kwargs=None):
   """Returns the Fish Upright task."""
   xml_string, assets = get_model_and_assets()
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, assets)
   task = Upright(random=random)
   environment_kwargs = environment_kwargs or {}
@@ -98,11 +60,11 @@ def upright_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None,
 
 
 @SUITE.add('benchmarking')
-def swim_context(context={}, time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+def swim_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
   """Returns the Fish Swim task."""
   xml_string, assets = get_model_and_assets()
   if context != {}:
-    xml_string = adapt_context(xml_string, context)
+    xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
   physics = Physics.from_xml_string(xml_string, assets)
   task = Swim(random=random)
   environment_kwargs = environment_kwargs or {}

@@ -11,9 +11,9 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,
-    "friction_tangential": 1, # Scaling factor for tangential friction of all geoms (objects)
-    "friction_torsional": 1, # Scaling factor for torsional friction of all geoms (objects)
-    "friction_rolling": 1, # Scaling factor for rolling friction of all geoms (objects)
+    "friction_tangential": 1., # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1., # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1., # Scaling factor for rolling friction of all geoms (objects)
     "timestep": 0.005,  # Seconds between updates
     "joint_damping": 1., # Scaling factor for all joints
     "joint_stiffness": 0.,
@@ -43,12 +43,20 @@ CONTEXT_BOUNDS = {
     "wind_z": (-np.inf, np.inf, float),
 }
 
+CONTEXT_MASK = [
+    "wind_x",
+    "wind_y",
+    "wind_z",
+]
+
+
 class CARLDmcQuadrupedEnv(CARLDmcEnv):
     def __init__(
         self,
         domain: str = "quadruped",
         task: str = "walk_context",
         contexts: Dict[Any, Dict[Any, Any]] = {},
+        context_mask: Optional[List[str]] = [],
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -68,11 +76,12 @@ class CARLDmcQuadrupedEnv(CARLDmcEnv):
         if dict_observation_space:
             raise NotImplementedError
         else:
-            env = load_dmc_env(domain_name=domain, task_name=task, context={}, environment_kwargs={"flat_observation": True})
+            env = load_dmc_env(domain_name=domain, task_name=task, context={}, context_mask=[], environment_kwargs={"flat_observation": True})
             env = MujocoToGymWrapper(env)
         super().__init__(
             env=env,
             contexts=contexts,
+            context_mask=context_mask,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,

@@ -5,48 +5,52 @@ import numpy as np
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.utils import load_dmc_env
+from carl.envs.dmc.loader import load_dmc_env
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
 DEFAULT_CONTEXT = {
-    # TODO update contexts
-    # "gravity_x": 0., # gravity disabled in this env
-    # "gravity_y": 0.,
-    # "gravity_z": -9.81,
-    "friction_tangential": 0.7,
-    "friction_torsional": 0.1,
-    "friction_rolling": 0.1,
-    "actuator_strength": 1, # scale all actuators by this factor
-    "joint_damping": 0.00002,
-    # "torso_mass": 10, # TODO find out if mass can be modified
+    "gravity": -9.81, # Gravity is disabled via flag
+    "friction_tangential": 1, # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1, # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1, # Scaling factor for rolling friction of all geoms (objects)
     "timestep": 0.004,  # Seconds between updates
-    "magnetic_x": 0., # TODO decide if this is useful
-    "magnetic_y": -0.5, 
-    "magnetic_z": 0.,
-    "wind_x": 0., # TODO decide if this is useful
+    "joint_damping": 1., # Scaling factor for all joints
+    "joint_stiffness": 0.,
+    "actuator_strength": 1, # Scaling factor for all actuators in the model
+    "density": 6000.,
+    "viscosity": 0.,
+    "geom_density": 1., # No effect, because no gravity
+    "wind_x": 0.,
     "wind_y": 0.,
     "wind_z": 0.,
 }
 
 CONTEXT_BOUNDS = {
-    # "gravity_x": (-0.1, -np.inf, float),
-    # "gravity_y": (-0.1, -np.inf, float),
-    # "gravity_z": (-0.1, -np.inf, float),
-    "friction_tangential": (-np.inf, np.inf, float), # TODO can friction be negative here?
-    "friction_torsional": (-np.inf, np.inf, float),
-    "friction_rolling": (-np.inf, np.inf, float),
-    "actuator_strength": (-np.inf, np.inf, float),
+    "gravity": (-0.1, -np.inf, float),
+    "friction_tangential": (0, np.inf, float),
+    "friction_torsional": (0, np.inf, float),
+    "friction_rolling": (0, np.inf, float),
+    "timestep": (0.001, 0.1, float,),
     "joint_damping": (0, np.inf, float),
-    # "torso_mass": (0.1, np.inf, float),
-    "timestep": (0.001, 0.1, float,),  # TODO not sure how much it should be varied
-    "magnetic_x": (-np.inf, np.inf, float),
-    "magnetic_y": (-np.inf, np.inf, float),
-    "magnetic_z": (-np.inf, np.inf, float),
+    "joint_stiffness": (0, np.inf, float),
+    "actuator_strength": (0, np.inf, float),
+    "density": (0, np.inf, float),
+    "viscosity": (0, np.inf, float),
+    "geom_density": (0, np.inf, float),
     "wind_x": (-np.inf, np.inf, float),
     "wind_y": (-np.inf, np.inf, float),
     "wind_z": (-np.inf, np.inf, float),
 }
+
+CONTEXT_MASK = [
+    "gravity",
+    "geom_density",
+    "wind_x",
+    "wind_y",
+    "wind_z",
+]
+
 
 class CARLDmcFishEnv(CARLDmcEnv):
     def __init__(
@@ -54,6 +58,7 @@ class CARLDmcFishEnv(CARLDmcEnv):
         domain: str = "fish",
         task: str = "upright_context",
         contexts: Dict[Any, Dict[Any, Any]] = {},
+        context_mask: Optional[List[str]] = [],
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -73,11 +78,12 @@ class CARLDmcFishEnv(CARLDmcEnv):
         if dict_observation_space:
             raise NotImplementedError
         else:
-            env = load_dmc_env(domain_name=domain, task_name=task, context={}, environment_kwargs={"flat_observation": True})
+            env = load_dmc_env(domain_name=domain, task_name=task, context={}, context_mask=[], environment_kwargs={"flat_observation": True})
             env = MujocoToGymWrapper(env)
         super().__init__(
             env=env,
             contexts=contexts,
+            context_mask=context_mask,
             hide_context=hide_context,
             add_gaussian_noise_to_context=add_gaussian_noise_to_context,
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
