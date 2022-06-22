@@ -1,7 +1,5 @@
 from typing import Any, Dict, List, Union, Optional
 
-import gym
-
 from carl.envs.carl_env import CARLEnv
 from carl.envs.dmc.wrappers import MujocoToGymWrapper
 from carl.envs.dmc.loader import load_dmc_env
@@ -12,7 +10,8 @@ from carl.context.selection import AbstractSelector
 class CARLDmcEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env,
+        domain: str,
+        task: str,
         contexts: Dict[Any, Dict[Any, Any]],
         context_mask: Optional[List[str]],
         hide_context: bool,
@@ -29,6 +28,21 @@ class CARLDmcEnv(CARLEnv):
     ):
         # TODO can we have more than 1 env?
         # env = MujocoToGymWrapper(env)
+        if not contexts:
+            contexts = {0: default_context}
+        self.domain = domain
+        self.task = task
+        if dict_observation_space:
+            raise NotImplementedError
+        else:
+            env = load_dmc_env(
+                domain_name=self.domain,
+                task_name=self.task,
+                context={},
+                context_mask=[],
+                environment_kwargs={"flat_observation": True}
+            )
+            env = MujocoToGymWrapper(env)
         self.context_mask = context_mask
         super().__init__(
             env=env,
@@ -45,6 +59,10 @@ class CARLDmcEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
         )
+        # TODO check gaussian noise on context features
+        self.whitelist_gaussian_noise = list(
+            default_context.keys()
+        )  # allow to augment all values
 
     def _update_context(self) -> None:
         if self.dict_observation_space:

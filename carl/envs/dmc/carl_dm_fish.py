@@ -4,8 +4,6 @@ import numpy as np
 
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
-from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.loader import load_dmc_env
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
@@ -71,23 +69,9 @@ class CARLDmcFishEnv(CARLDmcEnv):
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
-        if not contexts:
-            contexts = {0: DEFAULT_CONTEXT}
-        self.domain = domain
-        self.task = task
-        if dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=domain,
-                task_name=task,
-                context={},
-                context_mask=[],
-                environment_kwargs={"flat_observation": True}
-            )
-            env = MujocoToGymWrapper(env)
         super().__init__(
-            env=env,
+            domain=domain,
+            task=task,
             contexts=contexts,
             context_mask=context_mask,
             hide_context=hide_context,
@@ -102,7 +86,3 @@ class CARLDmcFishEnv(CARLDmcEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
         )
-        # TODO check gaussian noise on context features
-        self.whitelist_gaussian_noise = list(
-            DEFAULT_CONTEXT.keys()
-        )  # allow to augment all values

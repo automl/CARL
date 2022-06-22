@@ -1,5 +1,5 @@
+# flake8: noqa: F401
 # Contexts and bounds by name
-
 from carl.envs.dmc.carl_dm_walker import (
     CARLDmcWalkerEnv,
     DEFAULT_CONTEXT as CARLDmcWalkerEnv_defaults,

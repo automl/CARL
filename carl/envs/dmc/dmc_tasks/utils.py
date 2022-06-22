@@ -9,7 +9,7 @@ def adapt_context(xml_string, context, context_mask=[]):
         default = etree.Element("default")
         mjcf.addnext(default)
 
-    if "joint_daming" not in context_mask:
+    if "joint_damping" not in context_mask:
         # adjust damping for all joints if damping is already an attribute
         for joint_find in mjcf.findall(".//joint[@damping]"):
             joint_damping = joint_find.get("damping")
@@ -26,7 +26,7 @@ def adapt_context(xml_string, context, context_mask=[]):
     if joint is None:
         joint = etree.Element("joint")
         default.addnext(joint)
-        if "joint_daming" not in context_mask:
+        if "joint_damping" not in context_mask:
             def_joint_damping = 0.1
             default_joint_damping = str(float(def_joint_damping) * context["joint_damping"])
             joint.set("damping", default_joint_damping)

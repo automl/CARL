@@ -2,7 +2,7 @@ import inspect
 
 from dm_control import suite
 
-from carl.envs.dmc.dmc_tasks import walker, quadruped, fish
+from carl.envs.dmc.dmc_tasks import walker, quadruped, fish  # noqa: F401
 
 _DOMAINS = {name: module for name, module in locals().items()
             if inspect.ismodule(module) and hasattr(module, 'SUITE')}
