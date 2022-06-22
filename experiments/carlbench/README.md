@@ -28,10 +28,20 @@ In addition, we can specifiy the number of samples, either freely or with the pr
 - small: 100 samples
 - medium: 1000 samples
 - large: 10000 samples
-- 
-It is also possible to draw a new sample each time.
 
 The distributions can be passed via the `context_selector` argument.
+
+
+### Example Yaml Config 
+```yaml
+context_sampler:
+  _target_: experiments.carlbench.context_sampling.ContextSampler
+  env_name: ${env}
+  context_feature_names: ${context_feature_names}
+  seed: ${seed}
+  n_samples: 1000
+  sigma_rel: 0.1  # 0.1, 0.25, 0.5
+```
 
 
 ### Aggregation Strategy
@@ -43,3 +53,4 @@ strategy of Interquartile Mean (IQM), implemented in the `rliable` package.
 ## TODOs
 - [ ] Implement context selector with different settings and logging
 - [ ] Integrate `rliable` and use IQM
+- [ ] Build in option to draw new context sample each time
