@@ -1,5 +1,5 @@
 defaults:
-  - slurm
+  - slurm/gpu
   - _self_
   - algorithm/sac
 
