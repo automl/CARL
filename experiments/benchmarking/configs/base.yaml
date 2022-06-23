@@ -1,15 +1,17 @@
 defaults:
   - slurm
   - _self_
+  - algorithm/sac
 
 wandb:
   id: null
   entity: tnt
   debug: false
-  # group: ???  # set in experiment
+  # group: ???  # set in context_visibility
   job_type: train
   tags: []
   notes: null
+  project: carl-tmlr
 
 carl:
   hide_context: false
@@ -17,7 +19,6 @@ carl:
   scale_context_features: "no" # by_mean, by_default
   state_context_features: null
   add_gaussian_noise_to_context: false
-  instance_mode: rr
   gaussian_noise_std_percentage: 0.15
 
 algorithm: sac
