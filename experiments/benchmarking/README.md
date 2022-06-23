@@ -38,10 +38,8 @@ Relative standard deviation
 python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+slurm=cpushort' '+context_visibility=hidden,cgate,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed]' -m
 ```
 280 combinations
+Status: running
 
-- 
-
-- 
 - [ ] SAC hidden, SAC cGate on LunarLander planet contexts
 ```bash
 'environments/box2d=lunarlander' '+context_visibility=hidden,cgate'
@@ -51,4 +49,15 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=p
 - [ ] SAC hidden, SAC cGate on fish 0.1 for all context features + all context features at once
 - [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length)
 - [ ] SAC hidden, SAC cGate Mario with only one context dist
+- [ ] Some brax env?
 - [ ] LSTM baseline for whatever makes sense
+
+
+## Experiment Preparations
+Find HPs for
+- [x] Pendulum (SAC)
+- [ ] LunarLander
+- [ ] Walker
+- [ ] Quadruped
+- [ ] Fish
+- [ ] Mario
