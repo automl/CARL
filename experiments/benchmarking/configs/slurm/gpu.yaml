@@ -1,5 +1,4 @@
-defaults:
-  - override hydra/launcher: submitit_slurm
+# @package _global_
 hydra:
   launcher:
     partition: gpu_normal

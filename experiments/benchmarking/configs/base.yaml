@@ -2,6 +2,7 @@ defaults:
   - slurm/gpu
   - _self_
   - algorithm/sac
+  - override hydra/launcher: submitit_slurm
 
 wandb:
   id: null
