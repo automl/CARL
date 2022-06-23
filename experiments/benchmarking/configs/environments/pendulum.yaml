@@ -1,3 +1,0 @@
-# @package _global_
-env: CARLPendulumEnv
-context_feature_names: []  # m, l, dt, g, max_speed
