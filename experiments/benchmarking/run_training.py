@@ -48,11 +48,11 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 def check_config_valid(cfg):
     valid = True
-    if cfg.carl.env_kwargs.hide_context and cfg.carl.env_kwargs.state_context_features:
+    if cfg.carl.hide_context and cfg.carl.state_context_features:
         valid = False
     if (
-        not cfg.contexts.context_feature_args
-        and cfg.carl.env_kwargs.state_context_features is not None
+        not cfg.context_sampler.context_feature_names
+        and cfg.carl.state_context_features is not None
     ):
         valid = False
     return valid
