@@ -3,6 +3,8 @@ defaults:
   - _self_
   - algorithm/sac
   - override hydra/launcher: submitit_slurm
+  - hydra/job_logging: colorlog
+  - hydra/hydra_logging: colorlog
 
 wandb:
   id: null
@@ -57,7 +59,7 @@ context_branch:
 
 context_sampler:
   env_name: ${env}
-  context_feature_names: ${context_feature_names}
+  context_feature_names: []
   seed: ${seed}
   n_samples: 1000
   sigma_rel: 0.1  # 0.1, 0.25, 0.5
