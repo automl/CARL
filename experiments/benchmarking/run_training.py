@@ -16,6 +16,7 @@ import wandb
 import torch as th
 from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
+from rich import print
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
@@ -78,6 +79,8 @@ def train(cfg: DictConfig):
         print(f"Skipping run with cfg {dict_cfg}")
         return
 
+    print(cfg)
+
     hydra_job = (
             os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
             + "_"
@@ -89,7 +92,7 @@ def train(cfg: DictConfig):
         id=cfg.wandb.id,
         resume="allow",
         mode="offline" if cfg.wandb.debug else None,
-        project="carl",
+        project=cfg.wandb.project,
         job_type=cfg.wandb.job_type,
         entity=cfg.wandb.entity,
         group=cfg.wandb.group,
