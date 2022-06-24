@@ -3,8 +3,8 @@ defaults:
   - _self_
   - algorithm/sac
   - override hydra/launcher: submitit_slurm
-  - hydra/job_logging: colorlog
-  - hydra/hydra_logging: colorlog
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
 
 wandb:
   id: null

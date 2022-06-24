@@ -61,7 +61,7 @@ Find HPs for
 ```
 - [ ] LunarLander
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/classic_control=pendulum' '+context_visibility=hidden' 'wandb.debug=true' 'algorithm=c51'
+ python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/box2d=lunarlander' '+context_visibility=hidden' 'wandb.debug=true' '+algorithm=c51'
 ```
 - [ ] Walker
 ```bash
