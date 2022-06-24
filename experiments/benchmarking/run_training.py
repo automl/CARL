@@ -53,9 +53,14 @@ def main():
     args, unknown_args = parser.parse_known_args()  # unknown args are hydra commands
     # unknown_args = [f"'{a}'" for a in unknown_args]
 
-    experiment = "benchmark"
+    experiment = "benchmark_train"
     snap_dir = make_code_snap(experiment)
     print("Snap dir:", str(snap_dir))
+
+    unknown_args += [
+        f"hydra.run.dir={snap_dir}",
+        f"hydra.sweep.dir={snap_dir}",
+    ]
 
     cmd = ["python", str(snap_dir / "code" / "experiments/benchmarking/training.py")] + unknown_args
 
