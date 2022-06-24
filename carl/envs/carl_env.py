@@ -193,7 +193,6 @@ class CARLEnv(Wrapper):
        
         self.vectorized = n_envs > 1
         self.build_observation_space()
-        self._update_context()
 
     def reset(self, **kwargs: Dict) -> Any:
         """
