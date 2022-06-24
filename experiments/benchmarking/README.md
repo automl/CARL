@@ -33,51 +33,50 @@ Relative standard deviation
 
 
 ## Experiment Plan
-- [ ] SAC hidden, visible full, visible change only, SAC cGate, on CARLPendulum with 0.1, 0.25, 0.5 for all single context features + all context features at once
+- [ ] SAC hidden, visible full, visible change only, SAC cGate, on CARLPendulum with 0.1, 0.25, 0.5 for all single context features + all context features at once, 100k
 ```bash
 python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,cgate,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
 ```
 280 combinations
-Status: running
 
-- [ ] SAC hidden, SAC cGate on LunarLander planet contexts
+- [ ] SAC hidden, SAC cGate on LunarLander planet contexts, 200k
 ```bash
 'environments/box2d=lunarlander' '+context_visibility=hidden,cgate'
 ```
-- [ ] SAC hidden, SAC cGate on walker 0.1 for all context features + all context features at once
-- [ ] SAC hidden, SAC cGate on quadruped 0.1 for all context features + whichever combination is manageable
-- [ ] SAC hidden, SAC cGate on fish 0.1 for all context features + all context features at once
-- [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length)
-- [ ] SAC hidden, SAC cGate Mario with only one context dist
-- [ ] Some brax env?
+- [ ] SAC hidden, SAC cGate on walker 0.1 for all context features + all context features at once, 1M
+- [ ] SAC hidden, SAC cGate on quadruped 0.1 for all context features + whichever combination is manageable, 1M
+- [ ] SAC hidden, SAC cGate on fish 0.1 for all context features + all context features at once, 500k
+- [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length), 100k
+- [ ] SAC hidden, SAC cGate Mario with only one context dist, 1M
+- [ ] SAC hidden, SAC cGate brax HalfCheetah, 1M
 - [ ] LSTM baseline for whatever makes sense
 
 
 ## Experiment Preparations
 Find HPs for
-- [x] Pendulum (SAC) 100k
+- [x] Pendulum (SAC)
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/classic_control=pendulum' '+context_visibility=hidden' 'wandb.debug=true' 
+python experiments/benchmarking/run_training.py max_num_frames=10000 '+environments/classic_control=pendulum' '+context_visibility=hidden' 'wandb.debug=true' 'eval_episodes=5' 
 ```
-- [ ] LunarLander (c51) 200k
+- [ ] LunarLander (c51)
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/box2d=lunarlander' '+context_visibility=hidden' 'wandb.debug=true' '+algorithm=c51'
+ python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/box2d=lunarlander' '+context_visibility=hidden' 'wandb.debug=true' '+algorithm=c51' 'eval_episodes=5' 
 ```
-- [ ] Walker 1M
+- [ ] Walker 
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=walker' '+context_visibility=hidden' 'wandb.debug=true'
+ python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=walker' '+context_visibility=hidden' 'wandb.debug=true' 'eval_episodes=5' 
 ```
-- [ ] Quadruped 1M
+- [ ] Quadruped
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=quadruped' '+context_visibility=hidden' 'wandb.debug=true'
+ python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=quadruped' '+context_visibility=hidden' 'wandb.debug=true' 'eval_episodes=5' 
 ```
-- [ ] Fish 500k/1M
+- [ ] Fish
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=fish' '+context_visibility=hidden' 'wandb.debug=true'
+ python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=fish' '+context_visibility=hidden' 'wandb.debug=true' 'eval_episodes=5' 
 ```
 - [ ] Mario c51 + conv encoder
 ```bash
- python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/misc=mario' '+context_visibility=hidden' 'wandb.debug=true'
+ python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/misc=mario' '+context_visibility=hidden' 'wandb.debug=true' 'eval_episodes=5' 
 ```
 
 
