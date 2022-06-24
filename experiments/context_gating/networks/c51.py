@@ -33,6 +33,7 @@ def q_func(cfg, env):
             )
             x = q_seq(x)
         else:
+            # TODO(carolin): implement Nature DQN conv encoder (https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/c51_atari.py#L113)
             X = jnp.concatenate((S, A), axis=-1)
             state_seq = hk.Sequential(
                 (
