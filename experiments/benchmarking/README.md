@@ -55,27 +55,27 @@ Status: running
 
 ## Experiment Preparations
 Find HPs for
-- [x] Pendulum (SAC)
+- [x] Pendulum (SAC) 100k
 ```bash
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/classic_control=pendulum' '+context_visibility=hidden' 'wandb.debug=true' 
 ```
-- [ ] LunarLander
+- [ ] LunarLander (c51) 200k
 ```bash
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/box2d=lunarlander' '+context_visibility=hidden' 'wandb.debug=true' '+algorithm=c51'
 ```
-- [ ] Walker
+- [ ] Walker 1M
 ```bash
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=walker' '+context_visibility=hidden' 'wandb.debug=true'
 ```
-- [ ] Quadruped
+- [ ] Quadruped 1M
 ```bash
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=quadruped' '+context_visibility=hidden' 'wandb.debug=true'
 ```
-- [ ] Fish
+- [ ] Fish 500k/1M
 ```bash
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/dmc=fish' '+context_visibility=hidden' 'wandb.debug=true'
 ```
-- [ ] Mario
+- [ ] Mario c51 + conv encoder
 ```bash
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/misc=mario' '+context_visibility=hidden' 'wandb.debug=true'
 ```
