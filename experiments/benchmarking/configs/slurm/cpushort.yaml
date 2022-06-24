@@ -9,4 +9,5 @@ hydra:
       - unset WANDB_DIR
       - unset WANDB_IGNORE_GLOBS
       - export JAX_PLATFORM_NAME=cpu
+      - export XLA_PYTHON_CLIENT_PREALLOCATE=false
     timeout_min: 720
