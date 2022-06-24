@@ -1,3 +1,4 @@
 # @package _global_
 
 env: CARLDmcQuadrupedEnv
+max_num_frames: 1_000_000

@@ -1,3 +1,4 @@
 # @package _global_
 
 env: CARLLunarLanderEnv
+max_num_frames: 200000

@@ -1,3 +1,4 @@
 # @package _global_
 
 env: CARLCartPoleEnv
+max_num_frames: 100_000
