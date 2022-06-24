@@ -57,10 +57,18 @@ def main():
     snap_dir = make_code_snap(experiment)
     print("Snap dir:", str(snap_dir))
 
+    add_multirun_flag = False
+    if unknown_args[-1] == "-m":
+        unknown_args.pop(-1)
+        add_multirun_flag = True
+
     unknown_args += [
         f"hydra.run.dir={snap_dir}",
         f"hydra.sweep.dir={snap_dir}",
     ]
+
+    if add_multirun_flag:
+        unknown_args += ["-m"]
 
     cmd = ["python", str(snap_dir / "code" / "experiments/benchmarking/training.py")] + unknown_args
 
