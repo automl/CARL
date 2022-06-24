@@ -11,8 +11,8 @@ from rich import print
 def make_code_snap(experiment, slurm_dir='exp_sweep'):
     now = datetime.now()
     snap_dir = pathlib.Path.cwd() / slurm_dir
-    snap_dir /= now.strftime('%Y.%m.%d')
-    snap_dir /= now.strftime('%H%M%S') + f'_{experiment}'
+    snap_dir /= now.strftime('%Y-%m-%d')
+    snap_dir /= now.strftime('%H-%M-%S') + f'_{experiment}'
     snap_dir.mkdir(exist_ok=True, parents=True)
 
     def copy_dir(dir):
