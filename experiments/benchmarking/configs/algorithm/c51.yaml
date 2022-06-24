@@ -7,5 +7,5 @@ q_min_value: -10
 q_max_value: 10
 
 network:
-  width: 32
+  width: 64
   num_atoms: 51
