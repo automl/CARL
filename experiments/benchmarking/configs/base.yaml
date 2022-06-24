@@ -45,7 +45,7 @@ pi_update_freq: 4
 replay_capacity: 100000
 render_freq: 10000
 eval_freq: 10000
-eval_episodes: 10  # TODO how many eval episodes? at the end full evaluation?
+eval_episodes: 100
 eval_on_train_context: true
 
 zero_context: false # set context to zero
