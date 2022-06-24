@@ -3,8 +3,8 @@
 algorithm: c51
 
 pi_temperature: 0.1
-q_min_value: -10
-q_max_value: 10
+q_min_value: -100
+q_max_value: 100
 
 network:
   width: 64
