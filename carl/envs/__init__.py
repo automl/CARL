@@ -41,3 +41,12 @@ else:
     warnings.warn(
         "Module 'RNA' not found. Please follow installation guide for RNA environment."
     )
+
+dm_control_spec = importlib.util.find_spec("dm_control")
+found = dm_control_spec is not None
+if found:
+    from carl.envs.dmc import *
+else:
+    warnings.warn(
+        "Module 'dm_control' not found. If you want to use these environments, please follow the installation guide."
+    )
