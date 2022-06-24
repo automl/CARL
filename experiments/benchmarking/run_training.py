@@ -31,7 +31,8 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
         'carl',
         'experiments/benchmarking',
         'experiments/context_gating',
-        'experiments/carlbench'
+        'experiments/carlbench',
+        'experiments/common/utils'
     ]
     src_dir = pathlib.Path.cwd()
     for dir in dirs_to_copy:
@@ -50,22 +51,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry', action='store_true')
     args, unknown_args = parser.parse_known_args()  # unknown args are hydra commands
-    unknown_args = [f"'{a}'" for a in unknown_args]
+    # unknown_args = [f"'{a}'" for a in unknown_args]
 
-    experiment = 'benchmark'
+    experiment = "benchmark"
     snap_dir = make_code_snap(experiment)
     print("Snap dir:", str(snap_dir))
 
-    cmd = ['python', str(snap_dir / 'code' / 'training.py')] + unknown_args
+    cmd = ["python", str(snap_dir / "code" / "experiments/benchmarking/training.py")] + unknown_args
 
+    print(cmd)
     print(" ".join(cmd))
 
     if not args.dry:
         env = os.environ.copy()
-        env['PYTHONPATH'] = str(snap_dir / 'code')
+        env["PYTHONPATH"] = str(snap_dir / "code")
         p = Popen(cmd, env=env)
         p.communicate()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
