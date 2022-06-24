@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 import coax
 import numpy as onp
 import pandas as pd
+from tqdm import tqdm
 import wandb
 
 
@@ -20,7 +21,7 @@ def dump_func_dict(locals_dict: Dict[str, Any]):
 
 def evaluate(pi, env, num_episodes):
     returns = []
-    for _ in range(num_episodes):
+    for _ in tqdm(range(num_episodes)):
         ret = 0
         s = env.reset()
 
