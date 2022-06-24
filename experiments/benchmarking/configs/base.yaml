@@ -74,3 +74,6 @@ hydra:
     dir: ${output_dir}/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
     dir: ${output_dir}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  launcher:
+    setup:
+      - export XLA_PYTHON_CLIENT_PREALLOCATE=false
