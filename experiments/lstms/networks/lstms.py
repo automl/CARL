@@ -73,7 +73,7 @@ def context_LSTM(cfg: DictConfig):
                     )
                 )
 
-    def unroll(state, context, prev_lstm_state):
+    def unroll(state, context):
 
         # unroll the lstm
         output, _  = core_lstm(
