@@ -5,6 +5,7 @@ from carl.envs.dmc.wrappers import MujocoToGymWrapper
 from carl.envs.dmc.loader import load_dmc_env
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
+from carl.context_encoders import ContextEncoder
 
 
 class CARLDmcEnv(CARLEnv):
@@ -25,6 +26,7 @@ class CARLDmcEnv(CARLEnv):
         dict_observation_space: bool,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]],
         context_selector_kwargs: Optional[Dict],
+        context_encoder: Optional[ContextEncoder] = None,
     ):
         # TODO can we have more than 1 env?
         # env = MujocoToGymWrapper(env)
@@ -58,6 +60,7 @@ class CARLDmcEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
+            context_encoder=context_encoder,
         )
         # TODO check gaussian noise on context features
         self.whitelist_gaussian_noise = list(
