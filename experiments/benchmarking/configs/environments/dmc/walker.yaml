@@ -4,4 +4,4 @@ env: CARLDmcWalkerEnv
 max_num_frames: 1_000_000
 
 gamma: 0.99
-learning_rate: 0.001
+learning_rate: 3e-4
