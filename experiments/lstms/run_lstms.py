@@ -9,9 +9,9 @@ import jax
 import numpy as onp
 import wandb
 from carl.context.sampling import sample_contexts
-from experiments.context_gating.algorithms.td3 import td3
-from experiments.context_gating.algorithms.sac import sac
-from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
+from experiments.lstms.algorithms.td3 import td3
+from experiments.lstms.algorithms.sac import sac
+from experiments.lstms.utils import check_wandb_exists, set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 
