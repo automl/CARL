@@ -129,7 +129,7 @@ class CARLEnv(Wrapper):
                 if len(self.contexts) > 1:
                     # detect which context feature changes
                     context_array = np.array(
-                        [np.array(list(c.values())) for c in self.contexts.values()]
+                        [np.array(list(self.fill_context_with_default(c).values())) for c in self.contexts.values()]
                     )
                     which_cf_changes = ~np.all(
                         context_array == context_array[0, :], axis=0
@@ -175,7 +175,7 @@ class CARLEnv(Wrapper):
         self.context_feature_scale_factors = None
         if self.scale_context_features == "by_mean":
             cfs_vals = np.concatenate(
-                [np.array(list(v.values()))[:, None] for v in self.contexts.values()],
+                [np.array(list(self.fill_context_with_default(v).values()))[:, None] for v in self.contexts.values()],
                 axis=-1,
             )
             self.context_feature_scale_factors = np.mean(cfs_vals, axis=-1)
@@ -313,6 +313,25 @@ class CARLEnv(Wrapper):
             )
         return getattr(self.env, name)
 
+    def fill_context_with_default(self, context: Dict) -> Dict:
+        """
+        Fill the context with the default values if entries are missing
+
+        Parameters
+        ----------
+        context
+
+        Returns
+        -------
+        context
+
+        """
+        if self.default_context:
+            context_def = self.default_context.copy()
+            context_def.update(context)
+            context = context_def
+        return context
+
     def _progress_instance(self) -> None:
         """
         Progress instance.
@@ -329,11 +348,7 @@ class CARLEnv(Wrapper):
 
         """
         context = self.context_selector.select()
-
-        if self.default_context:
-            context_def = self.default_context.copy()
-            context_def.update(context)
-            context = context_def
+        context = self.fill_context_with_default(context=context)
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
