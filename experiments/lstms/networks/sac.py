@@ -3,7 +3,7 @@ import jax
 import jax.numpy as jnp
 import numpy as onp
 
-from ..networks.common import context_LSTM
+from ..networks.lstms import context_LSTM
 
 import pdb
 
