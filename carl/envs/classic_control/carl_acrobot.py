@@ -19,8 +19,10 @@ DEFAULT_CONTEXT = {
     "max_velocity_1": 4 * np.pi,
     "max_velocity_2": 9 * np.pi,
     "torque_noise_max": 0.0,  # optional noise on torque, sampled uniformly from [-torque_noise_max, torque_noise_max]
-    "initial_state_lower": -0.1,  # lower bound of initial state distribution (uniform) (angles and angular velocities)
-    "initial_state_upper": 0.1,  # upper bound of initial state distribution (uniform) (angles and angular velocities)
+    "initial_angle_lower": -0.1,  # lower bound of initial angle distribution (uniform)
+    "initial_angle_upper": 0.1,  # upper bound of initial angle distribution (uniform)
+    "initial_velocity_lower": -0.1,  # lower bound of initial velocity distribution (uniform)
+    "initial_velocity_upper": 0.1,  # upper bound of initial velocity distribution (uniform)
 }
 
 CONTEXT_BOUNDS = {
@@ -54,14 +56,18 @@ CONTEXT_BOUNDS = {
         1.0,
         float,
     ),  # torque is either {-1., 0., 1}. Applying noise of 1. would be quite extreme
-    "initial_state_lower": (-np.inf, np.inf, float),
-    "initial_state_upper": (-np.inf, np.inf, float),
+    "initial_angle_lower": (-np.inf, np.inf, float),
+    "initial_angle_upper": (-np.inf, np.inf, float),
+    "initial_velocity_lower": (-np.inf, np.inf, float),
+    "initial_velocity_upper": (-np.inf, np.inf, float),
 }
 
 
 class CustomAcrobotEnv(AcrobotEnv):
-    INITIAL_STATE_LOWER: float = -0.1
-    INITIAL_STATE_UPPER: float = 0.1
+    INITIAL_ANGLE_LOWER: float = -0.1
+    INITIAL_ANGLE_UPPER: float = 0.1
+    INITIAL_VELOCITY_LOWER: float = -0.1
+    INITIAL_VELOCITY_UPPER: float = 0.1
 
     def reset(
         self,
@@ -71,7 +77,9 @@ class CustomAcrobotEnv(AcrobotEnv):
         options: Optional[dict] = None
     ):
         super().reset(seed=seed)
-        self.state = self.np_random.uniform(low=self.INITIAL_STATE_LOWER, high=self.INITIAL_STATE_UPPER, size=(4,)).astype(
+        low = self.INITIAL_ANGLE_LOWER, self.INITIAL_ANGLE_LOWER, self.INITIAL_VELOCITY_LOWER, self.INITIAL_VELOCITY_LOWER
+        high = self.INITIAL_ANGLE_UPPER, self.INITIAL_ANGLE_UPPER, self.INITIAL_VELOCITY_UPPER, self.INITIAL_VELOCITY_UPPER
+        self.state = self.np_random.uniform(low=low, high=high).astype(
             np.float32
         )
         if not return_info:
@@ -129,8 +137,10 @@ class CARLAcrobotEnv(CARLEnv):
         self.env.MAX_VEL_1 = self.context["max_velocity_1"]
         self.env.MAX_VEL_2 = self.context["max_velocity_2"]
         self.env.torque_noise_max = self.context["torque_noise_max"]
-        self.env.INITIAL_STATE_LOWER = self.context["initial_state_lower"]
-        self.env.INITIAL_STATE_UPPER = self.context["initial_state_upper"]
+        self.env.INITIAL_ANGLE_LOWER = self.context["initial_angle_lower"]
+        self.env.INITIAL_ANGLE_UPPER = self.context["initial_angle_upper"]
+        self.env.INITIAL_VELOCITY_LOWER = self.context["initial_velocity_lower"]
+        self.env.INITIAL_VELOCITY_UPPER = self.context["initial_velocity_upper"]
 
         high = np.array(
             [1.0, 1.0, 1.0, 1.0, self.env.MAX_VEL_1, self.env.MAX_VEL_2],
