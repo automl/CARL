@@ -5,4 +5,4 @@ wandb:
 carl:
   hide_context: false
   dict_observation_space: false
-  state_context_features: ${context_feature_names}
+  state_context_features: ${context_sampler.context_feature_names}
