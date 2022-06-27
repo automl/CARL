@@ -29,6 +29,8 @@ class CARLEnv(Wrapper):
 
     Can change the context after each episode.
 
+    If not all keys are present in the provided context(s) the context will be filled
+    with the default context values.
 
     Parameters
     ----------
@@ -55,7 +57,8 @@ class CARLEnv(Wrapper):
         'by_mean' scales the context features by their mean over all passed instances and
         'by_default' scales the context features by their default values ('default_context').
     default_context: Dict
-        The default context of the environment. Used for scaling the context features if applicable.
+        The default context of the environment. Used for scaling the context features if applicable. Used for filling
+        incomplete contexts.
     state_context_features: Optional[List[str]] = None
         If the context is visible to the agent (hide_context=False), the context features are appended to the state.
         state_context_features specifies which of the context features are appended to the state. The default is
