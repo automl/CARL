@@ -37,6 +37,8 @@ _STAND_HEIGHT = 1.2
 _WALK_SPEED = 1
 _RUN_SPEED = 8
 
+STEP_LIMIT = 1000
+
 
 SUITE = containers.TaggedTasks()
 

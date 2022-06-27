@@ -6,6 +6,7 @@ from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 from carl.context_encoders import ContextEncoder
+from carl.envs.dmc.dmc_tasks.walker import STEP_LIMIT
 
 
 DEFAULT_CONTEXT = {
@@ -62,7 +63,7 @@ class CARLDmcWalkerEnv(CARLDmcEnv):
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
-        max_episode_length: int = 500,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
+        max_episode_length: int = STEP_LIMIT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,

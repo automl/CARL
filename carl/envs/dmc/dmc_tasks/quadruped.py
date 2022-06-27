@@ -36,6 +36,7 @@ mjlib = mjbindings.mjlib
 
 _DEFAULT_TIME_LIMIT = 20
 _CONTROL_TIMESTEP = .02
+STEP_LIMIT = 1000
 
 # Horizontal speeds above which the move reward is 1.
 _RUN_SPEED = 5

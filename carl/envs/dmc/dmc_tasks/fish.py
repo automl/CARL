@@ -29,6 +29,7 @@ from carl.envs.dmc.dmc_tasks.utils import adapt_context
 
 _DEFAULT_TIME_LIMIT = 40
 _CONTROL_TIMESTEP = .04
+STEP_LIMIT = 1000
 _JOINTS = ['tail1',
            'tail_twist',
            'tail2',
