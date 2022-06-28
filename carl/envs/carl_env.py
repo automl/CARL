@@ -304,7 +304,7 @@ class CARLEnv(Wrapper):
     def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it
         # We need this because our CARLEnv has underscore class methods which would
-        # through an error otherwise
+        # throw an error otherwise
         if name in ["_progress_instance", "_update_context", "_log_context"]:
             return getattr(self, name)
         if name.startswith("_"):
