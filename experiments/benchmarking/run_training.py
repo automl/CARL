@@ -1,6 +1,7 @@
 import time
 import os
 import sys
+import numpy as np
 import argparse
 import pathlib, shutil
 from datetime import datetime
@@ -35,6 +36,7 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
         'experiments/common/utils'
     ]
     src_dir = pathlib.Path.cwd()
+    print(src_dir)
     for dir in dirs_to_copy:
         copy_dir(dir)
 
@@ -43,6 +45,22 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
     for f in rootfiles:
         if f.is_file() and not str(f.name).startswith("."):
             shutil.copyfile(f, snap_dir / 'code' / f.name)
+
+    # Copy all init files
+    initfiles = list(src_dir.rglob("*/__init__.py"))
+    initfiles.sort()
+    initdirs = dirs_to_copy + [
+        "experiments/__init__.py",
+        "experiments/common/__init__.py"
+    ]
+    for f in initfiles:
+        if f.is_file() and \
+                not str(f.name).startswith(".")\
+                and np.any([d in str(f) for d in initdirs])\
+                and "exp_sweep" not in str(f):
+            fn = str(f)[len(str(src_dir)) + 1:]
+            newfn = snap_dir / 'code' / fn
+            shutil.copyfile(f, newfn)
 
     return snap_dir
 
