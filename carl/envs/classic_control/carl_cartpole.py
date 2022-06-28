@@ -15,6 +15,8 @@ DEFAULT_CONTEXT = {
     "pole_length": 0.5,  # Should be seen as 100% and scaled accordingly
     "force_magnifier": 10.0,
     "update_interval": 0.02,  # Seconds between updates
+    "initial_state_lower": -0.1,  # lower bound of initial state distribution (uniform) (angles and angular velocities)
+    "initial_state_upper": 0.1,  # upper bound of initial state distribution (uniform) (angles and angular velocities)
 }
 
 CONTEXT_BOUNDS = {
@@ -28,7 +30,31 @@ CONTEXT_BOUNDS = {
         0.2,
         float,
     ),  # Update interval can be varied by a factor of 10
+    "initial_state_lower": (-np.inf, np.inf, float),
+    "initial_state_upper": (-np.inf, np.inf, float),
 }
+
+
+class CustomCartPoleEnv(CartPoleEnv):
+    def __init__(self):
+        super().__init__()
+        self.initial_state_lower = -0.05
+        self.initial_state_upper = 0.05
+
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
+    ):
+        super().reset(seed=seed)
+        self.state = self.np_random.uniform(low=self.initial_state_lower, high=self.initial_state_upper, size=(4,))
+        self.steps_beyond_done = None
+        if not return_info:
+            return np.array(self.state, dtype=np.float32)
+        else:
+            return np.array(self.state, dtype=np.float32), {}
 
 
 class CARLCartPoleEnv(CARLEnv):
@@ -37,9 +63,9 @@ class CARLCartPoleEnv(CARLEnv):
     """
     def __init__(
         self,
-        env: gym.Env = CartPoleEnv(),
+        env: gym.Env = CustomCartPoleEnv(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -80,6 +106,8 @@ class CARLCartPoleEnv(CARLEnv):
         self.env.length = self.context["pole_length"]
         self.env.force_mag = self.context["force_magnifier"]
         self.env.tau = self.context["update_interval"]
+        self.env.initial_state_lower = self.context["initial_state_lower"]
+        self.env.initial_state_upper = self.context["initial_state_upper"]
 
         high = np.array(
             [

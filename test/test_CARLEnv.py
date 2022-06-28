@@ -42,7 +42,7 @@ class TestStateConstruction(unittest.TestCase):
         action = [0.01]  # torque
         state, reward, done, info = env.step(action=action)
         env.close()
-        self.assertEqual(8, len(state))
+        self.assertEqual(10, len(state))
 
     def test_visiblestate_customnone(self):
         """
@@ -211,9 +211,9 @@ class TestContextFeatureScaling(unittest.TestCase):
         env.reset()
         action = [0.0]
         state, reward, done, info = env.step(action=action)
-        n_c = len(contexts["0"])
+        n_c = len(env.default_context)
         scaled_contexts = state[-n_c:]
-        target = np.array([16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7])
+        target = np.array([16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7, 1, 1])
         self.assertTrue(
             np.all(target == scaled_contexts),
             f"target {target} != actual {scaled_contexts}",
@@ -226,6 +226,8 @@ class TestContextFeatureScaling(unittest.TestCase):
             "g": 10.0,
             "m": 1.0,
             "l": 1.0,
+            "initial_angle_max": np.pi,
+            "initial_velocity_max": 1
         }
         contexts = {
             "0": {"max_speed": 8.0, "dt": 0.03, "g": 10.0, "m": 1.0, "l": 1.8},
@@ -244,7 +246,7 @@ class TestContextFeatureScaling(unittest.TestCase):
         state, reward, done, info = env.step(action=action)
         n_c = len(default_context)
         scaled_contexts = state[-n_c:]
-        self.assertTrue(np.all(np.array([1.0, 0.6, 1, 1, 1.8]) == scaled_contexts))
+        self.assertTrue(np.all(np.array([1.0, 0.6, 1, 1, 1.8, 1, 1]) == scaled_contexts))
 
     def test_context_feature_scaling_by_default_nodefcontext(self):
         with self.assertRaises(ValueError):
