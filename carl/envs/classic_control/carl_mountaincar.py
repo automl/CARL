@@ -86,7 +86,7 @@ class CARLMountainCarEnv(CARLEnv):
         self,
         env: gym.Env = CustomMountainCarEnv(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
