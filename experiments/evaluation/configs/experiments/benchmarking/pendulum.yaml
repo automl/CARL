@@ -3,4 +3,5 @@
 wandb:
   group: benchmarking
 
-results_path: /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-06-28/11-52-45_benchmark_train/
+results_path: /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-06-28/11-52-45_benchmark_train/35
+n_eval_episodes_per_context: 5

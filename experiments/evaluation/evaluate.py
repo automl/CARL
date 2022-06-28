@@ -24,12 +24,13 @@ from carl.context.sampling import sample_contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
-from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
+from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere, evaluate
 
-from experiments.carlbench.context_logging import log_contexts_wandb_traineval, log_contexts_json, log_contexts_wandb
+from experiments.carlbench.context_logging import log_contexts_wandb_traineval, log_contexts_json, log_contexts_wandb, load_wandb_contexts
 from experiments.carlbench.context_sampling import ContextSampler
 from experiments.benchmarking.training import get_encoder, id_generator
 from experiments.common.utils.json_utils import lazy_json_load
+from experiments.evaluation.loading import load_policy
 
 
 base_dir = os.getcwd()
@@ -38,7 +39,7 @@ base_dir = os.getcwd()
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    print(cfg)
+    print("Eval Cfg", cfg)
 
     hydra_job = (
             os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
@@ -46,6 +47,9 @@ def train(cfg: DictConfig):
             + os.path.basename(HydraConfig.get().run.dir)
     )
     cfg.wandb.id = hydra_job + "_" + id_generator()
+
+    traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
+    print("Train Cfg", traincfg)
 
     wandbdir = Path(cfg.results_path) / "wandb"
 
@@ -71,8 +75,8 @@ def train(cfg: DictConfig):
         slurm_id = hydra_cfg.job.id
     else:
         slurm_id = None
-    wandb.config.update({"command": command, "slurm_id": slurm_id})
-    set_seed_everywhere(cfg.seed)
+    # wandb.config.update({"command": command, "slurm_id": slurm_id})
+    set_seed_everywhere(traincfg.seed)
 
     # ----------------------------------------------------------------------
     # Sample contexts
@@ -80,7 +84,7 @@ def train(cfg: DictConfig):
     contexts = None
     if not cfg.contexts_path:
         if cfg.sample_contexts:
-            contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+            contexts = ContextSampler(**traincfg.context_sampler).sample_contexts()
         else:
             # use train contexts
             dir = "eval"
@@ -91,21 +95,21 @@ def train(cfg: DictConfig):
             contexts_path = wandbdir / "latest-run" / "files" / "media" / "table" / dir
             contexts_path = glob.glob(os.path.join(str(contexts_path), "contexts_*.json"))[0]
             print(contexts_path)
-            contexts = lazy_json_load(contexts_path)
+            contexts = load_wandb_contexts(contexts_path)
     else:
         contexts = lazy_json_load(cfg.contexts_path)
-    if contexts:
-        log_contexts_wandb(contexts=contexts, wandb_key="evalpost/contexts")
-
+    if contexts is not None:
+        # log_contexts_wandb(contexts=contexts, wandb_key="evalpost/contexts")
+        cfg.n_eval_episodes = cfg.n_eval_episodes_per_context * len(contexts)
 
     # ----------------------------------------------------------------------
     # Instantiate environments
     # ----------------------------------------------------------------------
-    EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
-    env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
-    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
-    key = jax.random.PRNGKey(cfg.seed)
-    if cfg.state_context and cfg.carl.dict_observation_space:
+    EnvCls = partial(getattr(envs, traincfg.env), **traincfg.carl)
+    env = EnvCls(contexts=contexts, context_encoder=get_encoder(traincfg))
+    env = coax.wrappers.TrainMonitor(env, name=traincfg.algorithm)
+    key = jax.random.PRNGKey(traincfg.seed)
+    if traincfg.state_context and traincfg.carl.dict_observation_space:
         key, subkey = jax.random.split(key)
         context_state_indices = jax.random.choice(
             subkey,
@@ -116,7 +120,7 @@ def train(cfg: DictConfig):
         print(f"Using state features {context_state_indices} as context")
     else:
         context_state_indices = None
-    cfg.context_state_indices = context_state_indices
+    traincfg.context_state_indices = context_state_indices
 
     # ----------------------------------------------------------------------
     # Log experiment
@@ -129,22 +133,18 @@ def train(cfg: DictConfig):
     print("Output directory:", output_dir)
 
     # ----------------------------------------------------------------------
-    # Train
+    # Evaluate
     # ----------------------------------------------------------------------
-    if cfg.algorithm == "sac":
-        algorithm = sac
-    elif cfg.algorithm == "td3":
-        algorithm = td3
-    elif cfg.algorithm == "c51":
-        algorithm = c51
-    else:
-        raise ValueError(f"Unknown algorithm {cfg.algorithm}")
-    avg_return = algorithm(cfg, env, eval_env)
+    weights_path = wandbdir / "latest-run" / "files" / "func_dict.pkl.lz4"
+    policy = load_policy(traincfg, weights_path=weights_path)
+    returns = evaluate(pi=policy, env=env, num_episodes=cfg.n_eval_episodes)
+    avg_return = onp.mean(returns)
+    print(avg_return)
 
     # ----------------------------------------------------------------------
     # Cleanup
     # ----------------------------------------------------------------------
-    run.finish()
+    # run.finish()
 
     return avg_return
 
