@@ -167,7 +167,6 @@ class CARLEnv(Wrapper):
         self.context_index = 0  # type: int
         context_keys = list(self.contexts.keys())
         self.context = self.contexts[context_keys[self.context_index]]
-        print(self.context)
 
         # Scale context features
         if scale_context_features not in self.available_scale_methods:
