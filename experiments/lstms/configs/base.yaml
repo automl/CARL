@@ -31,7 +31,7 @@ q_targ_tau: 0.001
 warmup_num_frames: 5000
 pi_warmup_num_frames: 7500
 pi_update_freq: 4
-env_reset: False
+env_reset: True
 
 
 replay_capacity: 100000

@@ -60,12 +60,12 @@ def pi_func(cfg, env):
             width = cfg.lstm.encode_width
             if cfg.pi_context:
                 x = context_gating(
-                                    context = context.reshape(-1), 
-                                    state = x.reshape(-1), 
+                                    context = context, 
+                                    state = x, 
                                 )
                 
                 
-                x = x.reshape(1,-1)
+                #x = x.reshape(1,-1)
                 # print(x.shape)
                 # pdb.set_trace()
                
@@ -130,6 +130,9 @@ def q_func(cfg, env):
             X = jnp.concatenate((S["state"], A), axis=-1)
             x = state_seq(X)
 
+            #print(x.shape)
+            # pdb.set_trace()
+
             # initialize the gating function
             context_gating = context_LSTM(cfg)
 
@@ -148,18 +151,21 @@ def q_func(cfg, env):
                 # TODO test without encoding
                 context = context_seq(S["context"])
 
+                # print(context.shape)
+                # pdb.set_trace()
+
             else:
                 # Pass the state and context unencoded 
                 context = S['context']
 
             if cfg.q_context:
                 x = context_gating(
-                                    context = context.reshape(-1), 
-                                    state = x.reshape(-1), 
+                                    context = context, 
+                                    state = x, 
                                 )
 
                 
-                x = x.reshape(1,-1)
+                #x = x.reshape(1,-1)
                 
                 # retain the LSTM state
 

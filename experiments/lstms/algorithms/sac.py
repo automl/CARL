@@ -4,6 +4,7 @@ import jax.numpy as jnp
 import numpy as onp
 import optax
 import wandb
+import pdb
 
 from ..networks.sac import pi_func, q_func
 from ..utils import evaluate, log_wandb, dump_func_dict
@@ -69,9 +70,10 @@ def sac(cfg, env, eval_env):
     )
     while env.T < cfg.max_num_frames:
         s = env.reset()
+        #cfg.env_reset = True
 
+        #wandb.config.update({"env_reset": True })
 
-        cfg.env_reset = True
 
         for t in range(env.env.cutoff):
             a = pi(s)
@@ -84,13 +86,23 @@ def sac(cfg, env, eval_env):
 
             # learn
             if len(buffer) >= cfg.warmup_num_frames:
+                
+                # print(len(buffer))
+                # pdb.set_trace()
+                
                 transition_batch = buffer.sample(batch_size=cfg.batch_size)
+
+                # print(transition_batch)
+                # pdb.set_trace()
+
 
                 metrics = {}
 
                 # flip a coin to decide which of the q-functions to update
                 qlearning = qlearning1 if jax.random.bernoulli(
                     q1.rng) else qlearning2
+
+            
                 metrics.update(qlearning.update(transition_batch))
 
                 # delayed policy updates
@@ -123,8 +135,8 @@ def sac(cfg, env, eval_env):
                 commit=False,
             )
 
-        if cfg.env_reset:
-            cfg.env_reset = False
+        # if cfg.env_reset:
+        #     cfg.env_reset = False
 
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)

@@ -7,58 +7,151 @@ import pdb
 
 from typing import Tuple
 
+import pdb 
+
+def squarify(x):
+  batch_size = x.shape[0]
+  if len(x.shape) > 1:
+    representation_dim = x.shape[-1]
+    return jnp.reshape(jnp.tile(x, batch_size),
+                       (batch_size, batch_size, representation_dim))
+  return jnp.reshape(jnp.tile(x, batch_size), (batch_size, batch_size))
+
 
 class cLSTM(hk.LSTM):
   
 
-  def __init__(self, hidden_size, init_state):
-    """Constructs an LSTM.
+    def __init__(self, hidden_size, init_state):
+        """Constructs an LSTM.
 
-    Args:
-      hidden_size : Hidden layer size.
-      init_state  : Initial hidden state
-    """
-    super().__init__(hidden_size=hidden_size)
-    self.hidden_size = hidden_size
-    self.prev_lstm_state = init_state
+        Args:
+        hidden_size : Hidden layer size.
+        init_state  : Initial hidden state
+        """
+        super().__init__(hidden_size=hidden_size)
+        self.hidden_size = hidden_size
+        self.prev_lstm_state = init_state
+        self.previous_context = None
+
+
   
-  
-  def __call__(
-      self,
-      state: jnp.ndarray,
-      context: jnp.ndarray, 
-      new_context: bool = False ) -> Tuple[jnp.ndarray, hk.LSTMState]:
+    def __call__(
+        self,
+        state: jnp.ndarray,
+        context: jnp.ndarray, 
+        new_context: bool = False ) -> Tuple[jnp.ndarray, hk.LSTMState]:
     
-    if len(state.shape) > 2 or not state.shape:
-      raise ValueError("LSTM input must be rank-1 or rank-2.")
-    
+        if len(state.shape) > 2 or not state.shape:
+            raise ValueError("LSTM input must be rank-1 or rank-2.")
+        
 
-    if not new_context:
-        prev_state = self.prev_lstm_state
-    else:
-        prev_state = hk.LSTMState(
-            hidden = context,
-            cell = self.prev_lstm_state.cell
-        )
+        if not self._check_context(context):
+            # If the context has not changed
+            # Propagate the hidden state by ensuring common batch
+            
+            prev_state = self._prepare_hidden_state(context)
+            
+        else:
+            # If the context has changed
+            # initialize the hidden state with context
+            prev_state = hk.LSTMState(
+                hidden = context,
+                cell = self.prev_lstm_state.cell
+            )
 
-    
-    x_and_h = jnp.concatenate([state, prev_state.hidden], axis=-1)
-    gated = hk.Linear(4 * self.hidden_size)(x_and_h)
-    
-    i, g, f, o = jnp.split(gated, indices_or_sections=4, axis=-1)
-    f = jax.nn.sigmoid(f + 1)  # Forget bias, as in sonnet.
-    c = f * prev_state.cell + jax.nn.sigmoid(i) * jnp.tanh(g)
-    h = jax.nn.sigmoid(o) * jnp.tanh(c)
-    
-    new_state = hk.LSTMState(h, c)
-    
-    self.set_state(new_state)
 
-    return h, new_state
 
-  def set_state(self, state: hk.LSTMState) -> hk.LSTMState:
+        
+        # print('state', state.shape)
+        # print('prev_state.hidden', prev_state.hidden.shape)
+        # pdb.set_trace()
+
+
+        x_and_h = jnp.concatenate([state, prev_state.hidden], axis=-1)
+        
+        # print('x_and_h', x_and_h.shape)
+        
+        
+        gated = hk.Linear(4 * self.hidden_size)(x_and_h)
+        
+        # print(f'gated:',gated.shape)
+
+
+        i, g, f, o = jnp.split(gated, indices_or_sections=4, axis=-1)
+        
+        # print('i:', i.shape)
+        # print('g:', g.shape)
+        # print('f:', f.shape)
+        # print('o:', o.shape)
+
+
+        f = jax.nn.sigmoid(f + 1)  # Forget bias, as in sonnet.
+
+        # print('f', f.shape)
+
+        c = f * prev_state.cell + jax.nn.sigmoid(i) * jnp.tanh(g)
+        
+        # print('c', c.shape)
+        
+        h = jax.nn.sigmoid(o) * jnp.tanh(c)
+        
+        # print('h:', h.shape)
+        new_state = hk.LSTMState(h, c)
+
+        #pdb.set_trace()
+        
+        self.set_state(new_state)
+
+        return h, new_state
+
+    def set_state(self, state: hk.LSTMState, batch_size: int =None) -> hk.LSTMState:
+
+        self.prev_lstm_state = state
     
-    self.prev_lstm_state = state
+    def _check_context(self, context: jnp.ndarray) -> bool:
+        
+        if not self.previous_context:
+            self.previous_context = context
+            return True
+        else:
+            
+            if jnp.array_equiv(context, self.previous_context):
+                return False
+            else:
+                True
+            
+
+    def _prepare_hidden_state(self, state):
+        
+        
+        if self.prev_lstm_state.hidden.shape[0] < state.shape[0]:
+        
+                prev_state = hk.LSTMState(
+                    hidden = jnp.tile(
+                        A = self.prev_state.hidden,
+                        reps= state.shape(0)
+                    ),
+                    cell = jnp.tile(
+                        A = self.prev_state.hidden,
+                        reps= state.shape(0)
+                    ),
+                )
+        elif self.prev_lstm_state.hidden.shape[0] > state.shape[0]:
+
+            prev_state = hk.LSTMState(
+                hidden = jnp.tile(
+                    A = self.prev_state.hidden[0],
+                    reps= state.shape(0)
+                ),
+                cell = jnp.tile(
+                    A = self.prev_state.hidden[0],
+                    reps= state.shape(0)
+                ),
+            )
+        else:
+            prev_state = self.prev_lstm_state
+
+        return prev_state
 
 
 
@@ -68,14 +161,20 @@ def context_LSTM(cfg: DictConfig):
     core_lstm = cLSTM(
                     hidden_size=cfg.lstm.encode_width,
                     init_state = hk.LSTMState(
-                        hidden  = jnp.zeros([cfg.lstm.encode_width]),
-                        cell    = jnp.zeros([cfg.lstm.encode_width])
+                        hidden  = jnp.zeros([1, cfg.lstm.encode_width]),
+                        cell    = jnp.zeros([1, cfg.lstm.encode_width])
                     )
                 )
 
     def unroll(state, context):
 
         # unroll the lstm
+
+        # print(f'state : {state.shape}')
+        # print(f'context : {context.shape}')
+        # print(f'new_context : {cfg.env_reset}')
+        # pdb.set_trace()
+
         output, _  = core_lstm(
                         state = state,             # Every new state is passed as context input
                         context = context,         # the

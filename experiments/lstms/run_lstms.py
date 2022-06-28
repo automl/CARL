@@ -111,7 +111,7 @@ def train(cfg: DictConfig):
     print(env)
     print(f"Observation Space: ", env.observation_space)
     print(f"Action Space: ", env.action_space)
-    print(f"Contexts: ", contexts)
+    print(f"Contexts: ", contexts[0])
 
     if cfg.algorithm == "sac":
         avg_return = sac(cfg, env, eval_env)
