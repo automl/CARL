@@ -1,0 +1,23 @@
+defaults:
+  - slurm/gpu
+  - _self_
+  - algorithm/sac
+  - override hydra/launcher: submitit_slurm
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+
+wandb:
+  id: null
+  entity: tnt
+  debug: false
+  group: ???  # set in experiments/???
+  job_type: eval
+  tags: []
+  notes: null
+  project: carl-tmlr
+
+results_path: ???  # set in experiments/???
+n_eval_episodes: null
+contexts_path: null
+sample_contexts: false
+eval_on_train_contexts: false
