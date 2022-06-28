@@ -29,8 +29,8 @@ class CARLEnv(Wrapper):
 
     Can change the context after each episode.
 
-    If not all keys are present in the provided context(s) the context will be filled
-    with the default context values.
+    If not all keys are present in the provided context(s) the contexts will be filled
+    with the default context values in the init of the class.
 
     Parameters
     ----------
@@ -100,6 +100,9 @@ class CARLEnv(Wrapper):
     ):
         super().__init__(env=env)
         # Gather args
+        self._context: Optional[Dict] = None  # init for property
+        self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
+        self.default_context = default_context
         self.contexts = contexts
         self.hide_context = hide_context
         self.dict_observation_space = dict_observation_space
@@ -129,7 +132,7 @@ class CARLEnv(Wrapper):
                 if len(self.contexts) > 1:
                     # detect which context feature changes
                     context_array = np.array(
-                        [np.array(list(self.fill_context_with_default(c).values())) for c in self.contexts.values()]
+                        [np.array(list(c.values())) for c in self.contexts.values()]
                     )
                     which_cf_changes = ~np.all(
                         context_array == context_array[0, :], axis=0
@@ -162,8 +165,9 @@ class CARLEnv(Wrapper):
 
         # Set initial context
         self.context_index = 0  # type: int
-        context_keys = list(contexts.keys())
-        self.context = contexts[context_keys[self.context_index]]
+        context_keys = list(self.contexts.keys())
+        self.context = self.contexts[context_keys[self.context_index]]
+        print(self.context)
 
         # Scale context features
         if scale_context_features not in self.available_scale_methods:
@@ -171,11 +175,10 @@ class CARLEnv(Wrapper):
                 f"{scale_context_features} not in {self.available_scale_methods}."
             )
         self.scale_context_features = scale_context_features
-        self.default_context = default_context
         self.context_feature_scale_factors = None
         if self.scale_context_features == "by_mean":
             cfs_vals = np.concatenate(
-                [np.array(list(self.fill_context_with_default(v).values()))[:, None] for v in self.contexts.values()],
+                [np.array(list(v.values()))[:, None] for v in self.contexts.values()],
                 axis=-1,
             )
             self.context_feature_scale_factors = np.mean(cfs_vals, axis=-1)
@@ -196,6 +199,22 @@ class CARLEnv(Wrapper):
        
         self.vectorized = n_envs > 1
         self.build_observation_space()
+
+    @property
+    def context(self) -> Dict:
+        return self._context
+
+    @context.setter
+    def context(self, context: Dict):
+        self._context = self.fill_context_with_default(context=context)
+
+    @property
+    def contexts(self) -> Dict[Any, Dict[Any, Any]]:
+        return self._contexts
+
+    @contexts.setter
+    def contexts(self, contexts: Dict[Any, Dict[Any, Any]]):
+        self._contexts = {k: self.fill_context_with_default(context=v) for k, v in contexts.items()}
 
     def reset(self, **kwargs: Dict) -> Any:
         """
@@ -348,7 +367,6 @@ class CARLEnv(Wrapper):
 
         """
         context = self.context_selector.select()
-        context = self.fill_context_with_default(context=context)
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
