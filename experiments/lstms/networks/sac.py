@@ -7,13 +7,14 @@ from ..networks.lstms import context_LSTM
 
 import pdb
 
-def pi_func(cfg, env):
 
+# TODO stanadardize with cGate logic for ablations
+
+
+def pi_func(cfg, env):
     def pi(S, is_training):
 
-
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
-
 
             state_seq = hk.Sequential(
                 (
@@ -26,26 +27,21 @@ def pi_func(cfg, env):
                 )
             )
 
-            x =  state_seq(S['state'])
+            x = state_seq(S["state"])  #
 
-            # print(x.shape)
-            # pdb.set_trace()
-
-
-            # Assign the LSTM        
+            # Assign the LSTM
             context_gating = context_LSTM(cfg)
-         
-            
+
             if cfg.lstm.encode:
                 # Encode context
                 context_seq = hk.Sequential(
-                            (
-                                hk.Linear(cfg.lstm.encode_width),
-                                jax.nn.relu,
-                                hk.Linear(cfg.lstm.encode_width),
-                                jax.nn.sigmoid,                 # TODO check for sigmoid vs relu activations
-                            )
-                        )
+                    (
+                        hk.Linear(cfg.lstm.encode_width),
+                        jax.nn.relu,
+                        hk.Linear(cfg.lstm.encode_width),
+                        jax.nn.sigmoid,  # TODO check for sigmoid vs relu activations
+                    )
+                )
                 # Encode context and state to requisite width
                 # TODO test without encoding
                 context = context_seq(S["context"])
@@ -54,24 +50,21 @@ def pi_func(cfg, env):
                 # pdb.set_trace()
 
             else:
-                # Pass the state and context unencoded 
-                context = S['context']
-            
+                # Pass the state and context unencoded
+                context = S["context"]
+
             width = cfg.lstm.encode_width
             if cfg.pi_context:
                 x = context_gating(
-                                    context = context, 
-                                    state = x, 
-                                )
-                
-                
-                #x = x.reshape(1,-1)
+                    context=context,
+                    state=x,
+                )
+
+                # x = x.reshape(1,-1)
                 # print(x.shape)
                 # pdb.set_trace()
-               
-                       
-            
-            # readout of LSTM 
+
+            # readout of LSTM
             # from branch width to action space
             pi_seq = hk.Sequential(
                 (
@@ -84,7 +77,7 @@ def pi_func(cfg, env):
 
             # convert to action space
             x = pi_seq(x)
-           
+
         else:
             # directly map state to actions
             state_seq = hk.Sequential(
@@ -100,8 +93,6 @@ def pi_func(cfg, env):
                 )
             )
             x = state_seq(S)
-        
-
 
         mu, logvar = x[..., 0], x[..., 1]
         return {"mu": mu, "logvar": logvar}
@@ -110,10 +101,9 @@ def pi_func(cfg, env):
 
 
 def q_func(cfg, env):
-
     def q(S, A, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
-        
+
             # Encodet the state each time
             state_seq = hk.Sequential(
                 (
@@ -125,50 +115,36 @@ def q_func(cfg, env):
                     jax.nn.relu,
                 )
             )
-            
+
             # Encode state and action combined
             X = jnp.concatenate((S["state"], A), axis=-1)
             x = state_seq(X)
 
-            #print(x.shape)
-            # pdb.set_trace()
-
             # initialize the gating function
             context_gating = context_LSTM(cfg)
 
-             
             if cfg.lstm.encode:
                 # Encode context
                 context_seq = hk.Sequential(
-                            (
-                                hk.Linear(cfg.lstm.encode_width),
-                                jax.nn.relu,
-                                hk.Linear(cfg.lstm.encode_width),
-                                jax.nn.sigmoid,                 # TODO check for sigmoid vs relu activations
-                            )
-                        )
+                    (
+                        hk.Linear(cfg.lstm.encode_width),
+                        jax.nn.relu,
+                        hk.Linear(cfg.lstm.encode_width),
+                        jax.nn.sigmoid,  # TODO check for sigmoid vs relu activations
+                    )
+                )
                 # Encode context and state to requisite width
                 # TODO test without encoding
                 context = context_seq(S["context"])
-
-                # print(context.shape)
-                # pdb.set_trace()
-
             else:
-                # Pass the state and context unencoded 
-                context = S['context']
+                # Pass the state and context unencoded
+                context = S["context"]
 
             if cfg.q_context:
                 x = context_gating(
-                                    context = context, 
-                                    state = x, 
-                                )
-
-                
-                #x = x.reshape(1,-1)
-                
-                # retain the LSTM state
-
+                    context=context,
+                    state=x,
+                )
 
             # LSTM readout
             q_seq = hk.Sequential(

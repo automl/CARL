@@ -6,14 +6,18 @@ from tqdm import tqdm
 from pathlib import Path
 
 
-def load_data_context_gating(fname: Path, download: bool = False, env: str = "CARLPendulumEnv"):
+def load_data_context_gating(
+    fname: Path, download: bool = False, env: str = "CARLPendulumEnv"
+):
     if not fname.is_file() or download:
         api = wandb.Api()
         runs = api.runs(
             "tnt/carl",
             filters={
-                "config.contexts.default_sample_std_percentage": {"$in": [0.1, 0.25, 0.5]},
-                "state":  {"$nin": ["crashed"]},
+                "config.contexts.default_sample_std_percentage": {
+                    "$in": [0.1, 0.25, 0.5]
+                },
+                "state": {"$nin": ["crashed"]},
                 "config.env": env,
                 # "group": {"$nin": ["encoder_opt"]},
             },
@@ -24,7 +28,7 @@ def load_data_context_gating(fname: Path, download: bool = False, env: str = "CA
             "contexts.context_feature_args",
             "carl.state_context_features",
             "contexts.default_sample_std_percentage",
-            "seed"
+            "seed",
         ]
         metrics = ["eval/return"]
         groups = {
@@ -33,7 +37,7 @@ def load_data_context_gating(fname: Path, download: bool = False, env: str = "CA
             "context_gating": "gating",
             "context_encoder": "encoder",
             "encoder_opt": "encoder2d",
-            "Ant_encoder": "encoder2d"
+            "Ant_encoder": "encoder2d",
         }
         runs = list(runs)
         for run in tqdm(runs):

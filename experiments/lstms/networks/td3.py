@@ -20,8 +20,7 @@ def pi_func(cfg, env):
                 (
                     hk.Linear(256),
                     jax.nn.relu,
-                    hk.Linear(onp.prod(env.action_space.shape),
-                              w_init=jnp.zeros),
+                    hk.Linear(onp.prod(env.action_space.shape), w_init=jnp.zeros),
                     hk.Reshape(env.action_space.shape),
                 )
             )
@@ -33,8 +32,7 @@ def pi_func(cfg, env):
                     jax.nn.relu,
                     hk.Linear(256),
                     jax.nn.relu,
-                    hk.Linear(onp.prod(env.action_space.shape),
-                              w_init=jnp.zeros),
+                    hk.Linear(onp.prod(env.action_space.shape), w_init=jnp.zeros),
                     hk.Reshape(env.action_space.shape),
                 )
             )
@@ -58,8 +56,7 @@ def q_func(cfg, env):
             if cfg.q_context:
                 x = context_gating(x, S)
             q_seq = hk.Sequential(
-                (hk.Linear(256), jax.nn.relu, hk.Linear(
-                    1, w_init=jnp.zeros), jnp.ravel)
+                (hk.Linear(256), jax.nn.relu, hk.Linear(1, w_init=jnp.zeros), jnp.ravel)
             )
             x = q_seq(x)
         else:
