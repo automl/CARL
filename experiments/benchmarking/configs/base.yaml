@@ -47,6 +47,8 @@ render_freq: 10000
 eval_freq: 10000
 eval_episodes: 100
 eval_on_train_context: true
+contexts_train_path: null
+contexts_eval_path: null
 
 zero_context: false # set context to zero
 state_context: false # set context to state feature subset
