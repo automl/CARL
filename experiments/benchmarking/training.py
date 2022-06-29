@@ -130,8 +130,6 @@ def train(cfg: DictConfig):
             eval_contexts = lazy_json_load(cfg.contexts_eval_path)
         else:
             eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
-        log_contexts_json(contexts, "contexts_train.json")
-        log_contexts_json(contexts, "contexts_eval.json")
     if contexts:
         log_contexts_wandb_traineval(train_contexts=contexts, eval_contexts=eval_contexts)
 
