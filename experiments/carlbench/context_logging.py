@@ -14,7 +14,7 @@ def log_contexts_wandb_traineval(train_contexts, eval_contexts):
 
 def log_contexts_wandb(contexts: Dict[Any, Dict[str, Any]], wandb_key: str):
     table = wandb.Table(
-        columns=sorted(contexts[0].keys()),
+        columns=sorted(contexts[list(contexts.keys())[0]].keys()),
         data=[
             [contexts[idx][key] for key in sorted(contexts[idx].keys())]
             for idx in contexts.keys()
