@@ -27,6 +27,7 @@ from experiments.context_gating.utils import check_wandb_exists, set_seed_everyw
 
 from experiments.carlbench.context_logging import log_contexts_wandb_traineval, log_contexts_json
 from experiments.carlbench.context_sampling import ContextSampler
+from experiments.common.utils.json_utils import lazy_json_load
 
 
 base_dir = os.getcwd()
@@ -117,11 +118,18 @@ def train(cfg: DictConfig):
     # ----------------------------------------------------------------------
     # Sample contexts
     # ----------------------------------------------------------------------
-    contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+    if cfg.contexts_train_path is not None:
+        contexts = lazy_json_load(cfg.contexts_train_path)
+    else:
+        contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+
     if cfg.eval_on_train_context:
         eval_contexts = contexts
     else:
-        eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+        if cfg.contexts_eval_path is not None:
+            eval_contexts = lazy_json_load(cfg.contexts_eval_path)
+        else:
+            eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
         log_contexts_json(contexts, "contexts_train.json")
         log_contexts_json(contexts, "contexts_eval.json")
     if contexts:
