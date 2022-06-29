@@ -1,5 +1,6 @@
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import os
@@ -24,9 +25,18 @@ from carl.context.sampling import sample_contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
-from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere, evaluate
+from experiments.context_gating.utils import (
+    check_wandb_exists,
+    set_seed_everywhere,
+    evaluate,
+)
 
-from experiments.carlbench.context_logging import log_contexts_wandb_traineval, log_contexts_json, log_contexts_wandb, load_wandb_contexts
+from experiments.carlbench.context_logging import (
+    log_contexts_wandb_traineval,
+    log_contexts_json,
+    log_contexts_wandb,
+    load_wandb_contexts,
+)
 from experiments.carlbench.context_sampling import ContextSampler
 from experiments.benchmarking.training import get_encoder, id_generator
 from experiments.common.utils.json_utils import lazy_json_load
@@ -42,9 +52,9 @@ def train(cfg: DictConfig):
     print("Eval Cfg", cfg)
 
     hydra_job = (
-            os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
-            + "_"
-            + os.path.basename(HydraConfig.get().run.dir)
+        os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
+        + "_"
+        + os.path.basename(HydraConfig.get().run.dir)
     )
     cfg.wandb.id = hydra_job + "_" + id_generator()
 
@@ -93,7 +103,9 @@ def train(cfg: DictConfig):
 
             # load contexts from traindir
             contexts_path = wandbdir / "latest-run" / "files" / "media" / "table" / dir
-            contexts_path = glob.glob(os.path.join(str(contexts_path), "contexts_*.json"))[0]
+            contexts_path = glob.glob(
+                os.path.join(str(contexts_path), "contexts_*.json")
+            )[0]
             print(contexts_path)
             contexts = load_wandb_contexts(contexts_path)
     else:

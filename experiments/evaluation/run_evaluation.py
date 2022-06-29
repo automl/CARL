@@ -17,8 +17,13 @@ def glob_re(pattern, strings):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry', action='store_true')
-    parser.add_argument('--result_dir', default=None, type=str, help="Path of submitit folder. If empty, uses single cfg.results_path.")
+    parser.add_argument("--dry", action="store_true")
+    parser.add_argument(
+        "--result_dir",
+        default=None,
+        type=str,
+        help="Path of submitit folder. If empty, uses single cfg.results_path.",
+    )
     args, unknown_args = parser.parse_known_args()  # unknown args are hydra commands
     # unknown_args = [f"'{a}'" for a in unknown_args]
 
@@ -29,7 +34,7 @@ def main():
 
     # Find subfolders with multiruns
     if args.result_dir is not None:
-        filenames = list(glob_re(r'\d\d*', os.listdir(args.result_dir)))
+        filenames = list(glob_re(r"\d\d*", os.listdir(args.result_dir)))
         filenames.sort(key=float)
         result_paths = [os.path.join(args.result_dir, f) for f in filenames]
         result_paths_str = ",".join(result_paths)
