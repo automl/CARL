@@ -54,6 +54,7 @@ class CARLRnaDesignEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
+        context_mask: Optional[List[str]] = None,
     ):
         """
 
@@ -98,6 +99,7 @@ class CARLRnaDesignEnv(CARLEnv):
             default_context=default_context,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
+            context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 

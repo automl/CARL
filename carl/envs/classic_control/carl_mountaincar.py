@@ -80,6 +80,7 @@ class CARLMountainCarEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -110,6 +111,7 @@ class CARLMountainCarEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
+            context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()

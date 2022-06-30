@@ -89,6 +89,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -119,7 +120,8 @@ class CARLBipedalWalkerEnv(CARLEnv):
             state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
-            context_selector_kwargs=context_selector_kwargs
+            context_selector_kwargs=context_selector_kwargs,
+            context_mask=context_mask,
 
         )
         self.whitelist_gaussian_noise = list(
