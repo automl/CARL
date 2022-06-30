@@ -157,11 +157,14 @@ class CARLEnv(Wrapper):
                             json.dump(data, file, indent="\t")
                 else:
                     state_context_features = []
-        self.state_context_features = state_context_features
+        else:
+            state_context_features = list(self.contexts[list(self.contexts.keys())[0]].keys())
+        self.state_context_features: List[str] = state_context_features
         # state_context_features contains the names of the context features that should be appended to the state
         # However, if context_mask is set, we want to update staet_context_feature_names so that the context features
         # in context_mask are not appended to the state anymore.
-        self.state_context_features = [s for s in self.state_context_features if s not in self.context_mask]
+        if self.context_mask:
+            self.state_context_features = [s for s in self.state_context_features if s not in self.context_mask]
 
         self.step_counter = 0  # type: int # increased in/after step
         self.total_timestep_counter = 0  # type: int
