@@ -9,9 +9,10 @@ import jax
 import numpy as onp
 import wandb
 from carl.context.sampling import sample_contexts
-from experiments.context_gating.algorithms.td3 import td3
-from experiments.context_gating.algorithms.sac import sac
-from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
+
+from experiments.lstms.algorithms.td3 import td3
+from experiments.lstms.algorithms.sac import sac
+from experiments.lstms.utils import check_wandb_exists, set_seed_everywhere
 from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 
@@ -105,8 +106,8 @@ def train(cfg: DictConfig):
         )
         wandb.log({"eval/contexts": eval_table}, step=0)
 
-    env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
-    eval_env = EnvCls(contexts=eval_contexts, context_encoder=get_encoder(cfg))
+    env = EnvCls(contexts=contexts, context_encoder=None)
+    eval_env = EnvCls(contexts=eval_contexts, context_encoder=None)
     env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
@@ -126,7 +127,7 @@ def train(cfg: DictConfig):
     print(env)
     print(f"Observation Space: ", env.observation_space)
     print(f"Action Space: ", env.action_space)
-    print(f"Contexts: ", contexts)
+    print(f"Contexts: ", contexts[0])
 
     if cfg.algorithm == "sac":
         avg_return = sac(cfg, env, eval_env)

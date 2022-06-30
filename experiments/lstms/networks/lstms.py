@@ -71,39 +71,17 @@ class cLSTM(hk.LSTM):
             # initialize the hidden state with context
             prev_state = hk.LSTMState(hidden=context, cell=self.prev_lstm_state.cell)
 
-        # print('state', state.shape)
-        # print('prev_state.hidden', prev_state.hidden.shape)
-        # pdb.set_trace()
 
         x_and_h = jnp.concatenate([state, prev_state.hidden], axis=-1)
 
-        # print('x_and_h', x_and_h.shape)
-
         gated = hk.Linear(4 * self.hidden_size)(x_and_h)
 
-        # print(f'gated:',gated.shape)
-
         i, g, f, o = jnp.split(gated, indices_or_sections=4, axis=-1)
-
-        # print('i:', i.shape)
-        # print('g:', g.shape)
-        # print('f:', f.shape)
-        # print('o:', o.shape)
-
         f = jax.nn.sigmoid(f + 1)  # Forget bias, as in sonnet.
-
-        # print('f', f.shape)
-
         c = f * prev_state.cell + jax.nn.sigmoid(i) * jnp.tanh(g)
-
-        # print('c', c.shape)
-
         h = jax.nn.sigmoid(o) * jnp.tanh(c)
 
-        # print('h:', h.shape)
         new_state = hk.LSTMState(h, c)
-
-        # pdb.set_trace()
 
         self.set_state(new_state)
 
@@ -158,37 +136,4 @@ class cLSTM(hk.LSTM):
         return prev_state
 
 
-def context_LSTM(cfg: DictConfig):
-    """
-    function to Handle the LSTM class
-    """
 
-    # a LSTM module to unroll - use haiku
-    core_lstm = cLSTM(
-        hidden_size=cfg.lstm.encode_width,
-        init_state=hk.LSTMState(
-            hidden=jnp.zeros([1, cfg.lstm.encode_width]),
-            cell=jnp.zeros([1, cfg.lstm.encode_width]),
-        ),
-    )
-
-    def unroll(state, context):
-        """
-        HK style Function to unroll the LSTM
-
-        Args:
-            state   :   Encoded state
-            context :   Encoded context
-
-        Returns:
-            LSTM hidden state after 1 sstep unroll
-        """
-
-        output, _ = core_lstm(
-            state=state,  # Every new state is passed as context input
-            context=context,  # the
-        )
-
-        return output
-
-    return unroll

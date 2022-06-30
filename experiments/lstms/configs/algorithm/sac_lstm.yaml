@@ -4,7 +4,3 @@ algorithm: sac
 
 pi_warmup_num_frames: 7500
 pi_update_freq: 4
-
-lstm:
-  encode_width: 32
-  encode: true
