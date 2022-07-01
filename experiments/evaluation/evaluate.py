@@ -68,7 +68,7 @@ def train(cfg: DictConfig):
         project=cfg.wandb.project,
         job_type=cfg.wandb.job_type,
         entity=cfg.wandb.entity,
-        group=traincfg.wandb.group, 
+        group=traincfg.wandb.group,
         dir=os.getcwd(),
         config=OmegaConf.to_container(cfg, resolve=True, enum_to_str=True),
         sync_tensorboard=True,
