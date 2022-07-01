@@ -72,7 +72,7 @@ def get_contexts_evaluation_protocol(cfg: DictConfig):
     kwargs["context_features"] = [instantiate(config=cf) for cf in cfs]
     ep = EvaluationProtocol(**kwargs)
     contexts = ep.create_train_contexts(n=cfg.context_sampler.n_samples)
-    contexts = contexts.to_dict()
+    contexts = contexts.to_dict(orient="index")
     return contexts
 
 
