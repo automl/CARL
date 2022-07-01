@@ -1,12 +1,16 @@
 # @package _global_
+defaults:
+  - ../environments/classic_control/cartpole
+  - ../context_visibility/hidden
 
-env: CARLCartPoleEnv
-max_num_frames: 100_000
-wandb:
-  group: kirk_evaluation_protocol
+experiment: kirk_evaluation_protocol
 
 context_sampler:
   n_samples: 1000
+
+carl:
+  # Don't append these to the state or pass these to cGate
+  context_mask: [masscart, masspole, force_magnifier, update_interval, initial_state_lower, initial_state_upper]
 
 eval_on_train_context: true
 kirk_evaluation_protocol:
