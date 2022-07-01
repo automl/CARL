@@ -80,8 +80,14 @@ python experiments/benchmarking/run_training.py max_num_frames=10000 '+environme
 ```
 
 ## Evaluation Protocol [Kirk]
+Debug
 ```bash
-python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol'
+python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol' 'wandb.debug=true' 'eval_episodes=5' 
+```
+
+Run
+```bash
+python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol' 'seed=range(1,11)' 'kirk_evaluation_protocol.mode=A,B,C' '+context_visibility=hidden,cgate,visible_all,visible_changing' -m
 ```
 
 ## Landing in Space
