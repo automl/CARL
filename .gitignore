@@ -16,3 +16,4 @@ CARL.egg-info
 .mypy_cache
 .pytest_cache
 .coverage
+exp_sweep
