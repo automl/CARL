@@ -4,9 +4,9 @@ import gym
 import numpy as np
 from gym.envs.classic_control import AcrobotEnv
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "link_length_1": 1,  # should be seen as 100% default and scaled
@@ -74,14 +74,22 @@ class CustomAcrobotEnv(AcrobotEnv):
         *,
         seed: Optional[int] = None,
         return_info: bool = False,
-        options: Optional[dict] = None
+        options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
-        low = self.INITIAL_ANGLE_LOWER, self.INITIAL_ANGLE_LOWER, self.INITIAL_VELOCITY_LOWER, self.INITIAL_VELOCITY_LOWER
-        high = self.INITIAL_ANGLE_UPPER, self.INITIAL_ANGLE_UPPER, self.INITIAL_VELOCITY_UPPER, self.INITIAL_VELOCITY_UPPER
-        self.state = self.np_random.uniform(low=low, high=high).astype(
-            np.float32
+        low = (
+            self.INITIAL_ANGLE_LOWER,
+            self.INITIAL_ANGLE_LOWER,
+            self.INITIAL_VELOCITY_LOWER,
+            self.INITIAL_VELOCITY_LOWER,
         )
+        high = (
+            self.INITIAL_ANGLE_UPPER,
+            self.INITIAL_ANGLE_UPPER,
+            self.INITIAL_VELOCITY_UPPER,
+            self.INITIAL_VELOCITY_UPPER,
+        )
+        self.state = self.np_random.uniform(low=low, high=high).astype(np.float32)
         if not return_info:
             return self._get_ob()
         else:
@@ -103,7 +111,9 @@ class CARLAcrobotEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         if not contexts:

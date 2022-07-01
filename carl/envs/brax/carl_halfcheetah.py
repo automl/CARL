@@ -6,14 +6,14 @@ import json
 import brax
 import numpy as np
 from brax.envs.halfcheetah import _SYSTEM_CONFIG, Halfcheetah
-from brax.envs.wrappers import GymWrapper, VectorWrapper, VectorGymWrapper
+from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from numpyencoder import NumpyEncoder
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 15000.0,
@@ -49,7 +49,9 @@ class CARLHalfcheetah(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         if n_envs == 1:

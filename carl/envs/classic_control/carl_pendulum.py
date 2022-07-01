@@ -4,9 +4,9 @@ import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "max_speed": 8.0,
@@ -14,7 +14,6 @@ DEFAULT_CONTEXT = {
     "g": 10.0,
     "m": 1.0,
     "l": 1.0,
-
     "initial_angle_max": np.pi,  # Upper bound for uniform distribution to sample from
     "initial_velocity_max": 1,  # Upper bound for uniform distribution to sample from
     # The lower bound will be the negative value.
@@ -26,14 +25,13 @@ CONTEXT_BOUNDS = {
     "g": (0, np.inf, float),
     "m": (1e-6, np.inf, float),
     "l": (1e-6, np.inf, float),
-
     "initial_angle_max": (0, np.inf, float),
-    "initial_velocity_max": (0, np.inf, float)
+    "initial_velocity_max": (0, np.inf, float),
 }
 
 
 class CustomPendulum(gccenvs.pendulum.PendulumEnv):
-    def __init__(self, g: float = 10.):
+    def __init__(self, g: float = 10.0):
         super(CustomPendulum, self).__init__(g=g)
         self.initial_angle_max = DEFAULT_CONTEXT["initial_angle_max"]
         self.initial_velocity_max = DEFAULT_CONTEXT["initial_velocity_max"]
@@ -43,7 +41,7 @@ class CustomPendulum(gccenvs.pendulum.PendulumEnv):
         *,
         seed: Optional[int] = None,
         return_info: bool = False,
-        options: Optional[dict] = None
+        options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
         high = np.array([self.initial_angle_max, self.initial_velocity_max])
@@ -70,7 +68,9 @@ class CARLPendulumEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """

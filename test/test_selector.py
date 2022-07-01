@@ -1,9 +1,15 @@
+from typing import Any, Dict
+
 import unittest
 from unittest.mock import patch
 
-from typing import Dict, Any
+from carl.context.selection import (
+    AbstractSelector,
+    CustomSelector,
+    RandomSelector,
+    RoundRobinSelector,
+)
 from carl.utils.types import Context
-from carl.context.selection import RoundRobinSelector, RandomSelector, AbstractSelector, CustomSelector
 
 
 def dummy_select(dummy):
@@ -19,7 +25,7 @@ class TestSelectors(unittest.TestCase):
         contexts = {k: v for k, v in zip(keys, values)}
         return contexts
 
-    @patch.object(AbstractSelector, '_select', dummy_select)
+    @patch.object(AbstractSelector, "_select", dummy_select)
     def test_abstract_selector(self):
         contexts = self.generate_contexts()
         selector = AbstractSelector(contexts=contexts)
@@ -67,7 +73,9 @@ class TestSelectors(unittest.TestCase):
             return inst.contexts[inst.contexts_keys[context_id]], context_id
 
         contexts = self.generate_contexts()
-        selector = CustomSelector(contexts=contexts, selector_function=selector_function)
+        selector = CustomSelector(
+            contexts=contexts, selector_function=selector_function
+        )
 
         selector.select()
         self.assertEqual(selector.context_id, 1)

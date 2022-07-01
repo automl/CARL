@@ -24,6 +24,8 @@ Benchmarks include:
 - [RNADesign](https://github.com/automl/learna/), an environment for RNA design given structure
   constraints with structures from different datasets to choose from
 
+- [dm_control](https://github.com/deepmind/dm_control), environments based on the MuJoCo physics engine. The environments are extended with different context features.
+
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
 
 For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
@@ -42,7 +44,7 @@ pip install .
 
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
-pip install -e .[box2d, brax, rna, mario]
+pip install -e .[box2d, brax, rna, mario, dm_control]
 ```
 
 These may not be compatible with Windows systems. Box2D environment may need to be installed via conda on MacOS systems:
@@ -94,6 +96,8 @@ Benchmarking Track)](https://arxiv.org/pdf/2106.13281.pdf)
 Awiszus et al., AIIDE 2020](https://arxiv.org/pdf/2008.01531.pdf)
 
 [Learning to Design RNA, Runge et al., ICRL 2019](https://arxiv.org/pdf/1812.11951.pdf)
+
+[dm_control: Software and Tasks for Continuous Control](https://arxiv.org/pdf/2006.12983.pdf)
 
 ## License
 CARL falls under the Apache License 2.0 (see file 'LICENSE') as is permitted by all

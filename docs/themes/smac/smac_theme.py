@@ -1,7 +1,7 @@
 """
 Bootstrap-based sphinx theme from the PyData community
 """
-
+# flake8: noqa: E402
 # mypy: ignore-errors
 
 import os

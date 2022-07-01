@@ -1,16 +1,13 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
-import Box2D
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
-from gym import spaces
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
-from gym.utils import EzPickle
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "FPS": 50,
@@ -91,7 +88,9 @@ class CARLBipedalWalkerEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """
@@ -122,7 +121,6 @@ class CARLBipedalWalkerEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_mask=context_mask,
-
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
@@ -197,7 +195,9 @@ class CARLBipedalWalkerEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic(env: Union[CARLBipedalWalkerEnv, bipedal_walker.BipedalWalker]) -> None:
+def demo_heuristic(
+    env: Union[CARLBipedalWalkerEnv, bipedal_walker.BipedalWalker]
+) -> None:
     env.reset()
     steps = 0
     total_reward = 0

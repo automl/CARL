@@ -4,9 +4,9 @@ import gym
 import numpy as np
 from gym.envs.classic_control import CartPoleEnv
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "gravity": 9.8,
@@ -49,7 +49,9 @@ class CustomCartPoleEnv(CartPoleEnv):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
-        self.state = self.np_random.uniform(low=self.initial_state_lower, high=self.initial_state_upper, size=(4,))
+        self.state = self.np_random.uniform(
+            low=self.initial_state_lower, high=self.initial_state_upper, size=(4,)
+        )
         self.steps_beyond_done = None
         if not return_info:
             return np.array(self.state, dtype=np.float32)
@@ -72,7 +74,9 @@ class CARLCartPoleEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         if not contexts:

@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Union
 
 import gym
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.mario.carl_mario_definitions import (
     DEFAULT_CONTEXT,
@@ -11,7 +12,6 @@ from carl.envs.mario.carl_mario_definitions import (
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 
 class CARLMarioEnv(CARLEnv):
@@ -28,7 +28,9 @@ class CARLMarioEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         if not contexts:

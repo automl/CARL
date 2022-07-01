@@ -20,6 +20,7 @@ brax_spec = importlib.util.find_spec("brax")
 found = brax_spec is not None
 if found:
     from carl.envs.brax import *
+
     pass
 else:
     warnings.warn(

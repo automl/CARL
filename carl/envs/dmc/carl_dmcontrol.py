@@ -1,13 +1,33 @@
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Optional, Union
 
-from carl.envs.carl_env import CARLEnv
-from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.loader import load_dmc_env
-from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
+from carl.envs.carl_env import CARLEnv
+from carl.envs.dmc.loader import load_dmc_env
+from carl.envs.dmc.wrappers import MujocoToGymWrapper
+from carl.utils.trial_logger import TrialLogger
 
 
 class CARLDmcEnv(CARLEnv):
+    """
+    General class for the dm-control environments.
+
+    Meta-class to change the context for the environments.
+
+    Parameters
+    ----------
+    domain : str
+        Dm-control domain that should be loaded.
+    task : str
+        Task within the specified domain.
+
+    For descriptions of the other parameters see the parent class CARLEnv.
+
+    Raises
+    ------
+    NotImplementedError
+        Dict observation spaces are not implemented for dm-control yet.
+    """
+
     def __init__(
         self,
         domain: str,
@@ -27,22 +47,19 @@ class CARLDmcEnv(CARLEnv):
         context_selector_kwargs: Optional[Dict],
     ):
         # TODO can we have more than 1 env?
-        # env = MujocoToGymWrapper(env)
         if not contexts:
             contexts = {0: default_context}
         self.domain = domain
         self.task = task
-        if dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=self.domain,
-                task_name=self.task,
-                context={},
-                context_mask=[],
-                environment_kwargs={"flat_observation": True}
-            )
-            env = MujocoToGymWrapper(env)
+        env = load_dmc_env(
+            domain_name=self.domain,
+            task_name=self.task,
+            context={},
+            context_mask=[],
+            environment_kwargs={"flat_observation": True},
+        )
+        env = MujocoToGymWrapper(env)
+
         super().__init__(
             env=env,
             contexts=contexts,
@@ -65,14 +82,11 @@ class CARLDmcEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        if self.dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=self.domain,
-                task_name=self.task,
-                context=self.context,
-                context_mask=self.context_mask,
-                environment_kwargs={"flat_observation": True}
-            )
-            self.env = MujocoToGymWrapper(env)
+        env = load_dmc_env(
+            domain_name=self.domain,
+            task_name=self.task,
+            context=self.context,
+            context_mask=self.context_mask,
+            environment_kwargs={"flat_observation": True},
+        )
+        self.env = MujocoToGymWrapper(env)
