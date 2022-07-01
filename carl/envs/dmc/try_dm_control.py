@@ -15,7 +15,7 @@ if __name__ == "__main__":
     stronger_act = walker_default.copy()
     stronger_act["actuator_strength"] = walker_default["actuator_strength"]*2
     contexts = {0: stronger_act}
-    carl_env = CARLDmcWalkerEnv(task="stand_context", contexts=contexts, context_mask=walker_mask, hide_context=False)
+    carl_env = CARLDmcWalkerEnv(task="stand_context", contexts=contexts, context_mask=walker_mask, hide_context=False, dict_observation_space=True)
 
     # stronger_act = quadruped_default.copy()
     # stronger_act["actuator_strength"] = quadruped_default["actuator_strength"]*2
@@ -28,18 +28,17 @@ if __name__ == "__main__":
     render = lambda : plt.imshow(carl_env.render(mode='rgb_array'))
     s = carl_env.reset()
     render()
-    plt.savefig("asdf_dm.png")
+    # plt.savefig("dm_render.png")
     action = carl_env.action_space.sample()
     state, reward, done, info = carl_env.step(action=action)
     print("state", state, type(state))
-    assert False
 
-    s = carl_env.reset()
-    done = False
-    i = 0
-    while not done:
-        action = carl_env.action_space.sample()
-        state, reward, done, info = carl_env.step(action=action)
-        print(state, action, reward, done)
-        i += 1
-    print(i)
+    # s = carl_env.reset()
+    # done = False
+    # i = 0
+    # while not done:
+    #     action = carl_env.action_space.sample()
+    #     state, reward, done, info = carl_env.step(action=action)
+    #     print(state, action, reward, done)
+    #     i += 1
+    # print(i)

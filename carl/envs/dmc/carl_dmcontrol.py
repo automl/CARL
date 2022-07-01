@@ -46,22 +46,18 @@ class CARLDmcEnv(CARLEnv):
         context_selector_kwargs: Optional[Dict],
     ):
         # TODO can we have more than 1 env?
-        # env = MujocoToGymWrapper(env)
         if not contexts:
             contexts = {0: default_context}
         self.domain = domain
         self.task = task
-        if dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=self.domain,
-                task_name=self.task,
-                context={},
-                context_mask=[],
-                environment_kwargs={"flat_observation": True}
-            )
-            env = MujocoToGymWrapper(env)
+        env = load_dmc_env(
+            domain_name=self.domain,
+            task_name=self.task,
+            context={},
+            context_mask=[],
+            environment_kwargs={"flat_observation": True}
+        )
+        env = MujocoToGymWrapper(env)
         self.context_mask = context_mask
         super().__init__(
             env=env,
@@ -84,14 +80,11 @@ class CARLDmcEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        if self.dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=self.domain,
-                task_name=self.task,
-                context=self.context,
-                context_mask=self.context_mask,
-                environment_kwargs={"flat_observation": True}
-            )
-            self.env = MujocoToGymWrapper(env)
+        env = load_dmc_env(
+            domain_name=self.domain,
+            task_name=self.task,
+            context=self.context,
+            context_mask=self.context_mask,
+            environment_kwargs={"flat_observation": True}
+        )
+        self.env = MujocoToGymWrapper(env)
