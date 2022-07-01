@@ -28,6 +28,7 @@ class CARLMarioEnv(CARLEnv):
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -48,6 +49,7 @@ class CARLMarioEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_encoder=context_encoder,
+            context_mask=context_mask,
         )
         self.levels = []
         self._update_context()

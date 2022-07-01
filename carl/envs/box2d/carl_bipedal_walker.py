@@ -2,7 +2,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import Box2D
 import numpy as np
-from Box2D.b2 import edgeShape, fixtureDef, polygonShape
 from gym import spaces
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
@@ -92,6 +91,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -124,7 +124,8 @@ class CARLBipedalWalkerEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder = context_encoder,
+            context_mask=context_mask,
+            context_encoder=context_encoder,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
