@@ -6,9 +6,8 @@ import numpy as np
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context_encoders import ContextEncoder
-
 from carl.context.selection import AbstractSelector
+from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,  # unit?
@@ -18,14 +17,10 @@ DEFAULT_CONTEXT = {
     "goal_velocity": 0,  # unit?
     "force": 0.001,  # unit?
     "gravity": 0.0025,  # unit?
-    "start_position": -0.5,
-    "start_position_std": 0.1,
-    "start_velocity": 0.0,
-    "start_velocity_std": 0.1,
-    # "min_position_start": -0.6,
-    # "max_position_start": -0.4,
-    # "min_velocity_start": 0.,
-    # "max_velocity_start": 0.,
+    "min_position_start": -0.6,
+    "max_position_start": -0.4,
+    "min_velocity_start": 0.,
+    "max_velocity_start": 0.,
 }
 
 CONTEXT_BOUNDS = {
@@ -36,36 +31,26 @@ CONTEXT_BOUNDS = {
     "goal_velocity": (-np.inf, np.inf, float),
     "force": (-np.inf, np.inf, float),
     "gravity": (0, np.inf, float),
-    "start_position": (-1.5, 0.5, float),  # start position inbetween hilltops
-    "start_position_std": (0.1, np.inf, float),
-    "start_velocity": (-np.inf, np.inf, float),
-    "start_velocity_std": (0.1, np.inf, float)
-    # "min_position_start": (-np.inf, np.inf, float),  # TODO need to check these!!!
-    # "max_position_start": (-np.inf, np.inf, float),
-    # "min_velocity_start": (-np.inf, np.inf, float),
-    # "max_velocity_start": (-np.inf, np.inf, float),
+    "min_position_start": (-np.inf, np.inf, float),
+    "max_position_start": (-np.inf, np.inf, float),
+    "min_velocity_start": (-np.inf, np.inf, float),
+    "max_velocity_start": (-np.inf, np.inf, float),
 }
 
 
 class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
     def __init__(self, goal_velocity: float = 0.0):
         super(CustomMountainCarEnv, self).__init__(goal_velocity=goal_velocity)
-        # self.min_position_start = -0.6
-        # self.max_position_start = -0.4
-        # self.min_velocity_start = 0.
-        # self.max_velocity_start = 0.
-        self.position_start = -0.5
-        self.position_start_std = 0.1
-        self.velocity_start = 0.
-        self.velocity_start_std = 0.1
+        self.min_position_start = -0.6
+        self.max_position_start = -0.4
+        self.min_velocity_start = 0.
+        self.max_velocity_start = 0.
 
-    def reset_state(self):
+    def reset_state(self) -> np.ndarray:
         return np.array(
             [
-                self.np_random.normal(self.position_start, self.position_start_std),
-                self.np_random.normal(self.velocity_start, self.velocity_start_std)
-                # self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),  # sample start position
-                # self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)   # sample start velocity
+                self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),
+                self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)
             ]
         )
 
@@ -88,7 +73,7 @@ class CARLMountainCarEnv(CARLEnv):
         self,
         env: gym.Env = CustomMountainCarEnv(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -96,6 +81,7 @@ class CARLMountainCarEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -128,6 +114,7 @@ class CARLMountainCarEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_encoder=context_encoder,
+            context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
@@ -139,14 +126,10 @@ class CARLMountainCarEnv(CARLEnv):
         self.env.max_speed = self.context["max_speed"]
         self.env.goal_position = self.context["goal_position"]
         self.env.goal_velocity = self.context["goal_velocity"]
-        self.env.position_start = self.context["start_position"]
-        self.env.position_start_std = self.context["start_position_std"]
-        self.env.velocity_start = self.context["start_velocity"]
-        self.env.velocity_start_std = self.context["start_velocity_std"]
-        # self.env.min_position_start = self.context["min_position_start"]
-        # self.env.max_position_start = self.context["max_position_start"]
-        # self.env.min_velocity_start = self.context["min_velocity_start"]
-        # self.env.max_velocity_start = self.context["max_velocity_start"]
+        self.env.min_position_start = self.context["min_position_start"]
+        self.env.max_position_start = self.context["max_position_start"]
+        self.env.min_velocity_start = self.context["min_velocity_start"]
+        self.env.max_velocity_start = self.context["max_velocity_start"]
         self.env.force = self.context["force"]
         self.env.gravity = self.context["gravity"]
 

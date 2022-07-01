@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union, List
 
 import gym
 import numpy as np
@@ -55,7 +55,7 @@ class CARLRnaDesignEnv(CARLEnv):
         env = None,
         data_location: str = "envs/rna/learna/data",
         contexts: Dict[str, Dict] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -64,6 +64,7 @@ class CARLRnaDesignEnv(CARLEnv):
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
         context_encoder: Optional[ContextEncoder] = None,
+        context_mask: Optional[List[str]] = None,
     ):
         """
 
@@ -109,6 +110,7 @@ class CARLRnaDesignEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_encoder=context_encoder,
+            context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 

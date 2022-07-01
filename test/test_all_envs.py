@@ -9,7 +9,7 @@ class TestInitEnvs(unittest.TestCase):
     def test_init_all_envs(self):
         global_vars = vars(carl.envs)
         mustinclude = "CARL"
-        forbidden = ["defaults", "bounds"]
+        forbidden = ["defaults", "bounds", "mask"]
         for varname, var in global_vars.items():
             if mustinclude in varname and not np.any([f in varname for f in forbidden]):
                 try:

@@ -108,13 +108,14 @@ class CARLLunarLanderEnv(CARLEnv):
         self,
         env: Optional[LunarLanderEnv] = None,
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.05,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         max_episode_length: int = 1000,
         high_gameover_penalty: bool = False,
         dict_observation_space: bool = False,
@@ -152,6 +153,7 @@ class CARLLunarLanderEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_encoder=context_encoder,
+            context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()

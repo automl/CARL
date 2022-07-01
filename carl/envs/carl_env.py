@@ -32,6 +32,8 @@ class CARLEnv(Wrapper):
 
     Can change the context after each episode.
 
+    If not all keys are present in the provided context(s) the contexts will be filled
+    with the default context values in the init of the class.
 
     Parameters
     ----------
@@ -58,11 +60,14 @@ class CARLEnv(Wrapper):
         'by_mean' scales the context features by their mean over all passed instances and
         'by_default' scales the context features by their default values ('default_context').
     default_context: Dict
-        The default context of the environment. Used for scaling the context features if applicable.
+        The default context of the environment. Used for scaling the context features if applicable. Used for filling
+        incomplete contexts.
     state_context_features: Optional[List[str]] = None
         If the context is visible to the agent (hide_context=False), the context features are appended to the state.
         state_context_features specifies which of the context features are appended to the state. The default is
         appending all context features.
+    context_mask: Optional[List[str]]
+        Name of context features to be ignored when appending context features to the state.
     context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]]
         Context selector (object of) class, e.g., can be RoundRobinSelector (default) or RandomSelector.
         Should subclass AbstractSelector.
@@ -86,7 +91,7 @@ class CARLEnv(Wrapper):
         env: gym.Env,
         n_envs: int = 1,
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -94,6 +99,7 @@ class CARLEnv(Wrapper):
         scale_context_features: str = "no",
         default_context: Optional[Dict] = None,
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -102,7 +108,11 @@ class CARLEnv(Wrapper):
         super().__init__(env=env)
         # Gather args
         self.context_encoder = context_encoder
+        self._context: Optional[Dict] = None  # init for property
+        self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
+        self.default_context = default_context
         self.contexts = contexts
+        self.context_mask = context_mask
         self.hide_context = hide_context
         self.dict_observation_space = dict_observation_space
         self.cutoff = max_episode_length
@@ -152,7 +162,14 @@ class CARLEnv(Wrapper):
                             json.dump(data, file, indent="\t")
                 else:
                     state_context_features = []
-        self.state_context_features = state_context_features
+        else:
+            state_context_features = list(self.contexts[list(self.contexts.keys())[0]].keys())
+        self.state_context_features: List[str] = state_context_features
+        # state_context_features contains the names of the context features that should be appended to the state
+        # However, if context_mask is set, we want to update staet_context_feature_names so that the context features
+        # in context_mask are not appended to the state anymore.
+        if self.context_mask:
+            self.state_context_features = [s for s in self.state_context_features if s not in self.context_mask]
 
         self.step_counter = 0  # type: int # increased in/after step
         self.total_timestep_counter = 0  # type: int
@@ -164,8 +181,8 @@ class CARLEnv(Wrapper):
 
         # Set initial context
         self.context_index = 0  # type: int
-        context_keys = list(contexts.keys())
-        self.context = contexts[context_keys[self.context_index]]
+        context_keys = list(self.contexts.keys())
+        self.context = self.contexts[context_keys[self.context_index]]
 
         # Scale context features
         if scale_context_features not in self.available_scale_methods:
@@ -173,7 +190,6 @@ class CARLEnv(Wrapper):
                 f"{scale_context_features} not in {self.available_scale_methods}."
             )
         self.scale_context_features = scale_context_features
-        self.default_context = default_context
         self.context_feature_scale_factors = None
         if self.scale_context_features == "by_mean":
             cfs_vals = np.concatenate(
@@ -198,7 +214,22 @@ class CARLEnv(Wrapper):
        
         self.vectorized = n_envs > 1
         self.build_observation_space()
-        self._update_context()
+
+    @property
+    def context(self) -> Dict:
+        return self._context
+
+    @context.setter
+    def context(self, context: Dict):
+        self._context = self.fill_context_with_default(context=context)
+
+    @property
+    def contexts(self) -> Dict[Any, Dict[Any, Any]]:
+        return self._contexts
+
+    @contexts.setter
+    def contexts(self, contexts: Dict[Any, Dict[Any, Any]]):
+        self._contexts = {k: self.fill_context_with_default(context=v) for k, v in contexts.items()}
 
     def reset(self, **kwargs: Dict) -> Any:
         """
@@ -324,7 +355,7 @@ class CARLEnv(Wrapper):
     def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it
         # We need this because our CARLEnv has underscore class methods which would
-        # through an error otherwise
+        # throw an error otherwise
         if name in ["_progress_instance", "_update_context", "_log_context"]:
             return getattr(self, name)
         if name.startswith("_"):
@@ -332,6 +363,25 @@ class CARLEnv(Wrapper):
                 "attempted to get missing private attribute '{}'".format(name)
             )
         return getattr(self.env, name)
+
+    def fill_context_with_default(self, context: Dict) -> Dict:
+        """
+        Fill the context with the default values if entries are missing
+
+        Parameters
+        ----------
+        context
+
+        Returns
+        -------
+        context
+
+        """
+        if self.default_context:
+            context_def = self.default_context.copy()
+            context_def.update(context)
+            context = context_def
+        return context
 
     def _progress_instance(self) -> None:
         """

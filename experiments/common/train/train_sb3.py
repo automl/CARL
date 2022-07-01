@@ -16,13 +16,14 @@ from omegaconf import OmegaConf
 from omegaconf import DictConfig
 
 import stable_baselines3
-from stable_baselines3.common.callbacks import EveryNTimesteps, CheckpointCallback
+from stable_baselines3.common.callbacks import EveryNTimesteps
 from stable_baselines3.common.logger import configure
 
 from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
 from experiments.common.train.utils import make_env
 from experiments.common.train.eval_callback import DACEvalCallback
 from experiments.common.train.eval_policy import evaluate_policy
+from experiments.carlbench.context_logging import log_contexts_wandb
 from carl.context.sampling import sample_contexts
 
 
@@ -39,25 +40,6 @@ def check_config_valid(cfg):
     ):
         valid = False
     return valid
-
-
-def log_contexts(train_contexts, eval_contexts):
-    table = wandb.Table(
-        columns=sorted(train_contexts[0].keys()),
-        data=[
-            [train_contexts[idx][key] for key in sorted(train_contexts[idx].keys())]
-            for idx in train_contexts.keys()
-        ],
-    )
-    wandb.log({"train/contexts": table}, step=0)
-    eval_table = wandb.Table(
-        columns=sorted(eval_contexts[0].keys()),
-        data=[
-            [eval_contexts[idx][key] for key in sorted(eval_contexts[idx].keys())]
-            for idx in eval_contexts.keys()
-        ],
-    )
-    wandb.log({"eval/contexts": eval_table}, step=0)
 
 
 @hydra.main("./configs", "base")
@@ -124,7 +106,7 @@ def main(cfg: DictConfig):
         eval_contexts = contexts
     else:
         eval_contexts = sample_contexts(cfg.env, **cfg.contexts)
-    log_contexts(train_contexts=contexts, eval_contexts=eval_contexts)
+    log_contexts_wandb(train_contexts=contexts, eval_contexts=eval_contexts)
     env = make_env(cfg, contexts=contexts, num_envs=cfg.training.num_envs)
 
     print(OmegaConf.to_yaml(cfg))
