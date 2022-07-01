@@ -8,6 +8,25 @@ from carl.context.selection import AbstractSelector
 
 
 class CARLDmcEnv(CARLEnv):
+    """
+    General class for the dm-control environments.
+
+    Meta-class to change the context for the environments.
+
+    Parameters
+    ----------
+    domain : str
+        Dm-control domain that should be loaded.
+    task : str
+        Task within the specified domain.
+
+    For descriptions of the other parameters see the parent class CARLEnv.
+
+    Raises
+    ------
+    NotImplementedError
+        Dict observation spaces are not implemented for dm-control yet.
+    """
     def __init__(
         self,
         domain: str,
