@@ -10,7 +10,7 @@ wandb:
   id: null
   entity: tnt
   debug: false
-  # group: ???  # set in context_visibility
+  group: ???  # set in context_visibility
   job_type: train
   tags: []
   notes: null
@@ -47,8 +47,10 @@ render_freq: 10000
 eval_freq: 10000
 eval_episodes: 100
 eval_on_train_context: true
-contexts_train_path: null
+contexts_train_path: null  # priority over context_sampler
 contexts_eval_path: null
+kirk_evaluation_protocol:
+  follow: false
 
 zero_context: false # set context to zero
 state_context: false # set context to state feature subset

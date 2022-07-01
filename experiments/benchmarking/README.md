@@ -79,6 +79,10 @@ python experiments/benchmarking/run_training.py max_num_frames=10000 '+environme
  python experiments/benchmarking/run_training.py max_num_frames=25000 '+environments/misc=mario' '+context_visibility=hidden' 'wandb.debug=true' 'eval_episodes=5' 
 ```
 
+## Evaluation Protocol [Kirk]
+```bash
+python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol'
+```
 
-- [ ] Kirk distr.
+## Landing in Space
 - [ ] LunarLander contexts --> Option to read contexts from file

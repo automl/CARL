@@ -1,0 +1,28 @@
+# @package _global_
+
+env: CARLCartPoleEnv
+max_num_frames: 100_000
+wandb:
+  group: kirk_evaluation_protocol
+
+context_sampler:
+  n_samples: 1000
+
+eval_on_train_context: true
+kirk_evaluation_protocol:
+  follow: true
+  seed: ${seed}
+  mode: A  # A, B, C
+  context_features:
+    - _target_: experiments.evaluation_protocol.evaluation_protocol.ContextFeature
+      name: gravity
+      lower: 9.
+      lower_constraint: 9.5
+      mid: 10.
+      upper: 11.
+    - _target_: experiments.evaluation_protocol.evaluation_protocol.ContextFeature
+      name: pole_length
+      lower: 0.4
+      lower_constraint: 0.5
+      mid: 0.6
+      upper: 0.8

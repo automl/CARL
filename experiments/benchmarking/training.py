@@ -17,6 +17,7 @@ import torch as th
 from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 from rich import print
+from hydra.utils import instantiate
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
@@ -28,6 +29,7 @@ from experiments.context_gating.utils import check_wandb_exists, set_seed_everyw
 from experiments.carlbench.context_logging import log_contexts_wandb_traineval, log_contexts_json
 from experiments.carlbench.context_sampling import ContextSampler
 from experiments.common.utils.json_utils import lazy_json_load
+from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol
 
 
 base_dir = os.getcwd()
@@ -59,6 +61,19 @@ def check_config_valid(cfg):
     ):
         valid = False
     return valid
+
+
+def get_contexts_evaluation_protocol(cfg: DictConfig):
+    kwargs = OmegaConf.to_container(
+        cfg.kirk_evaluation_protocol, resolve=True, enum_to_str=True
+    )
+    del kwargs["follow"]
+    cfs = kwargs["context_features"]
+    kwargs["context_features"] = [instantiate(config=cf) for cf in cfs]
+    ep = EvaluationProtocol(**kwargs)
+    contexts = ep.create_train_contexts(n=cfg.context_sampler.n_samples)
+    contexts = contexts.to_dict()
+    return contexts
 
 
 @hydra.main("./configs", "base")
@@ -121,7 +136,10 @@ def train(cfg: DictConfig):
     if cfg.contexts_train_path is not None:
         contexts = lazy_json_load(cfg.contexts_train_path)
     else:
-        contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+        if cfg.kirk_evaluation_protocol.follow:
+            contexts = get_contexts_evaluation_protocol(cfg)
+        else:
+            contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
 
     if cfg.eval_on_train_context:
         eval_contexts = contexts
@@ -129,7 +147,10 @@ def train(cfg: DictConfig):
         if cfg.contexts_eval_path is not None:
             eval_contexts = lazy_json_load(cfg.contexts_eval_path)
         else:
-            eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+            if cfg.kirk_evaluation_protocol.follow:
+                eval_contexts = get_contexts_evaluation_protocol(cfg)
+            else:
+                eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
     if contexts:
         log_contexts_wandb_traineval(train_contexts=contexts, eval_contexts=eval_contexts)
 
