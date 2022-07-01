@@ -36,9 +36,9 @@ def main():
     if args.result_dir is not None:
         filenames = list(glob_re(r"\d\d*", os.listdir(args.result_dir)))
         filenames.sort(key=float)
-        result_paths = [os.path.join(args.result_dir, f) for f in filenames]
+        result_paths = [f"'{os.path.join(args.result_dir, f)}'" for f in filenames]
         result_paths_str = ",".join(result_paths)
-        result_paths_arg = f"'results_path={result_paths_str}'"
+        result_paths_arg = f"results_path={result_paths_str}"
         unknown_args.append(result_paths_arg)
 
     if add_multirun_flag:
