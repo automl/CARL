@@ -77,8 +77,18 @@ class CustomAcrobotEnv(AcrobotEnv):
         options: Optional[dict] = None
     ):
         super().reset(seed=seed)
-        low = self.INITIAL_ANGLE_LOWER, self.INITIAL_ANGLE_LOWER, self.INITIAL_VELOCITY_LOWER, self.INITIAL_VELOCITY_LOWER
-        high = self.INITIAL_ANGLE_UPPER, self.INITIAL_ANGLE_UPPER, self.INITIAL_VELOCITY_UPPER, self.INITIAL_VELOCITY_UPPER
+        low = (
+            self.INITIAL_ANGLE_LOWER,
+            self.INITIAL_ANGLE_LOWER,
+            self.INITIAL_VELOCITY_LOWER,
+            self.INITIAL_VELOCITY_LOWER
+        )
+        high = (
+            self.INITIAL_ANGLE_UPPER,
+            self.INITIAL_ANGLE_UPPER,
+            self.INITIAL_VELOCITY_UPPER,
+            self.INITIAL_VELOCITY_UPPER
+        )
         self.state = self.np_random.uniform(low=low, high=high).astype(
             np.float32
         )
