@@ -152,6 +152,19 @@ class TestStateConstruction(unittest.TestCase):
         next_obs, reward, done, info = env.step(action=action)
         env.close()
 
+    def test_state_context_feature_population(self):
+        env = (  # noqa: F841 local variable is assigned to but never used
+            CARLPendulumEnv(
+                contexts={},
+                hide_context=False,
+                add_gaussian_noise_to_context=False,
+                gaussian_noise_std_percentage=0.01,
+                state_context_features=None,
+                scale_context_features="no",
+            )
+        )
+        self.assertIsNotNone(env.state_context_features)
+
 
 class TestEpisodeTermination(unittest.TestCase):
     def test_episode_termination(self):
@@ -308,19 +321,6 @@ class TestContextFeatureScaling(unittest.TestCase):
         forbidden_in_context = [f for f in env.state_context_features if f in context_mask]
         self.assertTrue(len(s_c) == len(list(env.default_context.keys())) - 2)
         self.assertTrue(len(forbidden_in_context) == 0)
-
-    def test_state_context_feature_population(self):
-        env = (  # noqa: F841 local variable is assigned to but never used
-            CARLPendulumEnv(
-                contexts={},
-                hide_context=False,
-                add_gaussian_noise_to_context=False,
-                gaussian_noise_std_percentage=0.01,
-                state_context_features=None,
-                scale_context_features="no",
-            )
-        )
-        self.assertIsNotNone(env.state_context_features)
 
 
 class TestContextSelection(unittest.TestCase):
