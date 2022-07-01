@@ -45,7 +45,6 @@ class CARLDmcEnv(CARLEnv):
                 environment_kwargs={"flat_observation": True}
             )
             env = MujocoToGymWrapper(env)
-        self.context_mask = context_mask
         super().__init__(
             env=env,
             contexts=contexts,
@@ -60,6 +59,7 @@ class CARLDmcEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
+            context_mask=context_mask,
             context_encoder=context_encoder,
         )
         # TODO check gaussian noise on context features
