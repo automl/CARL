@@ -14,6 +14,10 @@ DEFAULT_CONTEXT = {
     "g": 10.0,
     "m": 1.0,
     "l": 1.0,
+
+    "initial_angle_max": np.pi,  # Upper bound for uniform distribution to sample from
+    "initial_velocity_max": 1,  # Upper bound for uniform distribution to sample from
+    # The lower bound will be the negative value.
 }
 
 CONTEXT_BOUNDS = {
@@ -22,15 +26,41 @@ CONTEXT_BOUNDS = {
     "g": (0, np.inf, float),
     "m": (1e-6, np.inf, float),
     "l": (1e-6, np.inf, float),
+
+    "initial_angle_max": (0, np.inf, float),
+    "initial_velocity_max": (0, np.inf, float)
 }
+
+
+class CustomPendulum(gccenvs.pendulum.PendulumEnv):
+    def __init__(self, g: float = 10.):
+        super(CustomPendulum, self).__init__(g=g)
+        self.initial_angle_max = DEFAULT_CONTEXT["initial_angle_max"]
+        self.initial_velocity_max = DEFAULT_CONTEXT["initial_velocity_max"]
+
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None
+    ):
+        super().reset(seed=seed)
+        high = np.array([self.initial_angle_max, self.initial_velocity_max])
+        self.state = self.np_random.uniform(low=-high, high=high)
+        self.last_u = None
+        if not return_info:
+            return self._get_obs()
+        else:
+            return self._get_obs(), {}
 
 
 class CARLPendulumEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = gccenvs.pendulum.PendulumEnv(),
+        env: gym.Env = CustomPendulum(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -38,6 +68,7 @@ class CARLPendulumEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -70,6 +101,7 @@ class CARLPendulumEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
+            context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
@@ -81,6 +113,8 @@ class CARLPendulumEnv(CARLEnv):
         self.env.l = self.context["l"]  # noqa: E741 ambiguous variable name
         self.env.m = self.context["m"]
         self.env.g = self.context["g"]
+        self.env.initial_angle_max = self.context["initial_angle_max"]
+        self.env.initial_velocity_max = self.context["initial_velocity_max"]
 
         high = np.array([1.0, 1.0, self.max_speed], dtype=np.float32)
         self.build_observation_space(-high, high, CONTEXT_BOUNDS)
