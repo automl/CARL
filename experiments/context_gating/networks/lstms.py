@@ -4,6 +4,7 @@ import jax.numpy as jnp
 from omegaconf import DictConfig
 from typing import Tuple
 
+
 class cLSTM(hk.LSTM):
     """
     A class to use LSTM as a slow network, adapted from the hk.LSTM module
@@ -54,7 +55,6 @@ class cLSTM(hk.LSTM):
             # If the context has changed
             # initialize the hidden state with context
             prev_state = hk.LSTMState(hidden=context, cell=self.prev_lstm_state.cell)
-
 
         x_and_h = jnp.concatenate([state, prev_state.hidden], axis=-1)
 
@@ -118,6 +118,3 @@ class cLSTM(hk.LSTM):
             prev_state = self.prev_lstm_state
 
         return prev_state
-
-
-

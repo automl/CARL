@@ -5,6 +5,7 @@ from omegaconf import DictConfig
 
 from .lstms import cLSTM
 
+
 def context_gating_func(cfg: DictConfig):
     context_seq = hk.Sequential(
         (
@@ -63,11 +64,10 @@ def context_LSTM(cfg: DictConfig):
         """
 
         # encode the context
-        encoded_context = context_seq(obs['context'])
-        
-        
+        encoded_context = context_seq(obs["context"])
+
         output, _ = core_lstm(
-            state=encoded_state,      # Every new state is passed input
+            state=encoded_state,  # Every new state is passed input
             context=encoded_context,  # the encoded context for hidden initialization
         )
 
