@@ -16,7 +16,7 @@ import jax
 import numpy as onp
 import wandb
 import torch as th
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, open_dict
 from hydra.core.hydra_config import HydraConfig
 from rich import print
 
@@ -49,7 +49,6 @@ base_dir = os.getcwd()
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    print("Eval Cfg", cfg)
 
     hydra_job = (
         os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
@@ -59,7 +58,6 @@ def train(cfg: DictConfig):
     cfg.wandb.id = hydra_job + "_" + id_generator()
 
     traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
-    print("Train Cfg", traincfg)
 
     wandbdir = Path(cfg.results_path) / "wandb"
 
@@ -70,7 +68,7 @@ def train(cfg: DictConfig):
     #     project=cfg.wandb.project,
     #     job_type=cfg.wandb.job_type,
     #     entity=cfg.wandb.entity,
-    #     group=cfg.wandb.group,
+    #     group=cfg.wandb.group,  # TODO get group from traincfg
     #     dir=os.getcwd(),
     #     config=OmegaConf.to_container(cfg, resolve=True, enum_to_str=True),
     #     sync_tensorboard=True,
@@ -87,6 +85,17 @@ def train(cfg: DictConfig):
         slurm_id = None
     # wandb.config.update({"command": command, "slurm_id": slurm_id})
     set_seed_everywhere(traincfg.seed)
+
+    # ----------------------------------------------------------------------
+    # Update config
+    # ----------------------------------------------------------------------
+    if "carl" in cfg and "context_mask" in cfg.carl:
+        with open_dict(traincfg):
+            traincfg.carl.context_mask = cfg.carl.context_mask
+            # traincfg["carl"]["context_mask"] = cfg.carl.context_mask
+
+    print("Eval Cfg", cfg)
+    print("Train Cfg", traincfg)
 
     # ----------------------------------------------------------------------
     # Sample contexts
