@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Dict, Optional, Union
 
 import gym
 import numpy as np
@@ -22,7 +22,7 @@ from carl.context.selection import AbstractSelector
 class RnaGymWrapper(object):
     def __init__(self, env):
         self.env = env
-        
+
     def reset(self):
         state = self.env.reset()
         state = np.array(state).flatten()
@@ -43,7 +43,7 @@ class RnaGymWrapper(object):
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env = None,
+        env: gym.Env = None,
         data_location: str = "envs/rna/learna/data",
         contexts: Dict[str, Dict] = {},
         hide_context: bool = False,

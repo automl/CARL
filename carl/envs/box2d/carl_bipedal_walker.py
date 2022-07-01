@@ -1,12 +1,9 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
-import Box2D
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
-from gym import spaces
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
-from gym.utils import EzPickle
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger

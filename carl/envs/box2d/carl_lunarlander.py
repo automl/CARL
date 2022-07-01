@@ -1,13 +1,9 @@
 from typing import Any, Dict, List, Optional, Tuple, Union, TypeVar
 
-import Box2D
-import numpy as np
-from gym import spaces
 from gym import Wrapper
 
 from gym.envs.box2d import lunar_lander
 from gym.envs.box2d.lunar_lander import heuristic
-from gym.utils import EzPickle, seeding
 
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger

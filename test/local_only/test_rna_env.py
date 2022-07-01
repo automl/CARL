@@ -1,7 +1,5 @@
 import unittest
 
-import numpy as np
-
 from carl.envs.rna.carl_rna import CARLRnaDesignEnv, RnaGymWrapper
 
 

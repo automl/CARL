@@ -339,7 +339,7 @@ class TestContextSelection(unittest.TestCase):
     def test_unknown_selector_init(self):
         with self.assertRaises(ValueError):
             contexts = self.generate_contexts()
-            env = CARLPendulumEnv(contexts=contexts, context_selector="bork")
+            _ = CARLPendulumEnv(contexts=contexts, context_selector="bork")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-import imp
+# flake8: noqa: F401
 from carl.envs import CARLDmcWalkerEnv
 from carl.envs import CARLDmcQuadrupedEnv
 from carl.envs import CARLDmcFishEnv
@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     # Load one task:
-    
     stronger_act = walker_default.copy()
     stronger_act["actuator_strength"] = walker_default["actuator_strength"]*2
     contexts = {0: stronger_act}
