@@ -63,6 +63,8 @@ class CARLEnv(Wrapper):
         If the context is visible to the agent (hide_context=False), the context features are appended to the state.
         state_context_features specifies which of the context features are appended to the state. The default is
         appending all context features.
+    context_mask: Optional[List[str]]
+        Name of context features to be ignored when appending context features to the state.
     context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]]
         Context selector (object of) class, e.g., can be RoundRobinSelector (default) or RandomSelector.
         Should subclass AbstractSelector.
@@ -94,6 +96,7 @@ class CARLEnv(Wrapper):
         scale_context_features: str = "no",
         default_context: Optional[Dict] = None,
         state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
@@ -104,6 +107,7 @@ class CARLEnv(Wrapper):
         self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
         self.default_context = default_context
         self.contexts = contexts
+        self.context_mask = context_mask
         self.hide_context = hide_context
         self.dict_observation_space = dict_observation_space
         self.cutoff = max_episode_length
@@ -153,7 +157,14 @@ class CARLEnv(Wrapper):
                             json.dump(data, file, indent="\t")
                 else:
                     state_context_features = []
-        self.state_context_features = state_context_features
+        else:
+            state_context_features = list(self.contexts[list(self.contexts.keys())[0]].keys())
+        self.state_context_features: List[str] = state_context_features
+        # state_context_features contains the names of the context features that should be appended to the state
+        # However, if context_mask is set, we want to update staet_context_feature_names so that the context features
+        # in context_mask are not appended to the state anymore.
+        if self.context_mask:
+            self.state_context_features = [s for s in self.state_context_features if s not in self.context_mask]
 
         self.step_counter = 0  # type: int # increased in/after step
         self.total_timestep_counter = 0  # type: int
