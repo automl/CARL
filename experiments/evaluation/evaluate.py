@@ -19,6 +19,8 @@ import torch as th
 from omegaconf import DictConfig, OmegaConf, open_dict
 from hydra.core.hydra_config import HydraConfig
 from rich import print
+from tqdm import tqdm
+import pandas as pd
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
@@ -28,7 +30,6 @@ from experiments.context_gating.algorithms.c51 import c51
 from experiments.context_gating.utils import (
     check_wandb_exists,
     set_seed_everywhere,
-    evaluate,
 )
 
 from experiments.carlbench.context_logging import (
@@ -44,6 +45,25 @@ from experiments.evaluation.loading import load_policy
 
 
 base_dir = os.getcwd()
+
+
+def evaluate(pi, env, num_episodes):
+    returns = []
+    context_ids = []
+    for _ in tqdm(range(num_episodes)):
+        ret = 0
+        s = env.reset()
+
+        for t in range(env.cutoff):
+            a = pi.mean(s)  # use mean for exploitation
+            s_next, r, done, info = env.step(a)
+            ret += r
+            if done:
+                break
+            s = s_next
+        returns.append(ret)
+        context_ids.append(env.context_selector.context_id)
+    return returns, context_ids
 
 
 @hydra.main("./configs", "base")
@@ -158,8 +178,14 @@ def train(cfg: DictConfig):
     # ----------------------------------------------------------------------
     weights_path = wandbdir / "latest-run" / "files" / "func_dict.pkl.lz4"
     policy = load_policy(traincfg, weights_path=weights_path)
-    returns = evaluate(pi=policy, env=env, num_episodes=cfg.n_eval_episodes)
+    returns, context_ids = evaluate(pi=policy, env=env, num_episodes=50) # cfg.n_eval_episodes)
     avg_return = onp.mean(returns)
+    df = pd.DataFrame(data=onp.vstack((context_ids, returns)).T, columns=["context_id", "return"])
+    return_per_context_table = wandb.Table(dataframe=df)
+    wandb.log({
+        "return_per_context": wandb.plot.bar(return_per_context_table, "context_id", "return", title="Return per Context"),
+        "average_return": avg_return,
+    })
     print(avg_return)
 
     # ----------------------------------------------------------------------
