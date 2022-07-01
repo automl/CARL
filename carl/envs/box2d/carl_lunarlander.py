@@ -153,7 +153,6 @@ class CARLLunarLanderEnv(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_encoder=context_encoder,
-            context_selector_kwargs=context_selector_kwargs,
             context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(
