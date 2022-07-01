@@ -1,13 +1,12 @@
-from typing import Any, Dict, List, Optional, Tuple, Union, TypeVar
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from gym import Wrapper
-
 from gym.envs.box2d import lunar_lander
 from gym.envs.box2d.lunar_lander import heuristic
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -74,9 +73,9 @@ CONTEXT_BOUNDS = {
 
 class LunarLanderEnv(Wrapper):
     def __init__(
-            self,
-            env: Optional[lunar_lander.LunarLander] = None,
-            high_gameover_penalty: bool = False,
+        self,
+        env: Optional[lunar_lander.LunarLander] = None,
+        high_gameover_penalty: bool = False,
     ):
         if env is None:
             env = lunar_lander.LunarLander()
@@ -113,7 +112,9 @@ class CARLLunarLanderEnv(CARLEnv):
         max_episode_length: int = 1000,
         high_gameover_penalty: bool = False,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """
@@ -178,7 +179,9 @@ class CARLLunarLanderEnv(CARLEnv):
 
 
 def demo_heuristic_lander(
-    env: Union[CARLLunarLanderEnv, lunar_lander.LunarLander, lunar_lander.LunarLanderContinuous],
+    env: Union[
+        CARLLunarLanderEnv, lunar_lander.LunarLander, lunar_lander.LunarLanderContinuous
+    ],
     seed: Optional[int] = None,
     render: bool = False,
 ) -> float:

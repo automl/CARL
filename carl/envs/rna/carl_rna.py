@@ -1,9 +1,11 @@
-from typing import Dict, Optional, Union, List
+from typing import Dict, List, Optional, Union
+
+import os
 
 import gym
 import numpy as np
-import os
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.carl_rna_definitions import (
     ACTION_SPACE,
@@ -16,7 +18,6 @@ from carl.envs.rna.learna.src.learna.environment import (
     RnaDesignEnvironmentConfig,
 )
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 
 class RnaGymWrapper(object):
@@ -52,7 +53,9 @@ class CARLRnaDesignEnv(CARLEnv):
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
         context_mask: Optional[List[str]] = None,
     ):

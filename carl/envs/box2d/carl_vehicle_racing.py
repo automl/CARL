@@ -6,6 +6,7 @@ from gym.envs.box2d import CarRacing
 from gym.envs.box2d.car_dynamics import Car
 from pyglet import gl
 
+from carl.context.selection import AbstractSelector
 from carl.envs.box2d.parking_garage.bus import AWDBus  # as Car
 from carl.envs.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
 from carl.envs.box2d.parking_garage.bus import AWDBusSmallTrailer  # as Car
@@ -37,7 +38,6 @@ from carl.envs.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -196,7 +196,9 @@ class CARLVehicleRacingEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """

@@ -2,27 +2,26 @@ from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 
-from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 from carl.envs.dmc.dmc_tasks.quadruped import STEP_LIMIT
-
+from carl.utils.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,
-    "friction_tangential": 1.,  # Scaling factor for tangential friction of all geoms (objects)
-    "friction_torsional": 1.,  # Scaling factor for torsional friction of all geoms (objects)
-    "friction_rolling": 1.,  # Scaling factor for rolling friction of all geoms (objects)
+    "friction_tangential": 1.0,  # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1.0,  # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1.0,  # Scaling factor for rolling friction of all geoms (objects)
     "timestep": 0.005,  # Seconds between updates
-    "joint_damping": 1.,  # Scaling factor for all joints
-    "joint_stiffness": 0.,
+    "joint_damping": 1.0,  # Scaling factor for all joints
+    "joint_stiffness": 0.0,
     "actuator_strength": 1,  # Scaling factor for all actuators in the model
-    "density": 0.,
-    "viscosity": 0.,
-    "geom_density": 1.,  # Scaling factor for all geom (objects) densities
-    "wind_x": 0.,
-    "wind_y": 0.,
-    "wind_z": 0.,
+    "density": 0.0,
+    "viscosity": 0.0,
+    "geom_density": 1.0,  # Scaling factor for all geom (objects) densities
+    "wind_x": 0.0,
+    "wind_y": 0.0,
+    "wind_z": 0.0,
 }
 
 CONTEXT_BOUNDS = {
@@ -30,7 +29,11 @@ CONTEXT_BOUNDS = {
     "friction_tangential": (0, np.inf, float),
     "friction_torsional": (0, np.inf, float),
     "friction_rolling": (0, np.inf, float),
-    "timestep": (0.001, 0.1, float,),
+    "timestep": (
+        0.001,
+        0.1,
+        float,
+    ),
     "joint_damping": (0, np.inf, float),
     "joint_stiffness": (0, np.inf, float),
     "actuator_strength": (0, np.inf, float),
@@ -65,7 +68,9 @@ class CARLDmcQuadrupedEnv(CARLDmcEnv):
         max_episode_length: int = STEP_LIMIT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         super().__init__(

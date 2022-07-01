@@ -1,10 +1,10 @@
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Optional, Union
 
-from carl.envs.carl_env import CARLEnv
-from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.loader import load_dmc_env
-from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
+from carl.envs.carl_env import CARLEnv
+from carl.envs.dmc.loader import load_dmc_env
+from carl.envs.dmc.wrappers import MujocoToGymWrapper
+from carl.utils.trial_logger import TrialLogger
 
 
 class CARLDmcEnv(CARLEnv):
@@ -27,6 +27,7 @@ class CARLDmcEnv(CARLEnv):
     NotImplementedError
         Dict observation spaces are not implemented for dm-control yet.
     """
+
     def __init__(
         self,
         domain: str,
@@ -55,7 +56,7 @@ class CARLDmcEnv(CARLEnv):
             task_name=self.task,
             context={},
             context_mask=[],
-            environment_kwargs={"flat_observation": True}
+            environment_kwargs={"flat_observation": True},
         )
         env = MujocoToGymWrapper(env)
 
@@ -86,6 +87,6 @@ class CARLDmcEnv(CARLEnv):
             task_name=self.task,
             context=self.context,
             context_mask=self.context_mask,
-            environment_kwargs={"flat_observation": True}
+            environment_kwargs={"flat_observation": True},
         )
         self.env = MujocoToGymWrapper(env)

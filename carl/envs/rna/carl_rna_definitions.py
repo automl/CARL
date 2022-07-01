@@ -23,15 +23,23 @@ CONTEXT_BOUNDS = {
     "mutation_threshold": (0.1, np.inf, float),
     "reward_exponent": (0.1, np.inf, float),
     "state_radius": (1, np.inf, float),
-    "dataset": (None, None, "categorical", ["eterna", "rfam_taneda", "rfam_learn", None]),
+    "dataset": (
+        None,
+        None,
+        "categorical",
+        ["eterna", "rfam_taneda", "rfam_learn", None],
+    ),
     "target_structure_ids": (
-        None, None, "conditional",
+        None,
+        None,
+        "conditional",
         {
             "eterna": ID_LIST_ETERNA,
             "rfam_taneda": ID_LIST_RFAM_TANEDA,
-            "rfan_learn": ID_LIST_RFAM_LEARN, None: [None]
+            "rfan_learn": ID_LIST_RFAM_LEARN,
+            None: [None],
         },
-        "dataset"
+        "dataset",
     ),
     # "solvers": {
     #     "eterna": SOLVER_LIST_ETERNA,

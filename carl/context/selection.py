@@ -1,7 +1,9 @@
 from abc import abstractmethod
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
 import numpy as np
+
 from carl.utils.types import Context
-from typing import Dict, Any, Optional, Tuple, List, Callable
 
 
 class AbstractSelector(object):

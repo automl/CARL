@@ -4,9 +4,9 @@ import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
+from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.context.selection import AbstractSelector
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,
@@ -77,7 +77,9 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """
