@@ -184,7 +184,7 @@ def train(cfg: DictConfig):
     return_per_context_table = wandb.Table(dataframe=df)
     wandb.log({
         "return_per_context": wandb.plot.bar(return_per_context_table, "context_id", "return", title="Return per Context"),
-        "average_return": avg_return,
+        "average_return": avg_return,  # TODO log as scalar
     })
     print(avg_return)
 
