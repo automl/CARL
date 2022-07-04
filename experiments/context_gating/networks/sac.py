@@ -74,7 +74,7 @@ def q_func(cfg, env):
     def q(S, A, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
 
-            # Encodet the state each time
+            # Encode the state each time
             state_seq = hk.Sequential(
                 (
                     hk.Linear(cfg.network.width),
