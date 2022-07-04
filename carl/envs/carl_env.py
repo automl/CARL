@@ -293,7 +293,6 @@ class CARLEnv(Wrapper):
                 )
 
             # Pass the context features to the encoder to extract decomposed representation            
-            
             if self.context_encoder:
                 # Encode context
                 context_values = self.encode_contexts(context_values)
