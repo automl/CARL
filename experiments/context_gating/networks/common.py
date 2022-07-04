@@ -31,7 +31,7 @@ def context_gating_func(cfg: DictConfig):
 
 def context_LSTM(cfg: DictConfig):
     """
-    function to Handle the LSTM class
+    Function to handle the LSTM class
     """
 
     core_lstm = cLSTM(
