@@ -25,7 +25,7 @@ def pi_func(cfg, env):
             width = cfg.network.width
 
             # Gate the context according to the requirement
-            if cfg.gating_type == 'cGate':
+            if cfg.gating_type == 'Hadamard':
                 context_gating = context_gating_func(cfg)
             elif cfg.gating_type == 'LSTM':
                 assert cfg.network.width == cfg.context_branch.width
