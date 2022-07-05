@@ -66,6 +66,17 @@ def evaluate(pi, env, num_episodes):
     return returns, context_ids
 
 
+def check_evaluation_protocol_combo(mode: str, distribution_type: str) -> bool:
+    is_valid = True
+    invalids = [
+        "A" + "test_interpolation_combinatorial",
+        "C" + "test_interpolation",
+    ]
+    if mode + distribution_type in invalids:
+        is_valid = False
+    return is_valid
+
+
 @hydra.main("./configs", "base")
 def evaluate_policy(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
@@ -80,6 +91,16 @@ def evaluate_policy(cfg: DictConfig):
     traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
 
     wandbdir = Path(cfg.results_path) / "wandb"
+
+    if cfg.kirk_evaluation_protocol.follow:
+        is_valid = check_evaluation_protocol_combo(
+            mode=traincfg.kirk_evaluation_protocol.mode,
+            distribution_type=cfg.kirk_evaluation_protocol.distribution_type
+        )
+        if not is_valid:
+            print("Skipping run because combination of evaluation protocol mode and distribution type "
+                  "is invalid.")
+            return None
 
     run = wandb.init(
         id=cfg.wandb.id,
@@ -143,9 +164,13 @@ def evaluate_policy(cfg: DictConfig):
             contexts = load_wandb_contexts(contexts_path)
     else:
         contexts = lazy_json_load(cfg.contexts_path)
-    if contexts is not None:
+    if contexts is not None and len(contexts) > 0:
         log_contexts_wandb(contexts=contexts, wandb_key="evalpost/contexts")
         cfg.n_eval_episodes = cfg.n_eval_episodes_per_context * len(contexts)
+
+    skip_eval = False
+    if contexts == {} and cfg.kirk_evaluation_protocol.follow:
+        skip_eval = True
 
     # ----------------------------------------------------------------------
     # Instantiate environments
@@ -170,6 +195,7 @@ def evaluate_policy(cfg: DictConfig):
     # ----------------------------------------------------------------------
     # Log experiment
     # ----------------------------------------------------------------------
+    wandb.config.update({"traincfg": traincfg})
     print(OmegaConf.to_yaml(cfg))
     print(env)
     print(f"Observation Space: ", env.observation_space)
