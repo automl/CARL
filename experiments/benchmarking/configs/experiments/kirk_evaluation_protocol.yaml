@@ -16,6 +16,9 @@ carl:
 eval_on_train_context: true
 kirk_evaluation_protocol:
   follow: true
+  distribution_type: train
+
+  # Kwargs for EvaluationProtocol
   seed: ${seed}
   mode: A  # A, B, C
   context_features:

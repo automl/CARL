@@ -64,14 +64,31 @@ def check_config_valid(cfg):
 
 
 def get_contexts_evaluation_protocol(cfg: DictConfig):
+    sample_function_attrs = {
+        "train": "create_train_contexts",
+        "test_interpolation": "create_contexts_interpolation",
+        "test_interpolation_combinatorial": "create_contexts_interpolation_combinatorial",
+        "test_extrapolation_single": "create_contexts_extrapolation_single",
+        "test_extrapolation_all": "create_contexts_extrapolation_all",
+    }
+
     kwargs = OmegaConf.to_container(
         cfg.kirk_evaluation_protocol, resolve=True, enum_to_str=True
     )
     del kwargs["follow"]
+    if "distribution_type" in kwargs:
+        distribution_type = kwargs["distribution_type"]
+        del kwargs["distribution_type"]
+    else:
+        distribution_type = "train"
     cfs = kwargs["context_features"]
     kwargs["context_features"] = [instantiate(config=cf) for cf in cfs]
     ep = EvaluationProtocol(**kwargs)
-    contexts = ep.create_train_contexts(n=cfg.context_sampler.n_samples)
+    if distribution_type in sample_function_attrs:
+        sample_function = getattr(ep, sample_function_attrs[distribution_type])
+    else:
+        raise ValueError(f"Distribution type {distribution_type} unknown.")
+    contexts = sample_function(n=cfg.context_sampler.n_samples)
     contexts = contexts.to_dict(orient="index")
     return contexts
 
