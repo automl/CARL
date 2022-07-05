@@ -74,8 +74,6 @@ class cLSTM(hk.LSTM):
     def set_state(self, state: hk.LSTMState) -> hk.LSTMState:
         """
         Function to set the state
-
-        TODO: Additional logic here potentially
         """
 
         self.prev_lstm_state = state
