@@ -5,6 +5,7 @@ defaults:
   - override hydra/job_logging: colorlog
   - override hydra/hydra_logging: colorlog
 
+experiment: benchmarking
 wandb:
   id: null
   entity: tnt
