@@ -47,7 +47,7 @@ base_dir = os.getcwd()
 
 
 @hydra.main("./configs", "base")
-def train(cfg: DictConfig):
+def evaluate_policy(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
     print("Eval Cfg", cfg)
 
@@ -162,4 +162,4 @@ def train(cfg: DictConfig):
 
 
 if __name__ == "__main__":
-    train()
+    evaluate_policy()
