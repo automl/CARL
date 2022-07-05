@@ -38,7 +38,7 @@ from experiments.carlbench.context_logging import (
     load_wandb_contexts,
 )
 from experiments.carlbench.context_sampling import ContextSampler
-from experiments.benchmarking.training import get_encoder, id_generator
+from experiments.benchmarking.training import get_encoder, id_generator, get_contexts_evaluation_protocol
 from experiments.common.utils.json_utils import lazy_json_load
 from experiments.evaluation.loading import load_policy
 
@@ -95,6 +95,10 @@ def evaluate_policy(cfg: DictConfig):
     if not cfg.contexts_path:
         if cfg.sample_contexts:
             contexts = ContextSampler(**traincfg.context_sampler).sample_contexts()
+        elif cfg.kirk_evaluation_protocol.follow:
+            # override train config for evaluation protocol with eval config
+            traincfg.kirk_evaluation_protocol.distribution_type = cfg.kirk_evaluation_protocol.distribution_type
+            contexts = get_contexts_evaluation_protocol(traincfg)
         else:
             # use train contexts
             dir = "eval"
