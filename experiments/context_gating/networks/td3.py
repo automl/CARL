@@ -17,7 +17,7 @@ def pi_func(cfg, env):
             x = state_seq(S["state"])
 
             # Gate the context according to the requirement
-            if cfg.gating_type == 'cGate':
+            if cfg.gating_type == 'Hadamard':
                 context_gating = context_gating_func(cfg)
             elif cfg.gating_type == 'LSTM':
                 context_gating = context_LSTM(cfg)
@@ -67,7 +67,7 @@ def q_func(cfg, env):
             x = state_seq(X)
 
             # Gate the context according to the requirement
-            if cfg.gating_type == 'cGate':
+            if cfg.gating_type == 'Hadamard':
                 context_gating = context_gating_func(cfg)
             elif cfg.gating_type == 'LSTM':            
                 context_gating = context_LSTM(cfg)
