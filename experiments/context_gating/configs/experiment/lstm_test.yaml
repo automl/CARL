@@ -1,0 +1,8 @@
+# @package _global_
+group: lstm_test
+
+carl:
+  hide_context: false
+  dict_observation_space: true
+
+gating_type: 'LSTM'

@@ -107,6 +107,7 @@ class CARLEnv(Wrapper):
     ):
         super().__init__(env=env)
         # Gather args
+        self.context_encoder = context_encoder
         self._context: Optional[Dict] = None  # init for property
         self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
         self.default_context = default_context
@@ -291,7 +292,7 @@ class CARLEnv(Wrapper):
                     ]
                 )
 
-            # Pass the context features to the encoder to extract decomposed representation
+            # Pass the context features to the encoder to extract decomposed representation            
             if self.context_encoder:
                 # Encode context
                 context_values = self.encode_contexts(context_values)
