@@ -15,6 +15,8 @@ from carl.utils.types import Context, Contexts
 
 ObsType = TypeVar("ObsType")
 
+ObsType = TypeVar("ObsType")
+
 
 class CARLEnv(Wrapper, abc.ABC):
     def __init__(
