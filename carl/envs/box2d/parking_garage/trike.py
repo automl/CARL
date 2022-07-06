@@ -56,12 +56,12 @@ class TukTuk(Car):
     TukTuk
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven  (Not supported)
         self.trailer_type = 0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large (not supported)
 
-    def __init__(self, world, init_angle, init_x, init_y):
+    def __init__(self, world, init_angle, init_x, init_y) -> None:
         self._init_extra_params()
         self.world = world
 
@@ -220,14 +220,14 @@ class TukTuk(Car):
             self.drawlist = self.wheels + [self.hull]
         self.particles = []
 
-    def steer(self, s):
+    def steer(self, s) -> None:
         """control: steer
 
         Args:
             s (-1..1): target position, it takes time to rotate steering wheel from side-to-side"""
         self.wheels[0].steer = s
 
-    def gas(self, gas):
+    def gas(self, gas) -> None:
         """control: rear wheel drive
 
         Args:
@@ -243,7 +243,7 @@ class TukTuk(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b):
+    def brake(self, b) -> None:
         """control: brake
 
         Args:
@@ -259,7 +259,7 @@ class TukTuk(Car):
             for w in self.wheels[5:]:
                 w.brake = b * 0.8
 
-    def step(self, dt):
+    def step(self, dt) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
         Engin powers or other fixed parameters
@@ -367,7 +367,7 @@ class TukTukSmallTrailer(TukTuk):
     TukTuk with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
