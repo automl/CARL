@@ -14,8 +14,6 @@ from gymnasium.utils import seeding
 from PIL import Image
 from py4j.java_gateway import GatewayParameters, JavaGateway
 
-
-
 from carl.envs.mario.level_image_gen import LevelImageGen
 
 from .mario_game import MarioGame
