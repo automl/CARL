@@ -34,15 +34,6 @@ except:
         "Module 'Mario' not found. Please follow installation guide for ToadGAN environment."
     )
 
-RNA_spec = importlib.util.find_spec("viennarna")
-found = RNA_spec is not None
-if found:
-    from carl.envs.rna import *
-else:
-    warnings.warn(
-        "Module 'RNA' not found. Please follow installation guide for RNA environment."
-    )
-
 dm_control_spec = importlib.util.find_spec("dm_control")
 found = dm_control_spec is not None
 if found:
