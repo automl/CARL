@@ -38,6 +38,7 @@ from carl.envs.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import ObsType, Contexts
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -194,7 +195,7 @@ class CARLVehicleRacingEnv(CARLEnv):
     def __init__(
         self,
         env: CustomCarRacingEnv = CustomCarRacingEnv(),
-        contexts: Optional[Dict[Union[str, int], Dict[Any, Any]]] = None,
+        contexts: Optional[Contexts] = None,
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
@@ -205,7 +206,7 @@ class CARLVehicleRacingEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -248,6 +249,7 @@ class CARLVehicleRacingEnv(CARLEnv):
         ]
 
     def _update_context(self) -> None:
+        self.env: CustomCarRacingEnv
         vehicle_class_index = self.context["VEHICLE"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
 

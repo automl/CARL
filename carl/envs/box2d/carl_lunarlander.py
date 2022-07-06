@@ -2,7 +2,6 @@ from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from gym import Wrapper
 from gym.envs.box2d import lunar_lander
-from gym.envs.box2d.lunar_lander import heuristic
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -85,12 +84,13 @@ class LunarLanderEnv(Wrapper):
         self.active_seed = None
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
+        self.env: lunar_lander.LunarLander
         state, reward, done, info = self.env.step(action)
         if self.env.game_over and self.high_gameover_penalty:
             reward = -10000
         return state, reward, done, info
 
-    def seed(self, seed=None):
+    def seed(self, seed: Optional[int] = None) -> Optional[int]:
         seed_ = self.env.seed(seed)
         self.active_seed = seed_[0]
         return seed_
@@ -113,7 +113,7 @@ class CARLLunarLanderEnv(CARLEnv):
         high_gameover_penalty: bool = False,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -153,6 +153,7 @@ class CARLLunarLanderEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: LunarLanderEnv
         lunar_lander.FPS = self.context["FPS"]
         lunar_lander.SCALE = self.context["SCALE"]
         lunar_lander.MAIN_ENGINE_POWER = self.context["MAIN_ENGINE_POWER"]

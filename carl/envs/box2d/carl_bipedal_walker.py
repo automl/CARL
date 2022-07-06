@@ -89,7 +89,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -126,7 +126,8 @@ class CARLBipedalWalkerEnv(CARLEnv):
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
 
-    def _update_context(self):
+    def _update_context(self) -> None:
+        self.env: bipedal_walker.BipedalWalker
         bpw.FPS = self.context["FPS"]
         bpw.SCALE = self.context["SCALE"]
         bpw.FRICTION = self.context["FRICTION"]
