@@ -45,7 +45,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.min_velocity_start = 0.0
         self.max_velocity_start = 0.0
 
-    def reset_state(self) -> np.ndarray:
+    def sample_initial_state(self) -> np.ndarray:
         return np.array(
             [
                 self.np_random.uniform(
@@ -57,9 +57,19 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
             ]
         )
 
-    def reset(self) -> np.ndarray:
-        self.state = self.reset_state().squeeze()
-        return self.state
+    def reset(
+            self,
+            *,
+            seed: Optional[int] = None,
+            return_info: bool = False,
+            options: Optional[dict] = None,
+    ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
+        super().reset(seed=seed)
+        self.state = self.sample_initial_state()
+        if not return_info:
+            return np.array(self.state, dtype=np.float32)
+        else:
+            return np.array(self.state, dtype=np.float32), {}
 
     def step(self, action: int) -> Tuple[np.ndarray, float, bool, Dict]:
         state, reward, done, info = super().step(action)
