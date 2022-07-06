@@ -44,7 +44,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.max_position_start = -0.4
         self.min_velocity_start = 0.0
         self.max_velocity_start = 0.0
-        self.state: np.ndarray
+        self.state: np.ndarray                      # type: ignore [assignment]
 
     def sample_initial_state(self) -> np.ndarray:
         return np.array(

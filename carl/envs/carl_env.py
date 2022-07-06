@@ -503,7 +503,7 @@ class CARLEnv(Wrapper):
                     context_upper_bounds = np.inf * np.ones(context_dim)
                 else:
                     context_lower_bounds, context_upper_bounds = get_context_bounds(
-                        context_keys, context_bounds
+                        context_keys, context_bounds                                        # type: ignore [arg-type]
                     )
                 if self.state_context_features is not None:
                     ids = np.array(

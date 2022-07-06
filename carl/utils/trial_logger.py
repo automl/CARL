@@ -95,7 +95,7 @@ class TrialLogger(object):
             parsed_namespace=self.trial_setup_args, output_file_paths=output_file_paths
         )
 
-    def write_context(self, episode: int, step: int, context: Dict[Any, Any]):
+    def write_context(self, episode: int, step: int, context: Dict[Any, Any]) -> None:
         """
         Context will be written to csv file (logdir / "context_history.csv").
 

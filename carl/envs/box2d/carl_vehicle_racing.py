@@ -88,7 +88,7 @@ CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
 
 class CustomCarRacingEnv(CarRacing):
-    def __init__(self, vehicle_class: Type[Car] = Car, verbose: int = 1):
+    def __init__(self, vehicle_class: Type[Car] = Car, verbose: bool = True):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
 
@@ -104,7 +104,7 @@ class CustomCarRacingEnv(CarRacing):
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly = []  # type: List
+        self.road_poly = [] 
 
         while True:
             success = self._create_track()
@@ -115,17 +115,17 @@ class CustomCarRacingEnv(CarRacing):
                     "retry to generate track (normal if there are not many"
                     "instances of this message)"
                 )
-        self.car = self.vehicle_class(self.world, *self.track[0][1:4])
+        self.car = self.vehicle_class(self.world, *self.track[0][1:4])  # type: ignore [assignment]
 
         for i in range(
             49
         ):  # this sets up the environment and resolves any initial violations of geometry
-            self.step(None)
+            self.step(None) # type: ignore [arg-type]
 
         if not return_info:
-            return self.step(None)[0]
+            return self.step(None)[0]    # type: ignore [arg-type]
         else:
-            return self.step(None)[0], {}
+            return self.step(None)[0], {}  # type: ignore [arg-type]
 
     def render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing
@@ -173,18 +173,18 @@ class CustomCarRacingEnv(CarRacing):
             )
 
         true_speed = np.sqrt(
-            np.square(self.car.hull.linearVelocity[0])
-            + np.square(self.car.hull.linearVelocity[1])
+            np.square(self.car.hull.linearVelocity[0])       # type: ignore [attr-defined]
+            + np.square(self.car.hull.linearVelocity[1])     # type: ignore [attr-defined]
         )
 
         vertical_ind(5, 0.02 * true_speed, (1, 1, 1))
 
         # Custom render to handle different amounts of wheels
-        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # ABS sensors
-        for i in range(len(self.car.wheels)):
-            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))
-        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))
-        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))
+        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))                               # type: ignore [attr-defined]
+        for i in range(len(self.car.wheels)):                                                       # type: ignore [attr-defined]
+            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))             # type: ignore [attr-defined]
+        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))                            # type: ignore [attr-defined]
+        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))                              # type: ignore [attr-defined]
         vl = pyglet.graphics.vertex_list(
             len(polygons) // 3, ("v3f", polygons), ("c4f", colors)  # gl.GL_QUADS,
         )

@@ -4,7 +4,7 @@ import numpy as np
 
 
 def get_context_bounds(
-    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, type]]
+    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float]]
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Get context bounds for specific features.
@@ -28,7 +28,7 @@ def get_context_bounds(
     upper_bounds = np.empty(shape=len(context_keys))
 
     for i, context_key in enumerate(context_keys):
-        l, u, _ = context_bounds[context_key]
+        l, u = context_bounds[context_key]
         lower_bounds[i] = l
         upper_bounds[i] = u
 
@@ -63,4 +63,4 @@ if __name__ == "__main__":
         "min_velocity_start": (-np.inf, np.inf),
         "max_velocity_start": (-np.inf, np.inf),
     }
-    lower, upper = get_context_bounds(list(DEFAULT_CONTEXT.keys()), CONTEXT_BOUNDS)
+    lower, upper = get_context_bounds(list(DEFAULT_CONTEXT.keys()), CONTEXT_BOUNDS)         
