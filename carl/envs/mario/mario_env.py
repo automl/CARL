@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString, Type
+from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString, Deque, Tuple
 
 import os
 import random
@@ -26,17 +26,18 @@ class MarioEnv(gym.Env):
     def __init__(
         self,
         levels: List[str],
-        timer=100,
-        visual=False,
-        sticky_action_probability=0.1,
-        frame_skip=2,
-        frame_stack=4,
-        frame_dim=64,
-        hide_points_banner=False,
-        sparse_rewards=False,
-        grayscale=False,
-        seed=0,
+        timer: int =100,
+        visual: bool =False,
+        sticky_action_probability: float=0.1,
+        frame_skip: int=2,
+        frame_stack: int=4,
+        frame_dim: int=64,
+        hide_points_banner: bool =False,
+        sparse_rewards: bool=False,
+        grayscale: bool=False,
+        seed: int =0,
     ):
+        self.gateway: Any = None
         self.seed(seed)
         self.level_names = levels
         self.levels = [load_level(name) for name in levels]
@@ -57,7 +58,7 @@ class MarioEnv(gym.Env):
             shape=[self.frame_stack if grayscale else 3, self.height, self.width],
             dtype=np.uint8,
         )
-        self.original_obs = deque(maxlen=self.frame_skip)
+        self.original_obs: Deque = deque(maxlen=self.frame_skip)
         self.actions = [
             [False, False, False, False, False],  # noop
             [False, False, True, False, False],  # down
@@ -71,7 +72,7 @@ class MarioEnv(gym.Env):
             [False, False, False, False, True],  # jump
         ]
         self.action_space = spaces.Discrete(n=len(self.actions))
-        self._obs = np.zeros(shape=self.observation_space.shape, dtype=np.uint8)
+        self._obs: Any = np.zeros(shape=self.observation_space.shape, dtype=np.uint8)
         self.current_level_idx = 0
         self.frame_size = -1
         self.port = get_port()
@@ -88,7 +89,7 @@ class MarioEnv(gym.Env):
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._reset_obs()
         if self.game is None:
-            self.game = self._init_game()
+            self.game: Any = self._init_game()
         self.current_level_idx = (self.current_level_idx + 1) % len(self.levels)
         level = self.levels[self.current_level_idx]
         self.game.resetGame(level, self.timer, self.mario_state, self.mario_inertia)
@@ -101,7 +102,7 @@ class MarioEnv(gym.Env):
         else:
             return self._obs.copy(), {}
 
-    def step(self, action):
+    def step(self, action: Any) -> Any:
         if self.sticky_action_probability != 0.0:
             if (
                 self.last_action is not None
@@ -136,15 +137,16 @@ class MarioEnv(gym.Env):
         return (
             self._obs.copy(),
             reward if not self.sparse_rewards else int(completionPercentage == 1.0),
-            done,
-            info,
+            done,   # bool
+            info,   # Dict[str, Any]
         )
 
-    def render(self, *args, **kwargs):
+    def render(self, *args: Any, **kwargs: Any) -> ObsType:
         return self.original_obs[0]
 
     def __getstate__(self) -> Dict:
         assert self.gateway
+        
         self.gateway.close()
         self.gateway = None
         self.game = None
@@ -156,14 +158,14 @@ class MarioEnv(gym.Env):
         self._obs[:] = 0
         self.original_obs.clear()
 
-    def _read_frame(self, buffer: ByteString) -> np.ndarray:
+    def _read_frame(self, buffer: Any) -> Any:
         frame = (
             np.frombuffer(buffer, dtype=np.int32).reshape(256, 256, 3).astype(np.uint8)
         )
         self.original_obs.append(frame)
         return frame
 
-    def _update_obs(self, frame) -> None:
+    def _update_obs(self, frame: Any) -> Any:
         if self.grayscale:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
@@ -182,7 +184,7 @@ class MarioEnv(gym.Env):
                 eager_load=True,
             )
         )
-        self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())  # type: ignore [attr-defined]
+        self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(("localhost", self.game.getPort()))
         self.game.initGame()
