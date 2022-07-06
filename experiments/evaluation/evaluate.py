@@ -101,6 +101,7 @@ def evaluate_policy(cfg: DictConfig):
             print("Skipping run because combination of evaluation protocol mode and distribution type "
                   "is invalid.")
             return None
+        cfg.kirk_evaluation_protocol.mode = traincfg.kirk_evaluation_protocol.mode
 
     run = wandb.init(
         id=cfg.wandb.id,
