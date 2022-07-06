@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from torch.nn.functional import interpolate
+from torch import Tensor
 
 
 # Generates a noise tensor. Uses torch.randn.
