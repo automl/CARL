@@ -288,18 +288,12 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
-        _ret = self.env.reset(seed=seed, options=options, **kwargs)  # type: ignore [arg-type]
+        _ret = self.env.reset(**kwargs)
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
-        else:
-            state = _ret
         state = self.build_context_adaptive_state(state=state)
-        ret = state
-        if return_info:
-            ret = state, info_dict
-
-        return ret
+        return state
 
     def build_context_adaptive_state(
         self, state: List[float], context_feature_values: Optional[Vector] = None
