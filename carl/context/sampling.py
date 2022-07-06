@@ -156,9 +156,7 @@ def sample_contexts(
                 context_feature_type = sample_dists[k][1]
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
                 if context_feature_type == list:
-                    length = np.random.randint(
-                        5e5
-                    )  # TODO should we allow lists to be this long? or should we parametrize this?
+                    length = np.random.randint(500000)  # TODO should we allow lists to be this long? or should we parametrize this?
                     arg_class = sample_dists[k][1][1]
                     context_list = random_variable.rvs(size=length)
                     context_list = np.clip(context_list, lower_bound, upper_bound)

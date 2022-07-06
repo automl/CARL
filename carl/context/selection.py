@@ -79,7 +79,7 @@ class RandomSelector(AbstractSelector):
     Random Context Selector.
     """
 
-    def _select(self):
+    def _select(self) -> Tuple[Context, int]:
         # TODO seed?
         context_id = np.random.choice(self.context_ids)
         context = self.contexts[self.contexts_keys[context_id]]
@@ -93,7 +93,7 @@ class RoundRobinSelector(AbstractSelector):
     Iterate through all contexts and then start at the first again.
     """
 
-    def _select(self):
+    def _select(self) -> Tuple[Context, int]:
         if self.context_id is None:
             self.context_id = -1
         self.context_id = (self.context_id + 1) % len(self.contexts)
@@ -139,7 +139,7 @@ class CustomSelector(AbstractSelector):
         super().__init__(contexts=contexts)
         self.selector_function = selector_function
 
-    def _select(self):
-        context, context_id = self.selector_function(inst=self)
+    def _select(self) -> Tuple[Context, int]:
+        context, context_id = self.selector_function(self)
         self.context_id = context_id
         return context, context_id
