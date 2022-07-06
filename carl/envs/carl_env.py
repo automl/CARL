@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
+from types import ModuleType
 
 import importlib
 import inspect
@@ -15,6 +16,7 @@ from gymnasium import Wrapper, spaces
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
+from carl.utils.types import Vector
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts, ObsType, Vector
 
@@ -288,10 +290,12 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
-        _ret = self.env.reset(**kwargs)
+        _ret = self.env.reset(**kwargs)  # type: ignore [arg-type]
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
+        else:
+            state = _ret
         state = self.build_context_adaptive_state(state=state)
         return state
 
