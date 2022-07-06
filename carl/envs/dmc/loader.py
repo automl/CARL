@@ -5,7 +5,7 @@ import inspect
 import dm_env  # type: ignore
 from dm_control import suite  # type: ignore
 
-from carl.envs.dmc.dmc_tasks import fish, quadruped, walker  # noqa: F401
+from carl.envs.dmc.dmc_tasks import fish, quadruped, walker  # type: ignore [import]  # noqa: F401
 
 _DOMAINS = {
     name: module
