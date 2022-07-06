@@ -35,7 +35,13 @@ extras_require = {
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
-        "opencv-python>=4.8"
+    ],
+    "experiments": [
+        "ray>=1.5.1",
+        "seaborn>=0.11.1",
+        "sb3_contrib>=1.1.0",
+        "stable_baselines3>=1.1.0",
+        "tensorflow>=2.5.0",
     ],
     "dev": [
         "pytest>=6.1.1",
@@ -80,7 +86,6 @@ setuptools.setup(
         "pandas>=1.3.0",
         "xvfbwrapper>=0.2.9",
         "matplotlib>=3.4.2",
-        "dataclasses>=0.6",
         "numpyencoder>=0.3.0",
         "pyglet>=1.5.15",
         "pytablewriter>=0.62.0",
@@ -91,6 +96,9 @@ setuptools.setup(
     extras_require=extras_require,
     test_suite="pytest",
     platforms=["Linux"],
+    entry_points={
+        "console_scripts": ["smac = smac.smac_cli:cmd_line_call"],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "Natural Language :: English",
