@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any
 
 import gymnasium.envs.classic_control as gccenvs
 import numpy as np
