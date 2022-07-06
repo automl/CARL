@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union, Type, TypeVar
+from typing import Any, Dict, List, Optional, Tuple, Union, Type, Mapping
 from types import ModuleType
 
 import importlib
@@ -13,15 +13,13 @@ from gym import Wrapper, spaces
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
-from carl.utils.types import Vector
+from carl.utils.types import Vector, ObsType
 from carl.utils.trial_logger import TrialLogger
 
 brax_spec = importlib.util.find_spec("brax")
 if brax_spec is not None:
     import jax.numpy as jnp
     import jaxlib
-
-ObsType = TypeVar("ObsType")
 
 
 class CARLEnv(Wrapper):
@@ -429,7 +427,7 @@ class CARLEnv(Wrapper):
         self,
         env_lower_bounds: Optional[Vector] = None,
         env_upper_bounds: Optional[Vector] = None,
-        context_bounds: Optional[Dict[str, Tuple[float, float, type]]] = None,
+        context_bounds: Optional[Mapping[str, Tuple[float, float, type]]] = None,
     ) -> None:
         """
         Build observation space of environment.

@@ -75,7 +75,7 @@ class CustomAcrobotEnv(AcrobotEnv):
         seed: Optional[int] = None,
         return_info: bool = False,
         options: Optional[dict] = None,
-    ):
+    ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
         low = (
             self.INITIAL_ANGLE_LOWER,
@@ -99,7 +99,7 @@ class CustomAcrobotEnv(AcrobotEnv):
 class CARLAcrobotEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomAcrobotEnv(),
+        env: CustomAcrobotEnv = CustomAcrobotEnv(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -112,7 +112,7 @@ class CARLAcrobotEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -139,6 +139,7 @@ class CARLAcrobotEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomAcrobotEnv
         self.env.LINK_LENGTH_1 = self.context["link_length_1"]
         self.env.LINK_LENGTH_2 = self.context["link_length_2"]
         self.env.LINK_MASS_1 = self.context["link_mass_1"]

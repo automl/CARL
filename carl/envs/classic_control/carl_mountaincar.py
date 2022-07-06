@@ -44,6 +44,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.max_position_start = -0.4
         self.min_velocity_start = 0.0
         self.max_velocity_start = 0.0
+        self.state: np.ndarray
 
     def sample_initial_state(self) -> np.ndarray:
         return np.array(
@@ -84,7 +85,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
 class CARLMountainCarEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomMountainCarEnv(),
+        env: CustomMountainCarEnv = CustomMountainCarEnv(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -97,7 +98,7 @@ class CARLMountainCarEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -134,6 +135,7 @@ class CARLMountainCarEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomMountainCarEnv
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]

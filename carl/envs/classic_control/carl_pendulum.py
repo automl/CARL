@@ -42,7 +42,7 @@ class CustomPendulum(gccenvs.pendulum.PendulumEnv):
         seed: Optional[int] = None,
         return_info: bool = False,
         options: Optional[dict] = None,
-    ):
+    ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
         high = np.array([self.initial_angle_max, self.initial_velocity_max])
         self.state = self.np_random.uniform(low=-high, high=high)
@@ -56,7 +56,7 @@ class CustomPendulum(gccenvs.pendulum.PendulumEnv):
 class CARLPendulumEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomPendulum(),
+        env: CustomPendulum = CustomPendulum(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -69,7 +69,7 @@ class CARLPendulumEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -108,6 +108,7 @@ class CARLPendulumEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomPendulum
         self.env.max_speed = self.context["max_speed"]
         self.env.dt = self.context["dt"]
         self.env.l = self.context["l"]  # noqa: E741 ambiguous variable name

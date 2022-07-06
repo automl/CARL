@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any
 
 import gym
 import gym.envs.classic_control as gccenvs
@@ -65,8 +65,8 @@ class CustomMountainCarContinuousEnv(
 class CARLMountainCarContinuousEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomMountainCarContinuousEnv(),
-        contexts: Dict[str, Dict] = {},
+        env: CustomMountainCarContinuousEnv = CustomMountainCarContinuousEnv(),
+        contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = True,
         gaussian_noise_std_percentage: float = 0.01,
@@ -78,7 +78,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -115,6 +115,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomMountainCarContinuousEnv
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]

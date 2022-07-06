@@ -36,7 +36,7 @@ CONTEXT_BOUNDS = {
 
 
 class CustomCartPoleEnv(CartPoleEnv):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.initial_state_lower = -0.05
         self.initial_state_upper = 0.05
@@ -47,7 +47,7 @@ class CustomCartPoleEnv(CartPoleEnv):
         seed: Optional[int] = None,
         return_info: bool = False,
         options: Optional[dict] = None,
-    ):
+    ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
         self.state = self.np_random.uniform(
             low=self.initial_state_lower, high=self.initial_state_upper, size=(4,)
@@ -62,7 +62,7 @@ class CustomCartPoleEnv(CartPoleEnv):
 class CARLCartPoleEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomCartPoleEnv(),
+        env: CustomCartPoleEnv = CustomCartPoleEnv(),
         contexts: Dict[Any, Dict[Any, Any]] = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -75,7 +75,7 @@ class CARLCartPoleEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -102,6 +102,7 @@ class CARLCartPoleEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomCartPoleEnv
         self.env.gravity = self.context["gravity"]
         self.env.masscart = self.context["masscart"]
         self.env.masspole = self.context["masspole"]
