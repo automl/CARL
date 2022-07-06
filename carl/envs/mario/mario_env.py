@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, cast, Optional, Union
+from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString
 
 import os
 import random
@@ -12,6 +12,7 @@ import numpy as np
 from gym import spaces
 from gym.utils import seeding
 from py4j.java_gateway import GatewayParameters, JavaGateway
+from PIL import Image
 
 from carl.envs.mario.level_image_gen import LevelImageGen
 
@@ -174,7 +175,7 @@ class MarioEnv(gym.Env):
         else:
             self._obs = np.transpose(frame, axes=(2, 0, 1))
 
-    def _init_game(self):
+    def _init_game(self) -> MarioGame:
         self.gateway = JavaGateway(
             gateway_parameters=GatewayParameters(
                 port=self.port,
@@ -188,16 +189,16 @@ class MarioEnv(gym.Env):
         self.frame_size = self.game.getFrameSize()
         return self.game
 
-    def _receive(self):
+    def _receive(self) -> ByteString:
         frameBuffer = b""
         while len(frameBuffer) != self.frame_size:
             frameBuffer += self.socket.recv(self.frame_size)
         return frameBuffer
 
-    def get_action_meanings(self):
+    def get_action_meanings(self) -> List[str]:
         return ACTION_MEANING
 
-    def render_current_level(self):
+    def render_current_level(self) -> Image:
         img_gen = LevelImageGen(
             sprite_path=os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "sprites")
@@ -205,7 +206,7 @@ class MarioEnv(gym.Env):
         )
         return img_gen.render(self.levels[self.current_level_idx].split("\n"))
 
-    def seed(self, seed=None):
+    def seed(self, seed: Optional[int] = None) -> List[Any]:
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 import functools
 import os
@@ -14,7 +14,15 @@ from carl.envs.mario.reachabillity import reachability_map
 
 @dataclass
 class TOADGAN:
-    def __init__(self, Gs, Zs, reals, NoiseAmp, token_list, num_layers):
+    def __init__(
+            self,
+            Gs: Tensor,
+            Zs: Tensor,
+            reals: Tensor,
+            NoiseAmp: Tensor,
+            token_list: Tensor,
+            num_layers: int
+    ):
         self.generators = Gs
         self.noise_maps = Zs
         self.reals = reals
@@ -23,11 +31,11 @@ class TOADGAN:
         self.num_layer = num_layers
 
     @property
-    def original_height(self):
+    def original_height(self) -> int:
         return self.reals[-1].shape[-2]
 
     @property
-    def original_width(self):
+    def original_width(self) -> int:
         return self.reals[-1].shape[-1]
 
 
@@ -41,7 +49,7 @@ GENERATOR_PATHS = sorted(
 
 
 @functools.lru_cache(maxsize=None)
-def load_generator(level_index: int):
+def load_generator(level_index: int) -> TOADGAN:
     import carl.envs.mario.models as models
 
     sys.modules["models"] = models
@@ -80,7 +88,7 @@ def generate_level(
     level_index: int,
     initial_noise: Optional[torch.Tensor] = None,
     filter_unplayable: bool = True,
-):
+) -> str:
     toad_gan = load_generator(level_index)
     playable = False
     level = None
