@@ -12,7 +12,7 @@ from carl.envs.mario.carl_mario_definitions import (
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts
+from carl.utils.types import Contexts, Context
 
 
 class CARLMarioEnv(CARLEnv):
@@ -25,7 +25,7 @@ class CARLMarioEnv(CARLEnv):
         gaussian_noise_std_percentage: float = 0.05,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        default_context: Optional[Context] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,

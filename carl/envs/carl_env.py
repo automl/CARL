@@ -58,7 +58,7 @@ class CARLEnv(Wrapper):
         Wether to scale context features. Available modes are 'no', 'by_mean' and 'by_default'.
         'by_mean' scales the context features by their mean over all passed instances and
         'by_default' scales the context features by their default values ('default_context').
-    default_context: Dict
+    default_context: Context
         The default context of the environment. Used for scaling the context features if applicable. Used for filling
         incomplete contexts.
     state_context_features: Optional[List[str]] = None
@@ -233,7 +233,7 @@ class CARLEnv(Wrapper):
         return self._context
 
     @context.setter
-    def context(self, context: Dict) -> None:
+    def context(self, context: Context) -> None:
         self._context = self.fill_context_with_default(context=context)
 
     @property
@@ -373,7 +373,7 @@ class CARLEnv(Wrapper):
             )
         return getattr(self.env, name)
 
-    def fill_context_with_default(self, context: Dict) -> Dict:
+    def fill_context_with_default(self, context: Context) -> Dict:
         """
         Fill the context with the default values if entries are missing
 

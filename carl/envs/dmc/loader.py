@@ -6,6 +6,7 @@ import dm_env  # type: ignore
 from dm_control import suite  # type: ignore
 
 from carl.envs.dmc.dmc_tasks import fish, quadruped, walker  # type: ignore [import]  # noqa: F401
+from carl.utils.types import Context
 
 _DOMAINS = {
     name: module
@@ -17,7 +18,7 @@ _DOMAINS = {
 def load_dmc_env(
     domain_name: str,
     task_name: str,
-    context: Dict = {},
+    context: Context = {},
     context_mask: Optional[List[str]] = [],
     task_kwargs: Optional[Any] = None,
     environment_kwargs: Dict[str, bool] = None,
