@@ -1,12 +1,12 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
-import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,  # unit?
@@ -44,8 +44,9 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.max_position_start = -0.4
         self.min_velocity_start = 0.0
         self.max_velocity_start = 0.0
+        self.state: np.ndarray  # type: ignore [assignment]
 
-    def reset_state(self) -> np.ndarray:
+    def sample_initial_state(self) -> np.ndarray:
         return np.array(
             [
                 self.np_random.uniform(
@@ -57,9 +58,19 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
             ]
         )
 
-    def reset(self) -> np.ndarray:
-        self.state = self.reset_state().squeeze()
-        return self.state
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
+    ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
+        super().reset(seed=seed)
+        self.state = self.sample_initial_state()
+        if not return_info:
+            return np.array(self.state, dtype=np.float32)
+        else:
+            return np.array(self.state, dtype=np.float32), {}
 
     def step(self, action: int) -> Tuple[np.ndarray, float, bool, Dict]:
         state, reward, done, info = super().step(action)
@@ -74,20 +85,20 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
 class CARLMountainCarEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomMountainCarEnv(),
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        env: CustomMountainCarEnv = CustomMountainCarEnv(),
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        default_context: Optional[Context] = DEFAULT_CONTEXT,
         max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -124,6 +135,7 @@ class CARLMountainCarEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomMountainCarEnv
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]

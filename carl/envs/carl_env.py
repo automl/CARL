@@ -1,9 +1,10 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
 import importlib
 import inspect
 import json
 import os
+from types import ModuleType
 
 import gym
 import numpy as np
@@ -13,6 +14,7 @@ from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts, ObsType, Vector
 
 brax_spec = importlib.util.find_spec("brax")
 if brax_spec is not None:
@@ -36,7 +38,7 @@ class CARLEnv(Wrapper):
     ----------
     env: gym.Env
         Environment which context features are made visible / which is turned into a cMDP.
-    contexts: Dict[Any, Dict[Any, Any]]
+    contexts: Contexts
         Dict of contexts/instances. Key are context id, values are contexts as
         Dict[context feature id, context feature value].
     hide_context: bool = False
@@ -56,7 +58,7 @@ class CARLEnv(Wrapper):
         Wether to scale context features. Available modes are 'no', 'by_mean' and 'by_default'.
         'by_mean' scales the context features by their mean over all passed instances and
         'by_default' scales the context features by their default values ('default_context').
-    default_context: Dict
+    default_context: Context
         The default context of the environment. Used for scaling the context features if applicable. Used for filling
         incomplete contexts.
     state_context_features: Optional[List[str]] = None
@@ -87,26 +89,26 @@ class CARLEnv(Wrapper):
         self,
         env: gym.Env,
         n_envs: int = 1,
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         max_episode_length: int = int(1e6),
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = None,
+        default_context: Optional[Context] = None,
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, Type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         super().__init__(env=env)
         # Gather args
-        self._context: Optional[Dict] = None  # init for property
-        self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
+        self._context: Context  # init for property
+        self._contexts: Contexts  # init for property
         self.default_context = default_context
         self.contexts = contexts
         self.context_mask = context_mask
@@ -116,10 +118,11 @@ class CARLEnv(Wrapper):
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
+        self.context_selector: Type[AbstractSelector]
         if context_selector is None:
-            self.context_selector = RoundRobinSelector(contexts=contexts)
+            self.context_selector = RoundRobinSelector(contexts=contexts)  # type: ignore [assignment]
         elif isinstance(context_selector, AbstractSelector):
-            self.context_selector = context_selector
+            self.context_selector = context_selector  # type: ignore [assignment]
         elif inspect.isclass(context_selector) and issubclass(
             context_selector, AbstractSelector
         ):
@@ -127,12 +130,13 @@ class CARLEnv(Wrapper):
                 context_selector_kwargs = {}
             _context_selector_kwargs = {"contexts": contexts}
             context_selector_kwargs.update(_context_selector_kwargs)
-            self.context_selector = context_selector(**context_selector_kwargs)
+            self.context_selector = context_selector(**context_selector_kwargs)  # type: ignore [assignment]
         else:
             raise ValueError(
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
             )
+        context_keys: Vector
         if state_context_features is not None:
             if (
                 state_context_features == "changing_context_features"
@@ -154,6 +158,7 @@ class CARLEnv(Wrapper):
                     # TODO properly record which are appended to state
                     if logger is not None:
                         fname = os.path.join(logger.logdir, "env_info.json")
+                        save_val: Optional[List[str]]
                         if state_context_features is not None:
                             save_val = list(state_context_features)  # please json
                         else:
@@ -167,9 +172,12 @@ class CARLEnv(Wrapper):
             state_context_features = list(
                 self.contexts[list(self.contexts.keys())[0]].keys()
             )
-        self.state_context_features: List[str] = state_context_features
+        self.state_context_features: List[str] = state_context_features  # type: ignore [assignment]
+        # (Mypy thinks that state_context_features is of type Optional[List[str]] which it can't be anymore due to the
+        #  if-else clause)
+
         # state_context_features contains the names of the context features that should be appended to the state
-        # However, if context_mask is set, we want to update staet_context_feature_names so that the context features
+        # However, if context_mask is set, we want to update state_context_feature_names so that the context features
         # in context_mask are not appended to the state anymore.
         if self.context_mask:
             self.state_context_features = [
@@ -225,7 +233,7 @@ class CARLEnv(Wrapper):
         return self._context
 
     @context.setter
-    def context(self, context: Dict):
+    def context(self, context: Context) -> None:
         self._context = self.fill_context_with_default(context=context)
 
     @property
@@ -233,12 +241,12 @@ class CARLEnv(Wrapper):
         return self._contexts
 
     @contexts.setter
-    def contexts(self, contexts: Dict[Any, Dict[Any, Any]]):
+    def contexts(self, contexts: Contexts) -> None:
         self._contexts = {
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
 
-    def reset(self, **kwargs: Dict) -> Any:
+    def reset(self, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
         """
         Reset environment.
 
@@ -251,6 +259,8 @@ class CARLEnv(Wrapper):
         -------
         state
             State of environment after reset.
+        info_dict : dict
+            Return also if return_info=True.
 
         """
         self.episode_counter += 1
@@ -258,14 +268,23 @@ class CARLEnv(Wrapper):
         self._progress_instance()
         self._update_context()
         self._log_context()
-        state = self.env.reset(**kwargs)
-        state = self.build_context_adaptive_state(state)
-        return state
+        return_info = kwargs.get("return_info", False)
+        _ret = self.env.reset(**kwargs)  # type: ignore [arg-type]
+        info_dict = dict()
+        if return_info:
+            state, info_dict = _ret
+        else:
+            state = _ret
+        state = self.build_context_adaptive_state(state=state)
+        ret = state
+        if return_info:
+            ret = state, info_dict
+        return ret
 
     def build_context_adaptive_state(
-        self, state: List[float], context_feature_values: Optional[List[float]] = None
-    ) -> List[float]:
-        tnp = np
+        self, state: List[float], context_feature_values: Optional[Vector] = None
+    ) -> Union[Vector, Dict]:
+        tnp: ModuleType = np
         if brax_spec is not None:
             if type(state) == jaxlib.xla_extension.DeviceArray:
                 tnp = jnp
@@ -289,7 +308,7 @@ class CARLEnv(Wrapper):
                 )
 
             if self.dict_observation_space:
-                state = dict(state=state, context=context_values)
+                state: Dict = dict(state=state, context=context_values)  # type: ignore [no-redef]
             elif self.vectorized:
                 state = tnp.array([np.concatenate((s, context_values)) for s in state])
             else:
@@ -334,7 +353,9 @@ class CARLEnv(Wrapper):
                 )
 
             # Add context features to state
-            state = self.build_context_adaptive_state(state, context_feature_values)
+            state = self.build_context_adaptive_state(
+                state=state, context_feature_values=context_feature_values
+            )
 
         self.total_timestep_counter += 1
         self.step_counter += 1
@@ -354,7 +375,7 @@ class CARLEnv(Wrapper):
             )
         return getattr(self.env, name)
 
-    def fill_context_with_default(self, context: Dict) -> Dict:
+    def fill_context_with_default(self, context: Context) -> Dict:
         """
         Fill the context with the default values if entries are missing
 
@@ -388,7 +409,7 @@ class CARLEnv(Wrapper):
         None
 
         """
-        context = self.context_selector.select()
+        context = self.context_selector.select()  # type: ignore [call-arg]
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
@@ -406,9 +427,9 @@ class CARLEnv(Wrapper):
 
     def build_observation_space(
         self,
-        env_lower_bounds: Optional[Union[List, np.array]] = None,
-        env_upper_bounds: Optional[Union[List, np.array]] = None,
-        context_bounds: Optional[Dict[str, Tuple[float]]] = None,
+        env_lower_bounds: Optional[Vector] = None,
+        env_upper_bounds: Optional[Vector] = None,
+        context_bounds: Optional[Mapping[str, Tuple[float, float, type]]] = None,
     ) -> None:
         """
         Build observation space of environment.
@@ -423,10 +444,10 @@ class CARLEnv(Wrapper):
             both are None, (re-)create bounds (low=-inf, high=inf) with correct dimension.
         env_upper_bounds: Optional[Union[List, np.array]], default=None
             Upper bounds for environment observation space.
-        context_bounds: Optional[Dict[str, Tuple[float]]], default=None
+        context_bounds: Optional[Dict[str, Tuple[float, float, float]]], default=None
             Lower and upper bounds for context features.
             The bounds are provided as a Dict containing the context feature names/ids as keys and the
-            bounds per feature as a tuple (low, high).
+            bounds per feature as a tuple (low, high, dtype).
             If None and the context should not be hidden,
             creates default bounds with (low=-inf, high=inf) with correct dimension.
 
@@ -455,7 +476,7 @@ class CARLEnv(Wrapper):
         obs_space = (
             self.env.observation_space.spaces["state"].low
             if isinstance(self.env.observation_space, spaces.Dict)
-            else self.env.observation_space.low
+            else self.env.observation_space.low  # type: ignore [attr-defined]
         )
         obs_shape = obs_space.shape
         if len(obs_shape) == 3 and self.hide_context:
@@ -472,8 +493,8 @@ class CARLEnv(Wrapper):
                 and len(self.state_context_features) == 0
             ):
                 self.env.observation_space = spaces.Box(
-                    env_lower_bounds,
-                    env_upper_bounds,
+                    np.array(env_lower_bounds),
+                    np.array(env_upper_bounds),
                     dtype=np.float32,
                 )
             else:
@@ -484,7 +505,7 @@ class CARLEnv(Wrapper):
                     context_upper_bounds = np.inf * np.ones(context_dim)
                 else:
                     context_lower_bounds, context_upper_bounds = get_context_bounds(
-                        context_keys, context_bounds
+                        context_keys, context_bounds  # type: ignore [arg-type]
                     )
                 if self.state_context_features is not None:
                     ids = np.array(
@@ -496,22 +517,26 @@ class CARLEnv(Wrapper):
                     self.env.observation_space = spaces.Dict(
                         {
                             "state": spaces.Box(
-                                low=env_lower_bounds,
-                                high=env_upper_bounds,
+                                low=np.array(env_lower_bounds),
+                                high=np.array(env_upper_bounds),
                                 dtype=np.float32,
                             ),
                             "context": spaces.Box(
-                                low=context_lower_bounds,
-                                high=context_upper_bounds,
+                                low=np.array(context_lower_bounds),
+                                high=np.array(context_upper_bounds),
                                 dtype=np.float32,
                             ),
                         }
                     )
                 else:
-                    low = np.concatenate((env_lower_bounds, context_lower_bounds))
-                    high = np.concatenate((env_upper_bounds, context_upper_bounds))
+                    low: Vector = np.concatenate(
+                        (np.array(env_lower_bounds), np.array(context_lower_bounds))
+                    )
+                    high: Vector = np.concatenate(
+                        (np.array(env_upper_bounds), np.array(context_upper_bounds))
+                    )
                     self.env.observation_space = spaces.Box(
-                        low=low, high=high, dtype=np.float32
+                        low=np.array(low), high=np.array(high), dtype=np.float32
                     )
             self.observation_space = (
                 self.env.observation_space

@@ -61,7 +61,7 @@ def radar_factory(num_vars: int, frame: str = "circle") -> np.ndarray:
         def set_varlabels(self, labels: List[str], **kwargs: Dict) -> None:
             self.set_thetagrids(np.degrees(theta), labels, **kwargs)
 
-        def _gen_axes_patch(self):
+        def _gen_axes_patch(self) -> Any:
             # The Axes patch must be centered at (0.5, 0.5) and of radius 0.5
             # in axes coordinates.
             if frame == "circle":

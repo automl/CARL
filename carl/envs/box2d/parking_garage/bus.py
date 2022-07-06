@@ -1,3 +1,4 @@
+import Box2D
 import numpy as np
 from Box2D.b2 import circleShape  # noqa: F401
 from Box2D.b2 import contactListener  # noqa: F401
@@ -70,14 +71,16 @@ class Bus(Car):
     Different body to the original OpenAI car. We also added a brake bias with 40% front and 60% rear break bias
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
             0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large
         )
 
-    def __init__(self, world, init_angle, init_x, init_y):
+    def __init__(
+        self, world: Box2D.b2World, init_angle: float, init_x: float, init_y: float
+    ) -> None:
         self._init_extra_params()
         self.world = world
 
@@ -348,7 +351,7 @@ class Bus(Car):
             self.drawlist = self.wheels + [self.hull]
         self.particles = []
 
-    def gas(self, gas):
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -368,7 +371,7 @@ class Bus(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b):
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
@@ -384,7 +387,7 @@ class Bus(Car):
             for w in self.wheels[4:]:
                 w.brake = b * 0.8
 
-    def steer(self, s):
+    def steer(self, s: float) -> None:
         """control: steer
 
         Args:
@@ -392,12 +395,13 @@ class Bus(Car):
         self.wheels[0].steer = s
         self.wheels[1].steer = s
 
-    def step(self, dt):
+    def step(self, dt: float) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
         Engin powers or other fixed parameters
-        :param dt:
-        :return:
+
+        dt : float
+            Timestep for simulation
         """
         for w in self.wheels:
             # Steer each wheel
@@ -500,7 +504,7 @@ class FWDBus(Bus):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -513,7 +517,7 @@ class AWDBus(Bus):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -526,7 +530,7 @@ class BusSmallTrailer(Bus):
     Bus with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -539,7 +543,7 @@ class FWDBusSmallTrailer(Bus):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -552,7 +556,7 @@ class AWDBusSmallTrailer(Bus):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -565,7 +569,7 @@ class BusLargeTrailer(Bus):
     Bus with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -578,7 +582,7 @@ class FWDBusLargeTrailer(Bus):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -591,7 +595,7 @@ class AWDBusLargeTrailer(Bus):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (

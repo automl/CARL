@@ -1,11 +1,12 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
-from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT
+from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,  # Gravity is disabled via flag
@@ -59,19 +60,19 @@ class CARLDmcFishEnv(CARLDmcEnv):
         self,
         domain: str = "fish",
         task: str = "swim_context",
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        contexts: Contexts = {},
         context_mask: Optional[List[str]] = [],
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        default_context: Optional[Context] = DEFAULT_CONTEXT,
         max_episode_length: int = STEP_LIMIT,
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
