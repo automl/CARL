@@ -1,5 +1,8 @@
+from typing import Any, Dict, List, Optional
+
 import inspect
 
+import dm_env
 from dm_control import suite
 
 from carl.envs.dmc.dmc_tasks import fish, quadruped, walker  # noqa: F401
@@ -12,14 +15,14 @@ _DOMAINS = {
 
 
 def load_dmc_env(
-    domain_name,
-    task_name,
-    context={},
-    context_mask=[],
-    task_kwargs=None,
-    environment_kwargs=None,
-    visualize_reward=False,
-):
+    domain_name: str,
+    task_name: str,
+    context: Dict = {},
+    context_mask: List = [],
+    task_kwargs: Optional[Any] = None,
+    environment_kwargs: Dict[str, bool] = None,
+    visualize_reward: bool = False,
+) -> dm_env:
 
     if domain_name in _DOMAINS:
         domain = _DOMAINS[domain_name]
