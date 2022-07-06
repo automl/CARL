@@ -11,7 +11,6 @@ from gymnasium import Wrapper, spaces
 from gymnasium.core import Env
 
 from carl.context.context_space import ContextFeature, ContextSpace
-from carl.context.sampler import ContextSampler
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.utils.types import Context, Contexts
 
