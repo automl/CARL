@@ -5,6 +5,7 @@ import numpy as np
 from scipy.stats import norm
 
 from carl import envs
+from carl.utils.types import Contexts, Context
 
 
 def get_default_context_and_bounds(
@@ -145,9 +146,9 @@ def sample_contexts(
             sample_dists[context_feature_name] = (random_variable, context_feature_type)
 
     # Sample contexts
-    contexts = {}
+    contexts: Contexts = {}
     for i in range(0, num_contexts):
-        c = {}
+        c: Context = {}
         # k = name of context feature
         for k in env_defaults.keys():
             if k in sample_dists.keys():
