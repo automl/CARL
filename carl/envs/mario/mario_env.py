@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, cast
+from typing import Any, Dict, List, Literal, cast, Optional, Union
 
 import os
 import random
@@ -7,6 +7,7 @@ from collections import deque
 
 import cv2
 import gym
+from gym.core import ObsType
 import numpy as np
 from gym import spaces
 from gym.utils import seeding
@@ -77,7 +78,13 @@ class MarioEnv(gym.Env):
         self.mario_inertia = 0.89
         self._init_game()
 
-    def reset(self):
+    def reset(
+            self,
+            *,
+            seed: Optional[int] = None,
+            return_info: bool = False,
+            options: Optional[dict] = None,
+    ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._reset_obs()
         if self.game is None:
             self.game = self._init_game()
@@ -88,7 +95,10 @@ class MarioEnv(gym.Env):
         buffer = self._receive()
         frame = self._read_frame(buffer)
         self._update_obs(frame)
-        return self._obs.copy()
+        if not return_info:
+            return self._obs.copy()
+        else:
+            return self._obs.copy(), {}
 
     def step(self, action):
         if self.sticky_action_probability != 0.0:
@@ -132,7 +142,7 @@ class MarioEnv(gym.Env):
     def render(self, *args, **kwargs):
         return self.original_obs[0]
 
-    def __getstate__(self):
+    def __getstate__(self) -> Dict:
         assert self.gateway
         self.gateway.close()
         self.gateway = None
@@ -141,7 +151,7 @@ class MarioEnv(gym.Env):
         self.socket.close()
         return self.__dict__
 
-    def _reset_obs(self):
+    def _reset_obs(self) -> None:
         self._obs[:] = 0
         self.original_obs.clear()
 
