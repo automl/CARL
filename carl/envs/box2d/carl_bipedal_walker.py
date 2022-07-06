@@ -226,10 +226,10 @@ def demo_heuristic(
         moving_s_base = 4 + 5 * moving_leg
         supporting_s_base = 4 + 5 * supporting_leg
 
-        hip_targ = [None, None]  # -0.8 .. +1.1
-        knee_targ = [None, None]  # -0.6 .. +0.9
-        hip_todo = [0.0, 0.0]
-        knee_todo = [0.0, 0.0]
+        hip_targ = np.array([None, None])  # -0.8 .. +1.1
+        knee_targ = np.array([None, None])  # -0.6 .. +0.9
+        hip_todo = np.array([0.0, 0.0])
+        knee_todo = np.array([0.0, 0.0])
 
         if state == STAY_ON_ONE_LEG:
             hip_targ[moving_leg] = 1.1
