@@ -3,6 +3,7 @@ if __name__ == "__main__":
 
     import brax
     import jax
+    import brax
     from brax import envs
     from brax.io import html
     from IPython.display import HTML
