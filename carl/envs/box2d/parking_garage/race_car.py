@@ -374,7 +374,7 @@ class RaceCar(Car):
             self.drawlist = self.wheels + [self.hull]
         self.particles: List[Particle] = []
 
-    def gas(self, gas: float) -> None:
+    def gas(self, gas):
         """control: rear wheel drive
 
         Args:
@@ -394,7 +394,7 @@ class RaceCar(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b: float) -> None:
+    def brake(self, b):
         """control: brake
 
         Args:
@@ -527,7 +527,7 @@ class FWDRaceCar(RaceCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -540,7 +540,7 @@ class AWDRaceCar(RaceCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -553,7 +553,7 @@ class RaceCarSmallTrailer(RaceCar):
     RaceCar with small trailer attached
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -566,7 +566,7 @@ class FWDRaceCarSmallTrailer(RaceCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -579,7 +579,7 @@ class AWDRaceCarSmallTrailer(RaceCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -592,7 +592,7 @@ class RaceCarLargeTrailer(RaceCar):
     RaceCar with small trailer attached
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -605,7 +605,7 @@ class FWDRaceCarLargeTrailer(RaceCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -618,7 +618,7 @@ class AWDRaceCarLargeTrailer(RaceCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
