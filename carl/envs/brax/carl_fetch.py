@@ -92,7 +92,7 @@ class CARLFetch(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        self.env = Fetch
+        self.env: Fetch
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
