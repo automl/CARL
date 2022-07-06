@@ -375,7 +375,7 @@ class RaceCar(Car):
             self.drawlist = self.wheels + [self.hull]
         self.particles: List[Particle] = []
 
-    def gas(self, gas):
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -395,7 +395,7 @@ class RaceCar(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b):
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
