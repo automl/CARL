@@ -2,7 +2,6 @@ from typing import List
 
 import Box2D
 import numpy as np
-import Box2D
 from Box2D.b2 import circleShape  # noqa: F401
 from Box2D.b2 import contactListener  # noqa: F401
 from Box2D.b2 import distanceJointDef  # noqa: F401
