@@ -56,10 +56,7 @@ class MujocoToGymWrapper(gym.Env):
         step_type: StepType = timestep.step_type
         reward = timestep.reward
         discount = timestep.discount
-        if isinstance(self.observation_space, spaces.Box):
-            observation = timestep.observation["observations"]
-        else:
-            raise NotImplementedError
+        observation = timestep.observation["observations"]
         info = {"step_type": step_type, "discount": discount}
         done = step_type == StepType.LAST
         return observation, reward, done, info

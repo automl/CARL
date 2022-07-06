@@ -1,7 +1,9 @@
-from lxml import etree
+from typing import Dict, List
+
+from lxml import etree  # type: ignore
 
 
-def adapt_context(xml_string, context, context_mask=[]):
+def adapt_context(xml_string: bytes, context: Dict, context_mask: List = []) -> bytes:
     """Adapts and returns the xml_string of the model with the given context."""
     mjcf = etree.fromstring(xml_string)
     default = mjcf.find("./default/")
