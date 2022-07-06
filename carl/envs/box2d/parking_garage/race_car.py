@@ -1,4 +1,5 @@
 import numpy as np
+import Box2D
 from Box2D.b2 import circleShape  # noqa: F401
 from Box2D.b2 import contactListener  # noqa: F401
 from Box2D.b2 import distanceJointDef  # noqa: F401
@@ -84,7 +85,7 @@ class RaceCar(Car):
             0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large
         )
 
-    def __init__(self, world, init_angle, init_x, init_y) -> None:
+    def __init__(self, world: Box2D.b2World, init_angle: float, init_x: float, init_y: float) -> None:
         self._init_extra_params()
         self.world = world
 
