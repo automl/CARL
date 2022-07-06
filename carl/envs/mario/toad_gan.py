@@ -6,6 +6,7 @@ import sys
 from dataclasses import dataclass
 
 import torch
+from torch import Tensor
 
 from carl.envs.mario.generate_sample import generate_sample, generate_spatial_noise
 from carl.envs.mario.reachabillity import reachability_map
@@ -102,7 +103,7 @@ def generate_level(
     return "".join(level)
 
 
-def generate_initial_noise(width: int, height: int, level_index: int):
+def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
     toad_gan = load_generator(level_index)
     base_noise_map = toad_gan.noise_maps[0]
     nzx = (

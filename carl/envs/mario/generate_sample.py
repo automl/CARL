@@ -2,10 +2,11 @@
 import torch
 import torch.nn as nn
 from torch.nn.functional import interpolate
+from torch import Tensor
 
 
 # Generates a noise tensor. Uses torch.randn.
-def generate_spatial_noise(size, device="cpu"):
+def generate_spatial_noise(size, device="cpu") -> Tensor:
     return torch.randn(size, device=device, dtype=torch.float32)
 
 
@@ -60,7 +61,7 @@ def generate_sample(
             in_s = torch.zeros(in_s.shape[0], channels, *in_s.shape[2:]).to(device)
 
         if current_scale == 0:  # First step: Make base noise
-            if initial_noise is not None:
+            if initial_noise is not None and len(initial_noise) > 0:
                 z_curr = initial_noise.float().to(device)
             else:
                 z_curr = generate_spatial_noise(

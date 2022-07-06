@@ -29,7 +29,7 @@ class CARLMarioEnv(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -49,10 +49,11 @@ class CARLMarioEnv(CARLEnv):
             context_selector_kwargs=context_selector_kwargs,
             context_mask=context_mask,
         )
-        self.levels = []
+        self.levels: List[str] = []
         self._update_context()
 
     def _update_context(self) -> None:
+        self.env: MarioEnv
         if not self.levels:
             for context in self.contexts.values():
                 level = generate_level(
