@@ -15,15 +15,20 @@
 
 """Planar Walker Domain."""
 
+from typing import Dict, List, Optional, Tuple, Union
+
 import collections
 
-from dm_control import mujoco
-from dm_control.rl import control
-from dm_control.suite import base, common
-from dm_control.suite.utils import randomizers
-from dm_control.utils import containers, rewards
+import dm_env  # type: ignore
+import numpy as np
+from dm_control import mujoco  # type: ignore
+from dm_control.rl import control  # type: ignore
+from dm_control.suite import base, common  # type: ignore
+from dm_control.suite.utils import randomizers  # type: ignore
+from dm_control.utils import containers, rewards  # type: ignore
 
-from carl.envs.dmc.dmc_tasks.utils import adapt_context
+from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
+from carl.utils.types import Context
 
 _DEFAULT_TIME_LIMIT = 25
 _CONTROL_TIMESTEP = 0.025
@@ -41,19 +46,19 @@ STEP_LIMIT = 1000
 SUITE = containers.TaggedTasks()
 
 
-def get_model_and_assets():
+def get_model_and_assets() -> Tuple[bytes, Dict]:
     """Returns a tuple containing the model XML string and a dict of assets."""
     return common.read_model("walker.xml"), common.ASSETS
 
 
-@SUITE.add("benchmarking")
+@SUITE.add("benchmarking")  # type: ignore
 def stand_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Stand task with the adapted context."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
@@ -72,14 +77,14 @@ def stand_context(
     )
 
 
-@SUITE.add("benchmarking")
+@SUITE.add("benchmarking")  # type: ignore
 def walk_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Walk task with the adapted context."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
@@ -98,14 +103,14 @@ def walk_context(
     )
 
 
-@SUITE.add("benchmarking")
+@SUITE.add("benchmarking")  # type: ignore
 def run_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Run task with the adapted context."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
@@ -127,19 +132,19 @@ def run_context(
 class Physics(mujoco.Physics):
     """Physics simulation with additional features for the Walker domain."""
 
-    def torso_upright(self):
+    def torso_upright(self) -> np.float64:
         """Returns projection from z-axes of torso to the z-axes of world."""
         return self.named.data.xmat["torso", "zz"]
 
-    def torso_height(self):
+    def torso_height(self) -> np.float64:
         """Returns the height of the torso."""
         return self.named.data.xpos["torso", "z"]
 
-    def horizontal_velocity(self):
+    def horizontal_velocity(self) -> np.float64:
         """Returns the horizontal velocity of the center-of-mass."""
         return self.named.data.sensordata["torso_subtreelinvel"][0]
 
-    def orientations(self):
+    def orientations(self) -> np.ndarray:
         """Returns planar orientations of all bodies."""
         return self.named.data.xmat[1:, ["xx", "xz"]].ravel()
 
@@ -147,7 +152,9 @@ class Physics(mujoco.Physics):
 class PlanarWalker(base.Task):
     """A planar walker task."""
 
-    def __init__(self, move_speed, random=None):
+    def __init__(
+        self, move_speed: float, random: Union[np.random.RandomState, int, None] = None
+    ) -> None:
         """Initializes an instance of `PlanarWalker`.
         Args:
           move_speed: A float. If this value is zero, reward is given simply for
@@ -160,7 +167,7 @@ class PlanarWalker(base.Task):
         self._move_speed = move_speed
         super().__init__(random=random)
 
-    def initialize_episode(self, physics):
+    def initialize_episode(self, physics: Physics) -> None:
         """Sets the state of the environment at the start of each episode.
         In 'standing' mode, use initial orientation and small velocities.
         In 'random' mode, randomize joint angles and let fall to the floor.
@@ -170,15 +177,16 @@ class PlanarWalker(base.Task):
         randomizers.randomize_limited_and_rotational_joints(physics, self.random)
         super().initialize_episode(physics)
 
-    def get_observation(self, physics):
+    def get_observation(self, physics: Physics) -> collections.OrderedDict:
         """Returns an observation of body orientations, height and velocites."""
         obs = collections.OrderedDict()
         obs["orientations"] = physics.orientations()
-        obs["height"] = physics.torso_height()
+        obs["height"] = physics.torso_height()  # type: ignore
         obs["velocity"] = physics.velocity()
+        self.get_reward(physics)
         return obs
 
-    def get_reward(self, physics):
+    def get_reward(self, physics: Physics) -> np.float64:
         """Returns a reward to the agent."""
         standing = rewards.tolerance(
             physics.torso_height(),

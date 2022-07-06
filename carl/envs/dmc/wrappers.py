@@ -1,8 +1,8 @@
 from typing import Optional, Tuple, TypeVar, Union
 
+import dm_env  # type: ignore
 import gym
 import numpy as np
-from dm_control.rl.control import Environment
 from dm_env import StepType
 from gym import spaces
 
@@ -11,7 +11,7 @@ ActType = TypeVar("ActType")
 
 
 class MujocoToGymWrapper(gym.Env):
-    def __init__(self, env: Environment):
+    def __init__(self, env: dm_env) -> None:
         # TODO set seeds
         self.env = env
 
@@ -78,7 +78,7 @@ class MujocoToGymWrapper(gym.Env):
             raise NotImplementedError
         return observation
 
-    def render(self, mode="human", camera_id=0):
+    def render(self, mode: str = "human", camera_id: int = 0) -> np.ndarray:
         """Renders the environment.
 
         The set of supported modes varies per environment. (And some
