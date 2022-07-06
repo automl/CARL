@@ -6,7 +6,7 @@ from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 from carl.envs.dmc.dmc_tasks.walker import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,
@@ -58,7 +58,7 @@ class CARLDmcWalkerEnv(CARLDmcEnv):
         self,
         domain: str = "walker",
         task: str = "walk_context",
-        contexts: Dict[Any, Context] = {},
+        contexts: Contexts = {},
         context_mask: Optional[List[str]] = [],
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,

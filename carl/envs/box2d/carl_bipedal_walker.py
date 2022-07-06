@@ -8,6 +8,7 @@ from gym.envs.box2d import bipedal_walker as bpw
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Contexts
 
 DEFAULT_CONTEXT = {
     "FPS": 50,
@@ -78,7 +79,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
     def __init__(
         self,
         env: Optional[bipedal_walker.BipedalWalker] = None,
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.05,

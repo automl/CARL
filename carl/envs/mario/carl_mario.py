@@ -12,13 +12,14 @@ from carl.envs.mario.carl_mario_definitions import (
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Contexts
 
 
 class CARLMarioEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = MarioEnv(levels=[]),
-        contexts: Dict[int, Dict] = {},
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.05,

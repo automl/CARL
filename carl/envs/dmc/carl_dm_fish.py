@@ -6,6 +6,7 @@ from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Contexts
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,  # Gravity is disabled via flag
@@ -59,7 +60,7 @@ class CARLDmcFishEnv(CARLDmcEnv):
         self,
         domain: str = "fish",
         task: str = "swim_context",
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        contexts: Contexts = {},
         context_mask: Optional[List[str]] = [],
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,

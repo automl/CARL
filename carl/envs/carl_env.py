@@ -13,7 +13,7 @@ from gym import Wrapper, spaces
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
-from carl.utils.types import Vector, ObsType
+from carl.utils.types import Vector, ObsType, Contexts, Context
 from carl.utils.trial_logger import TrialLogger
 
 brax_spec = importlib.util.find_spec("brax")
@@ -38,7 +38,7 @@ class CARLEnv(Wrapper):
     ----------
     env: gym.Env
         Environment which context features are made visible / which is turned into a cMDP.
-    contexts: Dict[Any, Dict[Any, Any]]
+    contexts: Contexts
         Dict of contexts/instances. Key are context id, values are contexts as
         Dict[context feature id, context feature value].
     hide_context: bool = False
@@ -89,14 +89,14 @@ class CARLEnv(Wrapper):
         self,
         env: gym.Env,
         n_envs: int = 1,
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         max_episode_length: int = int(1e6),
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = None,
+        default_context: Optional[Context] = None,
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
@@ -107,8 +107,8 @@ class CARLEnv(Wrapper):
     ):
         super().__init__(env=env)
         # Gather args
-        self._context: Dict  # init for property
-        self._contexts: Dict[Any, Dict[Any, Any]]  # init for property
+        self._context: Context  # init for property
+        self._contexts: Contexts  # init for property
         self.default_context = default_context
         self.contexts = contexts
         self.context_mask = context_mask
@@ -241,7 +241,7 @@ class CARLEnv(Wrapper):
         return self._contexts
 
     @contexts.setter
-    def contexts(self, contexts: Dict[Any, Dict[Any, Any]]) -> None:
+    def contexts(self, contexts: Contexts) -> None:
         self._contexts = {
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }

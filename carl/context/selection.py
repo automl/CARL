@@ -3,7 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from carl.utils.types import Context
+from carl.utils.types import Contexts, Context
 
 
 class AbstractSelector(object):
@@ -15,13 +15,13 @@ class AbstractSelector(object):
 
     Parameters
     ----------
-    contexts: Dict[Any, Context]
+    contexts: Contexts
         Context set. A `Context` is a Dict[str, Any].
 
 
     Attributes
     ----------
-    contexts : Dict[Any, Context]
+    contexts : Contexts
         Context set.
     context_ids : List[int]
         Integer index for contexts.
@@ -34,8 +34,8 @@ class AbstractSelector(object):
 
     """
 
-    def __init__(self, contexts: Dict[Any, Context]):
-        self.contexts: Dict[Any, Context] = contexts
+    def __init__(self, contexts: Contexts):
+        self.contexts: Contexts = contexts
         self.context_ids: List[int] = list(np.arange(len(contexts)))
         self.contexts_keys: List[Any] = list(contexts.keys())
         self.n_calls: int = 0
@@ -110,7 +110,7 @@ class CustomSelector(AbstractSelector):
 
     Parameters
     ----------
-    contexts: Dict[Any, Context]
+    contexts: Contexts
         Set of contexts.
     selector_function: callable
         Function receiving a pointer to the selector implementing selection logic.
@@ -133,7 +133,7 @@ class CustomSelector(AbstractSelector):
 
     def __init__(
         self,
-        contexts: Dict[Any, Context],
+        contexts: Contexts,
         selector_function: Callable[[AbstractSelector], Tuple[Context, int]],
     ):
         super().__init__(contexts=contexts)
