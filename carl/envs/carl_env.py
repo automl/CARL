@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, Type, TypeVar
 
 import importlib
 import inspect
@@ -18,6 +18,8 @@ brax_spec = importlib.util.find_spec("brax")
 if brax_spec is not None:
     import jax.numpy as jnp
     import jaxlib
+
+ObsType = TypeVar("ObsType")
 
 
 class CARLEnv(Wrapper):
@@ -99,14 +101,14 @@ class CARLEnv(Wrapper):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, Type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         super().__init__(env=env)
         # Gather args
-        self._context: Optional[Dict] = None  # init for property
-        self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
+        self._context: Dict  # init for property
+        self._contexts: Dict[Any, Dict[Any, Any]]  # init for property
         self.default_context = default_context
         self.contexts = contexts
         self.context_mask = context_mask
@@ -116,10 +118,11 @@ class CARLEnv(Wrapper):
         self.logger = logger
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
+        self.context_selector: Type[AbstractSelector]
         if context_selector is None:
-            self.context_selector = RoundRobinSelector(contexts=contexts)
+            self.context_selector = RoundRobinSelector(contexts=contexts)  # type: ignore [assignment]
         elif isinstance(context_selector, AbstractSelector):
-            self.context_selector = context_selector
+            self.context_selector = context_selector  # type: ignore [assignment]
         elif inspect.isclass(context_selector) and issubclass(
             context_selector, AbstractSelector
         ):
@@ -127,7 +130,7 @@ class CARLEnv(Wrapper):
                 context_selector_kwargs = {}
             _context_selector_kwargs = {"contexts": contexts}
             context_selector_kwargs.update(_context_selector_kwargs)
-            self.context_selector = context_selector(**context_selector_kwargs)
+            self.context_selector = context_selector(**context_selector_kwargs)  # type: ignore [assignment]
         else:
             raise ValueError(
                 f"Context selector must be None or an AbstractSelector class or instance. "
@@ -154,6 +157,7 @@ class CARLEnv(Wrapper):
                     # TODO properly record which are appended to state
                     if logger is not None:
                         fname = os.path.join(logger.logdir, "env_info.json")
+                        save_val: Optional[List[str]]
                         if state_context_features is not None:
                             save_val = list(state_context_features)  # please json
                         else:
@@ -167,9 +171,12 @@ class CARLEnv(Wrapper):
             state_context_features = list(
                 self.contexts[list(self.contexts.keys())[0]].keys()
             )
-        self.state_context_features: List[str] = state_context_features
+        self.state_context_features: List[str] = state_context_features  # type: ignore [assignment]
+        # (Mypy thinks that state_context_features is of type Optional[List[str]] which it can't be anymore due to the
+        #  if-else clause)
+
         # state_context_features contains the names of the context features that should be appended to the state
-        # However, if context_mask is set, we want to update staet_context_feature_names so that the context features
+        # However, if context_mask is set, we want to update state_context_feature_names so that the context features
         # in context_mask are not appended to the state anymore.
         if self.context_mask:
             self.state_context_features = [
@@ -225,7 +232,7 @@ class CARLEnv(Wrapper):
         return self._context
 
     @context.setter
-    def context(self, context: Dict):
+    def context(self, context: Dict) -> None:
         self._context = self.fill_context_with_default(context=context)
 
     @property
@@ -233,7 +240,7 @@ class CARLEnv(Wrapper):
         return self._contexts
 
     @contexts.setter
-    def contexts(self, contexts: Dict[Any, Dict[Any, Any]]):
+    def contexts(self, contexts: Dict[Any, Dict[Any, Any]]) -> None:
         self._contexts = {
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
@@ -259,7 +266,7 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         state = self.env.reset(**kwargs)
-        state = self.build_context_adaptive_state(state)
+        state = self.build_context_adaptive_state(state=state)
         return state
 
     def build_context_adaptive_state(
