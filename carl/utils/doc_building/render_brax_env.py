@@ -1,7 +1,8 @@
 if __name__ == "__main__":
     from typing import List
-    import jax
+
     import brax
+    import jax
     from brax import envs
     from brax.io import html
     from IPython.display import HTML

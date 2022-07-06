@@ -3,7 +3,7 @@ from typing import Tuple, Union
 
 import torch.nn as nn
 
-from typing import Tuple, Union
+
 class ConvBlock(nn.Sequential):
     """Conv block containing Conv2d, BatchNorm2d and LeakyReLU Layers."""
 
@@ -26,6 +26,6 @@ class ConvBlock(nn.Sequential):
                 padding=padd,
             ),
         )
-        
+
         self.add_module("norm", nn.BatchNorm2d(out_channel))
         self.add_module("LeakyRelu", nn.LeakyReLU(0.2, inplace=True))
