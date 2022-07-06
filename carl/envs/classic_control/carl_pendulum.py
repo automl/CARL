@@ -9,7 +9,6 @@ from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.context_encoders import ContextEncoder
 
-
 DEFAULT_CONTEXT = {
     "max_speed": 8.0,
     "dt": 0.05,
@@ -110,6 +109,7 @@ class CARLPendulumEnv(CARLEnv):
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
         )  # allow to augment all values
+
 
     def _update_context(self) -> None:
         self.env.max_speed = self.context["max_speed"]

@@ -9,6 +9,7 @@ import jax
 import numpy as onp
 import wandb
 from carl.context.sampling import sample_contexts
+
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
@@ -111,7 +112,7 @@ def train(cfg: DictConfig):
     print(env)
     print(f"Observation Space: ", env.observation_space)
     print(f"Action Space: ", env.action_space)
-    print(f"Contexts: ", contexts)
+    print(f"Contexts: ", contexts[0])
 
     if cfg.algorithm == "sac":
         avg_return = sac(cfg, env, eval_env)

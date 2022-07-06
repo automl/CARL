@@ -2,18 +2,26 @@ import haiku as hk
 import jax
 import jax.numpy as jnp
 import numpy as onp
-
-from .common import context_gating_func
-
+from ..networks.common import context_gating_func, context_LSTM
 
 def pi_func(cfg, env):
     def pi(S, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
-                (hk.Linear(cfg.context_branch.width), jax.nn.relu)
+                (
+                    hk.Linear(cfg.context_branch.width),
+                    jax.nn.relu
+                )
             )
-            context_gating = context_gating_func(cfg)
+            
             x = state_seq(S["state"])
+
+            # Gate the context according to the requirement
+            if cfg.gating_type == 'Hadamard':
+                context_gating = context_gating_func(cfg)
+            elif cfg.gating_type == 'LSTM':
+                context_gating = context_LSTM(cfg)
+
             if cfg.pi_context:
                 x = context_gating(x, S)
             pi_seq = hk.Sequential(
@@ -50,11 +58,20 @@ def q_func(cfg, env):
     def q(S, A, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
-                (hk.Linear(cfg.context_branch.width), jax.nn.relu)
+                (
+                    hk.Linear(cfg.context_branch.width), 
+                    jax.nn.relu
+                )
             )
-            context_gating = context_gating_func(cfg)
             X = jnp.concatenate((S["state"], A), axis=-1)
             x = state_seq(X)
+
+            # Gate the context according to the requirement
+            if cfg.gating_type == 'Hadamard':
+                context_gating = context_gating_func(cfg)
+            elif cfg.gating_type == 'LSTM':            
+                context_gating = context_LSTM(cfg)
+
             if cfg.q_context:
                 x = context_gating(x, S)
             q_seq = hk.Sequential(
