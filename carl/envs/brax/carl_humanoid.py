@@ -16,6 +16,7 @@ from numpyencoder import NumpyEncoder
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Contexts
 
 DEFAULT_CONTEXT = {
     "gravity": -9.8,
@@ -39,8 +40,8 @@ class CARLHumanoid(CARLEnv):
         self,
         env: Humanoid = Humanoid(),
         n_envs: int = 1,
-        contexts: Dict[str, Dict] = {},
-        hide_context=False,
+        contexts: Contexts = {},
+        hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -50,7 +51,7 @@ class CARLHumanoid(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -85,6 +86,7 @@ class CARLHumanoid(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: Humanoid
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]

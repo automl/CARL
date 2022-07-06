@@ -1,5 +1,7 @@
 if __name__ == "__main__":
+    from typing import List
     import jax
+    import brax
     from brax import envs
     from brax.io import html
     from IPython.display import HTML
@@ -9,7 +11,7 @@ if __name__ == "__main__":
     env = env_fn()
     state = env.reset(rng=jax.random.PRNGKey(seed=1))
 
-    def visualize(sys, qps):
+    def visualize(sys: brax.System, qps: List[brax.QP]) -> HTML:
         """Renders a 3D visualization of the environment."""
         return HTML(html.render(sys, qps))
 

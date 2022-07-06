@@ -14,6 +14,7 @@ from numpyencoder import NumpyEncoder
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Contexts
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 15000.0,
@@ -39,8 +40,8 @@ class CARLHalfcheetah(CARLEnv):
         self,
         env: Halfcheetah = Halfcheetah(),
         n_envs: int = 1,
-        contexts: Dict[Any, Dict[Any, Any]] = {},
-        hide_context=False,
+        contexts: Contexts = {},
+        hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
@@ -50,7 +51,7 @@ class CARLHalfcheetah(CARLEnv):
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -85,6 +86,7 @@ class CARLHalfcheetah(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: Halfcheetah
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
