@@ -90,5 +90,14 @@ Run
 python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol' 'seed=range(1,11)' 'kirk_evaluation_protocol.mode=A,B,C' '+context_visibility=hidden,cgate,visible_all,visible_changing' -m
 ```
 
+Evaluate debug
+```bash
+python experiments/evaluation/evaluate.py +experiments=kirk_evaluation_protocol kirk_evaluation_protocol.distribution_type=test_extrapolation_all wandb.debug=True
+```
+
+```bash
+python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_protocol' 'kirk_evaluation_protocol.distribution_type=train,test_interpolation,test_interpolation_combinatorial,test_extrapolation_single,test_extrapolation_all' -m --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-01/14-14-50_benchmark_train/'
+```
+
 ## Landing in Space
 - [ ] LunarLander contexts --> Option to read contexts from file
