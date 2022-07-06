@@ -2,6 +2,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch import Tensor
+from argparse import Namespace
 
 from .conv_block import ConvBlock
 
@@ -9,7 +11,7 @@ from .conv_block import ConvBlock
 class Level_GeneratorConcatSkip2CleanAdd(nn.Module):
     """Patch based Generator. Uses namespace opt."""
 
-    def __init__(self, opt):
+    def __init__(self, opt: Namespace):
         super().__init__()
         self.is_cuda = torch.cuda.is_available()
         N = int(opt.nfc)
@@ -29,7 +31,7 @@ class Level_GeneratorConcatSkip2CleanAdd(nn.Module):
             ),
         )
 
-    def forward(self, x, y, temperature=1):
+    def forward(self, x: Tensor, y: Tensor, temperature: float = 1) -> Tensor:
         x = self.head(x)
         x = self.body(x)
         x = self.tail(x)

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, cast
+from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString
 
 import os
 import random
@@ -7,10 +7,12 @@ from collections import deque
 
 import cv2
 import gym
+from gym.core import ObsType
 import numpy as np
 from gym import spaces
 from gym.utils import seeding
 from py4j.java_gateway import GatewayParameters, JavaGateway
+from PIL import Image
 
 from carl.envs.mario.level_image_gen import LevelImageGen
 
@@ -77,7 +79,13 @@ class MarioEnv(gym.Env):
         self.mario_inertia = 0.89
         self._init_game()
 
-    def reset(self):
+    def reset(
+            self,
+            *,
+            seed: Optional[int] = None,
+            return_info: bool = False,
+            options: Optional[dict] = None,
+    ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._reset_obs()
         if self.game is None:
             self.game = self._init_game()
@@ -88,7 +96,10 @@ class MarioEnv(gym.Env):
         buffer = self._receive()
         frame = self._read_frame(buffer)
         self._update_obs(frame)
-        return self._obs.copy()
+        if not return_info:
+            return self._obs.copy()
+        else:
+            return self._obs.copy(), {}
 
     def step(self, action):
         if self.sticky_action_probability != 0.0:
@@ -132,7 +143,7 @@ class MarioEnv(gym.Env):
     def render(self, *args, **kwargs):
         return self.original_obs[0]
 
-    def __getstate__(self):
+    def __getstate__(self) -> Dict:
         assert self.gateway
         self.gateway.close()
         self.gateway = None
@@ -141,7 +152,7 @@ class MarioEnv(gym.Env):
         self.socket.close()
         return self.__dict__
 
-    def _reset_obs(self):
+    def _reset_obs(self) -> None:
         self._obs[:] = 0
         self.original_obs.clear()
 
@@ -164,7 +175,7 @@ class MarioEnv(gym.Env):
         else:
             self._obs = np.transpose(frame, axes=(2, 0, 1))
 
-    def _init_game(self):
+    def _init_game(self) -> MarioGame:
         self.gateway = JavaGateway(
             gateway_parameters=GatewayParameters(
                 port=self.port,
@@ -178,16 +189,16 @@ class MarioEnv(gym.Env):
         self.frame_size = self.game.getFrameSize()
         return self.game
 
-    def _receive(self):
+    def _receive(self) -> ByteString:
         frameBuffer = b""
         while len(frameBuffer) != self.frame_size:
             frameBuffer += self.socket.recv(self.frame_size)
         return frameBuffer
 
-    def get_action_meanings(self):
+    def get_action_meanings(self) -> List[str]:
         return ACTION_MEANING
 
-    def render_current_level(self):
+    def render_current_level(self) -> Image:
         img_gen = LevelImageGen(
             sprite_path=os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "sprites")
@@ -195,7 +206,7 @@ class MarioEnv(gym.Env):
         )
         return img_gen.render(self.levels[self.current_level_idx].split("\n"))
 
-    def seed(self, seed=None):
+    def seed(self, seed: Optional[int] = None) -> List[Any]:
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
