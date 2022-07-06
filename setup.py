@@ -22,7 +22,7 @@ def read_file(filepath: str) -> str:
 
 extras_require = {
     "box2d": [
-        "gym[box2d]>=2.3.10",
+        "gym[box2d]>=0.24.1",
     ],
     "brax": [
         "brax>=0.0.10",
@@ -88,7 +88,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.9",
     install_requires=[
-        "gym>=0.22.0",
+        "gym>=0.24.1",
         "pygame==2.1.0",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
