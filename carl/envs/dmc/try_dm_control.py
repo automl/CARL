@@ -25,7 +25,6 @@ if __name__ == "__main__":
 
     # contexts = {0: fish_default}
     #     carl_env = CARLDmcFishEnv(task="upright_context", contexts=contexts, context_mask=fish_mask, hide_context=False)
-    collect_types.init_types_collection()
     carl_env = CARLDmcWalkerEnv(
         task="run_context",
         contexts=contexts,
