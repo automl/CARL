@@ -221,14 +221,14 @@ class TukTuk(Car):
             self.drawlist = self.wheels + [self.hull]
         self.particles = []
 
-    def steer(self, s) -> None:
+    def steer(self, s: float) -> None:
         """control: steer
 
         Args:
             s (-1..1): target position, it takes time to rotate steering wheel from side-to-side"""
         self.wheels[0].steer = s
 
-    def gas(self, gas) -> None:
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -244,7 +244,7 @@ class TukTuk(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b) -> None:
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
@@ -260,12 +260,13 @@ class TukTuk(Car):
             for w in self.wheels[5:]:
                 w.brake = b * 0.8
 
-    def step(self, dt) -> None:
+    def step(self, dt: float) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
         Engin powers or other fixed parameters
-        :param dt:
-        :return:
+
+        dt : float
+            Timestep for simulation
         """
         for w in self.wheels:
             # Steer each wheel

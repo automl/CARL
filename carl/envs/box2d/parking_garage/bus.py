@@ -349,7 +349,7 @@ class Bus(Car):
             self.drawlist = self.wheels + [self.hull]
         self.particles = []
 
-    def gas(self, gas) -> None:
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -369,7 +369,7 @@ class Bus(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b) -> None:
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
@@ -385,7 +385,7 @@ class Bus(Car):
             for w in self.wheels[4:]:
                 w.brake = b * 0.8
 
-    def steer(self, s) -> None:
+    def steer(self, s: float) -> None:
         """control: steer
 
         Args:
@@ -393,12 +393,13 @@ class Bus(Car):
         self.wheels[0].steer = s
         self.wheels[1].steer = s
 
-    def step(self, dt) -> None:
+    def step(self, dt: float) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
         Engin powers or other fixed parameters
-        :param dt:
-        :return:
+
+        dt : float
+            Timestep for simulation
         """
         for w in self.wheels:
             # Steer each wheel
