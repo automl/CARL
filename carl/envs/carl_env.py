@@ -265,9 +265,16 @@ class CARLEnv(Wrapper):
         self._progress_instance()
         self._update_context()
         self._log_context()
-        state = self.env.reset(**kwargs)
+        return_info = kwargs.get("return_info", False)
+        _ret = self.env.reset(**kwargs)
+        info_dict = dict()
+        if return_info:
+            state, info_dict = _ret
         state = self.build_context_adaptive_state(state=state)
-        return state
+        ret = state
+        if return_info:
+            ret = state, info_dict
+        return ret
 
     def build_context_adaptive_state(
         self, state: List[float], context_feature_values: Optional[List[float]] = None
