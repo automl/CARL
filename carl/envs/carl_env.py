@@ -52,31 +52,6 @@ class CARLEnv(Wrapper, abc.ABC):
         context_selector: ContextSelector.
             The context selector selecting a new context after each env reset.
 
-
-        Parameters
-        ----------
-        env : Env
-            Environment adhering to the gymnasium API.
-        contexts : Contexts | None, optional
-            Context set, by default None. If it is None, we build the
-            context set with the default context.
-        obs_context_features : list[str] | None, optional
-            Context features which should be included in the observation, by default None.
-            If they are None, add all context features.
-        obs_context_as_dict: bool, optional
-            Whether to pass the context as a vector or a dict in the observations.
-            The default is True.
-        context_selector: AbstractSelector | type[AbstractSelector] | None, optional
-            The context selector (class), after each reset selects a new context to use.
-             If None, use a round robin selector.
-        context_selector_kwargs : dict, optional
-            Optional keyword arguments for the context selector, by default None.
-            Only used when `context_selector` is not None.
-
-        Raises
-        ------
-        ValueError
-            If the type of `context_selector` is invalid.
         """
         super().__init__(env)
 
