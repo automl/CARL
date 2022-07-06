@@ -5,6 +5,7 @@ import os
 
 from PIL import Image, ImageEnhance, ImageOps
 
+from typing import List, Tuple, Any
 
 class LevelImageGen:
     """Generates PIL Image files from Super Mario Bros. ascii levels.
