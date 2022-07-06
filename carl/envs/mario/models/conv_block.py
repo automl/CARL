@@ -3,7 +3,7 @@ from typing import Tuple, Union
 
 import torch.nn as nn
 
-from typing import Tuple, Union
+
 class ConvBlock(nn.Sequential):
     """Conv block containing Conv2d, BatchNorm2d and LeakyReLU Layers."""
 
