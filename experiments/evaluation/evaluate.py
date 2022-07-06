@@ -208,7 +208,7 @@ def evaluate_policy(cfg: DictConfig):
     # ----------------------------------------------------------------------
     weights_path = wandbdir / "latest-run" / "files" / "func_dict.pkl.lz4"
     policy = load_policy(traincfg, weights_path=weights_path)
-    returns, context_ids = evaluate(pi=policy, env=env, num_episodes=50) # cfg.n_eval_episodes)
+    returns, context_ids = evaluate(pi=policy, env=env, num_episodes=cfg.n_eval_episodes)
     avg_return = onp.mean(returns)
     df = pd.DataFrame(data=onp.vstack((context_ids, returns)).T, columns=["context_id", "return"])
     return_per_context_table = wandb.Table(dataframe=df)
