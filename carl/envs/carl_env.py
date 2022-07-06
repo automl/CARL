@@ -16,7 +16,6 @@ from gymnasium import Wrapper, spaces
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
-from carl.utils.types import Vector, ObsType, Contexts, Context
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts, ObsType, Vector
 

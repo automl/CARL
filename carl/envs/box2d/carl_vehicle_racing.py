@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Dict, List, Optional, Tuple, Type, Union
 
 import numpy as np
 import pyglet

@@ -5,10 +5,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from torch.nn.functional import interpolate
-from torch import Tensor
-from typing import Any, Union, Tuple, List, Optional
 
-from carl.envs.mario.toad_gan import TOADGAN
 
 # Generates a noise tensor. Uses torch.randn.
 def generate_spatial_noise(
