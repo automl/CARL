@@ -182,7 +182,7 @@ class MarioEnv(gym.Env):
                 eager_load=True,
             )
         )
-        self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())  # type: ignore [attr-defined]
+        self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(("localhost", self.game.getPort()))
         self.game.initGame()
