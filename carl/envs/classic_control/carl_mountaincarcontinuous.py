@@ -1,13 +1,12 @@
-from typing import Dict, List, Optional, Union, Any
+from typing import Dict, List, Optional, Union
 
-import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,

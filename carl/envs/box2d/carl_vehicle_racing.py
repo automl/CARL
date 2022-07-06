@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Dict, List, Optional, Tuple, Type, Union
 
 import numpy as np
 import pyglet
@@ -38,7 +38,7 @@ from carl.envs.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import ObsType, Contexts, Context
+from carl.utils.types import Context, Contexts, ObsType
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -93,18 +93,18 @@ class CustomCarRacingEnv(CarRacing):
         self.vehicle_class = vehicle_class
 
     def reset(
-            self,
-            *,
-            seed: Optional[int] = None,
-            return_info: bool = False,
-            options: Optional[dict] = None,
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._destroy()
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly = [] 
+        self.road_poly = []
 
         while True:
             success = self._create_track()
@@ -120,10 +120,10 @@ class CustomCarRacingEnv(CarRacing):
         for i in range(
             49
         ):  # this sets up the environment and resolves any initial violations of geometry
-            self.step(None) # type: ignore [arg-type]
+            self.step(None)  # type: ignore [arg-type]
 
         if not return_info:
-            return self.step(None)[0]    # type: ignore [arg-type]
+            return self.step(None)[0]  # type: ignore [arg-type]
         else:
             return self.step(None)[0], {}  # type: ignore [arg-type]
 
@@ -173,18 +173,18 @@ class CustomCarRacingEnv(CarRacing):
             )
 
         true_speed = np.sqrt(
-            np.square(self.car.hull.linearVelocity[0])       # type: ignore [attr-defined]
-            + np.square(self.car.hull.linearVelocity[1])     # type: ignore [attr-defined]
+            np.square(self.car.hull.linearVelocity[0])  # type: ignore [attr-defined]
+            + np.square(self.car.hull.linearVelocity[1])  # type: ignore [attr-defined]
         )
 
         vertical_ind(5, 0.02 * true_speed, (1, 1, 1))
 
         # Custom render to handle different amounts of wheels
-        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))                               # type: ignore [attr-defined]
-        for i in range(len(self.car.wheels)):                                                       # type: ignore [attr-defined]
-            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))             # type: ignore [attr-defined]
-        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))                            # type: ignore [attr-defined]
-        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))                              # type: ignore [attr-defined]
+        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # type: ignore [attr-defined]
+        for i in range(len(self.car.wheels)):  # type: ignore [attr-defined]
+            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))  # type: ignore [attr-defined]
+        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))  # type: ignore [attr-defined]
+        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))  # type: ignore [attr-defined]
         vl = pyglet.graphics.vertex_list(
             len(polygons) // 3, ("v3f", polygons), ("c4f", colors)  # gl.GL_QUADS,
         )

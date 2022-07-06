@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Dict, List, Optional, Tuple, TypeVar, Union
 
 from gym import Wrapper
 from gym.envs.box2d import lunar_lander
@@ -6,7 +6,7 @@ from gym.envs.box2d import lunar_lander
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")

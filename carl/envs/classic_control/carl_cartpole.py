@@ -1,13 +1,12 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
-import gym
 import numpy as np
 from gym.envs.classic_control import CartPoleEnv
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "gravity": 9.8,

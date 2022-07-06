@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 
@@ -6,7 +6,7 @@ from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "gravity": -9.81,  # Gravity is disabled via flag

@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 import functools
 import os
@@ -15,13 +15,13 @@ from carl.envs.mario.reachabillity import reachability_map
 @dataclass
 class TOADGAN:
     def __init__(
-            self,
-            Gs: Tensor,
-            Zs: Tensor,
-            reals: Tensor,
-            NoiseAmp: Tensor,
-            token_list: Tensor,
-            num_layers: int
+        self,
+        Gs: Tensor,
+        Zs: Tensor,
+        reals: Tensor,
+        NoiseAmp: Tensor,
+        token_list: Tensor,
+        num_layers: int,
     ):
         self.generators = Gs
         self.noise_maps = Zs

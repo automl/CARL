@@ -1,4 +1,5 @@
-from typing import Any, Dict, Union, List, TypeVar
+from typing import Any, Dict, List, TypeVar, Union
+
 import numpy as np
 
 Context = Dict[str, Any]

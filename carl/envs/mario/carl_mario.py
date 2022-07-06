@@ -12,7 +12,7 @@ from carl.envs.mario.carl_mario_definitions import (
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 
 class CARLMarioEnv(CARLEnv):

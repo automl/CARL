@@ -1,9 +1,10 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
+from typing import Any, List, Tuple
+
 import os
 
 from PIL import Image, ImageEnhance, ImageOps
 
-from typing import List, Tuple, Any
 
 class LevelImageGen:
     """Generates PIL Image files from Super Mario Bros. ascii levels.
@@ -115,7 +116,9 @@ class LevelImageGen:
 
         self.sprite_dict = sprite_dict
 
-    def prepare_sprite_and_box(self, ascii_level: List[str], sprite_key: str, curr_x: int, curr_y: int) -> Tuple[Any, Tuple[int, int, int, int]]:
+    def prepare_sprite_and_box(
+        self, ascii_level: List[str], sprite_key: str, curr_x: int, curr_y: int
+    ) -> Tuple[Any, Tuple[int, int, int, int]]:
         """Helper to make correct sprites and sprite sizes to draw into the image.
         Some sprites are bigger than one tile and the renderer needs to adjust for them."""
 

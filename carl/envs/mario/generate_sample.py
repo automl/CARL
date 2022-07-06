@@ -1,14 +1,16 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
+from typing import Any, List, Optional, Tuple, Union
+
 import torch
 import torch.nn as nn
-from torch.nn.functional import interpolate
 from torch import Tensor
-from typing import Any, Union, Tuple, List, Optional
+from torch.nn.functional import interpolate
 
-from carl.envs.mario.toad_gan import TOADGAN
 
 # Generates a noise tensor. Uses torch.randn.
-def generate_spatial_noise(size: Union[Any, List[int], Tuple[int]], device: Union[str, torch.device] ="cpu") -> Tensor:
+def generate_spatial_noise(
+    size: Union[Any, List[int], Tuple[int]], device: Union[str, torch.device] = "cpu"
+) -> Tensor:
     return torch.randn(size, device=device, dtype=torch.float32)
 
 
@@ -21,11 +23,11 @@ def generate_sample(
     noise_amplitudes: Tensor,
     num_layer: int,
     token_list: Tensor,
-    scale_v: float =1.0,
-    scale_h: float =1.0,
-    current_scale: int =0,
-    gen_start_scale: int =0,
-    initial_noise: Optional[Tensor]=None,
+    scale_v: float = 1.0,
+    scale_h: float = 1.0,
+    current_scale: int = 0,
+    gen_start_scale: int = 0,
+    initial_noise: Optional[Tensor] = None,
 ) -> List[str]:
 
     in_s = None

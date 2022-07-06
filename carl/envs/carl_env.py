@@ -1,10 +1,10 @@
-from typing import Any, Dict, List, Optional, Tuple, Union, Type, Mapping
-from types import ModuleType
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
 import importlib
 import inspect
 import json
 import os
+from types import ModuleType
 
 import gym
 import numpy as np
@@ -13,8 +13,8 @@ from gym import Wrapper, spaces
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
-from carl.utils.types import Vector, ObsType, Contexts, Context
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts, ObsType, Vector
 
 brax_spec = importlib.util.find_spec("brax")
 if brax_spec is not None:
@@ -353,7 +353,9 @@ class CARLEnv(Wrapper):
                 )
 
             # Add context features to state
-            state = self.build_context_adaptive_state(state=state, context_feature_values=context_feature_values)
+            state = self.build_context_adaptive_state(
+                state=state, context_feature_values=context_feature_values
+            )
 
         self.total_timestep_counter += 1
         self.step_counter += 1
@@ -503,7 +505,7 @@ class CARLEnv(Wrapper):
                     context_upper_bounds = np.inf * np.ones(context_dim)
                 else:
                     context_lower_bounds, context_upper_bounds = get_context_bounds(
-                        context_keys, context_bounds                                        # type: ignore [arg-type]
+                        context_keys, context_bounds  # type: ignore [arg-type]
                     )
                 if self.state_context_features is not None:
                     ids = np.array(
@@ -527,8 +529,12 @@ class CARLEnv(Wrapper):
                         }
                     )
                 else:
-                    low: Vector = np.concatenate((np.array(env_lower_bounds), np.array(context_lower_bounds)))
-                    high: Vector = np.concatenate((np.array(env_upper_bounds), np.array(context_upper_bounds)))
+                    low: Vector = np.concatenate(
+                        (np.array(env_lower_bounds), np.array(context_lower_bounds))
+                    )
+                    high: Vector = np.concatenate(
+                        (np.array(env_upper_bounds), np.array(context_upper_bounds))
+                    )
                     self.env.observation_space = spaces.Box(
                         low=np.array(low), high=np.array(high), dtype=np.float32
                     )

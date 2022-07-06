@@ -11,11 +11,15 @@ class MarioGame(ABC):
         pass
 
     @abstractmethod
-    def stepGame(self, left: bool, right: bool, down: bool, speed: bool, jump: bool) -> None:
+    def stepGame(
+        self, left: bool, right: bool, down: bool, speed: bool, jump: bool
+    ) -> None:
         pass
 
     @abstractmethod
-    def resetGame(self, level: str, timer: int, mario_state: int, inertia: float) -> None:
+    def resetGame(
+        self, level: str, timer: int, mario_state: int, inertia: float
+    ) -> None:
         pass
 
     @abstractmethod

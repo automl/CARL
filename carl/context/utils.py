@@ -63,4 +63,4 @@ if __name__ == "__main__":
         "min_velocity_start": (-np.inf, np.inf),
         "max_velocity_start": (-np.inf, np.inf),
     }
-    lower, upper = get_context_bounds(list(DEFAULT_CONTEXT.keys()), CONTEXT_BOUNDS)         
+    lower, upper = get_context_bounds(list(DEFAULT_CONTEXT.keys()), CONTEXT_BOUNDS)

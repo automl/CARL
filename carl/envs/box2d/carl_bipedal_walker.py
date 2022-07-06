@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
@@ -8,7 +8,7 @@ from gym.envs.box2d import bipedal_walker as bpw
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "FPS": 50,

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString, Deque, Tuple
+from typing import Any, ByteString, Deque, Dict, List, Literal, Optional, Union, cast
 
 import os
 import random
@@ -7,12 +7,12 @@ from collections import deque
 
 import cv2
 import gym
-from gym.core import ObsType
 import numpy as np
 from gym import spaces
+from gym.core import ObsType
 from gym.utils import seeding
-from py4j.java_gateway import GatewayParameters, JavaGateway
 from PIL import Image
+from py4j.java_gateway import GatewayParameters, JavaGateway
 
 from carl.envs.mario.level_image_gen import LevelImageGen
 
@@ -26,16 +26,16 @@ class MarioEnv(gym.Env):
     def __init__(
         self,
         levels: List[str],
-        timer: int =100,
-        visual: bool =False,
-        sticky_action_probability: float=0.1,
-        frame_skip: int=2,
-        frame_stack: int=4,
-        frame_dim: int=64,
-        hide_points_banner: bool =False,
-        sparse_rewards: bool=False,
-        grayscale: bool=False,
-        seed: int =0,
+        timer: int = 100,
+        visual: bool = False,
+        sticky_action_probability: float = 0.1,
+        frame_skip: int = 2,
+        frame_stack: int = 4,
+        frame_dim: int = 64,
+        hide_points_banner: bool = False,
+        sparse_rewards: bool = False,
+        grayscale: bool = False,
+        seed: int = 0,
     ):
         self.gateway: Any = None
         self.seed(seed)
@@ -81,11 +81,11 @@ class MarioEnv(gym.Env):
         self._init_game()
 
     def reset(
-            self,
-            *,
-            seed: Optional[int] = None,
-            return_info: bool = False,
-            options: Optional[dict] = None,
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._reset_obs()
         if self.game is None:
@@ -137,8 +137,8 @@ class MarioEnv(gym.Env):
         return (
             self._obs.copy(),
             reward if not self.sparse_rewards else int(completionPercentage == 1.0),
-            done,   # bool
-            info,   # Dict[str, Any]
+            done,  # bool
+            info,  # Dict[str, Any]
         )
 
     def render(self, *args: Any, **kwargs: Any) -> ObsType:
@@ -146,7 +146,7 @@ class MarioEnv(gym.Env):
 
     def __getstate__(self) -> Dict:
         assert self.gateway
-        
+
         self.gateway.close()
         self.gateway = None
         self.game = None

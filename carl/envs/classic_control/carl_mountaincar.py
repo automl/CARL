@@ -1,13 +1,12 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
-import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Contexts, Context
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,  # unit?
@@ -45,7 +44,7 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         self.max_position_start = -0.4
         self.min_velocity_start = 0.0
         self.max_velocity_start = 0.0
-        self.state: np.ndarray                      # type: ignore [assignment]
+        self.state: np.ndarray  # type: ignore [assignment]
 
     def sample_initial_state(self) -> np.ndarray:
         return np.array(
@@ -60,11 +59,11 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         )
 
     def reset(
-            self,
-            *,
-            seed: Optional[int] = None,
-            return_info: bool = False,
-            options: Optional[dict] = None,
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
     ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
         self.state = self.sample_initial_state()

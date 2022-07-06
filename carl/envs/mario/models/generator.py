@@ -1,9 +1,10 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
+from argparse import Namespace
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from argparse import Namespace
 
 from .conv_block import ConvBlock
 
