@@ -49,8 +49,27 @@ These may not be compatible with Windows systems. Box2D environment may need to 
 conda install -c conda-forge gym-box2d
 ```
 
-In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible. At this time, Mario and RNA work exclusively on Linux due to downstream dependencies, however.
-For additional installation requirements of Mario and RNA, please the ReadMe files in their respective directories in carl/envs.
+In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
+Mario at this point, however, will not run on any operation system besides Linux
+
+In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
+RNA and Mario at this point, however, will not run on any operation system besides Linux
+
+To install the additional requirements for ToadGAN:
+```bash
+git submodule update --init --recursive
+
+# if this does not work, clone manually
+git clone https://github.com/frederikschubert/Mario-AI-Framework carl/envs/mario/Mario-AI-Framework
+git clone https://github.com/Mawiszus/TOAD-GUI  carl/envs/mario/TOAD-GUI
+
+# System requirements
+sudo apt install libfreetype6-dev xvfb
+
+# Compile java source files
+cd carl/envs/mario/Mario-AI-Framework/src
+javac *.java
+```
 
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable.
