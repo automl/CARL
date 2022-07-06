@@ -14,6 +14,8 @@ from carl.context.context_space import ContextFeature, ContextSpace
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.utils.types import Context, Contexts
 
+ObsType = TypeVar("ObsType")
+
 
 class CARLEnv(Wrapper, abc.ABC):
     def __init__(
