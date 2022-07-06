@@ -61,7 +61,7 @@ class TukTuk(Car):
     TukTuk
     """
 
-    def _init_extra_params(self) -> None:
+    def _init_extra_params(self) -> None -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven  (Not supported)
         self.trailer_type = 0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large (not supported)
