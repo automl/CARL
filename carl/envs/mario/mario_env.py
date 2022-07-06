@@ -1,4 +1,4 @@
-from typing import Any, ByteString, Deque, Dict, List, Literal, Optional, Union, cast
+from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString, Type
 
 import os
 import random
@@ -156,14 +156,14 @@ class MarioEnv(gym.Env):
         self._obs[:] = 0
         self.original_obs.clear()
 
-    def _read_frame(self, buffer: Any) -> Any:
+    def _read_frame(self, buffer: ByteString) -> np.ndarray:
         frame = (
             np.frombuffer(buffer, dtype=np.int32).reshape(256, 256, 3).astype(np.uint8)
         )
         self.original_obs.append(frame)
         return frame
 
-    def _update_obs(self, frame: Any) -> Any:
+    def _update_obs(self, frame) -> None:
         if self.grayscale:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
@@ -182,11 +182,7 @@ class MarioEnv(gym.Env):
                 eager_load=True,
             )
         )
-        print(type(MarioGame))
-        print(type(cast))
-        print(type(self.gateway.jvm))
-        print(self.gateway.jvm.engine.core.MarioGame)
-        self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())
+        self.game = cast(MarioGame, cast(Any, self.gateway.jvm).engine.core.MarioGame())  # type: ignore [attr-defined]
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(("localhost", self.game.getPort()))
         self.game.initGame()
