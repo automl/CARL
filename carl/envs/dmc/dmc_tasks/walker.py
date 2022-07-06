@@ -24,7 +24,7 @@ import numpy as np
 from dm_control import mujoco  # type: ignore
 from dm_control.rl import control  # type: ignore
 from dm_control.suite import base, common  # type: ignore
-from dm_control.suite.utils import randomizers
+from dm_control.suite.utils import randomizers  # type: ignore
 from dm_control.utils import containers, rewards  # type: ignore
 
 from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
@@ -181,7 +181,7 @@ class PlanarWalker(base.Task):
         """Returns an observation of body orientations, height and velocites."""
         obs = collections.OrderedDict()
         obs["orientations"] = physics.orientations()
-        obs["height"] = physics.torso_height()
+        obs["height"] = physics.torso_height()  # type: ignore
         obs["velocity"] = physics.velocity()
         self.get_reward(physics)
         return obs

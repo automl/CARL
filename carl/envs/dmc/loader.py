@@ -2,8 +2,8 @@ from typing import Any, Dict, List, Optional
 
 import inspect
 
-import dm_env
-from dm_control import suite
+import dm_env  # type: ignore
+from dm_control import suite  # type: ignore
 
 from carl.envs.dmc.dmc_tasks import fish, quadruped, walker  # noqa: F401
 
@@ -18,7 +18,7 @@ def load_dmc_env(
     domain_name: str,
     task_name: str,
     context: Dict = {},
-    context_mask: List = [],
+    context_mask: Optional[List[str]] = [],
     task_kwargs: Optional[Any] = None,
     environment_kwargs: Dict[str, bool] = None,
     visualize_reward: bool = False,

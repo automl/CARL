@@ -4,7 +4,7 @@ import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
-from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT
+from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
 
 DEFAULT_CONTEXT = {
@@ -71,7 +71,7 @@ class CARLDmcFishEnv(CARLDmcEnv):
         state_context_features: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
