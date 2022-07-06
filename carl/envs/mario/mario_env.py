@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, cast, Optional, Union, ByteString, Deque, Tuple
+from typing import Any, ByteString, Deque, Dict, List, Literal, Optional, Union, cast
 
 import os
 import random
@@ -13,7 +13,6 @@ from gymnasium.core import ObsType
 from gymnasium.utils import seeding
 from PIL import Image
 from py4j.java_gateway import GatewayParameters, JavaGateway
-from PIL import Image
 
 from carl.envs.mario.level_image_gen import LevelImageGen
 
