@@ -22,11 +22,16 @@ def read_file(filepath: str) -> str:
 
 extras_require = {
     "box2d": [
-        "swig",
-        "gymnasium[box2d]>=0.27.1",
+        "gym[box2d]>=2.3.10",
     ],
     "brax": [
-        "brax>=0.9.1",
+        "brax>=0.0.10",
+        "protobuf>=3.17.3",
+    ],
+    "rna": [
+        "viennarna>=2.4.18",
+        "dataclasses",
+        "Distance",
     ],
     "dm_control": [
         "dm_control>=1.0.3",
@@ -35,9 +40,14 @@ extras_require = {
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
-        "opencv-python>=4.8"
     ],
-    "rna": ["distance>=0.1.3", "viennarna>=2.4.8"],
+    "experiments": [
+        "ray>=1.5.1",
+        "seaborn>=0.11.1",
+        "sb3_contrib>=1.1.0",
+        "stable_baselines3>=1.1.0",
+        "tensorflow>=2.5.0",
+    ],
     "dev": [
         "pytest>=6.1.1",
         "pytest-cov",
@@ -78,26 +88,29 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.9",
     install_requires=[
-        "gymnasium>=0.27.1",
+        "gym>=0.22.0",
+        "pygame==2.1.0",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
         "numpy>=1.19.5",
         "pandas>=1.3.0",
         "xvfbwrapper>=0.2.9",
         "matplotlib>=3.4.2",
+        "optuna>=2.9.1",
+        "dataclasses>=0.6",
         "numpyencoder>=0.3.0",
         "pyglet>=1.5.15",
         "pytablewriter>=0.62.0",
         "PyYAML>=5.4.1",
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
-        "ConfigSpace",
-        "omegaconf",
-        "seaborn>=0.12.2"
     ],
     extras_require=extras_require,
     test_suite="pytest",
     platforms=["Linux"],
+    entry_points={
+        "console_scripts": ["smac = smac.smac_cli:cmd_line_call"],
+    },
     classifiers=[
      "Programming Language :: Python :: 3",
      "Natural Language :: English",
