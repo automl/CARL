@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, Tuple, Union, Type, TypeVar
+from types import ModuleType
 
 import importlib
 import inspect
@@ -12,6 +13,7 @@ from gym import Wrapper, spaces
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
+from carl.utils.types import Vector
 from carl.utils.trial_logger import TrialLogger
 
 brax_spec = importlib.util.find_spec("brax")
@@ -136,6 +138,7 @@ class CARLEnv(Wrapper):
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
             )
+        context_keys: Vector
         if state_context_features is not None:
             if (
                 state_context_features == "changing_context_features"
@@ -245,7 +248,7 @@ class CARLEnv(Wrapper):
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
 
-    def reset(self, **kwargs: Dict) -> Any:
+    def reset(self, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
         """
         Reset environment.
 
@@ -258,6 +261,8 @@ class CARLEnv(Wrapper):
         -------
         state
             State of environment after reset.
+        info_dict : dict
+            Return also if return_info=True.
 
         """
         self.episode_counter += 1
@@ -266,10 +271,12 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
-        _ret = self.env.reset(**kwargs)
+        _ret = self.env.reset(**kwargs)  # type: ignore [arg-type]
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
+        else:
+            state = _ret
         state = self.build_context_adaptive_state(state=state)
         ret = state
         if return_info:
@@ -277,9 +284,9 @@ class CARLEnv(Wrapper):
         return ret
 
     def build_context_adaptive_state(
-        self, state: List[float], context_feature_values: Optional[List[float]] = None
-    ) -> List[float]:
-        tnp = np
+        self, state: List[float], context_feature_values: Optional[Vector] = None
+    ) -> Union[Vector, Dict]:
+        tnp: ModuleType = np
         if brax_spec is not None:
             if type(state) == jaxlib.xla_extension.DeviceArray:
                 tnp = jnp
@@ -303,7 +310,7 @@ class CARLEnv(Wrapper):
                 )
 
             if self.dict_observation_space:
-                state = dict(state=state, context=context_values)
+                state: Dict = dict(state=state, context=context_values)  # type: ignore [no-redef]
             elif self.vectorized:
                 state = tnp.array([np.concatenate((s, context_values)) for s in state])
             else:
@@ -348,7 +355,7 @@ class CARLEnv(Wrapper):
                 )
 
             # Add context features to state
-            state = self.build_context_adaptive_state(state, context_feature_values)
+            state = self.build_context_adaptive_state(state=state, context_feature_values=context_feature_values)
 
         self.total_timestep_counter += 1
         self.step_counter += 1
@@ -402,7 +409,7 @@ class CARLEnv(Wrapper):
         None
 
         """
-        context = self.context_selector.select()
+        context = self.context_selector.select()  # type: ignore [call-arg]
 
         if self.add_gaussian_noise_to_context and self.whitelist_gaussian_noise:
             context_augmented = {}
@@ -420,9 +427,9 @@ class CARLEnv(Wrapper):
 
     def build_observation_space(
         self,
-        env_lower_bounds: Optional[Union[List, np.array]] = None,
-        env_upper_bounds: Optional[Union[List, np.array]] = None,
-        context_bounds: Optional[Dict[str, Tuple[float]]] = None,
+        env_lower_bounds: Optional[Vector] = None,
+        env_upper_bounds: Optional[Vector] = None,
+        context_bounds: Optional[Dict[str, Tuple[float, float, type]]] = None,
     ) -> None:
         """
         Build observation space of environment.
@@ -437,10 +444,10 @@ class CARLEnv(Wrapper):
             both are None, (re-)create bounds (low=-inf, high=inf) with correct dimension.
         env_upper_bounds: Optional[Union[List, np.array]], default=None
             Upper bounds for environment observation space.
-        context_bounds: Optional[Dict[str, Tuple[float]]], default=None
+        context_bounds: Optional[Dict[str, Tuple[float, float, float]]], default=None
             Lower and upper bounds for context features.
             The bounds are provided as a Dict containing the context feature names/ids as keys and the
-            bounds per feature as a tuple (low, high).
+            bounds per feature as a tuple (low, high, dtype).
             If None and the context should not be hidden,
             creates default bounds with (low=-inf, high=inf) with correct dimension.
 
@@ -469,7 +476,7 @@ class CARLEnv(Wrapper):
         obs_space = (
             self.env.observation_space.spaces["state"].low
             if isinstance(self.env.observation_space, spaces.Dict)
-            else self.env.observation_space.low
+            else self.env.observation_space.low  # type: ignore [attr-defined]
         )
         obs_shape = obs_space.shape
         if len(obs_shape) == 3 and self.hide_context:
@@ -486,8 +493,8 @@ class CARLEnv(Wrapper):
                 and len(self.state_context_features) == 0
             ):
                 self.env.observation_space = spaces.Box(
-                    env_lower_bounds,
-                    env_upper_bounds,
+                    np.array(env_lower_bounds),
+                    np.array(env_upper_bounds),
                     dtype=np.float32,
                 )
             else:
@@ -510,22 +517,22 @@ class CARLEnv(Wrapper):
                     self.env.observation_space = spaces.Dict(
                         {
                             "state": spaces.Box(
-                                low=env_lower_bounds,
-                                high=env_upper_bounds,
+                                low=np.array(env_lower_bounds),
+                                high=np.array(env_upper_bounds),
                                 dtype=np.float32,
                             ),
                             "context": spaces.Box(
-                                low=context_lower_bounds,
-                                high=context_upper_bounds,
+                                low=np.array(context_lower_bounds),
+                                high=np.array(context_upper_bounds),
                                 dtype=np.float32,
                             ),
                         }
                     )
                 else:
-                    low = np.concatenate((env_lower_bounds, context_lower_bounds))
-                    high = np.concatenate((env_upper_bounds, context_upper_bounds))
+                    low: Vector = np.concatenate((np.array(env_lower_bounds), np.array(context_lower_bounds)))
+                    high: Vector = np.concatenate((np.array(env_upper_bounds), np.array(context_upper_bounds)))
                     self.env.observation_space = spaces.Box(
-                        low=low, high=high, dtype=np.float32
+                        low=np.array(low), high=np.array(high), dtype=np.float32
                     )
             self.observation_space = (
                 self.env.observation_space

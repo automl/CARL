@@ -4,7 +4,7 @@ import numpy as np
 
 
 def get_context_bounds(
-    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, float]]
+    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, type]]
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Get context bounds for specific features.
