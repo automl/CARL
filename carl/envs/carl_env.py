@@ -23,6 +23,8 @@ if brax_spec is not None:
     import jax.numpy as jnp
     import jaxlib
 
+ObsType = TypeVar("ObsType")
+
 
 class CARLEnv(Wrapper):
     """
