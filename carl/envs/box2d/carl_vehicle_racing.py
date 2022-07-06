@@ -91,7 +91,13 @@ class CustomCarRacingEnv(CarRacing):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
 
-    def reset(self) -> np.ndarray:
+    def reset(
+            self,
+            *,
+            seed: Optional[int] = None,
+            return_info: bool = False,
+            options: Optional[dict] = None,
+    ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._destroy()
         self.reward = 0.0
         self.prev_reward = 0.0
@@ -114,7 +120,11 @@ class CustomCarRacingEnv(CarRacing):
             49
         ):  # this sets up the environment and resolves any initial violations of geometry
             self.step(None)
-        return self.step(None)[0]
+
+        if not return_info:
+            return self.step(None)[0]
+        else:
+            return self.step(None)[0], {}
 
     def render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing
