@@ -1,7 +1,6 @@
 # flake8: noqa: F401
 # type: ignore
 import matplotlib.pyplot as plt
-from pyannotate_runtime import collect_types
 
 from carl.envs import CARLDmcFishEnv
 from carl.envs import CARLDmcFishEnv_defaults as fish_default
@@ -27,18 +26,16 @@ if __name__ == "__main__":
     # contexts = {0: fish_default}
     #     carl_env = CARLDmcFishEnv(task="upright_context", contexts=contexts, context_mask=fish_mask, hide_context=False)
     collect_types.init_types_collection()
-    with collect_types.collect():
-        carl_env = CARLDmcWalkerEnv(
-            task="run_context",
-            contexts=contexts,
-            context_mask=walker_mask,
-            hide_context=False,
-            dict_observation_space=True,
-        )
-        action = carl_env.action_space.sample()
-        state, reward, done, info = carl_env.step(action=action)
-        print("state", state, type(state))
-    collect_types.dump_stats("pyannotate.dump")
+    carl_env = CARLDmcWalkerEnv(
+        task="run_context",
+        contexts=contexts,
+        context_mask=walker_mask,
+        hide_context=False,
+        dict_observation_space=True,
+    )
+    action = carl_env.action_space.sample()
+    state, reward, done, info = carl_env.step(action=action)
+    print("state", state, type(state))
 
     render = lambda: plt.imshow(carl_env.render(mode="rgb_array"))
     s = carl_env.reset()
