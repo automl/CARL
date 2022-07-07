@@ -1,5 +1,4 @@
 from typing import List
-
 import Box2D
 import numpy as np
 from Box2D.b2 import circleShape  # noqa: F401
