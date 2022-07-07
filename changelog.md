@@ -16,7 +16,6 @@
 # 0.1.0
 - Initial release.
 - Remove RNA environment for maintenance
-- Remove RNA environment for maintenance
 
 # 0.1.0
 - Initial release.
