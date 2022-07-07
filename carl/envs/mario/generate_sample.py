@@ -15,7 +15,7 @@ def generate_spatial_noise(
 
 
 # Generate a sample given a TOAD-GAN and additional parameters
-@torch.no_grad()
+@torch.no_grad()  # type: ignore [misc]
 def generate_sample(
     generators: Tensor,
     noise_maps: Tensor,

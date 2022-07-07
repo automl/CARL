@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Type, Union
+from typing import Dict, List, Optional, Tuple, Type, Union, Any
 
 import numpy as np
 import pyglet
@@ -104,7 +104,7 @@ class CustomCarRacingEnv(CarRacing):
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly = []
+        self.road_poly: List[Tuple[List[float], Tuple[Any]]] = []
 
         while True:
             success = self._create_track()

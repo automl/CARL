@@ -46,7 +46,9 @@ if __name__ == "__main__":
     if record_video:
         from gym.wrappers.record_video import RecordVideo
 
-        env = RecordVideo(env=env, video_folder="/tmp/video-test", name_prefix="CARLVehicleRacing")
+        env = RecordVideo(
+            env=env, video_folder="/tmp/video-test", name_prefix="CARLVehicleRacing"
+        )
 
     isopen = True
     while isopen:
