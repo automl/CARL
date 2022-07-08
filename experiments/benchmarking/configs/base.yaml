@@ -24,7 +24,8 @@ carl:
   state_context_features: null
   add_gaussian_noise_to_context: false
   gaussian_noise_std_percentage: 0.15
-  gating_type: null
+
+gating_type: null
 
 algorithm: sac
 debug: false

@@ -5,4 +5,5 @@ wandb:
 carl:
   hide_context: false
   dict_observation_space: true
-  gating_type: Hadamard
+
+gating_type: Hadamard
