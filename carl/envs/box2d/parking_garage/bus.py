@@ -1,4 +1,5 @@
 from typing import List
+
 import Box2D
 import numpy as np
 from Box2D.b2 import circleShape  # noqa: F401
@@ -12,6 +13,7 @@ from Box2D.b2 import revoluteJointDef  # noqa: F401
 from Box2D.b2 import ropeJointDef  # noqa: F401
 from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gym.envs.box2d.car_dynamics import Car
+
 from carl.envs.box2d.parking_garage.utils import Particle
 
 __author__ = "André Biedenkapp"
