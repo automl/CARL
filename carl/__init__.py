@@ -4,9 +4,6 @@ __author__ = "Carolin Benjamins, Theresa Eimer, Frederik Schubert, André Bieden
 
 
 import datetime
-import os
-import sys
-import warnings
 
 name = "CARL"
 package_name = "carl"
@@ -23,10 +20,3 @@ copyright = f"""
     Copyright {datetime.date.today().strftime('%Y')}, AutoML.org Freiburg-Hannover
 """
 version = __version__
-
-
-if os.name != "posix":
-    warnings.warn(
-        f"Detected unsupported operating system: {sys.platform}."
-        "Please be aware, that SMAC might not run on this system."
-    )
