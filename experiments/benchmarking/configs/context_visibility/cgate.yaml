@@ -1,6 +1,6 @@
 # @package _global_
 wandb:
-  group: cgate
+  group: cgate_hadamard
 
 carl:
   hide_context: false
