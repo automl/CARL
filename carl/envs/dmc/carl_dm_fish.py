@@ -56,7 +56,7 @@ class CARLDmcFishEnv(CARLDmcEnv):
     def __init__(
         self,
         domain: str = "fish",
-        task: str = "swim_context",
+        task: str = "upright_context",
         contexts: Dict[Any, Dict[Any, Any]] = {},
         context_mask: Optional[List[str]] = [],
         hide_context: bool = True,

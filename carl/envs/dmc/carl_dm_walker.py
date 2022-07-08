@@ -54,7 +54,7 @@ class CARLDmcWalkerEnv(CARLDmcEnv):
     def __init__(
         self,
         domain: str = "walker",
-        task: str = "walk_context",
+        task: str = "stand_context",
         contexts: Dict[Any, Dict[Any, Any]] = {},
         context_mask: Optional[List[str]] = [],
         hide_context: bool = True,
