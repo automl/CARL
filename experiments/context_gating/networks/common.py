@@ -74,3 +74,14 @@ def context_LSTM(cfg: DictConfig):
         return output
 
     return unroll
+
+
+def get_gating_function(cfg: DictConfig):
+    gating_type = cfg.carl.get("gating_type", "Hadamard")
+    if gating_type == 'Hadamard':
+        context_gating = context_gating_func(cfg)
+    elif gating_type == 'LSTM':
+        assert cfg.network.width == cfg.context_branch.width
+
+        context_gating = context_LSTM(cfg)
+    return context_gating

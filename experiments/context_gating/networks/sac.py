@@ -3,7 +3,8 @@ import haiku as hk
 import jax
 import jax.numpy as jnp
 import numpy as onp
-from ..networks.common import context_gating_func, context_LSTM
+from ..networks.common import get_gating_function
+
 
 def pi_func(cfg, env):
     def pi(S, is_training):
@@ -25,12 +26,7 @@ def pi_func(cfg, env):
             width = cfg.network.width
 
             # Gate the context according to the requirement
-            if cfg.gating_type == 'Hadamard':
-                context_gating = context_gating_func(cfg)
-            elif cfg.gating_type == 'LSTM':
-                assert cfg.network.width == cfg.context_branch.width
-                
-                context_gating = context_LSTM(cfg)
+            context_gating = get_gating_function(cfg=cfg)
 
             if cfg.pi_context:
                 # Get the state modulated by the context
@@ -91,9 +87,10 @@ def q_func(cfg, env):
             x = state_seq(X)
 
             # Gate the context according to the requirement
-            if cfg.gating_type == 'Hadamard':
+            gating_type = cfg.carl.get("gating_type", "Hadamard")
+            if gating_type == 'Hadamard':
                 context_gating = context_gating_func(cfg)
-            elif cfg.gating_type == 'LSTM':
+            elif gating_type == 'LSTM':
                 assert cfg.network.width == cfg.context_branch.width
                 
                 context_gating = context_LSTM(cfg)
