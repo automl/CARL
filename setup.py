@@ -41,13 +41,6 @@ extras_require = {
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
     ],
-    "experiments": [
-        "ray>=1.5.1",
-        "seaborn>=0.11.1",
-        "sb3_contrib>=1.1.0",
-        "stable_baselines3>=1.1.0",
-        "tensorflow>=2.5.0",
-    ],
     "dev": [
         "pytest>=6.1.1",
         "pytest-cov",
