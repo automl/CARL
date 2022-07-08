@@ -65,10 +65,7 @@ def q_func(cfg, env):
             x = state_seq(X)
 
             # Gate the context according to the requirement
-            if cfg.carl.gating_type == 'Hadamard':
-                context_gating = context_gating_func(cfg)
-            elif cfg.carl.gating_type == 'LSTM':            
-                context_gating = context_LSTM(cfg)
+            context_gating = get_gating_function(cfg=cfg)
 
             if cfg.q_context:
                 x = context_gating(x, S)
