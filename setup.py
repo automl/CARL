@@ -28,11 +28,6 @@ extras_require = {
         "brax>=0.0.10",
         "protobuf>=3.17.3",
     ],
-    "rna": [
-        "viennarna>=2.4.18",
-        "dataclasses",
-        "Distance",
-    ],
     "dm_control": [
         "dm_control>=1.0.3",
     ],
