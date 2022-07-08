@@ -1,0 +1,6 @@
+wandb:
+  group: cgate_lstm
+
+carl:
+  hide_context: false
+  dict_observation_space: true
