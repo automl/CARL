@@ -1,4 +1,5 @@
 from typing import List
+
 import Box2D
 import numpy as np
 from Box2D.b2 import circleShape  # noqa: F401
@@ -625,4 +626,3 @@ class AWDRaceCarLargeTrailer(RaceCar):
         self.trailer_type = (
             2  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large
         )
-    
