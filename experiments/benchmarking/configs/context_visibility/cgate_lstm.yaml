@@ -1,3 +1,4 @@
+# @package _global_
 wandb:
   group: cgate_lstm
 
