@@ -103,16 +103,17 @@ def train(cfg: DictConfig):
             unique_fields=[
                 "env",
                 "seed",
-                "group",
+                # "group",
                 "context_sampler.context_feature_names",
                 "context_sampler.sigma_rel",
                 "carl.state_context_features",
+                "carl.hide_context",
+                "carl.dict_observation_space",
+                "carl.gating_type",
             ],
         )
-    ) and not cfg.debug:
+    ) and not cfg.wandb.debug:
         print(f"Skipping run with cfg {dict_cfg}")
-        return
-
     print(cfg)
 
     hydra_job = (
