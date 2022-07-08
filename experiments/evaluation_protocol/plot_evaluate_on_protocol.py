@@ -23,6 +23,7 @@ from experiments.evaluation_protocol.plot_traintest_distributions import plot_ev
 
 def get_ep_mplpatches(
         context_features: List[ContextFeature],
+        mode: str,
         color_interpolation: Optional[Union[str, List[float], np.array]] = None,
         color_extrapolation_single: Optional[Union[str, List[float], np.array]] = None,
         color_extrapolation_all: Optional[Union[str, List[float], np.array]] = None,
