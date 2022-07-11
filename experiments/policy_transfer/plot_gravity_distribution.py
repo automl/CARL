@@ -2,9 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import norm
-from policy_transfer import gravities
+from experiments.policy_transfer.landing_in_space.definitions import gravities
 import json
-from carl.experiments import fname as context_train_fname
 
 
 def plot_gravities_vlines(ax, gravities, yvalue, mean, std, fontsize, shortanno: bool = False):
@@ -93,6 +92,7 @@ def mark_planets(ax, n_planets):
 
 
 if __name__ == '__main__':
+    context_train_fname = ""
     mean = gravities["Mars"]
     std = 1.45
     n_contexts = 100000
