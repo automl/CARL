@@ -41,7 +41,7 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=p
 
 - [ ] SAC hidden, SAC cGate on LunarLander planet contexts, 200k
 ```bash
-'environments/box2d=lunarlander' '+context_visibility=hidden,cgate'
+'environments/box2d=lunarlander' '+context_visibility=hidden,cgate_hadamard'
 ```
 - [ ] SAC hidden, SAC cGate on walker 0.1 for all context features + all context features at once, 1M
 - [ ] SAC hidden, SAC cGate on quadruped 0.1 for all context features + whichever combination is manageable, 1M
@@ -108,4 +108,10 @@ python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_pr
 ```
 
 ## Landing in Space
-- [ ] LunarLander contexts --> Option to read contexts from file
+```bash
+# Debug
+python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'wandb.debug=true' 'eval_episodes=5'
+
+# Traing
+python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard' -m  
+```
