@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - ../environments/box2d/lunar_lander
+  - ../environments/box2d/lunarlander
   - ../context_visibility/hidden
   - ../slurm/cpu
   - lis/gravities_normal

@@ -34,7 +34,8 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
         'experiments/context_gating',
         'experiments/carlbench',
         'experiments/common/utils',
-        'experiments/evaluation_protocol'
+        'experiments/evaluation_protocol',
+        'experiments/policy_transfer/landing_in_space'
     ]
     src_dir = pathlib.Path.cwd()
     print(src_dir)

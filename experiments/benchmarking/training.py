@@ -96,7 +96,6 @@ def get_contexts_evaluation_protocol(cfg: DictConfig) -> Contexts:
 
 
 def get_contexts_landing_in_space(cfg: DictConfig) -> Contexts:
-    from experiments.policy_transfer.landing_in_space.definitions import sample_gravities_uniform, sample_gravities_normal
     gravities = instantiate(cfg.landing_in_space.sample_function)
     key = cfg.landing_in_space.context_feature_key
     contexts = {i: {key: gravities[i]} for i, g in enumerate(gravities)}
@@ -188,7 +187,7 @@ def train(cfg: DictConfig):
     # ----------------------------------------------------------------------
     # Sample contexts
     # ----------------------------------------------------------------------
-    contexts, eval_contexts = get_contexts(cfg=cfg)
+    contexts, eval_contexts = get_traineval_contexts(cfg=cfg)
     if contexts:
         log_contexts_wandb_traineval(train_contexts=contexts, eval_contexts=eval_contexts)
 
