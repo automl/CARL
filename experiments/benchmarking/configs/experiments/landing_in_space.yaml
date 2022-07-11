@@ -1,8 +1,8 @@
 # @package _global_
 defaults:
-  - ../environments/classic_control/cartpole
+  - ../environments/box2d/lunar_lander
   - ../context_visibility/hidden
-  - ../slurm/cpushort
+  - ../slurm/cpu
   - lis/gravities_normal
 
 experiment: landing_in_space
