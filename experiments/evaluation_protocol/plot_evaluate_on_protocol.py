@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.colors as mplc
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Rectangle, Polygon
 from matplotlib import cm
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -105,20 +105,16 @@ def get_ep_mplpatches(
         # patch.set_alpha(None)
         patches.append(patch)
     elif mode == "B":
-        xy = (cf0.lower, cf1.lower)
-        width = cf0.mid - cf0.lower
-        height = cf1.lower_constraint - cf1.lower
         patch_kwargs = update_colors(color_interpolation, patch_kwargs, draw_frame)
-        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        # patch.set_alpha(None)
-        patches.append(patch)
-
-        xy = (cf0.lower, cf1.lower_constraint)
-        width = cf0.lower_constraint - cf0.lower
-        height = cf1.mid - cf1.lower_constraint
-        patch_kwargs = update_colors(color_interpolation, patch_kwargs, draw_frame)
-        patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
-        # patch.set_alpha(None)
+        polygon = np.array([
+            [cf0.lower, cf1.lower],
+            [cf0.mid, cf1.lower],
+            [cf0.mid, cf1.lower_constraint],
+            [cf0.lower_constraint, cf1.lower_constraint],
+            [cf0.lower_constraint, cf1.mid],
+            [cf0.lower, cf1.mid]
+        ])
+        patch = Polygon(xy=polygon, **patch_kwargs)
         patches.append(patch)
 
     # Combinatorial Interpolation
