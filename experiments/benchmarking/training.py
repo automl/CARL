@@ -18,6 +18,7 @@ from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 from rich import print
 from hydra.utils import instantiate
+from typing import Tuple
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
@@ -102,6 +103,32 @@ def get_contexts_landing_in_space(cfg: DictConfig) -> Contexts:
     return contexts
 
 
+def get_traineval_contexts(cfg: DictConfig) -> Tuple[Contexts, Contexts]:
+    if cfg.contexts_train_path is not None:
+        contexts = lazy_json_load(cfg.contexts_train_path)
+    else:
+        contexts = get_contexts(cfg=cfg)
+
+    if cfg.eval_on_train_context:
+        eval_contexts = contexts
+    else:
+        if cfg.contexts_eval_path is not None:
+            eval_contexts = lazy_json_load(cfg.contexts_eval_path)
+        else:
+            eval_contexts = get_contexts(cfg=cfg)
+    return contexts, eval_contexts
+
+
+def get_contexts(cfg: DictConfig) -> Contexts:
+    if cfg.kirk_evaluation_protocol.follow:
+        contexts = get_contexts_evaluation_protocol(cfg)
+    elif cfg.landing_in_space.follow:
+        contexts = get_contexts_landing_in_space(cfg=cfg)
+    else:
+        contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+    return contexts
+
+
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
@@ -161,28 +188,7 @@ def train(cfg: DictConfig):
     # ----------------------------------------------------------------------
     # Sample contexts
     # ----------------------------------------------------------------------
-    if cfg.contexts_train_path is not None:
-        contexts = lazy_json_load(cfg.contexts_train_path)
-    else:
-        if cfg.kirk_evaluation_protocol.follow:
-            contexts = get_contexts_evaluation_protocol(cfg)
-        elif cfg.landing_in_space.follow:
-            contexts = get_contexts_landing_in_space(cfg=cfg)
-        else:
-            contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
-
-    if cfg.eval_on_train_context:
-        eval_contexts = contexts
-    else:
-        if cfg.contexts_eval_path is not None:
-            eval_contexts = lazy_json_load(cfg.contexts_eval_path)
-        else:
-            if cfg.kirk_evaluation_protocol.follow:
-                eval_contexts = get_contexts_evaluation_protocol(cfg)
-            elif cfg.landing_in_space.follow:
-                contexts = get_contexts_landing_in_space(cfg=cfg)  # this yields the same contexts as train
-            else:
-                eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
+    contexts, eval_contexts = get_contexts(cfg=cfg)
     if contexts:
         log_contexts_wandb_traineval(train_contexts=contexts, eval_contexts=eval_contexts)
 
