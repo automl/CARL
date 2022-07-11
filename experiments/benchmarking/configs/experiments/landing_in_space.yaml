@@ -3,6 +3,7 @@ defaults:
   - ../environments/classic_control/cartpole
   - ../context_visibility/hidden
   - ../slurm/cpushort
+  - lis/gravities_normal
 
 experiment: landing_in_space
 
@@ -17,4 +18,5 @@ carl:
 eval_on_train_context: true
 
 landing_in_space:
+  follow: true
   context_feature_key: GRAVITY_Y

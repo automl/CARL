@@ -21,6 +21,7 @@ from hydra.utils import instantiate
 
 from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
+from carl.utils.types import Contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
@@ -63,7 +64,7 @@ def check_config_valid(cfg):
     return valid
 
 
-def get_contexts_evaluation_protocol(cfg: DictConfig):
+def get_contexts_evaluation_protocol(cfg: DictConfig) -> Contexts:
     sample_function_attrs = {
         "train": "create_train_contexts",
         "test_interpolation": "create_contexts_interpolation",
@@ -93,6 +94,14 @@ def get_contexts_evaluation_protocol(cfg: DictConfig):
     return contexts
 
 
+def get_contexts_landing_in_space(cfg: DictConfig) -> Contexts:
+    from experiments.policy_transfer.landing_in_space.definitions import sample_gravities_uniform, sample_gravities_normal
+    gravities = instantiate(cfg.landing_in_space.sample_function)
+    key = cfg.landing_in_space.context_feature_key
+    contexts = {i: {key: gravities[i]} for i, g in enumerate(gravities)}
+    return contexts
+
+
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
@@ -103,6 +112,7 @@ def train(cfg: DictConfig):
             unique_fields=[
                 "env",
                 "seed",
+                "experiment",
                 # "group",
                 "context_sampler.context_feature_names",
                 "context_sampler.sigma_rel",
@@ -156,6 +166,8 @@ def train(cfg: DictConfig):
     else:
         if cfg.kirk_evaluation_protocol.follow:
             contexts = get_contexts_evaluation_protocol(cfg)
+        elif cfg.landing_in_space.follow:
+            contexts = get_contexts_landing_in_space(cfg=cfg)
         else:
             contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
 
@@ -167,6 +179,8 @@ def train(cfg: DictConfig):
         else:
             if cfg.kirk_evaluation_protocol.follow:
                 eval_contexts = get_contexts_evaluation_protocol(cfg)
+            elif cfg.landing_in_space.follow:
+                contexts = get_contexts_landing_in_space(cfg=cfg)  # this yields the same contexts as train
             else:
                 eval_contexts = ContextSampler(**cfg.context_sampler).sample_contexts()
     if contexts:

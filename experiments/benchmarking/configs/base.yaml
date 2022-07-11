@@ -54,6 +54,8 @@ contexts_train_path: null  # priority over context_sampler
 contexts_eval_path: null
 kirk_evaluation_protocol:
   follow: false
+landing_in_space:
+  follow: false
 
 zero_context: false # set context to zero
 state_context: false # set context to state feature subset
