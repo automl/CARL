@@ -105,7 +105,7 @@ jobs:
         python -m pip install --upgrade pip
         python setup.py sdist
         last_dist=$(ls -t dist/carl-*.tar.gz | head -n 1)
-        pip install $last_dist[dev]
+        pip install $last_dist [dev,dm_control]
 
     - name: Tests
       timeout-minutes: 60
