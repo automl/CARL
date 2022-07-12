@@ -53,6 +53,8 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=p
     python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
     # Half seeds, hidden + cGate Hadamard
     python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+    # Half seeds + cpu
+    python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpu' -m
     ```
 - [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length), 100k
 - [ ] SAC hidden, SAC cGate Mario with only one context dist, 1M

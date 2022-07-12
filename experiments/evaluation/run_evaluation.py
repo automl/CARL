@@ -46,6 +46,7 @@ def main():
         "--result_dir",
         default=None,
         type=str,
+        nargs="+",
         help="Path of submitit folder. If empty, uses single cfg.results_path.",
     )
     args, unknown_args = parser.parse_known_args()  # unknown args are hydra commands
