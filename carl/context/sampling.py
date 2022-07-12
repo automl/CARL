@@ -165,7 +165,7 @@ def sample_contexts(
     # Sample contexts
     contexts: Contexts = {}
     for i in range(0, num_contexts):
-        c: Context = {}
+        c = {}
         # k = name of context feature
         for k in env_defaults.keys():
             if k in sample_dists.keys():
