@@ -30,6 +30,7 @@ extras_require = {
     ],
     "dm_control": [
         "dm_control>=1.0.3",
+        "dm-env",
     ],
     "mario": [
         "torch>=1.9.0",
