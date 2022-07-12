@@ -1,4 +1,4 @@
- 0.2.2
+# 0.2.2
 - Make sampling of contexts deterministic with seed
 - Update gym to gymnasium
 
