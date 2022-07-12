@@ -3,14 +3,15 @@ from typing import Any, Dict, List, Tuple, Any, Optional
 import importlib
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, rv_continuous
 
 import carl.envs
+from carl.utils.types import Context, Contexts
 
 
 def get_default_context_and_bounds(
     env_name: str,
-) -> Tuple[Dict[Any, Any], Dict[str, Tuple[Any, Any, type]]]:
+) -> Tuple[Context, Dict[str, Tuple[Any, Any, type]]]:
     """
     Get context feature defaults and bounds for environment.
 
@@ -119,7 +120,7 @@ def sample_contexts(
     env_defaults, env_bounds = get_default_context_and_bounds(env_name=env_name)
 
     # Create sample distributions/rules
-    sample_dists = {}
+    sample_dists: Dict[str, Tuple[rv_continuous, type]] = {}
     for context_feature_name in env_defaults.keys():
         if context_feature_name in context_feature_args:
             if f"{context_feature_name}_mean" in context_feature_args:
@@ -151,7 +152,7 @@ def sample_contexts(
             sample_dists[context_feature_name] = (random_variable, context_feature_type)
 
     # Sample contexts
-    contexts = {}
+    contexts: Contexts = {}
     for i in range(0, num_contexts):
         c = {}
         # k = name of context feature

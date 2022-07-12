@@ -3,7 +3,6 @@ if __name__ == "__main__":
     from typing import List
 
     import matplotlib.pyplot as plt
-    import numpy as np
     import pandas as pd
     import seaborn as sns
 
