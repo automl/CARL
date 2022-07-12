@@ -1,16 +1,26 @@
 # flake8: noqa: W605
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import importlib
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, rv_continuous
 
-from carl import envs
+import carl.envs
 from carl.utils.types import Context, Contexts
 
 
 def get_default_context_and_bounds(
     env_name: str,
-) -> Tuple[Dict[Any, Any], Dict[Any, Any]]:
+) -> Tuple[
+    Context,
+    Dict[
+        str,
+        Union[
+            Tuple[Any, Any, Union[type, Tuple[type, type]]], Tuple[Any, Any, str, list]
+        ],
+    ],
+]:
     """
     Get context feature defaults and bounds for environment.
 
@@ -35,11 +45,11 @@ def get_default_context_and_bounds(
             categorical context features:
                 ``"VEHICLE": (None, None, "categorical", np.arange(0, len(PARKING_GARAGE)))``
     """
-    # TODO make less hacky / make explicit
-    env_defaults = getattr(envs, f"{env_name}_defaults")
-    env_bounds = getattr(envs, f"{env_name}_bounds")
-
-    return env_defaults, env_bounds
+    env_cls = getattr(carl.envs, env_name)
+    env_module = importlib.import_module(env_cls.__module__)
+    context_def = getattr(env_module, "DEFAULT_CONTEXT")
+    context_bounds = getattr(env_module, "CONTEXT_BOUNDS")
+    return context_def, context_bounds
 
 
 def sample_contexts(
@@ -48,6 +58,7 @@ def sample_contexts(
     num_contexts: int,
     default_sample_std_percentage: float = 0.05,
     fallback_sample_std: float = 0.1,
+    seed: Optional[int] = None,
 ) -> Dict[int, Dict[str, Any]]:
     """
     Sample contexts.
@@ -102,6 +113,8 @@ def sample_contexts(
         0.05.
     fallback_sample_std: float, optional
         The fallback relative standard deviation. Defaults to 0.1.
+    seed: int, optional
+        The seed for the sampling of the random variables.
 
     Returns
     -------
@@ -110,11 +123,15 @@ def sample_contexts(
         names as keys and context feature values as values, e.g.,
 
     """
+    rng = np.random.default_rng(seed=seed)
+
     # Get default context features and bounds
     env_defaults, env_bounds = get_default_context_and_bounds(env_name=env_name)
 
     # Create sample distributions/rules
-    sample_dists = {}
+    sample_dists: Dict[
+        str, Tuple[rv_continuous, Union[str, type, Tuple[type, type]]]
+    ] = {}
     for context_feature_name in env_defaults.keys():
         if context_feature_name in context_feature_args:
             if f"{context_feature_name}_mean" in context_feature_args:
@@ -148,7 +165,7 @@ def sample_contexts(
     # Sample contexts
     contexts: Contexts = {}
     for i in range(0, num_contexts):
-        c: Context = {}
+        c = {}
         # k = name of context feature
         for k in env_defaults.keys():
             if k in sample_dists.keys():
@@ -157,26 +174,28 @@ def sample_contexts(
                 context_feature_type = sample_dists[k][1]
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
                 if context_feature_type == list:
-                    length = np.random.randint(
-                        500000
+                    length = rng.integers(
+                        5e5
                     )  # TODO should we allow lists to be this long? or should we parametrize this?
-                    arg_class = sample_dists[k][1][1]
-                    context_list = random_variable.rvs(size=length)
+                    arg_class = sample_dists[k][1][1]  # type: ignore [index]
+                    context_list = random_variable.rvs(size=length, random_state=rng)
                     context_list = np.clip(context_list, lower_bound, upper_bound)
-                    c[k] = [arg_class(c) for c in context_list]
+                    c[k] = [arg_class(c) for c in context_list]  # type: ignore [operator]
                 elif context_feature_type == "categorical":
-                    choices = env_bounds[k][3]
-                    choice = np.random.choice(choices)
+                    choices = env_bounds[k][3]  # type: ignore [misc]
+                    choice = rng.choice(choices)
                     c[k] = choice
                 elif context_feature_type == "conditional":
-                    condition = env_bounds[k][4]
-                    choices = env_bounds[k][3][condition]
-                    choice = np.random.choice(choices)
+                    condition = env_bounds[k][4]  # type: ignore [misc]
+                    choices = env_bounds[k][3][condition]  # type: ignore [misc]
+                    choice = rng.choice(choices)
                     c[k] = choice
                 else:
-                    c[k] = random_variable.rvs(size=1)[0]  # sample variable
+                    c[k] = random_variable.rvs(size=1, random_state=rng)[
+                        0
+                    ]  # sample variable
                     c[k] = np.clip(c[k], lower_bound, upper_bound)  # check bounds
-                    c[k] = context_feature_type(c[k])  # cast to given type
+                    c[k] = context_feature_type(c[k])  # type: ignore [operator] # cast to given type
             else:
                 # No special sampling rule for context feature k, use the default context feature value
                 c[k] = env_defaults[k]
