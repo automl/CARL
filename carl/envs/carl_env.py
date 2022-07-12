@@ -19,7 +19,6 @@ if brax_spec is not None:
     import jaxlib
     import jax.numpy as jnp
 
-from carl.context_encoders import ContextEncoder
 import torch as th
 
 
@@ -103,11 +102,9 @@ class CARLEnv(Wrapper):
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        context_encoder: Optional[ContextEncoder] = None,  # encoder of the base type
     ):
         super().__init__(env=env)
         # Gather args
-        self.context_encoder = context_encoder
         self._context: Optional[Dict] = None  # init for property
         self._contexts: Optional[Dict[Any, Dict[Any, Any]]] = None  # init for property
         self.default_context = default_context
@@ -117,7 +114,6 @@ class CARLEnv(Wrapper):
         self.dict_observation_space = dict_observation_space
         self.cutoff = max_episode_length
         self.logger = logger
-        self.context_encoder = context_encoder
         self.add_gaussian_noise_to_context = add_gaussian_noise_to_context
         self.gaussian_noise_std_percentage = gaussian_noise_std_percentage
         if context_selector is None:
@@ -528,10 +524,6 @@ class CARLEnv(Wrapper):
                     )
                     context_lower_bounds = context_lower_bounds[ids]
                     context_upper_bounds = context_upper_bounds[ids]
-
-                if self.context_encoder is not None:
-                    context_lower_bounds = -np.inf * np.ones(self.context_encoder.latent_dim)
-                    context_upper_bounds = np.inf * np.ones(self.context_encoder.latent_dim)
 
                 if self.dict_observation_space:
                     self.env.observation_space = spaces.Dict(
