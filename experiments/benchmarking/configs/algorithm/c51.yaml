@@ -10,3 +10,6 @@ gamma: 0.99
 network:
   width: 64
   num_atoms: 51
+
+context_branch:
+  width: ${network.width}
