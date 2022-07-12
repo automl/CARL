@@ -5,6 +5,7 @@ import numpy as np
 from scipy.stats import norm
 
 from carl import envs
+from carl.utils.types import Context, Contexts
 
 
 def get_default_context_and_bounds(
@@ -145,9 +146,9 @@ def sample_contexts(
             sample_dists[context_feature_name] = (random_variable, context_feature_type)
 
     # Sample contexts
-    contexts = {}
+    contexts: Contexts = {}
     for i in range(0, num_contexts):
-        c = {}
+        c: Context = {}
         # k = name of context feature
         for k in env_defaults.keys():
             if k in sample_dists.keys():
@@ -157,7 +158,7 @@ def sample_contexts(
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
                 if context_feature_type == list:
                     length = np.random.randint(
-                        5e5
+                        500000
                     )  # TODO should we allow lists to be this long? or should we parametrize this?
                     arg_class = sample_dists[k][1][1]
                     context_list = random_variable.rvs(size=length)

@@ -1,12 +1,12 @@
 from typing import Dict, List, Optional, Union
 
-import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,
@@ -65,20 +65,20 @@ class CustomMountainCarContinuousEnv(
 class CARLMountainCarContinuousEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomMountainCarContinuousEnv(),
-        contexts: Dict[str, Dict] = {},
+        env: CustomMountainCarContinuousEnv = CustomMountainCarContinuousEnv(),
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = True,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        default_context: Optional[Context] = DEFAULT_CONTEXT,
         max_episode_length: int = 999,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -115,6 +115,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomMountainCarContinuousEnv
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]

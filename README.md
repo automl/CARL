@@ -21,9 +21,6 @@ Benchmarks include:
 - [Super Mario (TOAD-GAN)](https://github.com/Mawiszus/TOAD-GAN), a procedurally generated jump'n'run game with control
   over level similarity
 
-- [RNADesign](https://github.com/automl/learna/), an environment for RNA design given structure
-  constraints with structures from different datasets to choose from
-
 - [dm_control](https://github.com/deepmind/dm_control), environments based on the MuJoCo physics engine. The environments are extended with different context features.
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
@@ -44,7 +41,7 @@ pip install .
 
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
-pip install -e .[box2d, brax, rna, mario, dm_control]
+pip install -e .[box2d, brax, mario, dm_control]
 ```
 
 These may not be compatible with Windows systems. Box2D environment may need to be installed via conda on MacOS systems:
@@ -59,9 +56,6 @@ To install the additional requirements for ToadGAN:
 ```bash
 javac carl/envs/mario/Mario-AI-Framework/**/*.java
 ```
-
-If you want to use the RNA design environment, you also need to download the RNA data
-in addition to installing the dependencies. Please follow the instructions in carl/envs/rna.
 
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable.
@@ -94,8 +88,6 @@ Benchmarking Track)](https://arxiv.org/pdf/2106.13281.pdf)
 
 [TOAD-GAN: Coherent Style Level Generation from a Single Example,
 Awiszus et al., AIIDE 2020](https://arxiv.org/pdf/2008.01531.pdf)
-
-[Learning to Design RNA, Runge et al., ICRL 2019](https://arxiv.org/pdf/1812.11951.pdf)
 
 [dm_control: Software and Tasks for Continuous Control](https://arxiv.org/pdf/2006.12983.pdf)
 

@@ -1,12 +1,12 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
-import gym
 import gym.envs.classic_control as gccenvs
 import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "max_speed": 8.0,
@@ -42,7 +42,7 @@ class CustomPendulum(gccenvs.pendulum.PendulumEnv):
         seed: Optional[int] = None,
         return_info: bool = False,
         options: Optional[dict] = None,
-    ):
+    ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
         high = np.array([self.initial_angle_max, self.initial_velocity_max])
         self.state = self.np_random.uniform(low=-high, high=high)
@@ -56,20 +56,20 @@ class CustomPendulum(gccenvs.pendulum.PendulumEnv):
 class CARLPendulumEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = CustomPendulum(),
-        contexts: Dict[Any, Dict[Any, Any]] = {},
+        env: CustomPendulum = CustomPendulum(),
+        contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        default_context: Optional[Context] = DEFAULT_CONTEXT,
         max_episode_length: int = 200,  # from https://github.com/openai/gym/blob/master/gym/envs/__init__.py
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -108,6 +108,7 @@ class CARLPendulumEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
+        self.env: CustomPendulum
         self.env.max_speed = self.context["max_speed"]
         self.env.dt = self.context["dt"]
         self.env.l = self.context["l"]  # noqa: E741 ambiguous variable name

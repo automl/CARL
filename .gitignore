@@ -13,6 +13,7 @@ carl/runscripts/generated
 docs/html
 docs/apidoc
 CARL.egg-info
+carl.egg-info
 .mypy_cache
 .pytest_cache
 .coverage

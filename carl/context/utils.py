@@ -1,10 +1,10 @@
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Type
 
 import numpy as np
 
 
 def get_context_bounds(
-    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, float]]
+    context_keys: List[str], context_bounds: Dict[str, Tuple[float, float, Type[Any]]]
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Get context bounds for specific features.
@@ -15,7 +15,7 @@ def get_context_bounds(
     ----------
     context_keys: List[str]
         Names of context features.
-    context_bounds: Dict[str, Tuple[float, float, float]]
+    context_bounds: Dict[str, Tuple[float, float, type]]
         Dictionary containing lower and upper bound as a tuple, e.g., "context_feature_name": (-np.inf, np.inf)).
 
     Returns
@@ -28,7 +28,7 @@ def get_context_bounds(
     upper_bounds = np.empty(shape=len(context_keys))
 
     for i, context_key in enumerate(context_keys):
-        l, u, _ = context_bounds[context_key]
+        l, u, dtype = context_bounds[context_key]
         lower_bounds[i] = l
         upper_bounds[i] = u
 
@@ -51,16 +51,16 @@ if __name__ == "__main__":
     }
 
     CONTEXT_BOUNDS = {
-        "min_position": (-np.inf, np.inf),
-        "max_position": (-np.inf, np.inf),
-        "max_speed": (0, np.inf),
-        "goal_position": (-np.inf, np.inf),
-        "goal_velocity": (-np.inf, np.inf),
-        "force": (-np.inf, np.inf),
-        "gravity": (0, np.inf),
-        "min_position_start": (-np.inf, np.inf),
-        "max_position_start": (-np.inf, np.inf),
-        "min_velocity_start": (-np.inf, np.inf),
-        "max_velocity_start": (-np.inf, np.inf),
+        "min_position": (-np.inf, np.inf, float),
+        "max_position": (-np.inf, np.inf, float),
+        "max_speed": (0, np.inf, float),
+        "goal_position": (-np.inf, np.inf, float),
+        "goal_velocity": (-np.inf, np.inf, float),
+        "force": (-np.inf, np.inf, float),
+        "gravity": (0, np.inf, float),
+        "min_position_start": (-np.inf, np.inf, float),
+        "max_position_start": (-np.inf, np.inf, float),
+        "min_velocity_start": (-np.inf, np.inf, float),
+        "max_velocity_start": (-np.inf, np.inf, float),
     }
     lower, upper = get_context_bounds(list(DEFAULT_CONTEXT.keys()), CONTEXT_BOUNDS)

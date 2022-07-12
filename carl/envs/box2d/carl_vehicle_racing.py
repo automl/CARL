@@ -38,6 +38,7 @@ from carl.envs.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts, ObsType
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -87,17 +88,23 @@ CATEGORICAL_CONTEXT_FEATURES = ["VEHICLE"]
 
 
 class CustomCarRacingEnv(CarRacing):
-    def __init__(self, vehicle_class: Type[Car] = Car, verbose: int = 1):
+    def __init__(self, vehicle_class: Type[Car] = Car, verbose: bool = True):
         super().__init__(verbose)
         self.vehicle_class = vehicle_class
 
-    def reset(self) -> np.ndarray:
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
+    ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._destroy()
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly = []  # type: List
+        self.road_poly: List[Tuple[List[float], Tuple[Any]]] = []
 
         while True:
             success = self._create_track()
@@ -108,13 +115,17 @@ class CustomCarRacingEnv(CarRacing):
                     "retry to generate track (normal if there are not many"
                     "instances of this message)"
                 )
-        self.car = self.vehicle_class(self.world, *self.track[0][1:4])
+        self.car = self.vehicle_class(self.world, *self.track[0][1:4])  # type: ignore [assignment]
 
         for i in range(
             49
         ):  # this sets up the environment and resolves any initial violations of geometry
-            self.step(None)
-        return self.step(None)[0]
+            self.step(None)  # type: ignore [arg-type]
+
+        if not return_info:
+            return self.step(None)[0]  # type: ignore [arg-type]
+        else:
+            return self.step(None)[0], {}  # type: ignore [arg-type]
 
     def render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing
@@ -162,42 +173,40 @@ class CustomCarRacingEnv(CarRacing):
             )
 
         true_speed = np.sqrt(
-            np.square(self.car.hull.linearVelocity[0])
-            + np.square(self.car.hull.linearVelocity[1])
+            np.square(self.car.hull.linearVelocity[0])  # type: ignore [attr-defined]
+            + np.square(self.car.hull.linearVelocity[1])  # type: ignore [attr-defined]
         )
 
         vertical_ind(5, 0.02 * true_speed, (1, 1, 1))
 
         # Custom render to handle different amounts of wheels
-        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # ABS sensors
-        for i in range(len(self.car.wheels)):
-            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))
-        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))
-        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))
+        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # type: ignore [attr-defined]
+        for i in range(len(self.car.wheels)):  # type: ignore [attr-defined]
+            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))  # type: ignore [attr-defined]
+        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))  # type: ignore [attr-defined]
+        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))  # type: ignore [attr-defined]
         vl = pyglet.graphics.vertex_list(
             len(polygons) // 3, ("v3f", polygons), ("c4f", colors)  # gl.GL_QUADS,
         )
         vl.draw(gl.GL_QUADS)
-        self.score_label.text = "%04i" % self.reward
-        self.score_label.draw()
 
 
 class CARLVehicleRacingEnv(CARLEnv):
     def __init__(
         self,
         env: CustomCarRacingEnv = CustomCarRacingEnv(),
-        contexts: Optional[Dict[Union[str, int], Dict[Any, Any]]] = None,
+        contexts: Optional[Contexts] = None,
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
-        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        default_context: Optional[Context] = DEFAULT_CONTEXT,
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
         context_selector: Optional[
-            Union[AbstractSelector, type(AbstractSelector)]
+            Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
@@ -240,67 +249,6 @@ class CARLVehicleRacingEnv(CARLEnv):
         ]
 
     def _update_context(self) -> None:
+        self.env: CustomCarRacingEnv
         vehicle_class_index = self.context["VEHICLE"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
-
-
-if __name__ == "__main__":
-    import time
-
-    from pyglet.window import key
-
-    a = np.array([0.0, 0.0, 0.0])
-
-    def key_press(k: int, mod: Any) -> None:
-        global restart
-        if k == 0xFF0D:
-            restart = True
-        if k == key.SPACE:
-            restart = True
-        if k == key.LEFT:
-            a[0] = -1.0
-        if k == key.RIGHT:
-            a[0] = +1.0
-        if k == key.UP:
-            a[1] = +1.0
-        if k == key.DOWN:
-            a[2] = +1.0
-
-    def key_release(k: int, mod: Any) -> None:
-        if k == key.LEFT and a[0] == -1.0:
-            a[0] = 0
-        if k == key.RIGHT and a[0] == +1.0:
-            a[0] = 0
-        if k == key.UP:
-            a[1] = 0
-        if k == key.DOWN:
-            a[2] = 0
-
-    contexts = {i: {"VEHICLE": i} for i in range(len(VEHICLE_NAMES))}
-    env = CARLVehicleRacingEnv(contexts=contexts)
-    env.render()
-    env.viewer.window.on_key_press = key_press
-    env.viewer.window.on_key_release = key_release
-    record_video = False
-    if record_video:
-        from gym.wrappers.monitor import Monitor
-
-        env = Monitor(env, "/tmp/video-test", force=True)
-    isopen = True
-    while isopen:
-        env.reset()
-        total_reward = 0.0
-        steps = 0
-        restart = False
-        while True:
-            s, r, done, info = env.step(a)
-            time.sleep(0.025)
-            total_reward += r
-            if steps % 200 == 0 or done:
-                print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
-                print("step {} total_reward {:+0.2f}".format(steps, total_reward))
-            steps += 1
-            isopen = env.render()
-            if done or restart or not isopen:
-                break
-    env.close()
