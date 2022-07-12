@@ -110,8 +110,8 @@ python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_pr
 ## Landing in Space
 ```bash
 # Debug
-python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'wandb.debug=true' 'eval_episodes=5'
+python experiments/benchmarking/training.py '+experiments=landing_in_space' 'wandb.debug=true' 'eval_episodes=5'
 
-# Traing
+# Training
 python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard' -m  
 ```
