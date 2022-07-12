@@ -1,3 +1,6 @@
+# 0.2.1
+- Make sampling of contexts deterministic with seed
+
 # 0.2.0
 - Integrate dm control environments (#55)
 - Add context masks to only append those to the state (#54)
