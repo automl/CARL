@@ -1,34 +1,39 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
+from typing import Any, List, Optional, Tuple, Union
+
 import torch
 import torch.nn as nn
+from torch import Tensor
 from torch.nn.functional import interpolate
 
 
 # Generates a noise tensor. Uses torch.randn.
-def generate_spatial_noise(size, device="cpu"):
+def generate_spatial_noise(
+    size: Union[Any, List[int], Tuple[int]], device: Union[str, torch.device] = "cpu"
+) -> Tensor:
     return torch.randn(size, device=device, dtype=torch.float32)
 
 
 # Generate a sample given a TOAD-GAN and additional parameters
-@torch.no_grad()
+@torch.no_grad()  # type: ignore [misc]
 def generate_sample(
-    generators,
-    noise_maps,
-    reals,
-    noise_amplitudes,
-    num_layer,
-    token_list,
-    scale_v=1.0,
-    scale_h=1.0,
-    current_scale=0,
-    gen_start_scale=0,
-    initial_noise=None,
-):
+    generators: Tensor,
+    noise_maps: Tensor,
+    reals: Tensor,
+    noise_amplitudes: Tensor,
+    num_layer: int,
+    token_list: Tensor,
+    scale_v: float = 1.0,
+    scale_h: float = 1.0,
+    current_scale: int = 0,
+    gen_start_scale: int = 0,
+    initial_noise: Optional[Tensor] = None,
+) -> List[str]:
 
     in_s = None
-    images_cur = []
-    images = []
-    z_s = []
+    images_cur: List[Tensor] = []
+    images: List[Tensor] = []
+    z_s: List[Tensor] = []
 
     # Generate on GPU if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -60,7 +65,7 @@ def generate_sample(
             in_s = torch.zeros(in_s.shape[0], channels, *in_s.shape[2:]).to(device)
 
         if current_scale == 0:  # First step: Make base noise
-            if initial_noise is not None:
+            if initial_noise is not None and len(initial_noise) > 0:
                 z_curr = initial_noise.float().to(device)
             else:
                 z_curr = generate_spatial_noise(
@@ -104,7 +109,7 @@ def generate_sample(
     return one_hot_to_ascii_level(I_curr, token_list)
 
 
-def one_hot_to_ascii_level(level, tokens):
+def one_hot_to_ascii_level(level: Any, tokens: Any) -> List[str]:
     """Converts a full token level tensor to an ascii level."""
     ascii_level = []
     for i in range(level.shape[2]):

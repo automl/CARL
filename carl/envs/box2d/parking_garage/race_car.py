@@ -1,3 +1,6 @@
+from typing import List
+
+import Box2D
 import numpy as np
 from Box2D.b2 import circleShape  # noqa: F401
 from Box2D.b2 import contactListener  # noqa: F401
@@ -10,6 +13,8 @@ from Box2D.b2 import revoluteJointDef  # noqa: F401
 from Box2D.b2 import ropeJointDef  # noqa: F401
 from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gym.envs.box2d.car_dynamics import Car
+
+from carl.envs.box2d.parking_garage.utils import Particle
 
 __author__ = "André Biedenkapp"
 
@@ -77,14 +82,16 @@ class RaceCar(Car):
     wheels. We also added a brake bias with 40% front and 60% rear break bias
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
             0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large
         )
 
-    def __init__(self, world, init_angle, init_x, init_y):
+    def __init__(
+        self, world: Box2D.b2World, init_angle: float, init_x: float, init_y: float
+    ) -> None:
         self._init_extra_params()
         self.world = world
 
@@ -365,9 +372,9 @@ class RaceCar(Car):
             self.drawlist = self.wheels + [self.hull, self.trailer, self.trailer_axel]
         else:
             self.drawlist = self.wheels + [self.hull]
-        self.particles = []
+        self.particles: List[Particle] = []
 
-    def gas(self, gas):
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -387,7 +394,7 @@ class RaceCar(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b):
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
@@ -403,7 +410,7 @@ class RaceCar(Car):
             for w in self.wheels[4:]:
                 w.brake = b * 0.8
 
-    def steer(self, s):
+    def steer(self, s: float) -> None:
         """control: steer
 
         Args:
@@ -411,12 +418,13 @@ class RaceCar(Car):
         self.wheels[0].steer = s
         self.wheels[1].steer = s
 
-    def step(self, dt):
+    def step(self, dt: float) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
-        Engin powers or other fixed parameters
-        :param dt:
-        :return:
+        engine powers or other fixed parameters
+
+        dt : float
+            Timestep for simulation
         """
         for w in self.wheels:
             # Steer each wheel
@@ -519,7 +527,7 @@ class FWDRaceCar(RaceCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -532,7 +540,7 @@ class AWDRaceCar(RaceCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -545,7 +553,7 @@ class RaceCarSmallTrailer(RaceCar):
     RaceCar with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -558,7 +566,7 @@ class FWDRaceCarSmallTrailer(RaceCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -571,7 +579,7 @@ class AWDRaceCarSmallTrailer(RaceCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -584,7 +592,7 @@ class RaceCarLargeTrailer(RaceCar):
     RaceCar with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -597,7 +605,7 @@ class FWDRaceCarLargeTrailer(RaceCar):
     Front wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = False  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (
@@ -610,7 +618,7 @@ class AWDRaceCarLargeTrailer(RaceCar):
     4x4 wheel driven race car
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = True  # Flag to determine which wheels are driven
         self.trailer_type = (

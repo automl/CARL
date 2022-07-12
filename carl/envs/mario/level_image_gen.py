@@ -1,4 +1,6 @@
 # Code from https://github.com/Mawiszus/TOAD-GAN
+from typing import Any, List, Tuple
+
 import os
 
 from PIL import Image, ImageEnhance, ImageOps
@@ -114,7 +116,9 @@ class LevelImageGen:
 
         self.sprite_dict = sprite_dict
 
-    def prepare_sprite_and_box(self, ascii_level, sprite_key, curr_x, curr_y):
+    def prepare_sprite_and_box(
+        self, ascii_level: List[str], sprite_key: str, curr_x: int, curr_y: int
+    ) -> Tuple[Any, Tuple[int, int, int, int]]:
         """Helper to make correct sprites and sprite sizes to draw into the image.
         Some sprites are bigger than one tile and the renderer needs to adjust for them."""
 
@@ -388,7 +392,7 @@ class LevelImageGen:
 
         return actual_sprite, (new_left, new_top, new_right, new_bottom)
 
-    def render(self, ascii_level):
+    def render(self, ascii_level: List[str]) -> Image:
         """Renders the ascii level as a PIL Image. Assumes the Background is sky"""
         len_level = len(ascii_level[-1])
         height_level = len(ascii_level)

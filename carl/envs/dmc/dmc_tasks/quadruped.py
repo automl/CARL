@@ -15,20 +15,24 @@
 
 """Quadruped Domain."""
 
-import collections
+from typing import Any, Dict, List, Optional, Union
 
-from dm_control import mujoco
-from dm_control.mujoco.wrapper import mjbindings
-from dm_control.rl import control
-from dm_control.suite import base
-from dm_control.suite import common
-from dm_control.utils import containers
-from dm_control.utils import rewards
-from dm_control.utils import xml_tools
-from carl.envs.dmc.dmc_tasks.utils import adapt_context
-from lxml import etree
+import collections
+from collections import OrderedDict
+
+import dm_env  # type: ignore
 import numpy as np
+from dm_control import mujoco  # type: ignore
+from dm_control.mujoco.wrapper import mjbindings  # type: ignore
+from dm_control.mujoco.wrapper.core import MjData  # type: ignore
+from dm_control.rl import control  # type: ignore
+from dm_control.suite import base, common  # type: ignore
+from dm_control.utils import containers, rewards, xml_tools  # type: ignore
+from lxml import etree  # type: ignore
 from scipy import ndimage
+
+from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
+from carl.utils.types import Context
 
 enums = mjbindings.enums
 mjlib = mjbindings.mjlib
@@ -55,8 +59,11 @@ SUITE = containers.TaggedTasks()
 
 
 def make_model(
-    floor_size=None, terrain=False, rangefinders=False, walls_and_ball=False
-):
+    floor_size: Optional[Any] = None,
+    terrain: bool = False,
+    rangefinders: bool = False,
+    walls_and_ball: bool = False,
+) -> bytes:
     """Returns the model XML string."""
     xml_string = common.read_model("quadruped.xml")
     parser = etree.XMLParser(remove_blank_text=True)
@@ -96,14 +103,14 @@ def make_model(
     return etree.tostring(mjcf, pretty_print=True)
 
 
-@SUITE.add()
+@SUITE.add()  # type: ignore
 def walk_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Walk task with the adapted context."""
     xml_string = make_model(floor_size=_DEFAULT_TIME_LIMIT * _WALK_SPEED)
     if context != {}:
@@ -122,14 +129,14 @@ def walk_context(
     )
 
 
-@SUITE.add()
+@SUITE.add()  # type: ignore
 def run_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Run task with the adapted context."""
     xml_string = make_model(floor_size=_DEFAULT_TIME_LIMIT * _RUN_SPEED)
     if context != {}:
@@ -148,14 +155,14 @@ def run_context(
     )
 
 
-@SUITE.add()
+@SUITE.add()  # type: ignore
 def escape_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Escape task with the adapted context."""
     xml_string = make_model(floor_size=40, terrain=True, rangefinders=True)
     if context != {}:
@@ -174,14 +181,14 @@ def escape_context(
     )
 
 
-@SUITE.add()
+@SUITE.add()  # type: ignore
 def fetch_context(
-    context={},
-    context_mask=[],
-    time_limit=_DEFAULT_TIME_LIMIT,
-    random=None,
-    environment_kwargs=None,
-):
+    context: Context = {},
+    context_mask: List = [],
+    time_limit: int = _DEFAULT_TIME_LIMIT,
+    random: Union[np.random.RandomState, int, None] = None,
+    environment_kwargs: Optional[Dict] = None,
+) -> dm_env:
     """Returns the Fetch task with the adapted context."""
     xml_string = make_model(walls_and_ball=True)
     if context != {}:
@@ -203,13 +210,13 @@ def fetch_context(
 class Physics(mujoco.Physics):
     """Physics simulation with additional features for the Quadruped domain."""
 
-    def _reload_from_data(self, data):
+    def _reload_from_data(self, data: MjData) -> None:
         super()._reload_from_data(data)
         # Clear cached sensor names when the physics is reloaded.
-        self._sensor_types_to_names = {}
-        self._hinge_names = []
+        self._sensor_types_to_names: Dict = {}
+        self._hinge_names: List = []
 
-    def _get_sensor_names(self, *sensor_types):
+    def _get_sensor_names(self, *sensor_types: List[int]) -> List[str]:
         try:
             sensor_names = self._sensor_types_to_names[sensor_types]
         except KeyError:
@@ -218,15 +225,15 @@ class Physics(mujoco.Physics):
             self._sensor_types_to_names[sensor_types] = sensor_names
         return sensor_names
 
-    def torso_upright(self):
+    def torso_upright(self) -> np.ndarray:
         """Returns the dot-product of the torso z-axis and the global z-axis."""
         return np.asarray(self.named.data.xmat["torso", "zz"])
 
-    def torso_velocity(self):
+    def torso_velocity(self) -> np.ndarray:
         """Returns the velocity of the torso, in the local frame."""
         return self.named.data.sensordata["velocimeter"].copy()
 
-    def egocentric_state(self):
+    def egocentric_state(self) -> np.ndarray:
         """Returns the state without global orientation or position."""
         if not self._hinge_names:
             [hinge_ids] = np.nonzero(self.model.jnt_type == enums.mjtJoint.mjJNT_HINGE)
@@ -241,45 +248,45 @@ class Physics(mujoco.Physics):
             )
         )
 
-    def toe_positions(self):
+    def toe_positions(self) -> np.ndarray:
         """Returns toe positions in egocentric frame."""
         torso_frame = self.named.data.xmat["torso"].reshape(3, 3)
         torso_pos = self.named.data.xpos["torso"]
         torso_to_toe = self.named.data.xpos[_TOES] - torso_pos
         return torso_to_toe.dot(torso_frame)
 
-    def force_torque(self):
+    def force_torque(self) -> np.ndarray:
         """Returns scaled force/torque sensor readings at the toes."""
         force_torque_sensors = self._get_sensor_names(
             enums.mjtSensor.mjSENS_FORCE, enums.mjtSensor.mjSENS_TORQUE
         )
         return np.arcsinh(self.named.data.sensordata[force_torque_sensors])
 
-    def imu(self):
+    def imu(self) -> np.ndarray:
         """Returns IMU-like sensor readings."""
         imu_sensors = self._get_sensor_names(
             enums.mjtSensor.mjSENS_GYRO, enums.mjtSensor.mjSENS_ACCELEROMETER
         )
         return self.named.data.sensordata[imu_sensors]
 
-    def rangefinder(self):
+    def rangefinder(self) -> np.ndarray:
         """Returns scaled rangefinder sensor readings."""
         rf_sensors = self._get_sensor_names(enums.mjtSensor.mjSENS_RANGEFINDER)
         rf_readings = self.named.data.sensordata[rf_sensors]
         no_intersection = -1.0
         return np.where(rf_readings == no_intersection, 1.0, np.tanh(rf_readings))
 
-    def origin_distance(self):
+    def origin_distance(self) -> np.ndarray:
         """Returns the distance from the origin to the workspace."""
         return np.asarray(np.linalg.norm(self.named.data.site_xpos["workspace"]))
 
-    def origin(self):
+    def origin(self) -> np.ndarray:
         """Returns origin position in the torso frame."""
         torso_frame = self.named.data.xmat["torso"].reshape(3, 3)
         torso_pos = self.named.data.xpos["torso"]
         return -torso_pos.dot(torso_frame)
 
-    def ball_state(self):
+    def ball_state(self) -> np.ndarray:
         """Returns ball position and velocity relative to the torso frame."""
         data = self.named.data
         torso_frame = data.xmat["torso"].reshape(3, 3)
@@ -289,21 +296,21 @@ class Physics(mujoco.Physics):
         ball_state = np.vstack((ball_rel_pos, ball_rel_vel, ball_rot_vel))
         return ball_state.dot(torso_frame).ravel()
 
-    def target_position(self):
+    def target_position(self) -> np.ndarray:
         """Returns target position in torso frame."""
         torso_frame = self.named.data.xmat["torso"].reshape(3, 3)
         torso_pos = self.named.data.xpos["torso"]
         torso_to_target = self.named.data.site_xpos["target"] - torso_pos
         return torso_to_target.dot(torso_frame)
 
-    def ball_to_target_distance(self):
+    def ball_to_target_distance(self) -> np.float64:
         """Returns horizontal distance from the ball to the target."""
         ball_to_target = (
             self.named.data.site_xpos["target"] - self.named.data.xpos["ball"]
         )
         return np.linalg.norm(ball_to_target[:2])
 
-    def self_to_ball_distance(self):
+    def self_to_ball_distance(self) -> np.float64:
         """Returns horizontal distance from the quadruped workspace to the ball."""
         self_to_ball = (
             self.named.data.site_xpos["workspace"] - self.named.data.xpos["ball"]
@@ -311,7 +318,12 @@ class Physics(mujoco.Physics):
         return np.linalg.norm(self_to_ball[:2])
 
 
-def _find_non_contacting_height(physics, orientation, x_pos=0.0, y_pos=0.0):
+def _find_non_contacting_height(
+    physics: Physics,
+    orientation: np.ndarray,
+    x_pos: float = 0.0,
+    y_pos: float = 0.0,
+) -> None:
     """Find a height with no contacts given a body orientation.
     Args:
       physics: An instance of `Physics`.
@@ -342,7 +354,7 @@ def _find_non_contacting_height(physics, orientation, x_pos=0.0, y_pos=0.0):
             raise RuntimeError("Failed to find a non-contacting configuration.")
 
 
-def _common_observations(physics):
+def _common_observations(physics: Physics) -> collections.OrderedDict:
     """Returns the observations common to all tasks."""
     obs = collections.OrderedDict()
     obs["egocentric_state"] = physics.egocentric_state()
@@ -353,7 +365,7 @@ def _common_observations(physics):
     return obs
 
 
-def _upright_reward(physics, deviation_angle=0):
+def _upright_reward(physics: Physics, deviation_angle: float = 0) -> np.float64:
     """Returns a reward proportional to how upright the torso is.
     Args:
       physics: an instance of `Physics`.
@@ -374,7 +386,11 @@ def _upright_reward(physics, deviation_angle=0):
 class Move(base.Task):
     """A quadruped task solved by moving forward at a designated speed."""
 
-    def __init__(self, desired_speed, random=None):
+    def __init__(
+        self,
+        desired_speed: float,
+        random: Union[np.random.RandomState, int, None] = None,
+    ) -> None:
         """Initializes an instance of `Move`.
         Args:
           desired_speed: A float. If this value is zero, reward is given simply
@@ -387,7 +403,7 @@ class Move(base.Task):
         self._desired_speed = desired_speed
         super().__init__(random=random)
 
-    def initialize_episode(self, physics):
+    def initialize_episode(self, physics: Physics) -> None:
         """Sets the state of the environment at the start of each episode.
         Args:
           physics: An instance of `Physics`.
@@ -398,11 +414,11 @@ class Move(base.Task):
         _find_non_contacting_height(physics, orientation)
         super().initialize_episode(physics)
 
-    def get_observation(self, physics):
+    def get_observation(self, physics: Physics) -> collections.OrderedDict:
         """Returns an observation to the agent."""
         return _common_observations(physics)
 
-    def get_reward(self, physics):
+    def get_reward(self, physics: Physics) -> np.float64:
         """Returns a reward to the agent."""
 
         # Move reward term.
@@ -420,7 +436,7 @@ class Move(base.Task):
 class Escape(base.Task):
     """A quadruped task solved by escaping a bowl-shaped terrain."""
 
-    def initialize_episode(self, physics):
+    def initialize_episode(self, physics: Physics) -> None:
         """Sets the state of the environment at the start of each episode.
         Args:
           physics: An instance of `Physics`.
@@ -459,14 +475,14 @@ class Escape(base.Task):
         orientation /= np.linalg.norm(orientation)
         _find_non_contacting_height(physics, orientation)
 
-    def get_observation(self, physics):
+    def get_observation(self, physics: Physics) -> collections.OrderedDict:
         """Returns an observation to the agent."""
         obs = _common_observations(physics)
         obs["origin"] = physics.origin()
         obs["rangefinder"] = physics.rangefinder()
         return obs
 
-    def get_reward(self, physics):
+    def get_reward(self, physics: Physics) -> np.float64:
         """Returns a reward to the agent."""
 
         # Escape reward term.
@@ -485,7 +501,7 @@ class Escape(base.Task):
 class Fetch(base.Task):
     """A quadruped task solved by bringing a ball to the origin."""
 
-    def initialize_episode(self, physics):
+    def initialize_episode(self, physics: Physics) -> None:
         """Sets the state of the environment at the start of each episode.
         Args:
           physics: An instance of `Physics`.
@@ -505,14 +521,14 @@ class Fetch(base.Task):
         physics.named.data.qvel["ball_root"][:2] = 5 * self.random.randn(2)
         super().initialize_episode(physics)
 
-    def get_observation(self, physics):
+    def get_observation(self, physics: Physics) -> OrderedDict:
         """Returns an observation to the agent."""
         obs = _common_observations(physics)
         obs["ball_state"] = physics.ball_state()
         obs["target_position"] = physics.target_position()
         return obs
 
-    def get_reward(self, physics):
+    def get_reward(self, physics: Physics) -> np.float64:
         """Returns a reward to the agent."""
 
         # Reward for moving close to the ball.

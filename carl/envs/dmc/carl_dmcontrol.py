@@ -1,48 +1,66 @@
-from typing import Any, Dict, List, Union, Optional
+from typing import Dict, List, Optional, Union
 
-from carl.envs.carl_env import CARLEnv
-from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.envs.dmc.loader import load_dmc_env
-from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
+from carl.envs.carl_env import CARLEnv
+from carl.envs.dmc.loader import load_dmc_env
+from carl.envs.dmc.wrappers import MujocoToGymWrapper
+from carl.utils.trial_logger import TrialLogger
+from carl.utils.types import Context, Contexts
 
 
 class CARLDmcEnv(CARLEnv):
+    """
+    General class for the dm-control environments.
+
+    Meta-class to change the context for the environments.
+
+    Parameters
+    ----------
+    domain : str
+        Dm-control domain that should be loaded.
+    task : str
+        Task within the specified domain.
+
+    For descriptions of the other parameters see the parent class CARLEnv.
+
+    Raises
+    ------
+    NotImplementedError
+        Dict observation spaces are not implemented for dm-control yet.
+    """
+
     def __init__(
         self,
         domain: str,
         task: str,
-        contexts: Dict[Any, Dict[Any, Any]],
+        contexts: Contexts,
         context_mask: Optional[List[str]],
         hide_context: bool,
         add_gaussian_noise_to_context: bool,
         gaussian_noise_std_percentage: float,
         logger: Optional[TrialLogger],
         scale_context_features: str,
-        default_context: Optional[Dict],
+        default_context: Optional[Context],
         max_episode_length: int,
         state_context_features: Optional[List[str]],
         dict_observation_space: bool,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]],
+        context_selector: Optional[Union[AbstractSelector, type[AbstractSelector]]],
         context_selector_kwargs: Optional[Dict],
     ):
         # TODO can we have more than 1 env?
-        # env = MujocoToGymWrapper(env)
         if not contexts:
-            contexts = {0: default_context}
+            contexts = {0: default_context}  # type: ignore
         self.domain = domain
         self.task = task
-        if dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=self.domain,
-                task_name=self.task,
-                context={},
-                context_mask=[],
-                environment_kwargs={"flat_observation": True},
-            )
-            env = MujocoToGymWrapper(env)
+        env = load_dmc_env(
+            domain_name=self.domain,
+            task_name=self.task,
+            context={},
+            context_mask=[],
+            environment_kwargs={"flat_observation": True},
+        )
+        env = MujocoToGymWrapper(env)
+
         super().__init__(
             env=env,
             contexts=contexts,
@@ -61,18 +79,15 @@ class CARLDmcEnv(CARLEnv):
         )
         # TODO check gaussian noise on context features
         self.whitelist_gaussian_noise = list(
-            default_context.keys()
+            default_context.keys()  # type: ignore
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        if self.dict_observation_space:
-            raise NotImplementedError
-        else:
-            env = load_dmc_env(
-                domain_name=self.domain,
-                task_name=self.task,
-                context=self.context,
-                context_mask=self.context_mask,
-                environment_kwargs={"flat_observation": True},
-            )
-            self.env = MujocoToGymWrapper(env)
+        env = load_dmc_env(
+            domain_name=self.domain,
+            task_name=self.task,
+            context=self.context,
+            context_mask=self.context_mask,
+            environment_kwargs={"flat_observation": True},
+        )
+        self.env = MujocoToGymWrapper(env)

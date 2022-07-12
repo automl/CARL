@@ -1,7 +1,9 @@
 from abc import abstractmethod
+from typing import Any, Callable, List, Optional, Tuple
+
 import numpy as np
-from carl.utils.types import Context
-from typing import Dict, Any, Optional, Tuple, List, Callable
+
+from carl.utils.types import Context, Contexts
 
 
 class AbstractSelector(object):
@@ -13,13 +15,13 @@ class AbstractSelector(object):
 
     Parameters
     ----------
-    contexts: Dict[Any, Context]
+    contexts: Contexts
         Context set. A `Context` is a Dict[str, Any].
 
 
     Attributes
     ----------
-    contexts : Dict[Any, Context]
+    contexts : Contexts
         Context set.
     context_ids : List[int]
         Integer index for contexts.
@@ -32,8 +34,8 @@ class AbstractSelector(object):
 
     """
 
-    def __init__(self, contexts: Dict[Any, Context]):
-        self.contexts: Dict[Any, Context] = contexts
+    def __init__(self, contexts: Contexts):
+        self.contexts: Contexts = contexts
         self.context_ids: List[int] = list(np.arange(len(contexts)))
         self.contexts_keys: List[Any] = list(contexts.keys())
         self.n_calls: int = 0
@@ -77,7 +79,7 @@ class RandomSelector(AbstractSelector):
     Random Context Selector.
     """
 
-    def _select(self):
+    def _select(self) -> Tuple[Context, int]:
         # TODO seed?
         context_id = np.random.choice(self.context_ids)
         context = self.contexts[self.contexts_keys[context_id]]
@@ -91,7 +93,7 @@ class RoundRobinSelector(AbstractSelector):
     Iterate through all contexts and then start at the first again.
     """
 
-    def _select(self):
+    def _select(self) -> Tuple[Context, int]:
         if self.context_id is None:
             self.context_id = -1
         self.context_id = (self.context_id + 1) % len(self.contexts)
@@ -108,7 +110,7 @@ class CustomSelector(AbstractSelector):
 
     Parameters
     ----------
-    contexts: Dict[Any, Context]
+    contexts: Contexts
         Set of contexts.
     selector_function: callable
         Function receiving a pointer to the selector implementing selection logic.
@@ -131,13 +133,13 @@ class CustomSelector(AbstractSelector):
 
     def __init__(
         self,
-        contexts: Dict[Any, Context],
+        contexts: Contexts,
         selector_function: Callable[[AbstractSelector], Tuple[Context, int]],
     ):
         super().__init__(contexts=contexts)
         self.selector_function = selector_function
 
-    def _select(self):
-        context, context_id = self.selector_function(inst=self)
+    def _select(self) -> Tuple[Context, int]:
+        context, context_id = self.selector_function(self)
         self.context_id = context_id
         return context, context_id

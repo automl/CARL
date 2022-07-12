@@ -271,7 +271,7 @@ if __name__ == "__main__":
     data = pd.concat(data)
 
     # normalize values
-    cols = [c for c in data.columns if c not in ["env_type", "env_name"]]
+    cols = [c for c in data.columns if c not in ["env_type", "env_name"]]  # type: ignore [attr-defined]
     max_values_per_col = []
     for col in cols:
         if col == "state_space_size":
@@ -308,7 +308,7 @@ if __name__ == "__main__":
 
     # Plot the four cases from the example data on separate axes
     for ax, env_type in zip(axs.flat, env_types):
-        D = data[data["env_type"] == env_type]
+        D = data[data["env_type"] == env_type]  # type: ignore [call-overload]
         labels = D["env_name"].to_list()
         color_palette_name = "colorblind"
         n = len(D)

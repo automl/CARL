@@ -1,14 +1,15 @@
+from typing import Any, Dict
+
 import unittest
 from unittest.mock import patch
 
-from typing import Dict, Any
-from carl.utils.types import Context
 from carl.context.selection import (
-    RoundRobinSelector,
-    RandomSelector,
     AbstractSelector,
     CustomSelector,
+    RandomSelector,
+    RoundRobinSelector,
 )
+from carl.utils.types import Context
 
 
 def dummy_select(dummy):

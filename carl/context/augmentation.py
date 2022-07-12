@@ -1,13 +1,13 @@
-from typing import List, Union
+from typing import Any, List, Union
 
 import numpy as np
 
 
 def add_gaussian_noise(
     default_value: Union[float, List[float]],
-    percentage_std: float = 0.01,
+    percentage_std: Union[float, Any] = 0.01,
     random_generator: np.random.Generator = None,
-) -> Union[float, List[float]]:
+) -> Union[float, Any]:
     """
     Add gaussian noise to default value.
 
@@ -45,7 +45,6 @@ if __name__ == "__main__":
 
     seed = 123456
     rng = np.random.default_rng(seed=seed)
-    default_value = 10
     default_value = list(np.arange(0, 4))
     percentage_std = 0.01
     n_samples = 1000

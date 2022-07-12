@@ -1,11 +1,11 @@
+from typing import Any, Dict
+
 import unittest
 
 import numpy as np
-from typing import Dict, Any
-
-from carl.utils.types import Context
 
 from carl.envs.classic_control.carl_pendulum import CARLPendulumEnv
+from carl.utils.types import Context
 
 
 class TestStateConstruction(unittest.TestCase):
@@ -378,7 +378,7 @@ class TestContextSelection(unittest.TestCase):
     def test_unknown_selector_init(self):
         with self.assertRaises(ValueError):
             contexts = self.generate_contexts()
-            env = CARLPendulumEnv(contexts=contexts, context_selector="bork")
+            _ = CARLPendulumEnv(contexts=contexts, context_selector="bork")
 
 
 if __name__ == "__main__":

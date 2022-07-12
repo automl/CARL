@@ -1,6 +1,6 @@
-from typing import Tuple, Optional, Union, TypeVar
+from typing import Optional, Tuple, TypeVar, Union
 
-from dm_control.rl.control import Environment
+import dm_env  # type: ignore
 import gym
 import numpy as np
 from dm_env import StepType
@@ -11,7 +11,7 @@ ActType = TypeVar("ActType")
 
 
 class MujocoToGymWrapper(gym.Env):
-    def __init__(self, env: Environment):
+    def __init__(self, env: dm_env) -> None:
         # TODO set seeds
         self.env = env
 
@@ -56,10 +56,7 @@ class MujocoToGymWrapper(gym.Env):
         step_type: StepType = timestep.step_type
         reward = timestep.reward
         discount = timestep.discount
-        if isinstance(self.observation_space, spaces.Box):
-            observation = timestep.observation["observations"]
-        else:
-            raise NotImplementedError
+        observation = timestep.observation["observations"]
         info = {"step_type": step_type, "discount": discount}
         done = step_type == StepType.LAST
         return observation, reward, done, info
@@ -81,7 +78,7 @@ class MujocoToGymWrapper(gym.Env):
             raise NotImplementedError
         return observation
 
-    def render(self, mode="human", camera_id=0):
+    def render(self, mode: str = "human", camera_id: int = 0) -> np.ndarray:
         """Renders the environment.
 
         The set of supported modes varies per environment. (And some

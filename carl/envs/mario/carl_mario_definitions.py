@@ -1,11 +1,12 @@
 import numpy as np
+from torch import Tensor
 
 try:
     from carl.envs.mario.toad_gan import generate_initial_noise
 except FileNotFoundError:
 
-    def generate_initial_noise(*args, **kwargs):
-        return "None *"
+    def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
+        return Tensor()
 
 
 INITIAL_WIDTH = 100

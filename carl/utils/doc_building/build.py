@@ -65,21 +65,17 @@ def build() -> Tuple[pd.DataFrame, Dict, Dict]:
             # if len(overview_table_entries) == 3:  # TODO change back
             #     break
 
-    # Add RNA and Mario Information
-    env_families = ["RNA", "Mario"]
-    env_names = ["CARLRnaDesignEnv", "CARLMarioEnv"]
+    # Add Mario Information
+    env_families = ["Mario"]
+    env_names = ["CARLMarioEnv"]
     from carl.envs.mario.carl_mario_definitions import CONTEXT_BOUNDS as mario_bounds
     from carl.envs.mario.carl_mario_definitions import DEFAULT_CONTEXT as mario_defaults
-    from carl.envs.rna.carl_rna_definitions import ACTION_SPACE as rna_A
-    from carl.envs.rna.carl_rna_definitions import CONTEXT_BOUNDS as rna_bounds
-    from carl.envs.rna.carl_rna_definitions import DEFAULT_CONTEXT as rna_defaults
-    from carl.envs.rna.carl_rna_definitions import OBSERVATION_SPACE as rna_O
 
-    unicorn_defaults = [rna_defaults, mario_defaults]
+    unicorn_defaults = [mario_defaults]
     N_context_features = [len(c) for c in unicorn_defaults]
-    action_spaces = [rna_A, MARIO_ACTION_SPACE]
-    observation_spaces = [rna_O, MARIO_OBSERVATION_SPACE]
-    unicorn_bounds = [rna_bounds, mario_bounds]
+    action_spaces = [MARIO_ACTION_SPACE]
+    observation_spaces = [MARIO_OBSERVATION_SPACE]
+    unicorn_bounds = [mario_bounds]
     for i in range(len(env_names)):
         data = {
             k_env_family: env_families[i],

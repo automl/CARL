@@ -1,10 +1,12 @@
-from typing import Any, Dict, Union
+from typing import Union
 
 import argparse
 from pathlib import Path
 
 import configargparse
 import pandas as pd
+
+from carl.utils.types import Context
 
 
 class TrialLogger(object):
@@ -95,7 +97,7 @@ class TrialLogger(object):
             parsed_namespace=self.trial_setup_args, output_file_paths=output_file_paths
         )
 
-    def write_context(self, episode: int, step: int, context: Dict[Any, Any]):
+    def write_context(self, episode: int, step: int, context: Context) -> None:
         """
         Context will be written to csv file (logdir / "context_history.csv").
 
@@ -109,7 +111,7 @@ class TrialLogger(object):
             Episode.
         step: int
             Timestep.
-        context: Dict[Any, Any]
+        context: Context
             Keys: Context features names/ids, values: context feature values.
 
         Returns

@@ -7,19 +7,23 @@ class MarioGame(ABC):
         pass
 
     @abstractmethod
-    def initGame(self):
+    def initGame(self) -> None:
         pass
 
     @abstractmethod
-    def stepGame(self, left: bool, right: bool, down: bool, speed: bool, jump: bool):
+    def stepGame(
+        self, left: bool, right: bool, down: bool, speed: bool, jump: bool
+    ) -> None:
         pass
 
     @abstractmethod
-    def resetGame(self, level: str, timer: int, mario_state: int, inertia: float):
+    def resetGame(
+        self, level: str, timer: int, mario_state: int, inertia: float
+    ) -> None:
         pass
 
     @abstractmethod
-    def computeObservationRGB(self):
+    def computeObservationRGB(self) -> None:
         pass
 
     @abstractmethod

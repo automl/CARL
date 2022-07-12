@@ -1,3 +1,6 @@
+from typing import List
+
+import Box2D
 import numpy as np
 from Box2D.b2 import circleShape  # noqa: F401
 from Box2D.b2 import contactListener  # noqa: F401
@@ -10,6 +13,8 @@ from Box2D.b2 import revoluteJointDef  # noqa: F401
 from Box2D.b2 import ropeJointDef  # noqa: F401
 from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gym.envs.box2d.car_dynamics import Car
+
+from carl.envs.box2d.parking_garage.utils import Particle
 
 __author__ = "André Biedenkapp"
 
@@ -56,12 +61,14 @@ class TukTuk(Car):
     TukTuk
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven  (Not supported)
         self.trailer_type = 0  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large (not supported)
 
-    def __init__(self, world, init_angle, init_x, init_y):
+    def __init__(
+        self, world: Box2D.b2World, init_angle: float, init_x: float, init_y: float
+    ) -> None:
         self._init_extra_params()
         self.world = world
 
@@ -218,16 +225,16 @@ class TukTuk(Car):
             raise NotImplementedError
         else:
             self.drawlist = self.wheels + [self.hull]
-        self.particles = []
+        self.particles: List[Particle] = []
 
-    def steer(self, s):
+    def steer(self, s: float) -> None:
         """control: steer
 
         Args:
             s (-1..1): target position, it takes time to rotate steering wheel from side-to-side"""
         self.wheels[0].steer = s
 
-    def gas(self, gas):
+    def gas(self, gas: float) -> None:
         """control: rear wheel drive
 
         Args:
@@ -243,7 +250,7 @@ class TukTuk(Car):
                     diff = 0.1  # gradually increase, but stop immediately
                 w.gas += diff
 
-    def brake(self, b):
+    def brake(self, b: float) -> None:
         """control: brake
 
         Args:
@@ -259,12 +266,13 @@ class TukTuk(Car):
             for w in self.wheels[5:]:
                 w.brake = b * 0.8
 
-    def step(self, dt):
+    def step(self, dt: float) -> None:
         """
         Copy of the original step function of 'gym.envs.box2d.car_dynamics.Car' needed to accept different
         Engin powers or other fixed parameters
-        :param dt:
-        :return:
+
+        dt : float
+            Timestep for simulation
         """
         for w in self.wheels:
             # Steer each wheel
@@ -367,7 +375,7 @@ class TukTukSmallTrailer(TukTuk):
     TukTuk with small trailer attached
     """
 
-    def _init_extra_params(self):
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
