@@ -5,7 +5,6 @@ import numpy as np
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
-from carl.context_encoders import ContextEncoder
 from carl.envs.dmc.dmc_tasks.walker import STEP_LIMIT
 
 
@@ -68,7 +67,6 @@ class CARLDmcWalkerEnv(CARLDmcEnv):
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        context_encoder: Optional[ContextEncoder] = None,
     ):
         super().__init__(
             domain=domain,
@@ -86,5 +84,4 @@ class CARLDmcWalkerEnv(CARLDmcEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder=context_encoder,
         )

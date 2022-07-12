@@ -41,7 +41,6 @@ from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
-from carl.context_encoders import ContextEncoder
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -202,7 +201,6 @@ class CARLVehicleRacingEnv(CARLEnv):
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 
@@ -236,7 +234,6 @@ class CARLVehicleRacingEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder=context_encoder,
             context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = [

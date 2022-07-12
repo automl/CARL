@@ -22,7 +22,6 @@ from rich import print
 from tqdm import tqdm
 import pandas as pd
 
-from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
@@ -39,7 +38,7 @@ from experiments.carlbench.context_logging import (
     load_wandb_contexts,
 )
 from experiments.carlbench.context_sampling import ContextSampler
-from experiments.benchmarking.training import get_encoder, id_generator, get_contexts_evaluation_protocol
+from experiments.benchmarking.training import id_generator, get_contexts_evaluation_protocol
 from experiments.common.utils.json_utils import lazy_json_load
 from experiments.evaluation.loading import load_policy
 
@@ -177,7 +176,7 @@ def evaluate_policy(cfg: DictConfig):
     # Instantiate environments
     # ----------------------------------------------------------------------
     EnvCls = partial(getattr(envs, traincfg.env), **traincfg.carl)
-    env = EnvCls(contexts=contexts, context_encoder=get_encoder(traincfg))
+    env = EnvCls(contexts=contexts,)
     env = coax.wrappers.TrainMonitor(env, name=traincfg.algorithm)
     key = jax.random.PRNGKey(traincfg.seed)
     if traincfg.state_context and traincfg.carl.dict_observation_space:

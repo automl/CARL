@@ -15,7 +15,6 @@ from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
-from carl.context_encoders import ContextEncoder
 
 DEFAULT_CONTEXT = {
     "joint_stiffness": 40000,
@@ -59,7 +58,6 @@ class CARLUr5e(CARLEnv):
             dict_observation_space: bool = False,
             context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
             context_selector_kwargs: Optional[Dict] = None,
-            context_encoder: Optional[ContextEncoder] = None,
             max_episode_length: int = 1000,
     ):
         if n_envs == 1:
@@ -86,7 +84,6 @@ class CARLUr5e(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder=context_encoder,
             max_episode_length=max_episode_length,
             context_mask=context_mask,
         )

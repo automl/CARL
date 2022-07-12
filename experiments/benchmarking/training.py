@@ -20,7 +20,6 @@ from rich import print
 from hydra.utils import instantiate
 from typing import Tuple
 
-from carl.context_encoders import ContextEncoder, ContextAE, ContextVAE, ContextBVAE
 from carl.context.sampling import sample_contexts
 from carl.utils.types import Contexts
 from experiments.context_gating.algorithms.td3 import td3
@@ -35,18 +34,6 @@ from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtoc
 
 
 base_dir = os.getcwd()
-
-
-def get_encoder(cfg) -> ContextEncoder:
-    """
-    Loads the state dict of an already trained autoencoder.
-    """
-    model = None
-
-    if cfg.encoder.weights is not None:
-        model = th.load(os.path.join(base_dir, cfg.encoder.weights))
-
-    return model
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -195,8 +182,8 @@ def train(cfg: DictConfig):
     # Instantiate environments
     # ----------------------------------------------------------------------
     EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
-    env = EnvCls(contexts=contexts, context_encoder=get_encoder(cfg))
-    eval_env = EnvCls(contexts=eval_contexts, context_encoder=get_encoder(cfg))
+    env = EnvCls(contexts=contexts)
+    eval_env = EnvCls(contexts=eval_contexts)
     env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:

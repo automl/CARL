@@ -19,7 +19,6 @@ ActType = TypeVar("ActType")
 # import pyglet
 # pyglet.options["shadow_window"] = False
 
-from carl.context_encoders import ContextEncoder
 
 # TODO debug/test this environment by looking at rendering!
 
@@ -121,7 +120,6 @@ class CARLLunarLanderEnv(CARLEnv):
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
 
@@ -152,7 +150,6 @@ class CARLLunarLanderEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder=context_encoder,
             context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(

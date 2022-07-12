@@ -25,8 +25,6 @@ from carl.envs.rna.carl_rna_definitions import (
 )
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import ContextEncoder
-
 
 class RnaGymWrapper(object):
     def __init__(self, env):
@@ -63,7 +61,6 @@ class CARLRnaDesignEnv(CARLEnv):
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        context_encoder: Optional[ContextEncoder] = None,
         context_mask: Optional[List[str]] = None,
     ):
         """
@@ -109,7 +106,6 @@ class CARLRnaDesignEnv(CARLEnv):
             default_context=default_context,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder=context_encoder,
             context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)

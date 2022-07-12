@@ -13,8 +13,6 @@ from carl.envs.mario.toad_gan import generate_level
 from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector
 
-from carl.context_encoders import ContextEncoder
-
 
 class CARLMarioEnv(CARLEnv):
     def __init__(
@@ -32,7 +30,6 @@ class CARLMarioEnv(CARLEnv):
         dict_observation_space: bool = False,
         context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        context_encoder: Optional[ContextEncoder] = None,
     ):
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
@@ -48,7 +45,6 @@ class CARLMarioEnv(CARLEnv):
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_encoder=context_encoder,
             context_mask=context_mask,
         )
         self.levels = []
