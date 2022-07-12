@@ -1,6 +1,7 @@
 import unittest
 
-from carl.experiments import ContextFeature, EvaluationProtocol, plot_evaluation_protocol
+from experiments.evaluation_protocol.evaluation_protocol import ContextFeature, EvaluationProtocol
+from experiments.evaluation_protocol.plot_evaluate_on_protocol import plot_evaluation_protocol
 
 
 class TestEvaluationProtocol(unittest.TestCase):
