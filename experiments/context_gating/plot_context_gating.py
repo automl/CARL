@@ -50,12 +50,21 @@ df["contexts.context_feature_args"].replace("", "None", inplace=True)
 # filter concat all
 df["carl.state_context_features"].fillna("None", inplace=True)
 
-groups = df.groupby(["contexts.default_sample_std_percentage", "group","contexts.context_feature_args", "carl.state_context_features"])
+groups = df.groupby(
+    [
+        "contexts.default_sample_std_percentage",
+        "group",
+        "contexts.context_feature_args",
+        "carl.state_context_features",
+    ]
+)
 gids = [g for g, _ in groups]
 for gid in gids:
     print(gid)
 
-ids = np.logical_and(df["carl.state_context_features"] == "None", df["group"] == "concat")
+ids = np.logical_and(
+    df["carl.state_context_features"] == "None", df["group"] == "concat"
+)
 # ids2 = np.logical_and(df["carl.state_context_features"] == "None", df["group"] == "hidden")
 # ids = np.logical_or(ids, ids2)
 df_group = df["group"].copy()
@@ -73,7 +82,9 @@ hue = "group"
 legendtitle = None  # "Context"
 xlabel = "step"
 ylabel = "mean return\nacross contexts $\mathcal{C}_{train}$"
-groupkey = ["contexts.default_sample_std_percentage"] #, "contexts.context_feature_args"]
+groupkey = [
+    "contexts.default_sample_std_percentage"
+]  # , "contexts.context_feature_args"]
 xticks = [0, 250_000, 500_000]
 xticklabels = ["0", "250k", "500k"]
 style = None  # "seed"
@@ -86,10 +97,24 @@ else:
 
 if env == "CARLPendulumEnv":
     filter_cfs = [
-        ["m", "g", "l", "dt", "max_speed",],
+        [
+            "m",
+            "g",
+            "l",
+            "dt",
+            "max_speed",
+        ],
         ["g, m, l, dt, max_speed"],  # ["max_speed, m, l, g, dt"],
         ["None"],
-        ["None", "m", "g", "l", "dt", "max_speed", "g, m, l, dt, max_speed"]  # "max_speed, m, l, g, dt"]
+        [
+            "None",
+            "m",
+            "g",
+            "l",
+            "dt",
+            "max_speed",
+            "g, m, l, dt, max_speed",
+        ],  # "max_speed, m, l, g, dt"]
     ]
     # filter_cfs = [
     #     [np.nan],
@@ -101,7 +126,11 @@ if env == "CARLPendulumEnv":
     #     ["max_speed, m, l, g, dt"],
     # ]
 elif env == "CARLAnt":
-    ids = np.logical_and(df["contexts.context_feature_args"] == 'joint_stiffness, gravity, friction, angular_damping, actuator_strength, joint_angular_damping, torso_mass', df["group"] == "encoder")
+    ids = np.logical_and(
+        df["contexts.context_feature_args"]
+        == "joint_stiffness, gravity, friction, angular_damping, actuator_strength, joint_angular_damping, torso_mass",
+        df["group"] == "encoder",
+    )
     df = df[~ids]
 
     style = "name"
@@ -110,7 +139,7 @@ elif env == "CARLAnt":
         ["None"],
         ["friction", "torso_mass", "gravity"],
         ["friction, torso_mass, gravity"],
-        ["None", "friction", "torso_mass", "gravity", "friction, torso_mass, gravity"]
+        ["None", "friction", "torso_mass", "gravity", "friction, torso_mass, gravity"],
     ]
 elif env == "CARLMountainCarContinuousEnv":
     style = "name"
@@ -118,8 +147,8 @@ elif env == "CARLMountainCarContinuousEnv":
     filter_cfs = [
         ["None"],
         ["power", "max_speed"],
-        ['power, max_speed'],
-        ["None", "power", "max_speed", 'power, max_speed']
+        ["power, max_speed"],
+        ["None", "power", "max_speed", "power, max_speed"],
     ]
 else:
     raise ValueError(f"Can't eval env {env}.")
@@ -131,9 +160,7 @@ for allowed_cfs in filter_cfs:
     fig_fname = Path(f"plot_context_gating_env-{env}_filter-{allowed_cfs}.png")
     fig_fname.parent.mkdir(parents=True, exist_ok=True)
     # filter context feature names
-    df = filter_cf(orig_df,
-         allowed_cfs
-    )
+    df = filter_cf(orig_df, allowed_cfs)
 
     set_rc_params()
 
@@ -156,20 +183,26 @@ for allowed_cfs in filter_cfs:
             ax = axes[i]
         else:
             ax = axes
-        ax = sns.lineplot(ax=ax, data=group_df, x=xname, y=yname, hue=hue, palette=palette, style=style)
+        ax = sns.lineplot(
+            ax=ax,
+            data=group_df,
+            x=xname,
+            y=yname,
+            hue=hue,
+            palette=palette,
+            style=style,
+        )
         if i != 1:
             ax.get_legend().remove()
         else:
             if hue is not None:
                 hues = group_df[hue].unique()
                 handles = [
-                    Line2D([0], [0], label=label, color=palette[label]) for label in hues
+                    Line2D([0], [0], label=label, color=palette[label])
+                    for label in hues
                 ]
                 ax.get_legend().remove()
-                legend = ax.legend(
-                    handles=handles,
-                    title=legendtitle
-                )
+                legend = ax.legend(handles=handles, title=legendtitle)
         ax = adorn_ax(
             ax=ax,
             xlabel=xlabel,

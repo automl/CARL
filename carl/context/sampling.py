@@ -179,7 +179,9 @@ def sample_contexts(
                     choice = rng.choice(choices)
                     c[k] = choice
                 else:
-                    c[k] = random_variable.rvs(size=1, random_state=rng)[0]  # sample variable
+                    c[k] = random_variable.rvs(size=1, random_state=rng)[
+                        0
+                    ]  # sample variable
                     c[k] = np.clip(c[k], lower_bound, upper_bound)  # check bounds
                     c[k] = context_feature_type(c[k])  # cast to given type
             else:

@@ -13,7 +13,12 @@ def c51(cfg, env, eval_env):
     func_q = q_func(cfg, env)
 
     # main function approximators
-    q = coax.StochasticQ(func_q, env, value_range=(cfg.q_min_value, cfg.q_max_value), num_bins=cfg.network.num_atoms)
+    q = coax.StochasticQ(
+        func_q,
+        env,
+        value_range=(cfg.q_min_value, cfg.q_max_value),
+        num_bins=cfg.network.num_atoms,
+    )
     pi = coax.BoltzmannPolicy(q, temperature=cfg.pi_temperature)
 
     # target network
@@ -27,7 +32,9 @@ def c51(cfg, env, eval_env):
         capacity=cfg.replay_capacity, random_seed=cfg.seed
     )
 
-    qlearning = coax.td_learning.DoubleQLearning(q, q_targ=q_targ, optimizer=optax.adam(cfg.learning_rate))
+    qlearning = coax.td_learning.DoubleQLearning(
+        q, q_targ=q_targ, optimizer=optax.adam(cfg.learning_rate)
+    )
 
     while env.T < cfg.max_num_frames:
         s = env.reset()

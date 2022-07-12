@@ -11,7 +11,7 @@ class DACEvalCallback(EvalCallback):
     def __init__(self, **kwargs):
         super(DACEvalCallback, self).__init__(**kwargs)
         self.evaluations_instances = []
-        
+
     def _on_step(self) -> bool:
         if self.eval_freq > 0 and self.n_calls % self.eval_freq == 0:
             # Sync training and eval env if there is VecNormalize
@@ -53,12 +53,16 @@ class DACEvalCallback(EvalCallback):
                 )
 
             mean_reward, std_reward = np.mean(episode_rewards), np.std(episode_rewards)
-            mean_ep_length, std_ep_length = np.mean(episode_lengths), np.std(episode_lengths)
+            mean_ep_length, std_ep_length = np.mean(episode_lengths), np.std(
+                episode_lengths
+            )
             self.last_mean_reward = mean_reward
 
             if self.verbose > 0:
                 print(
-                    f"Eval num_timesteps={self.num_timesteps}, " f"episode_reward={mean_reward:.2f} +/- {std_reward:.2f}")
+                    f"Eval num_timesteps={self.num_timesteps}, "
+                    f"episode_reward={mean_reward:.2f} +/- {std_reward:.2f}"
+                )
                 print(f"Episode length: {mean_ep_length:.2f} +/- {std_ep_length:.2f}")
             # Add to current Logger
             self.logger.record("eval/mean_reward", float(mean_reward))
@@ -71,14 +75,18 @@ class DACEvalCallback(EvalCallback):
                 self.logger.record("eval/success_rate", success_rate)
 
             # Dump log so the evaluation results are printed with the correct timestep
-            self.logger.record("time/total timesteps", self.num_timesteps, exclude="tensorboard")
+            self.logger.record(
+                "time/total timesteps", self.num_timesteps, exclude="tensorboard"
+            )
             self.logger.dump(self.num_timesteps)
 
             if mean_reward > self.best_mean_reward:
                 if self.verbose > 0:
                     print("New best mean reward!")
                 if self.best_model_save_path is not None:
-                    self.model.save(os.path.join(self.best_model_save_path, "best_model"))
+                    self.model.save(
+                        os.path.join(self.best_model_save_path, "best_model")
+                    )
                 self.best_mean_reward = mean_reward
                 # Trigger callback if needed
                 if self.callback is not None:

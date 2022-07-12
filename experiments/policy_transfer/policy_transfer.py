@@ -41,10 +41,17 @@ import configparser
 from experiments.common.train.train import get_parser, main
 from carl.context.sampling import get_default_context_and_bounds
 from carl.envs import CARLVehicleRacingEnv, CARLLunarLanderEnv
-from carl.envs.box2d.carl_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
+from carl.envs.box2d.carl_vehicle_racing import (
+    RaceCar,
+    AWDRaceCar,
+    StreetCar,
+    TukTuk,
+    BusSmallTrailer,
+    PARKING_GARAGE,
+)
 
 # Experiment 1: LunarLander
-g_earth = - 9.80665  # m/s², beware of coordinate systems
+g_earth = -9.80665  # m/s², beware of coordinate systems
 
 gravities = {
     "Jupiter": g_earth * 2.36,
@@ -73,14 +80,20 @@ vehicles = {
 }
 
 
-def get_contexts(env_name, context_feature_key, context_feature_mapping, context_feature_id):
+def get_contexts(
+    env_name, context_feature_key, context_feature_mapping, context_feature_id
+):
     env_default_context, env_bounds = get_default_context_and_bounds(env_name=env_name)
-    env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
+    env_default_context[context_feature_key] = context_feature_mapping[
+        context_feature_id
+    ]
     contexts = {context_feature_key: env_default_context}
     return contexts
 
 
-def get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context):
+def get_train_contexts_ll(
+    gravities, context_feature_key, n_contexts, env_default_context
+):
     mean = gravities["Mars"]
     std = 1.45  # m/s²
     random_gravities = np.random.normal(loc=mean, scale=std, size=n_contexts)
@@ -127,12 +140,16 @@ def define_setting(args):
     else:
         raise NotImplementedError
     args.outdir = os.path.join(outdir, "exp0", args.env, "hidden", context_feature_key)
-    args.hide_context = True  # for hidden: set to true and set "visible" from string above to "hidden"
+    args.hide_context = (
+        True  # for hidden: set to true and set "visible" from string above to "hidden"
+    )
     args.state_context_features = ["GRAVITY_Y"]
     args.no_eval_callback = True
 
     env_default_context, env_bounds = get_default_context_and_bounds(env_name=args.env)
-    env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
+    env_default_context[context_feature_key] = context_feature_mapping[
+        context_feature_id
+    ]
     contexts_train = {context_feature_key: env_default_context}
 
     if args.env == "CARLLunarLanderEnv":
@@ -143,17 +160,21 @@ def define_setting(args):
         # random_gravities = np.random.uniform(*interval, size=n_contexts)
 
         # normal distribution gMars, 1.45
-        contexts_train = get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context)
+        contexts_train = get_train_contexts_ll(
+            gravities, context_feature_key, n_contexts, env_default_context
+        )
 
-    contexts_train_fn = Path(os.path.join(args.outdir), f"{args.agent}_{args.seed}", "contexts_train.json")  # sorry hacky
+    contexts_train_fn = Path(
+        os.path.join(args.outdir), f"{args.agent}_{args.seed}", "contexts_train.json"
+    )  # sorry hacky
     contexts_train_fn = Path(os.path.join(args.outdir), "contexts_train.json")
     contexts_train_fn.parent.mkdir(parents=True, exist_ok=True)
     if args.context_file:
-        with open(args.context_file, 'r') as file:
+        with open(args.context_file, "r") as file:
             contexts_train = json.load(file)
 
     args.context_file = str(contexts_train_fn)
-    with open(contexts_train_fn, 'w') as file:
+    with open(contexts_train_fn, "w") as file:
         json.dump(contexts_train, file, indent="\t")
 
     return args
@@ -165,7 +186,7 @@ def train_env(args, unknown_args, parser):
     main(args, unknown_args, parser)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     vdisplay = Xvfb()
     vdisplay.start()
 
@@ -208,13 +229,19 @@ if __name__ == '__main__':
 
         config = configparser.ConfigParser()
         config.read(str(model_fname.parent / "trial_setup.ini"))
-        hide_context = config['DEFAULT'].get("hide_context", False)
+        hide_context = config["DEFAULT"].get("hide_context", False)
 
         for context_feature_id in context_feature_ids:
-            print(f">> Evaluating {env_name} trained on/with {context_feature_id_train} on/with {context_feature_id} (train seed {train_seed}).")
+            print(
+                f">> Evaluating {env_name} trained on/with {context_feature_id_train} on/with {context_feature_id} (train seed {train_seed})."
+            )
 
-            env_default_context, env_bounds = get_default_context_and_bounds(env_name=env_name)
-            env_default_context[context_feature_key] = context_feature_mapping[context_feature_id]
+            env_default_context, env_bounds = get_default_context_and_bounds(
+                env_name=env_name
+            )
+            env_default_context[context_feature_key] = context_feature_mapping[
+                context_feature_id
+            ]
             contexts = {context_feature_key: env_default_context}
 
             EnvCls = partial(
@@ -232,16 +259,18 @@ if __name__ == '__main__':
                 model,
                 model.get_env(),
                 n_eval_episodes=n_eval_eps,
-                return_episode_rewards=True
+                return_episode_rewards=True,
             )
             if context_feature_id == context_feature_id_train:
                 context_feature_id += "*"
-            D = pd.DataFrame({
-                "planet": [context_feature_id] * n_eval_eps,
-                k_ep_rew_mean: mean_reward,
-                k_ep_rew_std: std_reward,
-                "train_seed": [train_seed] * n_eval_eps,
-            })
+            D = pd.DataFrame(
+                {
+                    "planet": [context_feature_id] * n_eval_eps,
+                    k_ep_rew_mean: mean_reward,
+                    k_ep_rew_std: std_reward,
+                    "train_seed": [train_seed] * n_eval_eps,
+                }
+            )
             data.append(D)
     data = pd.concat(data)
 
@@ -249,7 +278,9 @@ if __name__ == '__main__':
     axes = fig.subplots(nrows=2, ncols=1, sharex=True)
 
     ax = axes[0]
-    ax = sns.boxplot(data=data, x="planet", y=k_ep_rew_mean, ax=ax, palette="colorblind")
+    ax = sns.boxplot(
+        data=data, x="planet", y=k_ep_rew_mean, ax=ax, palette="colorblind"
+    )
     ax.set_xlabel("")
 
     ax = axes[1]
@@ -259,8 +290,3 @@ if __name__ == '__main__':
 
     fig.set_tight_layout(True)
     plt.show()
-
-
-
-
-

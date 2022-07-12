@@ -86,8 +86,7 @@ def sac(cfg, env, eval_env):
                 metrics = {}
 
                 # flip a coin to decide which of the q-functions to update
-                qlearning = qlearning1 if jax.random.bernoulli(
-                    q1.rng) else qlearning2
+                qlearning = qlearning1 if jax.random.bernoulli(q1.rng) else qlearning2
                 metrics.update(qlearning.update(transition_batch))
 
                 # delayed policy updates

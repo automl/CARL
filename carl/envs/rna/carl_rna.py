@@ -29,7 +29,7 @@ from carl.utils.trial_logger import TrialLogger
 class RnaGymWrapper(object):
     def __init__(self, env):
         self.env = env
-        
+
     def reset(self):
         state = self.env.reset()
         state = np.array(state).flatten()
@@ -50,7 +50,7 @@ class RnaGymWrapper(object):
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env = None,
+        env=None,
         data_location: str = "envs/rna/learna/data",
         contexts: Dict[str, Dict] = {},
         hide_context: bool = True,
@@ -59,7 +59,9 @@ class CARLRnaDesignEnv(CARLEnv):
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
         context_mask: Optional[List[str]] = None,
     ):

@@ -8,7 +8,12 @@ import gym
 import numpy as np
 
 from stable_baselines3.common import base_class
-from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv, VecMonitor, is_vecenv_wrapped
+from stable_baselines3.common.vec_env import (
+    DummyVecEnv,
+    VecEnv,
+    VecMonitor,
+    is_vecenv_wrapped,
+)
 
 
 def evaluate_policy(
@@ -21,7 +26,9 @@ def evaluate_policy(
     reward_threshold: Optional[float] = None,
     return_episode_rewards: bool = False,
     warn: bool = True,
-) -> Union[Tuple[float, float, List[List[int]]], Tuple[List[float], List[int], List[List[int]]]]:
+) -> Union[
+    Tuple[float, float, List[List[int]]], Tuple[List[float], List[int], List[List[int]]]
+]:
     """
     Runs policy for ``n_eval_episodes`` episodes and returns average reward.
     If a vector env is passed in, this divides the episodes to evaluate onto the
@@ -62,7 +69,9 @@ def evaluate_policy(
     if not isinstance(env, VecEnv):
         env = DummyVecEnv([lambda: env])
 
-    is_monitor_wrapped = is_vecenv_wrapped(env, VecMonitor) or env.env_is_wrapped(Monitor)[0]
+    is_monitor_wrapped = (
+        is_vecenv_wrapped(env, VecMonitor) or env.env_is_wrapped(Monitor)[0]
+    )
 
     if not is_monitor_wrapped and warn:
         warnings.warn(
@@ -81,14 +90,18 @@ def evaluate_policy(
     invalid_instance_id = -1
     instance_ids = invalid_instance_id * np.ones(n_envs)
     # Divides episodes among different sub environments in the vector as evenly as possible
-    episode_count_targets = np.array([(n_eval_episodes + i) // n_envs for i in range(n_envs)], dtype="int")
+    episode_count_targets = np.array(
+        [(n_eval_episodes + i) // n_envs for i in range(n_envs)], dtype="int"
+    )
 
     current_rewards = np.zeros(n_envs)
     current_lengths = np.zeros(n_envs, dtype="int")
     observations = env.reset()
     states = None
     while (episode_counts < episode_count_targets).any():
-        actions, states = model.predict(observations, state=states, deterministic=deterministic)
+        actions, states = model.predict(
+            observations, state=states, deterministic=deterministic
+        )
         observations, rewards, dones, infos = env.step(actions)
         current_rewards += rewards
         current_lengths += 1
@@ -117,10 +130,14 @@ def evaluate_policy(
                             # Only increment at the real end of an episode
                             episode_counts[i] += 1
 
-                            if hasattr(env.envs[i].env, 'context_index'):  # compatability to CARL
-                                instance_id = getattr(env.envs[i].env, 'context_index')
-                            elif hasattr(env.envs[i].env, 'inst_id'):  # compatability to DACBench
-                                instance_id = getattr(env.envs[i].env, 'inst_id')
+                            if hasattr(
+                                env.envs[i].env, "context_index"
+                            ):  # compatability to CARL
+                                instance_id = getattr(env.envs[i].env, "context_index")
+                            elif hasattr(
+                                env.envs[i].env, "inst_id"
+                            ):  # compatability to DACBench
+                                instance_id = getattr(env.envs[i].env, "inst_id")
                             else:
                                 instance_id = -1
                             instance_ids[i] = instance_id
@@ -128,10 +145,14 @@ def evaluate_policy(
                         episode_rewards.append(current_rewards[i])
                         episode_lengths.append(current_lengths[i])
                         episode_counts[i] += 1
-                        if hasattr(env.envs[i], 'context_index'):  # compatability to CARL
-                            instance_id = getattr(env.envs[i], 'context_index')
-                        elif hasattr(env.envs[i], 'inst_id'):  # compatability to DACBench
-                            instance_id = getattr(env.envs[i], 'inst_id')
+                        if hasattr(
+                            env.envs[i], "context_index"
+                        ):  # compatability to CARL
+                            instance_id = getattr(env.envs[i], "context_index")
+                        elif hasattr(
+                            env.envs[i], "inst_id"
+                        ):  # compatability to DACBench
+                            instance_id = getattr(env.envs[i], "inst_id")
                         else:
                             instance_id = -1
                         instance_ids[i] = instance_id
@@ -149,7 +170,10 @@ def evaluate_policy(
     mean_reward = np.mean(episode_rewards)
     std_reward = np.std(episode_rewards)
     if reward_threshold is not None:
-        assert mean_reward > reward_threshold, "Mean reward below threshold: " f"{mean_reward:.2f} < {reward_threshold:.2f}"
+        assert mean_reward > reward_threshold, (
+            "Mean reward below threshold: "
+            f"{mean_reward:.2f} < {reward_threshold:.2f}"
+        )
     if return_episode_rewards:
         return episode_rewards, episode_lengths, episode_instances
     return mean_reward, std_reward, episode_instances

@@ -14,33 +14,43 @@ from scipy.interpolate import griddata
 
 from experiments.common.plot.plotting_style import set_rc_params
 
-from experiments.evaluation_protocol.evaluation_protocol_utils import create_ep_contexts_LUT, \
-    read_ep_contexts_LUT, gather_ep_results
-from experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import get_context_features, get_solved_threshold
+from experiments.evaluation_protocol.evaluation_protocol_utils import (
+    create_ep_contexts_LUT,
+    read_ep_contexts_LUT,
+    gather_ep_results,
+)
+from experiments.evaluation_protocol.evaluation_protocol_experiment_definitions import (
+    get_context_features,
+    get_solved_threshold,
+)
 from experiments.evaluation_protocol.evaluation_protocol import ContextFeature
-from experiments.evaluation_protocol.plot_traintest_distributions import plot_evaluation_protocol
+from experiments.evaluation_protocol.plot_traintest_distributions import (
+    plot_evaluation_protocol,
+)
 
 
 def get_ep_mplpatches(
-        context_features: List[ContextFeature],
-        mode: str,
-        color_interpolation: Optional[Union[str, List[float], np.array]] = None,
-        color_extrapolation_single: Optional[Union[str, List[float], np.array]] = None,
-        color_extrapolation_all: Optional[Union[str, List[float], np.array]] = None,
-        color_interpolation_combinatorial: Optional[Union[str, List[float], np.array]] = None,
-        patch_kwargs: Optional[Dict] = None,
-        draw_frame: bool = False
+    context_features: List[ContextFeature],
+    mode: str,
+    color_interpolation: Optional[Union[str, List[float], np.array]] = None,
+    color_extrapolation_single: Optional[Union[str, List[float], np.array]] = None,
+    color_extrapolation_all: Optional[Union[str, List[float], np.array]] = None,
+    color_interpolation_combinatorial: Optional[
+        Union[str, List[float], np.array]
+    ] = None,
+    patch_kwargs: Optional[Dict] = None,
+    draw_frame: bool = False,
 ):
     def update_colors(color, patch_kwargs: Dict, draw_frame: bool):
         if draw_frame:
             patch_kwargs["edgecolor"] = mplc.to_rgba(color)
-            patch_kwargs["facecolor"] = (0., 0., 0., 0.)
+            patch_kwargs["facecolor"] = (0.0, 0.0, 0.0, 0.0)
             if "linewidth" not in patch_kwargs:
-                patch_kwargs["linewidth"] = 4.
+                patch_kwargs["linewidth"] = 4.0
         else:
             patch_kwargs["color"] = color
             if "linewidth" not in patch_kwargs:
-                patch_kwargs["linewidth"] = 0.
+                patch_kwargs["linewidth"] = 0.0
             if "zorder" not in patch_kwargs:
                 patch_kwargs["zorder"] = 0
         return patch_kwargs
@@ -106,14 +116,16 @@ def get_ep_mplpatches(
         patches.append(patch)
     elif mode == "B":
         patch_kwargs = update_colors(color_interpolation, patch_kwargs, draw_frame)
-        polygon = np.array([
-            [cf0.lower, cf1.lower],
-            [cf0.mid, cf1.lower],
-            [cf0.mid, cf1.lower_constraint],
-            [cf0.lower_constraint, cf1.lower_constraint],
-            [cf0.lower_constraint, cf1.mid],
-            [cf0.lower, cf1.mid]
-        ])
+        polygon = np.array(
+            [
+                [cf0.lower, cf1.lower],
+                [cf0.mid, cf1.lower],
+                [cf0.mid, cf1.lower_constraint],
+                [cf0.lower_constraint, cf1.lower_constraint],
+                [cf0.lower_constraint, cf1.mid],
+                [cf0.lower, cf1.mid],
+            ]
+        )
         patch = Polygon(xy=polygon, **patch_kwargs)
         patches.append(patch)
 
@@ -122,7 +134,9 @@ def get_ep_mplpatches(
         xy = (cf0.lower_constraint, cf1.lower_constraint)
         height = cf1.mid - cf1.lower_constraint
         width = cf0.mid - cf0.lower_constraint
-        patch_kwargs = update_colors(color_interpolation_combinatorial, patch_kwargs, draw_frame)
+        patch_kwargs = update_colors(
+            color_interpolation_combinatorial, patch_kwargs, draw_frame
+        )
         patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
         # patch.set_alpha(None)
         patches.append(patch)
@@ -130,7 +144,9 @@ def get_ep_mplpatches(
         xy = (cf0.lower, cf1.lower)
         height = cf1.mid - cf1.lower
         width = cf0.mid - cf0.lower
-        patch_kwargs = update_colors(color_interpolation_combinatorial, patch_kwargs, draw_frame)
+        patch_kwargs = update_colors(
+            color_interpolation_combinatorial, patch_kwargs, draw_frame
+        )
         patch = Rectangle(xy=xy, width=width, height=height, **patch_kwargs)
         # patch.set_alpha(None)
         patches.append(patch)
@@ -141,9 +157,12 @@ def get_ep_mplpatches(
 def add_colorbar_to_ax(ax, vmin, vmax, cmap, label, fontsize: int = 10):
     norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     divider = make_axes_locatable(ax)
-    cax = divider.append_axes('right', size='5%', pad=0.05)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
     colorbar = fig.colorbar(
-        ax=ax, cax=cax, mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap), orientation='vertical',
+        ax=ax,
+        cax=cax,
+        mappable=mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
+        orientation="vertical",
         label=label,
     )
     colorbar.set_label(label, fontsize=fontsize)
@@ -161,7 +180,9 @@ def get_agg_index(agg_per_region: str = "mean"):
 
 
 def get_agg_minmax(
-        results: Union[pd.DataFrame, pd.core.groupby.generic.DataFrameGroupBy], agg_per_region: str = "mean"):
+    results: Union[pd.DataFrame, pd.core.groupby.generic.DataFrameGroupBy],
+    agg_per_region: str = "mean",
+):
     index = get_agg_index(agg_per_region)
 
     if type(results) == pd.core.groupby.generic.DataFrameGroupBy:
@@ -176,9 +197,13 @@ def get_agg_minmax(
         for context_distribution_type in context_distribution_types:
             if not plot_train and context_distribution_type == "train":
                 continue
-            sub_df = group_df[group_df["context_distribution_type"] == context_distribution_type]
+            sub_df = group_df[
+                group_df["context_distribution_type"] == context_distribution_type
+            ]
             if len(sub_df) > 0:
-                performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
+                performance = np.mean(sub_df["episode_reward"]), np.std(
+                    sub_df["episode_reward"]
+                )
             else:
                 performance = (np.nan, np.nan)
             performances[context_distribution_type] = performance
@@ -195,7 +220,7 @@ def get_agg_minmax(
     return perf_min, perf_max
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     set_rc_params()
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/evaluation_protocol/base_vs_context/classic_control/CARLCartPoleEnv"
     draw_points = False
@@ -205,7 +230,7 @@ if __name__ == '__main__':
     plot_hiddenvisible = True
 
     results = gather_ep_results(path=path)
-    
+
     cmap = cm.get_cmap("viridis")
 
     assert results["env"].nunique() == 1
@@ -230,19 +255,28 @@ if __name__ == '__main__':
     else:
         print("Create LUT")
         contexts_LUT = create_ep_contexts_LUT(
-            env_name=env, n_contexts=n_contexts, modes=modes, seeds=seeds, contexts_LUT_fn=contexts_LUT_fn)
+            env_name=env,
+            n_contexts=n_contexts,
+            modes=modes,
+            seeds=seeds,
+            contexts_LUT_fn=contexts_LUT_fn,
+        )
 
     # Populate results with context feature values
     print("Get context feature values")
+
     def lookup(mode, seed, context_distribution_type, instance_id):
         context = contexts_LUT.loc[mode, seed, context_distribution_type, instance_id]
         return context
 
     def apply_func(row):
         return lookup(
-            mode=row["mode"], seed=row["seed"], context_distribution_type=row["context_distribution_type"],
-            instance_id=row["instance_id"]
+            mode=row["mode"],
+            seed=row["seed"],
+            context_distribution_type=row["context_distribution_type"],
+            instance_id=row["instance_id"],
         )
+
     ret = results.apply(apply_func, axis=1)
 
     # Match indices to be able to concat
@@ -251,7 +285,8 @@ if __name__ == '__main__':
 
     if draw_agg_per_region:
         perf_min, perf_max = get_agg_minmax(
-            results.groupby(["context_visible", "mode"]), agg_per_region=agg_per_region)
+            results.groupby(["context_visible", "mode"]), agg_per_region=agg_per_region
+        )
         perf_ptp = perf_max - perf_min
 
     if plot_hiddenvisible:
@@ -259,11 +294,11 @@ if __name__ == '__main__':
         fig = plt.figure(figsize=figsize, dpi=300)
         nrows = 1
         n_visibilities = results["context_visible"].nunique()
-        axes_set = fig.subplots(nrows=n_visibilities + 1, ncols=n_protocols, sharex=True, sharey=True)
+        axes_set = fig.subplots(
+            nrows=n_visibilities + 1, ncols=n_protocols, sharex=True, sharey=True
+        )
         axes_set = axes_set.reshape((n_visibilities + 1, -1))
         offset = 1
-
-
 
     maingroups = results.groupby("context_visible")
     for k, (visibility, maingroup_df) in enumerate(maingroups):
@@ -273,7 +308,9 @@ if __name__ == '__main__':
             figsize = (6, 2) if draw_agg_per_region else (18, 6)
             fig = plt.figure(figsize=figsize, dpi=300)
             nrows = 1
-            axes = fig.subplots(nrows=nrows, ncols=n_protocols, sharex=True, sharey=True)
+            axes = fig.subplots(
+                nrows=nrows, ncols=n_protocols, sharex=True, sharey=True
+            )
         else:
             axes = axes_set[k + offset]
 
@@ -298,9 +335,13 @@ if __name__ == '__main__':
 
             performances = {}
             for context_distribution_type in context_distribution_types:
-                sub_df = group_df[group_df["context_distribution_type"] == context_distribution_type]
+                sub_df = group_df[
+                    group_df["context_distribution_type"] == context_distribution_type
+                ]
                 if len(sub_df) > 0:
-                    performance = np.mean(sub_df["episode_reward"]), np.std(sub_df["episode_reward"])
+                    performance = np.mean(sub_df["episode_reward"]), np.std(
+                        sub_df["episode_reward"]
+                    )
                 else:
                     performance = (np.nan, np.nan)
                 performances[context_distribution_type] = performance
@@ -309,12 +350,25 @@ if __name__ == '__main__':
                 del_ids = group_df["context_distribution_type"] == "train"
                 group_df = group_df[~del_ids]
 
-            columns = context_feature_names + ["episode_reward", ]
-            contexts_train = group_df[group_df["context_distribution_type"] == "train"][columns]
-            contexts_ES = group_df[group_df["context_distribution_type"] == "test_extrapolation_single"][columns]
-            contexts_EA = group_df[group_df["context_distribution_type"] == "test_extrapolation_all"][columns]
-            contexts_I = group_df[group_df["context_distribution_type"] == "test_interpolation"][columns]
-            contexts_IC = group_df[group_df["context_distribution_type"] == "test_interpolation_combinatorial"][columns]
+            columns = context_feature_names + [
+                "episode_reward",
+            ]
+            contexts_train = group_df[group_df["context_distribution_type"] == "train"][
+                columns
+            ]
+            contexts_ES = group_df[
+                group_df["context_distribution_type"] == "test_extrapolation_single"
+            ][columns]
+            contexts_EA = group_df[
+                group_df["context_distribution_type"] == "test_extrapolation_all"
+            ][columns]
+            contexts_I = group_df[
+                group_df["context_distribution_type"] == "test_interpolation"
+            ][columns]
+            contexts_IC = group_df[
+                group_df["context_distribution_type"]
+                == "test_interpolation_combinatorial"
+            ][columns]
 
             if draw_agg_per_region:
                 index = get_agg_index(agg_per_region=agg_per_region)
@@ -322,7 +376,9 @@ if __name__ == '__main__':
                 color_I = cmap(scale(performances["test_interpolation"][index]))
                 color_ES = cmap(scale(performances["test_extrapolation_single"][index]))
                 color_EB = cmap(scale(performances["test_extrapolation_all"][index]))
-                color_IC = cmap(scale(performances["test_interpolation_combinatorial"][index]))
+                color_IC = cmap(
+                    scale(performances["test_interpolation_combinatorial"][index])
+                )
                 patches = get_ep_mplpatches(
                     context_features=context_features,
                     color_interpolation=color_I,
@@ -343,7 +399,7 @@ if __name__ == '__main__':
                 color_IC = colors[4]
 
                 ec_test = "black"
-                markerfacecolor_alpha = 0.
+                markerfacecolor_alpha = 0.0
 
                 if draw_points:
                     patch_kwargs = {"alpha": 1, "linewidth": 0, "zorder": 0}
@@ -400,29 +456,54 @@ if __name__ == '__main__':
                     values = group_df["episode_reward"].to_numpy()
                     # target grid to interpolate to
                     n_points = 300
-                    xi = np.linspace(group_df[context_feature_names[0]].min(), group_df[context_feature_names[0]].max(), n_points)
-                    yi = np.linspace(group_df[context_feature_names[1]].min(), group_df[context_feature_names[1]].max(), n_points)
+                    xi = np.linspace(
+                        group_df[context_feature_names[0]].min(),
+                        group_df[context_feature_names[0]].max(),
+                        n_points,
+                    )
+                    yi = np.linspace(
+                        group_df[context_feature_names[1]].min(),
+                        group_df[context_feature_names[1]].max(),
+                        n_points,
+                    )
                     Xi, Yi = np.meshgrid(xi, yi)
-                    zi = griddata(points=points, values=values, xi=(Xi, Yi), method='linear')
+                    zi = griddata(
+                        points=points, values=values, xi=(Xi, Yi), method="linear"
+                    )
                     # ax = sns.heatmap(data=zi, vmin=episode_reward_min, vmax=episode_reward_max, cmap='viridis', ax=ax)
                     extent = [xi[0], xi[-1], yi[0], yi[-1]]  # left right bottom top
                     extent = [xlim[0], xlim[1], ylim[0], ylim[1]]
-                    ax.imshow(zi, vmin=episode_reward_min, vmax=episode_reward_max, cmap='viridis', extent=extent, origin='lower')
+                    ax.imshow(
+                        zi,
+                        vmin=episode_reward_min,
+                        vmax=episode_reward_max,
+                        cmap="viridis",
+                        extent=extent,
+                        origin="lower",
+                    )
                     ax.set_aspect("auto")
 
             # Draw colorbar
             colorbar_label = "Episode Reward"
             if draw_agg_per_region:  # and i == len(groups) - 1:
                 colorbar = add_colorbar_to_ax(
-                    ax=ax, vmin=perf_min, vmax=perf_max, cmap=cmap, label=colorbar_label)
+                    ax=ax, vmin=perf_min, vmax=perf_max, cmap=cmap, label=colorbar_label
+                )
                 if i != len(groups) - 1:
                     colorbar.remove()
             else:
                 colorbar = add_colorbar_to_ax(
-                    ax=ax, vmin=episode_reward_min, vmax=episode_reward_max, cmap=cmap, label=colorbar_label)
+                    ax=ax,
+                    vmin=episode_reward_min,
+                    vmax=episode_reward_max,
+                    cmap=cmap,
+                    label=colorbar_label,
+                )
                 solved_threshold = get_solved_threshold(env_name=env)
                 if solved_threshold is not None:
-                    colorbar.add_lines(levels=[solved_threshold], colors=["black"], linewidths=[2])
+                    colorbar.add_lines(
+                        levels=[solved_threshold], colors=["black"], linewidths=[2]
+                    )
 
             # Add axis descriptions
             if k == 1 and plot_hiddenvisible:
@@ -461,10 +542,16 @@ if __name__ == '__main__':
         axes = axes_set[0]
         legend_handles = plot_evaluation_protocol(
             context_features=context_features,
-            seed=1, n_contexts=100, axes=axes, set_aspect=False)
+            seed=1,
+            n_contexts=100,
+            axes=axes,
+            set_aspect=False,
+        )
         # make space for colorbar
         for ax in axes:
-            colorbar = add_colorbar_to_ax(ax=ax, vmin=perf_min, vmax=perf_max, cmap=cmap, label=colorbar_label)
+            colorbar = add_colorbar_to_ax(
+                ax=ax, vmin=perf_min, vmax=perf_max, cmap=cmap, label=colorbar_label
+            )
             colorbar.remove()
 
         # legend
@@ -479,7 +566,7 @@ if __name__ == '__main__':
         legend = fig.legend(
             labels=labels,
             handles=legend_handles,
-            loc='lower center',
+            loc="lower center",
             title=legend_title,
             ncol=1,
             fontsize=legendfontsize - 2,
@@ -492,12 +579,9 @@ if __name__ == '__main__':
             framealpha=framealpha,
         )
 
-
         fig.set_tight_layout(True)
         plt.show()
 
         fig_fname = Path(f"figures/results_env-{env}.png")
         fig_fname.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(fig_fname, bbox_inches="tight")
-
-

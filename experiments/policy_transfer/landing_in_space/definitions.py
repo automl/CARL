@@ -19,11 +19,18 @@ import numpy as np
 from numpy.random import Generator
 from typing import Dict, Tuple, Optional, List, Any
 from carl.utils.types import Contexts
-from carl.envs.box2d.carl_vehicle_racing import RaceCar, AWDRaceCar, StreetCar, TukTuk, BusSmallTrailer, PARKING_GARAGE
+from carl.envs.box2d.carl_vehicle_racing import (
+    RaceCar,
+    AWDRaceCar,
+    StreetCar,
+    TukTuk,
+    BusSmallTrailer,
+    PARKING_GARAGE,
+)
 
 
 # Experiment 1: LunarLander
-g_earth = - 9.80665  # m/s², beware of coordinate systems
+g_earth = -9.80665  # m/s², beware of coordinate systems
 
 gravities = {
     "Jupiter": g_earth * 2.36,
@@ -53,28 +60,27 @@ vehicles = {
 
 
 def sample_gravities_normal(
-        mean: float,
-        std: float,
-        seed: int,
-        n_contexts: int
+    mean: float, std: float, seed: int, n_contexts: int
 ) -> np.ndarray:
     rng = np.random.default_rng(seed=seed)
     gravities = rng.normal(loc=mean, scale=std, size=n_contexts)
-    gravities[gravities > 0] = 0  # gravity is defined in -Y direction. if it is greater 0, the spacecraft would be repelled
+    gravities[
+        gravities > 0
+    ] = 0  # gravity is defined in -Y direction. if it is greater 0, the spacecraft would be repelled
     return gravities
 
 
 def sample_gravities_uniform(
-        intervals: List[Tuple[float, float]],
-        seed: int,
-        n_contexts: int
+    intervals: List[Tuple[float, float]], seed: int, n_contexts: int
 ) -> np.ndarray:
     rng = np.random.default_rng(seed=seed)
     G = []
     n_intervals = len(intervals)
     n_contexts_per_interval = n_contexts // n_intervals
     for interval in intervals:
-        gravities = rng.uniform(low=interval[0], high=interval[1], size=n_contexts_per_interval)
+        gravities = rng.uniform(
+            low=interval[0], high=interval[1], size=n_contexts_per_interval
+        )
         G.append(gravities)
     gravities = np.concatenate(G)
     gravities[gravities > 0] = 0

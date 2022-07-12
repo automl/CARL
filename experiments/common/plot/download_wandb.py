@@ -20,14 +20,14 @@ config_entries = [
     "contexts.context_feature_args",
     "carl.state_context_features",
     "contexts.default_sample_std_percentage",
-    "seed"
+    "seed",
 ]
 metrics = ["eval/return"]
 groups = {
     "hidden_context": "hidden",
     "concat_context": "concat",
     "context_gating": "gating",
-    "context_encoder": "encoder"
+    "context_encoder": "encoder",
 }
 runs = list(runs)
 for run in tqdm(runs):

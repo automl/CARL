@@ -1,6 +1,7 @@
 import os
 import sys
 import inspect
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 parentdir = os.path.dirname(parentdir)  # go up twice
@@ -12,4 +13,4 @@ from experiments.common.train.train import get_parser
 if __name__ == "__main__":
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()
-    train_env( args, unknown_args, parser)
+    train_env(args, unknown_args, parser)

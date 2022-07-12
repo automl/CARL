@@ -7,7 +7,9 @@ fn = "tmp/test_logs/PPO_123456/evaluations.npz"
 path = "results/singlecontextfeature_0.15_hidecontext/box2d/MetaBipedalWalkerEnv/None/PPO_2"
 path = "results/singlecontextfeature_0.125_hidecontext/classic_control/MetaPendulumEnv/None/PPO_2"
 path = "results/singlecontextfeature_0.075_hidecontext/classic_control/MetaPendulumEnv/None/PPO_3"
-path = "results/singlecontextfeature_0.1_hidecontext/box2d/MetaLunarLanderEnv/None/PPO_3"
+path = (
+    "results/singlecontextfeature_0.1_hidecontext/box2d/MetaLunarLanderEnv/None/PPO_3"
+)
 path = "results/singlecontextfeature_0.1_hidecontext/brax/MetaHalfcheetah/None/PPO_3"
 fn = os.path.join(path, "evaluations.npz")
 data = np.load(fn)
@@ -26,11 +28,11 @@ fig = plt.figure(figsize=(6, 8))
 axes = fig.subplots(nrows=2, ncols=1)
 # ax = sns.lineplot(steps, y, ax=ax, marker='o')
 ax = axes[0]
-ax.plot(steps, y, marker='.', label="ep reward")
+ax.plot(steps, y, marker=".", label="ep reward")
 ax.set_ylabel("mean reward across instances")
 
 ax = axes[1]
-ax.plot(steps, ep_lengths, marker='.', color="orange", label="ep length")
+ax.plot(steps, ep_lengths, marker=".", color="orange", label="ep length")
 ax.set_ylabel("mean episode length across instances")
 ax.set_xlabel("step")
 fig.set_tight_layout(True)

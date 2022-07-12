@@ -18,8 +18,8 @@ DEFAULT_CONTEXT = {
     "gravity": 0.0025,  # unit?
     "min_position_start": -0.6,
     "max_position_start": -0.4,
-    "min_velocity_start": 0.,
-    "max_velocity_start": 0.,
+    "min_velocity_start": 0.0,
+    "max_velocity_start": 0.0,
 }
 
 CONTEXT_BOUNDS = {
@@ -42,14 +42,18 @@ class CustomMountainCarEnv(gccenvs.mountain_car.MountainCarEnv):
         super(CustomMountainCarEnv, self).__init__(goal_velocity=goal_velocity)
         self.min_position_start = -0.6
         self.max_position_start = -0.4
-        self.min_velocity_start = 0.
-        self.max_velocity_start = 0.
+        self.min_velocity_start = 0.0
+        self.max_velocity_start = 0.0
 
     def reset_state(self) -> np.ndarray:
         return np.array(
             [
-                self.np_random.uniform(low=self.min_position_start, high=self.max_position_start),
-                self.np_random.uniform(low=self.min_velocity_start, high=self.max_velocity_start)
+                self.np_random.uniform(
+                    low=self.min_position_start, high=self.max_position_start
+                ),
+                self.np_random.uniform(
+                    low=self.min_velocity_start, high=self.max_velocity_start
+                ),
             ]
         )
 
@@ -82,7 +86,9 @@ class CARLMountainCarEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """

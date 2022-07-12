@@ -14,6 +14,7 @@ from carl.utils.trial_logger import TrialLogger
 from carl.context.selection import AbstractSelector, RoundRobinSelector
 
 import importlib
+
 brax_spec = importlib.util.find_spec("brax")
 if brax_spec is not None:
     import jaxlib
@@ -100,7 +101,9 @@ class CARLEnv(Wrapper):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         super().__init__(env=env)
@@ -120,15 +123,19 @@ class CARLEnv(Wrapper):
             self.context_selector = RoundRobinSelector(contexts=contexts)
         elif isinstance(context_selector, AbstractSelector):
             self.context_selector = context_selector
-        elif inspect.isclass(context_selector) and issubclass(context_selector, AbstractSelector):
+        elif inspect.isclass(context_selector) and issubclass(
+            context_selector, AbstractSelector
+        ):
             if context_selector_kwargs is None:
                 context_selector_kwargs = {}
             _context_selector_kwargs = {"contexts": contexts}
             context_selector_kwargs.update(_context_selector_kwargs)
             self.context_selector = context_selector(**context_selector_kwargs)
         else:
-            raise ValueError(f"Context selector must be None or an AbstractSelector class or instance. "
-                             f"Got type {type(context_selector)}.")
+            raise ValueError(
+                f"Context selector must be None or an AbstractSelector class or instance. "
+                f"Got type {type(context_selector)}."
+            )
         if state_context_features is not None:
             if (
                 state_context_features == "changing_context_features"
@@ -160,13 +167,17 @@ class CARLEnv(Wrapper):
                 else:
                     state_context_features = []
         else:
-            state_context_features = list(self.contexts[list(self.contexts.keys())[0]].keys())
+            state_context_features = list(
+                self.contexts[list(self.contexts.keys())[0]].keys()
+            )
         self.state_context_features: List[str] = state_context_features
         # state_context_features contains the names of the context features that should be appended to the state
         # However, if context_mask is set, we want to update staet_context_feature_names so that the context features
         # in context_mask are not appended to the state anymore.
         if self.context_mask:
-            self.state_context_features = [s for s in self.state_context_features if s not in self.context_mask]
+            self.state_context_features = [
+                s for s in self.state_context_features if s not in self.context_mask
+            ]
 
         self.step_counter = 0  # type: int # increased in/after step
         self.total_timestep_counter = 0  # type: int
@@ -208,7 +219,7 @@ class CARLEnv(Wrapper):
             self.context_feature_scale_factors[
                 self.context_feature_scale_factors == 0
             ] = 1  # otherwise value / scale_factor = nan
-       
+
         self.vectorized = n_envs > 1
         self.build_observation_space()
 
@@ -226,7 +237,9 @@ class CARLEnv(Wrapper):
 
     @contexts.setter
     def contexts(self, contexts: Dict[Any, Dict[Any, Any]]):
-        self._contexts = {k: self.fill_context_with_default(context=v) for k, v in contexts.items()}
+        self._contexts = {
+            k: self.fill_context_with_default(context=v) for k, v in contexts.items()
+        }
 
     def reset(self, **kwargs: Dict) -> Any:
         """
@@ -289,7 +302,7 @@ class CARLEnv(Wrapper):
                     ]
                 )
 
-            # Pass the context features to the encoder to extract decomposed representation            
+            # Pass the context features to the encoder to extract decomposed representation
             if self.context_encoder:
                 # Encode context
                 context_values = self.encode_contexts(context_values)

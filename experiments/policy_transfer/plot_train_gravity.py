@@ -7,7 +7,7 @@ from carl.experiments import plot_gravities_vlines
 fname = "experiments/lunarLander_contexts_train_2intervals.json"
 fname = "experiments/lunarLander_contexts_train_Gaussian.json"
 context_feature_key = "GRAVITY_Y"
-with open(fname, 'r') as file:
+with open(fname, "r") as file:
     contexts = json.load(file)
 sampled_gravities = [c[context_feature_key] for c in contexts.values()]
 mean = gravities["Mars"]

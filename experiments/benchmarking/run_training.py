@@ -9,15 +9,15 @@ from subprocess import Popen, DEVNULL
 from rich import print
 
 
-def make_code_snap(experiment, slurm_dir='exp_sweep'):
+def make_code_snap(experiment, slurm_dir="exp_sweep"):
     now = datetime.now()
     snap_dir = pathlib.Path.cwd() / slurm_dir
-    snap_dir /= now.strftime('%Y-%m-%d')
-    snap_dir /= now.strftime('%H-%M-%S') + f'_{experiment}'
+    snap_dir /= now.strftime("%Y-%m-%d")
+    snap_dir /= now.strftime("%H-%M-%S") + f"_{experiment}"
     snap_dir.mkdir(exist_ok=True, parents=True)
 
     def copy_dir(dir):
-        dst_dir = snap_dir / 'code' / dir
+        dst_dir = snap_dir / "code" / dir
         dst_dir.mkdir(exist_ok=True, parents=True)
         search_dir = src_dir / dir
         target_dir = snap_dir / "code" / dir
@@ -25,17 +25,22 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
             "*CARL/tmp*",
             "*exp_sweep*",
         ]
-        shutil.copytree(search_dir, target_dir, dirs_exist_ok=True, ignore=shutil.ignore_patterns(*ignore_patterns))
+        shutil.copytree(
+            search_dir,
+            target_dir,
+            dirs_exist_ok=True,
+            ignore=shutil.ignore_patterns(*ignore_patterns),
+        )
 
     # Copy source code
     dirs_to_copy = [
-        'carl',
-        'experiments/benchmarking',
-        'experiments/context_gating',
-        'experiments/carlbench',
-        'experiments/common/utils',
-        'experiments/evaluation_protocol',
-        'experiments/policy_transfer/landing_in_space'
+        "carl",
+        "experiments/benchmarking",
+        "experiments/context_gating",
+        "experiments/carlbench",
+        "experiments/common/utils",
+        "experiments/evaluation_protocol",
+        "experiments/policy_transfer/landing_in_space",
     ]
     src_dir = pathlib.Path.cwd()
     print(src_dir)
@@ -46,22 +51,24 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
     rootfiles = src_dir.glob("*")
     for f in rootfiles:
         if f.is_file() and not str(f.name).startswith("."):
-            shutil.copyfile(f, snap_dir / 'code' / f.name)
+            shutil.copyfile(f, snap_dir / "code" / f.name)
 
     # Copy all init files
     initfiles = list(src_dir.rglob("*/__init__.py"))
     initfiles.sort()
     initdirs = dirs_to_copy + [
         "experiments/__init__.py",
-        "experiments/common/__init__.py"
+        "experiments/common/__init__.py",
     ]
     for f in initfiles:
-        if f.is_file() and \
-                not str(f.name).startswith(".")\
-                and np.any([d in str(f) for d in initdirs])\
-                and "exp_sweep" not in str(f):
-            fn = str(f)[len(str(src_dir)) + 1:]
-            newfn = snap_dir / 'code' / fn
+        if (
+            f.is_file()
+            and not str(f.name).startswith(".")
+            and np.any([d in str(f) for d in initdirs])
+            and "exp_sweep" not in str(f)
+        ):
+            fn = str(f)[len(str(src_dir)) + 1 :]
+            newfn = snap_dir / "code" / fn
             shutil.copyfile(f, newfn)
 
     return snap_dir
@@ -69,7 +76,7 @@ def make_code_snap(experiment, slurm_dir='exp_sweep'):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry', action='store_true')
+    parser.add_argument("--dry", action="store_true")
     args, unknown_args = parser.parse_known_args()  # unknown args are hydra commands
     # unknown_args = [f"'{a}'" for a in unknown_args]
 
@@ -90,7 +97,10 @@ def main():
     if add_multirun_flag:
         unknown_args += ["-m"]
 
-    cmd = ["python", str(snap_dir / "code" / "experiments/benchmarking/training.py")] + unknown_args
+    cmd = [
+        "python",
+        str(snap_dir / "code" / "experiments/benchmarking/training.py"),
+    ] + unknown_args
 
     print(cmd)
     print(" ".join(cmd))

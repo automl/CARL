@@ -15,37 +15,19 @@ follow_evaluation_protocol = True
 outdir = "results"
 
 iteration_list = [
-    {
-        "name": "env",
-        "id": "env",
-        "values": [env]
-    },
-    {
-        "name": "follow_evaluation_protocol",
-        "id": "ep",
-        "values": [True]
-    },
-    {
-        "name": "hide_context",
-        "id": "hid",
-        "values": [False, True]
-    },
-    {
-        "name": "evaluation_protocol_mode",
-        "id": "mode",
-        "values": ['A', 'B', 'C']
-    },
-    {
-        "name": "seed",
-        "id": "s",
-        "values": [0, 1, 2, 3, 4]
-    }
+    {"name": "env", "id": "env", "values": [env]},
+    {"name": "follow_evaluation_protocol", "id": "ep", "values": [True]},
+    {"name": "hide_context", "id": "hid", "values": [False, True]},
+    {"name": "evaluation_protocol_mode", "id": "mode", "values": ["A", "B", "C"]},
+    {"name": "seed", "id": "s", "values": [0, 1, 2, 3, 4]},
 ]
 
 runfile = "train.py"
 eval_freq = 50000
-basecommand = f"python {runfile} --num_contexts 100 --steps {n_timesteps} " \
-              f"--add_context_feature_names_to_logdir --scale_context_features no "
+basecommand = (
+    f"python {runfile} --num_contexts 100 --steps {n_timesteps} "
+    f"--add_context_feature_names_to_logdir --scale_context_features no "
+)
 basecommand += f" --outdir {outdir} --build_outdir_from_args"
 basecommand += f" --eval_freq {eval_freq} --agent {agent} "
 if state_context_features is not None:
@@ -76,7 +58,7 @@ fullcommand = "\n".join(commands)
 
 shfilename = Path("run_train_evaluation_protocol.sh")
 shfilename.parent.mkdir(parents=True, exist_ok=True)
-with open(shfilename, 'w') as file:
+with open(shfilename, "w") as file:
     file.write(fullcommand)
 print(f"Built '{shfilename}'")
 print(fullcommand)

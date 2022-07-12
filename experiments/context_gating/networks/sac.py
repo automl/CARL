@@ -22,7 +22,7 @@ def pi_func(cfg, env):
             )
 
             # encode the state
-            x = state_seq(S["state"])  
+            x = state_seq(S["state"])
             width = cfg.network.width
 
             # Gate the context according to the requirement

@@ -43,22 +43,24 @@ CONTEXT_BOUNDS = {
 
 class CARLUr5e(CARLEnv):
     def __init__(
-            self,
-            env: Ur5e = Ur5e(),
-            n_envs: int = 1,
-            contexts: Dict[str, Dict] = {},
-            hide_context=False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            state_context_features: Optional[List[str]] = None,
-            context_mask: Optional[List[str]] = None,
-            dict_observation_space: bool = False,
-            context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
-            context_selector_kwargs: Optional[Dict] = None,
-            max_episode_length: int = 1000,
+        self,
+        env: Ur5e = Ur5e(),
+        n_envs: int = 1,
+        contexts: Dict[str, Dict] = {},
+        hide_context=False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
+        context_selector_kwargs: Optional[Dict] = None,
+        max_episode_length: int = 1000,
     ):
         if n_envs == 1:
             env = GymWrapper(env)

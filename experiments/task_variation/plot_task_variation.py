@@ -20,7 +20,7 @@ def plot_hue(group_df, key_huegroup, ax, xname, yname, colors: Union[str, Dict])
     legend_handles = []
     labels = []
     for j, (df_id, subset_group_df) in enumerate(groups_sub):
-        n_seeds = subset_group_df['seed'].nunique()
+        n_seeds = subset_group_df["seed"].nunique()
         msg = f"{plot_id}, {group_id}, {df_id}: n_seeds={n_seeds}"
         print(msg)
         color = list(colors.values())[j]
@@ -28,12 +28,20 @@ def plot_hue(group_df, key_huegroup, ax, xname, yname, colors: Union[str, Dict])
             color = color_default_context
         else:
             color = colors[df_id]
-        ax = sns.lineplot(data=subset_group_df, x=xname, y=yname, ax=ax, color=color, marker='', hue=None)
+        ax = sns.lineplot(
+            data=subset_group_df,
+            x=xname,
+            y=yname,
+            ax=ax,
+            color=color,
+            marker="",
+            hue=None,
+        )
         legend_handles.append(Line2D([0], [0], color=color))
         label = df_id
         labels.append(label)
-    xmin = group_df['step'].min()
-    xmax = group_df['step'].max()
+    xmin = group_df["step"].min()
+    xmax = group_df["step"].max()
     xlims = (xmin, xmax)
     ax.set_xlim(*xlims)
     return ax, labels, legend_handles
@@ -49,7 +57,7 @@ def sort_legend_handles(labels, legend_handles, default_name):
     return labels, legend_handles
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/rerun2/base_vs_context/classic_control/CARLPendulumEnv"
     path2 = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/compounding/base_vs_context/classic_control/CARLPendulumEnv"
     results = gather_results(path=path)
@@ -90,14 +98,17 @@ if __name__ == '__main__':
         # Convert cf args list to string
         def cfargs_to_str(x):
             return ", ".join([str(el) for el in x])
-        results["context_feature_args"] = results["context_feature_args"].apply(cfargs_to_str)
+
+        results["context_feature_args"] = results["context_feature_args"].apply(
+            cfargs_to_str
+        )
 
     # split
     # ids = results["context_feature_args"].apply(lambda x: "," in x)
     # results = results[~ids]
     # compounding_results = results[ids]
 
-    env_names = results['env'].unique()
+    env_names = results["env"].unique()
     if len(env_names) > 1:
         raise NotImplementedError("Try to plot across different envs.")
     env_name = env_names[0]
@@ -167,7 +178,9 @@ if __name__ == '__main__':
             # ylims = ax.get_ylim()
 
             # Sort labels, put default name at front
-            labels, legend_handles = sort_legend_handles(labels, legend_handles, default_name)
+            labels, legend_handles = sort_legend_handles(
+                labels, legend_handles, default_name
+            )
 
             if i == 1:
                 ncols = len(legend_handles)
@@ -178,10 +191,10 @@ if __name__ == '__main__':
                 legend = fig.legend(
                     handles=legend_handles,
                     labels=labels,
-                    loc='lower center',
+                    loc="lower center",
                     title=legend_title,
                     ncol=1,
-                    fontsize=legendfontsize-2,
+                    fontsize=legendfontsize - 2,
                     columnspacing=0.5,
                     handletextpad=0.5,
                     handlelength=1.5,
@@ -209,11 +222,13 @@ if __name__ == '__main__':
 
                 # Make space for legend
                 divider = make_axes_locatable(ax)
-                cax = divider.append_axes('right', size=0.7, pad=0.0)
+                cax = divider.append_axes("right", size=0.7, pad=0.0)
                 cax.set_axis_off()
 
                 # Plot legend
-                labels, legend_handles = sort_legend_handles(labels, legend_handles, default_name)
+                labels, legend_handles = sort_legend_handles(
+                    labels, legend_handles, default_name
+                )
                 labels = [l.replace("m, l, dt, ", "m, l, dt,\n") for l in labels]
                 ncols = len(legend_handles)
                 title_fontsize = None
@@ -223,7 +238,7 @@ if __name__ == '__main__':
                 legend = fig_c.legend(
                     handles=legend_handles,
                     labels=labels,
-                    loc='lower center',
+                    loc="lower center",
                     title=None,  # legend_title,
                     ncol=1,
                     fontsize=legendfontsize - 2,
@@ -235,7 +250,6 @@ if __name__ == '__main__':
                     facecolor=facecolor,
                     framealpha=framealpha,
                 )
-
 
         fig.set_tight_layout(True)
         fig_c.set_tight_layout(True)

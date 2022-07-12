@@ -17,9 +17,22 @@ class NpEncoder(json.JSONEncoder):
 
     def default(self, obj):
         # first half copied from NumpyEncoder
-        if isinstance(obj, (np.int_, np.intc, np.intp, np.int8,
-                            np.int16, np.int32, np.int64, np.uint8,
-                            np.uint16, np.uint32, np.uint64)):
+        if isinstance(
+            obj,
+            (
+                np.int_,
+                np.intc,
+                np.intp,
+                np.int8,
+                np.int16,
+                np.int32,
+                np.int64,
+                np.uint8,
+                np.uint16,
+                np.uint32,
+                np.uint64,
+            ),
+        ):
 
             return int(obj)
 
@@ -27,7 +40,7 @@ class NpEncoder(json.JSONEncoder):
             return float(obj)
 
         elif isinstance(obj, (np.complex_, np.complex64, np.complex128)):
-            return {'real': obj.real, 'imag': obj.imag}
+            return {"real": obj.real, "imag": obj.imag}
 
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()

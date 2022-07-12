@@ -10,6 +10,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 # import coax
 import gym
 import hydra
+
 # import numpy as onp
 # import wandb
 from omegaconf import DictConfig, OmegaConf
@@ -18,7 +19,13 @@ from omegaconf import DictConfig, OmegaConf
 import carl.envs
 
 
-def make_env(cfg: DictConfig, contexts: Dict[str, Dict] = None, name: Optional[str] = None, tensorboard_dir: Optional[str] = None, num_envs: int = 1):
+def make_env(
+    cfg: DictConfig,
+    contexts: Dict[str, Dict] = None,
+    name: Optional[str] = None,
+    tensorboard_dir: Optional[str] = None,
+    num_envs: int = 1,
+):
     if num_envs > 1:
         EnvCls = partial(make_carl_env, cfg=cfg, contexts=contexts)
         vec_env_cls = SubprocVecEnv
@@ -28,7 +35,9 @@ def make_env(cfg: DictConfig, contexts: Dict[str, Dict] = None, name: Optional[s
     return env
 
 
-def make_carl_env(cfg: DictConfig, contexts: Dict[str, Dict] = None, log_wandb: bool = False):
+def make_carl_env(
+    cfg: DictConfig, contexts: Dict[str, Dict] = None, log_wandb: bool = False
+):
     env = getattr(carl.envs, cfg.env)(contexts=contexts, **cfg.carl.env_kwargs)
     env.seed(cfg.seed)
     # env.spec = gym.envs.registration.EnvSpec(cfg.env + "-v0")

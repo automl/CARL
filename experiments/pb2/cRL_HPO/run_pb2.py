@@ -18,18 +18,27 @@ from src.train import get_parser
 from src.context.sampling import sample_contexts
 
 
-def setup_model(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir):
+def setup_model(
+    env,
+    num_envs,
+    hide_context,
+    context_feature_args,
+    default_sample_std_percentage,
+    config,
+    checkpoint_dir,
+):
     hyperparams = {}
     env_wrapper = None
     num_contexts = 100
     contexts = sample_contexts(
-            env,
-            context_feature_args,
-            num_contexts,
-            default_sample_std_percentage=default_sample_std_percentage
-        )
+        env,
+        context_feature_args,
+        num_contexts,
+        default_sample_std_percentage=default_sample_std_percentage,
+    )
     env_logger = None
     from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLLunarLanderEnv
+
     EnvCls = partial(
         eval(env),
         contexts=contexts,
@@ -44,7 +53,7 @@ def setup_model(env, num_envs, hide_context, context_feature_args, default_sampl
         checkpoint = os.path.join(checkpoint_dir, "checkpoint")
         model = PPO.load(checkpoint, env=env)
     else:
-        model = PPO('MlpPolicy', env, **config)
+        model = PPO("MlpPolicy", env, **config)
     return model, eval_env
 
 
@@ -60,7 +69,15 @@ def eval_model(model, eval_env, config):
     return eval_reward / 100
 
 
-def train_ppo(env, num_envs, hide_context, context_feature_args, default_sample_std_percentage, config, checkpoint_dir=None):
+def train_ppo(
+    env,
+    num_envs,
+    hide_context,
+    context_feature_args,
+    default_sample_std_percentage,
+    config,
+    checkpoint_dir=None,
+):
     model, eval_env = setup_model(
         env=env,
         num_envs=num_envs,
@@ -68,11 +85,11 @@ def train_ppo(env, num_envs, hide_context, context_feature_args, default_sample_
         checkpoint_dir=checkpoint_dir,
         hide_context=hide_context,
         context_feature_args=context_feature_args,
-        default_sample_std_percentage=default_sample_std_percentage
+        default_sample_std_percentage=default_sample_std_percentage,
     )
     model.learning_rate = config["learning_rate"]
     model.gamma = config["gamma"]
-    #model.tau = config["tau"]
+    # model.tau = config["tau"]
     model.ent_coef = config["ent_coef"]
     model.vf_coef = config["vf_coef"]
     model.gae_lambda = config["gae_lambda"]
@@ -84,10 +101,7 @@ def train_ppo(env, num_envs, hide_context, context_feature_args, default_sample_
             path = os.path.join(checkpoint_dir, "checkpoint")
             model.save(path)
         eval_reward = eval_model(model, eval_env, config)
-        tune.report(
-        mean_accuracy=eval_reward,
-        current_config=config
-    )
+        tune.report(mean_accuracy=eval_reward, current_config=config)
 
 
 def run_experiment(args):
@@ -97,11 +111,9 @@ def run_experiment(args):
         type=str,
         default=None,
         required=False,
-        help="The address of server to connect to if using "
-        "Ray Client.")
-    parser.add_argument(
-        "--checkpoint_dir", type=str, default="results/experiments/pb2"
+        help="The address of server to connect to if using " "Ray Client.",
     )
+    parser.add_argument("--checkpoint_dir", type=str, default="results/experiments/pb2")
     parser.add_argument("--name", type=str, help="Experiment name")
     parser.add_argument("--outdir", type=str, help="Result directory")
     parser.add_argument("--env", type=str, help="Environment to optimize for")
@@ -128,12 +140,12 @@ def run_experiment(args):
     pbt = PB2(
         perturbation_interval=1,
         hyperparam_bounds={
-            'learning_rate': [0.00001, 0.02],
-            'gamma': [0.8, 0.999],
-            'gae_lambda': [0.8, 0.999],
-            'ent_coef': [0.0, 0.5],
-            'max_grad_norm': [0.0, 1.0],
-            'vf_coef': [0.0, 1.0],
+            "learning_rate": [0.00001, 0.02],
+            "gamma": [0.8, 0.999],
+            "gae_lambda": [0.8, 0.999],
+            "ent_coef": [0.0, 0.5],
+            "max_grad_norm": [0.0, 1.0],
+            "vf_coef": [0.0, 1.0],
             #'tau': [0.0, 0.99]
         },
         log_config=True,
@@ -141,9 +153,9 @@ def run_experiment(args):
     )
 
     defaults = {
-        'batch_size': 128,  # 1024,
-        'learning_rate': 3e-5,
-        'gamma': 0.99,  # 0.95,
+        "batch_size": 128,  # 1024,
+        "learning_rate": 3e-5,
+        "gamma": 0.99,  # 0.95,
     }
 
     analysis = tune.run(
@@ -153,7 +165,7 @@ def run_experiment(args):
             args.num_envs,
             args.hide_context,
             args.context_feature_args,
-            args.default_sample_std_percentage
+            args.default_sample_std_percentage,
         ),
         name=args.name,
         scheduler=pbt,
@@ -180,5 +192,6 @@ def run_experiment(args):
     print("Best hyperparameters found were: ", analysis.best_config)
     ray.shutdown()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     run_experiment(sys.argv[1:])

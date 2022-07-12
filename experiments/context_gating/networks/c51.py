@@ -28,7 +28,7 @@ def q_func(cfg, env):
                 (
                     hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(cfg.network.num_atoms, w_init=jnp.zeros)
+                    hk.Linear(cfg.network.num_atoms, w_init=jnp.zeros),
                 )
             )
             x = q_seq(x)
@@ -43,10 +43,10 @@ def q_func(cfg, env):
                     jax.nn.relu,
                     hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(cfg.network.num_atoms, w_init=jnp.zeros)
+                    hk.Linear(cfg.network.num_atoms, w_init=jnp.zeros),
                 )
             )
             x = state_seq(X)
-        return {'logits': x}
+        return {"logits": x}
 
     return q

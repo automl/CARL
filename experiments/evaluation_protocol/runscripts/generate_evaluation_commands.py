@@ -11,7 +11,13 @@ path = "results/CARLCartPoleEnv"
 model_fnames = glob.glob(os.path.join(path, "**", "model.zip"), recursive=True)
 
 # Evaluation Protocols
-evaluation_protocols = ['train', 'test_interpolation', 'test_interpolation_combinatorial', 'test_extrapolation_single', 'test_extrapolation_all']
+evaluation_protocols = [
+    "train",
+    "test_interpolation",
+    "test_interpolation_combinatorial",
+    "test_extrapolation_single",
+    "test_extrapolation_all",
+]
 
 if on_slurm:
     # For slurm clusters (config configs/slurm.yaml accordingly)
@@ -33,7 +39,7 @@ else:
 
 shfilename = Path("run_eval_evaluation_protocol.sh")
 shfilename.parent.mkdir(parents=True, exist_ok=True)
-with open(shfilename, 'w') as file:
+with open(shfilename, "w") as file:
     file.write(fullcommand)
 print(f"Built '{shfilename}'")
 print(fullcommand)

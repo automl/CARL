@@ -77,7 +77,9 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """
@@ -102,7 +104,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
             scale_context_features=scale_context_features,
             default_context=default_context,
             max_episode_length=max_episode_length,
-            state_context_features = state_context_features,
+            state_context_features=state_context_features,
             dict_observation_space=dict_observation_space,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,

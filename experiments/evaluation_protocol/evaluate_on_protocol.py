@@ -1,4 +1,5 @@
 import sys
+
 # FIXME does not run
 sys.path.append("")
 sys.path.append("../../carl/experiments")
@@ -17,7 +18,10 @@ import warnings
 
 from carl.context.sampling import sample_contexts
 from experiments.common.train.train import get_env
-from experiments.evaluation_protocol.evaluation_protocol_utils import merge_contexts, get_ep_contexts
+from experiments.evaluation_protocol.evaluation_protocol_utils import (
+    merge_contexts,
+    get_ep_contexts,
+)
 from experiments.common.utils.json_utils import lazy_json_load
 from experiments.common.train.eval_policy import evaluate_policy
 
@@ -49,28 +53,32 @@ def rollout(cfg):
     #     normalize = True
 
     # Get contexts
-    contexts_dict = get_ep_contexts(env_name=env_name, seed=seed, n_contexts=n_contexts, mode=mode)
+    contexts_dict = get_ep_contexts(
+        env_name=env_name, seed=seed, n_contexts=n_contexts, mode=mode
+    )
     contexts = sample_contexts(env_name, [], n_contexts)
     contexts_test_ep = contexts_dict[context_distribution_type]
     contexts_test = merge_contexts(ep_contexts=contexts_test_ep, contexts=contexts)
     if contexts_test is None:
-        warnings.warn(f"Selected context distribution type {context_distribution_type} not available in evaluation "
-                         f"protocol {mode}. Exiting.")
+        warnings.warn(
+            f"Selected context distribution type {context_distribution_type} not available in evaluation "
+            f"protocol {mode}. Exiting."
+        )
         return
 
     # Setup env
     env_kwargs = dict(
         contexts=contexts_test,
-        hide_context=setup['hide_context'],
-        scale_context_features=setup['scale_context_features'],
-        state_context_features=setup['state_context_features']
+        hide_context=setup["hide_context"],
+        scale_context_features=setup["scale_context_features"],
+        state_context_features=setup["state_context_features"],
     )
     env = get_env(
         env_name=env_name,
         n_envs=1,
         env_kwargs=env_kwargs,
         wrapper_class=None,
-        wrapper_kwargs = None,
+        wrapper_kwargs=None,
         normalize_kwargs=None,
         agent_cls=None,
         eval_seed=None,
@@ -124,5 +132,5 @@ def main(cfg: DictConfig):
     rollout(cfg=cfg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

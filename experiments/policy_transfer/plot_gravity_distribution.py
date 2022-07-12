@@ -6,7 +6,9 @@ from experiments.policy_transfer.landing_in_space.definitions import gravities
 import json
 
 
-def plot_gravities_vlines(ax, gravities, yvalue, mean, std, fontsize, shortanno: bool = False):
+def plot_gravities_vlines(
+    ax, gravities, yvalue, mean, std, fontsize, shortanno: bool = False
+):
     yvals = np.linspace(0.01, yvalue, len(gravities))
     keys = np.array(list(gravities.keys()))
     values = np.array(list(gravities.values()))
@@ -34,14 +36,14 @@ def plot_gravities_vlines(ax, gravities, yvalue, mean, std, fontsize, shortanno:
             yvals[i] + 0.005,
             text,
             bbox={
-                'facecolor': 'white',
-                'alpha': 0.85,
-                'pad': 1,
-                'linewidth': 0.25,
-                "edgecolor": colorline
+                "facecolor": "white",
+                "alpha": 0.85,
+                "pad": 1,
+                "linewidth": 0.25,
+                "edgecolor": colorline,
             },
             fontsize=fontsize,
-            horizontalalignment='right'
+            horizontalalignment="right",
         )
     return ax
 
@@ -62,9 +64,9 @@ def mark_interval(ax, mean, std, fontsize, ci=0.95):
         xy=xy,
         xytext=xytext,
         fontsize=fontsize,
-        horizontalalignment='center',
+        horizontalalignment="center",
         arrowprops=dict(
-            facecolor='black',
+            facecolor="black",
             arrowstyle="simple",
             linewidth=0.001,
             alpha=0.75
@@ -91,7 +93,7 @@ def mark_planets(ax, n_planets):
     return ax
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     context_train_fname = ""
     mean = gravities["Mars"]
     std = 1.45
@@ -124,7 +126,7 @@ if __name__ == '__main__':
         ax = mark_interval(ax, mean, std, annofontsize, ci=0.95)
         ax.plot(X, Y)
     else:
-        with open(context_train_fname, 'r') as file:
+        with open(context_train_fname, "r") as file:
             contexts_train = json.load(file)
         Y = [c["GRAVITY_Y"] for c in contexts_train.values()]
         ax = sns.histplot(Y, ax=ax, bins=len(Y) // 2, label="train")
@@ -134,7 +136,9 @@ if __name__ == '__main__':
 
     # mark planets
     if plot_exp_0:
-        ax = plot_gravities_vlines(ax, gravities, ylims[1], mean, std, annofontsize, shortanno)
+        ax = plot_gravities_vlines(
+            ax, gravities, ylims[1], mean, std, annofontsize, shortanno
+        )
     else:
         ax = mark_planets(ax, n_planets=10)
 
@@ -142,8 +146,8 @@ if __name__ == '__main__':
         title = f"$\mu = g_{{Mars}} = {gravities['Mars']:.2f}, \sigma = {std}$"
         ax.set_title(title)
     else:
-        #handle_test =
-        #legend_handles = [handle_train, handle_test]
+        # handle_test =
+        # legend_handles = [handle_train, handle_test]
         ax.legend()
         handles = ax.get_legend().legendHandles
         new_handles = handles[-2:]
@@ -158,4 +162,3 @@ if __name__ == '__main__':
     fig.set_tight_layout(True)
     fig.savefig(figname, bbox_inches="tight")
     plt.show()
-

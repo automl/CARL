@@ -92,7 +92,9 @@ class CARLBipedalWalkerEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         """
@@ -197,7 +199,9 @@ class CARLBipedalWalkerEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic(env: Union[CARLBipedalWalkerEnv, bipedal_walker.BipedalWalker]) -> None:
+def demo_heuristic(
+    env: Union[CARLBipedalWalkerEnv, bipedal_walker.BipedalWalker]
+) -> None:
     env.reset()
     steps = 0
     total_reward = 0

@@ -41,18 +41,28 @@ def td3(cfg, env, eval_env):
     )
 
     qlearning1 = coax.td_learning.ClippedDoubleQLearning(
-        q1, pi_targ_list=[pi_targ], q_targ_list=[q1_targ, q2_targ],
-        loss_function=coax.value_losses.mse, optimizer=optax.adam(cfg.learning_rate))
+        q1,
+        pi_targ_list=[pi_targ],
+        q_targ_list=[q1_targ, q2_targ],
+        loss_function=coax.value_losses.mse,
+        optimizer=optax.adam(cfg.learning_rate),
+    )
     qlearning2 = coax.td_learning.ClippedDoubleQLearning(
-        q2, pi_targ_list=[pi_targ], q_targ_list=[q1_targ, q2_targ],
-        loss_function=coax.value_losses.mse, optimizer=optax.adam(cfg.learning_rate))
+        q2,
+        pi_targ_list=[pi_targ],
+        q_targ_list=[q1_targ, q2_targ],
+        loss_function=coax.value_losses.mse,
+        optimizer=optax.adam(cfg.learning_rate),
+    )
     determ_pg = coax.policy_objectives.DeterministicPG(
         pi, q1_targ, optimizer=optax.adam(cfg.learning_rate)
     )
 
     # action noise
     if cfg.action_noise.type == "ornsteinuhlenbeck":
-        noise = coax.utils.OrnsteinUhlenbeckNoise(random_seed=cfg.seed, **cfg.action_noise.kwargs)
+        noise = coax.utils.OrnsteinUhlenbeckNoise(
+            random_seed=cfg.seed, **cfg.action_noise.kwargs
+        )
     else:
         noise = None
 
@@ -83,8 +93,7 @@ def td3(cfg, env, eval_env):
                 if isinstance(noise, coax.utils.OrnsteinUhlenbeckNoise):
                     metrics["OrnsteinUhlenbeckNoise/sigma"] = noise.sigma
 
-                qlearning = qlearning1 if jax.random.bernoulli(
-                    q1.rng) else qlearning2
+                qlearning = qlearning1 if jax.random.bernoulli(q1.rng) else qlearning2
                 metrics.update(qlearning.update(transition_batch))
 
                 if env.T >= cfg.warmup_pi_num_frames and env.T % 2 == 0:

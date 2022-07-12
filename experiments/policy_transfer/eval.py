@@ -11,7 +11,11 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env.dummy_vec_env import DummyVecEnv
 
 from experiments.policy_transfer.eval_models import load_model, setup_env
-from experiments.policy_transfer.policy_transfer import get_train_contexts_ll, gravities, get_train_contexts_ll_exp1
+from experiments.policy_transfer.policy_transfer import (
+    get_train_contexts_ll,
+    gravities,
+    get_train_contexts_ll_exp1,
+)
 from carl.context.sampling import get_default_context_and_bounds
 
 
@@ -42,7 +46,13 @@ if __name__ == "__main__":
     context_feature_name = "GRAVITY_Y"
     visibility_str = "visible"
     outdir = os.path.join(outdir_orig, envname, visibility_str, context_feature_name)
-    contexts_train_fname = os.path.join(outdir_orig, envname, visibility_str, context_feature_name, "contexts_train.json")
+    contexts_train_fname = os.path.join(
+        outdir_orig,
+        envname,
+        visibility_str,
+        context_feature_name,
+        "contexts_train.json",
+    )
     eval_data_fname = Path(outdir) / "eval_data.csv"
     figfname = Path(outdir) / "policy_transfer_lunar_lander_eval_comparison.png"
     is_exp0 = False
@@ -58,10 +68,12 @@ if __name__ == "__main__":
     n_eval_eps = n_contexts
     eval_seeds = np.arange(0, n_eval_eps, dtype=int) + 13000
     env_default_context, env_bounds = get_default_context_and_bounds(env_name=envname)
-    with open(contexts_train_fname, 'r') as file:
+    with open(contexts_train_fname, "r") as file:
         contexts_train = json.load(file)
     if is_exp0:
-        contexts_test = get_train_contexts_ll(gravities, context_feature_key, n_contexts, env_default_context)
+        contexts_test = get_train_contexts_ll(
+            gravities, context_feature_key, n_contexts, env_default_context
+        )
     else:
         contexts_test = get_train_contexts_ll_exp1(n_contexts, env_default_context)
 
@@ -109,51 +121,59 @@ if __name__ == "__main__":
                 # if context_feature_id == "Neptune":
                 #     continue
                 print(context_feature_id)
-                env_kwargs = {"max_episode_length": 1000, 'high_gameover_penalty': True}
-                env = setup_env(model_fname.parent, contexts=contexts, vec_env_class=None, wrappers=[Monitor], env_kwargs=env_kwargs)
+                env_kwargs = {"max_episode_length": 1000, "high_gameover_penalty": True}
+                env = setup_env(
+                    model_fname.parent,
+                    contexts=contexts,
+                    vec_env_class=None,
+                    wrappers=[Monitor],
+                    env_kwargs=env_kwargs,
+                )
                 change_seed_cb = ChangeSeedCallback(seeds=eval_seeds)
                 mean_reward, std_reward = evaluate_policy(
                     model,
                     env,
                     n_eval_episodes=n_eval_eps,
                     return_episode_rewards=True,
-                    callback=change_seed_cb
+                    callback=change_seed_cb,
                 )
-                D = pd.DataFrame({
-                    "planet": [context_feature_id] * n_eval_eps,
-                    "ep_rew_mean": mean_reward,
-                    "ep_rew_std": std_reward,
-                    "ep_length": env.get_episode_lengths(),
-                    "train_seed": [info['seed']] * n_eval_eps,
-                })
+                D = pd.DataFrame(
+                    {
+                        "planet": [context_feature_id] * n_eval_eps,
+                        "ep_rew_mean": mean_reward,
+                        "ep_rew_std": std_reward,
+                        "ep_length": env.get_episode_lengths(),
+                        "train_seed": [info["seed"]] * n_eval_eps,
+                    }
+                )
                 data.append(D)
         data = pd.concat(data)
         data.to_csv(eval_data_fname, sep=";")
 
     sns.set_context("paper")
     data = pd.read_csv(eval_data_fname, sep=";")
-    train_contexts_key = '$\mathcal{I}_{train}$'
-    data['planet'][data['planet'] == 'train\ncontexts'] = train_contexts_key
-    data = data.rename(columns={'train\ncontexts': train_contexts_key})
+    train_contexts_key = "$\mathcal{I}_{train}$"
+    data["planet"][data["planet"] == "train\ncontexts"] = train_contexts_key
+    data = data.rename(columns={"train\ncontexts": train_contexts_key})
     custom_dict = {
         train_contexts_key: 0,
-        'train\ndistribution': 1,
-        'Jupiter': 7,
-        'Neptune': 6,
-        'Earth': 5,
-        'Mars': 4,
-        'Moon': 3,
-        'Pluto': 2
+        "train\ndistribution": 1,
+        "Jupiter": 7,
+        "Neptune": 6,
+        "Earth": 5,
+        "Mars": 4,
+        "Moon": 3,
+        "Pluto": 2,
     }
-    data = data.sort_values(by=['planet'], key=lambda x: x.map(custom_dict))
-    data = data[data['planet'] != 'train\ndistribution']
+    data = data.sort_values(by=["planet"], key=lambda x: x.map(custom_dict))
+    data = data[data["planet"] != "train\ndistribution"]
     filter_by_ep_length = False
     plot_ep_length = False
     max_ep_length = 1000
     if filter_by_ep_length:
         data = data[data["ep_length"] < max_ep_length]
     palette = "colorblind"
-    hue = 'train_seed'
+    hue = "train_seed"
     hue = None
     figsize = (5, 3)
     dpi = 250
@@ -173,12 +193,12 @@ if __name__ == "__main__":
         ax=ax,
         hue=hue,
         cut=0,
-        scale='width',
+        scale="width",
         inner=None,
         split=True,
         linewidth=0.1,
         saturation=0.8,
-        palette=palette
+        palette=palette,
     )
     ax = sns.stripplot(
         data=data,
@@ -187,9 +207,9 @@ if __name__ == "__main__":
         ax=ax,
         hue=hue,
         size=1.5,
-        edgecolors=[0.,0.,0.],
+        edgecolors=[0.0, 0.0, 0.0],
         linewidths=0,
-        color='black',
+        color="black",
         # palette=palette
     )
     ax.set_ylim(-10000, 500)
@@ -199,7 +219,14 @@ if __name__ == "__main__":
         ax.set_xlabel("")
         ax = axes[1]
         ax = sns.violinplot(
-            data=data, x="planet", y="ep_length", ax=ax, hue=hue, cut=0, palette=palette, )
+            data=data,
+            x="planet",
+            y="ep_length",
+            ax=ax,
+            hue=hue,
+            cut=0,
+            palette=palette,
+        )
         # ax = sns.swarmplot(data=data, x="planet", y="ep_length", ax=ax, hue=hue, size=2, palette=palette)
 
     fig.set_tight_layout(True)
@@ -210,25 +237,26 @@ if __name__ == "__main__":
     ep_rew_thresh = -5000
     df_train_bad = df_train[df_train["ep_rew_mean"] < ep_rew_thresh]
     unique, counts = np.unique(df_train_bad["Unnamed: 0"], return_counts=True)
-    seeds = data['train_seed'].unique()
+    seeds = data["train_seed"].unique()
     n_seeds = len(seeds)
     gravities_train = [c["GRAVITY_Y"] for c in contexts_train.values()] * n_seeds
-    failing_gravities = [gravities_train[i] for i in df_train_bad["Unnamed: 0"].to_list()]
+    failing_gravities = [
+        gravities_train[i] for i in df_train_bad["Unnamed: 0"].to_list()
+    ]
     seed_list = df_train_bad["train_seed"]
 
-    df_grav = pd.DataFrame({
-        # "g_train": gravities_train,
-        "g_fail": failing_gravities,
-        "seed": seed_list
-    })
+    df_grav = pd.DataFrame(
+        {
+            # "g_train": gravities_train,
+            "g_fail": failing_gravities,
+            "seed": seed_list,
+        }
+    )
 
     seed_list_train = []
     for seed in seeds:
-        seed_list_train.extend([seed]*(len(gravities_train) // n_seeds))
-    df_grav_train = pd.DataFrame({
-        "g_train": gravities_train,
-        "seed": seed_list_train
-    })
+        seed_list_train.extend([seed] * (len(gravities_train) // n_seeds))
+    df_grav_train = pd.DataFrame({"g_train": gravities_train, "seed": seed_list_train})
 
     # fig = plt.figure(figsize=(6, 4))
     # ax = fig.add_subplot(111)
@@ -239,4 +267,3 @@ if __name__ == "__main__":
     # ax.set_ylabel("count")
     # fig.set_tight_layout(True)
     # plt.show()
-

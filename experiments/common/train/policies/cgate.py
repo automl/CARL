@@ -6,16 +6,29 @@ from torch import nn
 
 from stable_baselines3.common.preprocessing import get_flattened_obs_dim
 from stable_baselines3.common.policies import BasePolicy, BaseModel
-from stable_baselines3.common.preprocessing import get_action_dim, is_image_space, maybe_transpose, preprocess_obs, get_flattened_obs_dim
-from stable_baselines3.td3.policies import TD3Policy, Actor, ContinuousCritic, CombinedExtractor
+from stable_baselines3.common.preprocessing import (
+    get_action_dim,
+    is_image_space,
+    maybe_transpose,
+    preprocess_obs,
+    get_flattened_obs_dim,
+)
+from stable_baselines3.td3.policies import (
+    TD3Policy,
+    Actor,
+    ContinuousCritic,
+    CombinedExtractor,
+)
 from stable_baselines3.common.type_aliases import TensorDict, Schedule
-from stable_baselines3.common.torch_layers import BaseFeaturesExtractor, FlattenExtractor
+from stable_baselines3.common.torch_layers import (
+    BaseFeaturesExtractor,
+    FlattenExtractor,
+)
 
 
 def get_state_seq(n_state_features: int, context_branch_width: int):
     state_seq = nn.Sequential(
-        nn.Linear(n_state_features, context_branch_width),
-        nn.ReLU()
+        nn.Linear(n_state_features, context_branch_width), nn.ReLU()
     )
     return state_seq
 
@@ -30,19 +43,30 @@ def get_context_seq(n_context_features: int, context_branch_width: int):
     return context_seq
 
 
-def get_seqs(n_state_features: int, n_context_features: int, context_branch_width: int = 256):
-    state_seq = get_state_seq(n_state_features=n_state_features, context_branch_width=context_branch_width)
-    context_seq = get_context_seq(n_context_features=n_context_features, context_branch_width=context_branch_width)
+def get_seqs(
+    n_state_features: int, n_context_features: int, context_branch_width: int = 256
+):
+    state_seq = get_state_seq(
+        n_state_features=n_state_features, context_branch_width=context_branch_width
+    )
+    context_seq = get_context_seq(
+        n_context_features=n_context_features, context_branch_width=context_branch_width
+    )
     return state_seq, context_seq
 
 
 class CGateFeatureExtractor(nn.Module):
-    def __init__(self, n_state_features: int, n_context_features: int, context_branch_width: int = 256):
+    def __init__(
+        self,
+        n_state_features: int,
+        n_context_features: int,
+        context_branch_width: int = 256,
+    ):
         super().__init__()
         state_seq, context_seq = get_seqs(
             n_state_features=n_state_features,
             n_context_features=n_context_features,
-            context_branch_width=context_branch_width
+            context_branch_width=context_branch_width,
         )
 
         extractors = {}
@@ -57,11 +81,13 @@ class CGateFeatureExtractor(nn.Module):
         return th.mul(*encoded_tensor_list)
 
 
-def get_actor_head(action_dim: int, context_branch_width: int = 256, head_width: int = 256):
+def get_actor_head(
+    action_dim: int, context_branch_width: int = 256, head_width: int = 256
+):
     actor_head = nn.Sequential(
         nn.Linear(context_branch_width, head_width),
         nn.ReLU(),
-        nn.Linear(head_width, action_dim)  # TODO: no zero init?
+        nn.Linear(head_width, action_dim),  # TODO: no zero init?
     )
     return actor_head
 
@@ -101,7 +127,7 @@ class CGateActor(Actor):
         normalize_images: bool = True,
         context_branch_width: int = 256,
         head_width: int = 256,
-        **kwargs
+        **kwargs,
     ):
         super(Actor, self).__init__(
             observation_space,
@@ -120,15 +146,15 @@ class CGateActor(Actor):
         observation_extractor = CGateFeatureExtractor(
             n_state_features=n_state_features,
             n_context_features=n_context_features,
-            context_branch_width=context_branch_width
+            context_branch_width=context_branch_width,
         )
         actor_head = get_actor_head(
-            action_dim=action_dim, context_branch_width=context_branch_width, head_width=head_width)
-
-        self.mu = nn.Sequential(
-            observation_extractor,
-            actor_head
+            action_dim=action_dim,
+            context_branch_width=context_branch_width,
+            head_width=head_width,
         )
+
+        self.mu = nn.Sequential(observation_extractor, actor_head)
 
 
 class CGateCritic(ContinuousCritic):
@@ -142,7 +168,7 @@ class CGateCritic(ContinuousCritic):
         share_features_extractor: bool = True,
         context_branch_width: int = 256,
         head_width: int = 256,
-        **kwargs
+        **kwargs,
     ):
         BaseModel.__init__(
             self,
@@ -163,14 +189,12 @@ class CGateCritic(ContinuousCritic):
             observation_extractor = CGateFeatureExtractor(
                 n_state_features=n_state_features + action_dim,
                 n_context_features=n_context_features,
-                context_branch_width=context_branch_width
+                context_branch_width=context_branch_width,
             )
             critic_head = get_critic_head(
-                context_branch_width=context_branch_width, head_width=head_width)
-            q_net = nn.Sequential(
-                observation_extractor,
-                critic_head
+                context_branch_width=context_branch_width, head_width=head_width
             )
+            q_net = nn.Sequential(observation_extractor, critic_head)
             self.add_module(f"qf{idx}", q_net)
             self.q_networks.append(q_net)
 
@@ -178,7 +202,9 @@ class CGateCritic(ContinuousCritic):
         # copy observations because obs are a reference
         # if not copied, the actor will receive the concatenated vector of state and action
         qvalue_input = obs.copy()
-        qvalue_input["state"] = th.cat([qvalue_input["state"], actions], dim=1)  # concat actions to state
+        qvalue_input["state"] = th.cat(
+            [qvalue_input["state"], actions], dim=1
+        )  # concat actions to state
         return tuple(q_net(qvalue_input) for q_net in self.q_networks)
 
     def q1_forward(self, obs: TensorDict, actions: th.Tensor) -> th.Tensor:
@@ -190,7 +216,9 @@ class CGateCritic(ContinuousCritic):
         # with th.no_grad():
         #     features = self.extract_features(obs)
         qvalue_input = obs.copy()
-        qvalue_input["state"] = th.cat([qvalue_input["state"], actions], dim=1)  # concat actions to state
+        qvalue_input["state"] = th.cat(
+            [qvalue_input["state"], actions], dim=1
+        )  # concat actions to state
         return self.q_networks[0](qvalue_input)
 
 
@@ -203,10 +231,14 @@ class DummyExtractor(BaseFeaturesExtractor):
     """
 
     def __init__(self, observation_space: gym.Space):
-        super(DummyExtractor, self).__init__(observation_space, get_flattened_obs_dim(observation_space))
+        super(DummyExtractor, self).__init__(
+            observation_space, get_flattened_obs_dim(observation_space)
+        )
         self.flatten = nn.Flatten()
 
-    def forward(self, observations: Union[th.Tensor, TensorDict]) -> Union[th.Tensor, TensorDict]:
+    def forward(
+        self, observations: Union[th.Tensor, TensorDict]
+    ) -> Union[th.Tensor, TensorDict]:
         return observations
 
 
@@ -240,8 +272,7 @@ class CGatePolicy(TD3Policy):
             "observation_space": self.observation_space,
             "action_space": self.action_space,
             "context_branch_width": context_branch_width,
-            "head_width": head_width
-
+            "head_width": head_width,
         }
         self.actor_kwargs = self.net_args.copy()
         self.critic_kwargs = self.net_args.copy()
@@ -257,18 +288,27 @@ class CGatePolicy(TD3Policy):
 
         self._build(lr_schedule)
 
-    def make_actor(self, features_extractor: Optional[BaseFeaturesExtractor] = None) -> Actor:
-        actor_kwargs = self._update_features_extractor(self.actor_kwargs, features_extractor)
+    def make_actor(
+        self, features_extractor: Optional[BaseFeaturesExtractor] = None
+    ) -> Actor:
+        actor_kwargs = self._update_features_extractor(
+            self.actor_kwargs, features_extractor
+        )
         return CGateActor(**actor_kwargs).to(self.device)
 
-    def make_critic(self, features_extractor: Optional[BaseFeaturesExtractor] = None) -> ContinuousCritic:
-        critic_kwargs = self._update_features_extractor(self.critic_kwargs, features_extractor)
+    def make_critic(
+        self, features_extractor: Optional[BaseFeaturesExtractor] = None
+    ) -> ContinuousCritic:
+        critic_kwargs = self._update_features_extractor(
+            self.critic_kwargs, features_extractor
+        )
         return CGateCritic(**critic_kwargs).to(self.device)
 
 
 def get_cgate_policy(agent_name: str) -> Type[BasePolicy]:
     valid_agents = ["TD3", "DDPG"]
     if agent_name not in valid_agents:
-        raise ValueError(f"Can only use cGate for {valid_agents}. Requested {agent_name}.")
+        raise ValueError(
+            f"Can only use cGate for {valid_agents}. Requested {agent_name}."
+        )
     return CGatePolicy
-

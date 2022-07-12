@@ -12,6 +12,7 @@ import importlib
 import sys
 import inspect
 import warnings
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -31,6 +32,7 @@ import carl.envs
 from carl.envs.carl_env import CARLEnv
 
 import carl.utils.trial_logger
+
 importlib.reload(carl.utils.trial_logger)
 from carl.utils.trial_logger import TrialLogger
 
@@ -46,12 +48,12 @@ from experiments.common.train.policies.cgate import get_cgate_policy
 def str2bool(v):
     if isinstance(v, bool):
         return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+    if v.lower() in ("yes", "true", "t", "y", "1"):
         return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+    elif v.lower() in ("no", "false", "f", "n", "0"):
         return False
     else:
-        raise configargparse.ArgumentTypeError('Boolean value expected.')
+        raise configargparse.ArgumentTypeError("Boolean value expected.")
 
 
 def get_parser() -> configargparse.ArgumentParser:
@@ -132,34 +134,34 @@ def get_parser() -> configargparse.ArgumentParser:
         default=None,
         nargs="+",
         help="Specifiy which context features should be added to state if hide_context is False. "
-             "None: Add all context features to state. "
-             "'changing_context_features' (str): Add only the ones changing in the contexts to state. "
-             "List[str]: Add those to the state."
+        "None: Add all context features to state. "
+        "'changing_context_features' (str): Add only the ones changing in the contexts to state. "
+        "List[str]: Add those to the state.",
     )
 
     parser.add_argument(
         "--add_context_feature_names_to_logdir",
         action="store_true",
-        help="Creates logdir in following way: {logdir}/{context_feature_name_0}__{context_feature_name_1}/{agent}_{seed}"
+        help="Creates logdir in following way: {logdir}/{context_feature_name_0}__{context_feature_name_1}/{agent}_{seed}",
     )
 
     parser.add_argument(
         "--dont_add_agentseed_to_logdir",
         action="store_true",
-        help="Don't add {agent}_{seed} to logdir but directly log into provided logdir."
+        help="Don't add {agent}_{seed} to logdir but directly log into provided logdir.",
     )
 
     parser.add_argument(
         "--default_sample_std_percentage",
         default=0.05,
         help="Standard deviation as percentage of mean",
-        type=float
+        type=float,
     )
-    
+
     parser.add_argument(
         "--hide_context",
         type=str2bool,
-        nargs='?',
+        nargs="?",
         const=True,
         default=False,
         help="If true, do not append the context to the state.",
@@ -173,8 +175,9 @@ def get_parser() -> configargparse.ArgumentParser:
     parser.add_argument(
         "--hp_file",
         type=str,
-        default=os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             "hyperparameters/ppo.yml")),
+        default=os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "hyperparameters/ppo.yml")
+        ),
         help="YML file with hyperparameter",
     )
 
@@ -184,71 +187,65 @@ def get_parser() -> configargparse.ArgumentParser:
         default="no",
         choices=["no", "by_mean", "by_default"],
         help="Scale context features before appending them to the observations. 'no' means no scaling. 'by_mean' scales"
-             " the context features by the mean of the training contexts features. 'by_default' scales the context "
-             "features by the default context features which are assumend to be the mean of the context feature "
-             "distribution."
+        " the context features by the mean of the training contexts features. 'by_default' scales the context "
+        "features by the default context features which are assumend to be the mean of the context feature "
+        "distribution.",
     )
 
     parser.add_argument(
         "--context_file",
         type=str,
         default=None,
-        help="Context file(name) containing all train contexts in json format as Dict[int, Dict[str, Any]]."
+        help="Context file(name) containing all train contexts in json format as Dict[int, Dict[str, Any]].",
     )
 
     parser.add_argument(
         "--vec_env_cls",
         type=str,
         default="DummyVecEnv",
-        choices=["DummyVecEnv", "SubprocVecEnv"]
+        choices=["DummyVecEnv", "SubprocVecEnv"],
     )
 
-    parser.add_argument(
-        "--use_xvfb",
-        action="store_true"
-    )
+    parser.add_argument("--use_xvfb", action="store_true")
 
-    parser.add_argument(
-        "--no_eval_callback",
-        action="store_true"
-    )
+    parser.add_argument("--no_eval_callback", action="store_true")
 
     parser.add_argument(
         "--build_outdir_from_args",
         action="store_true",
-        help="If set, build output directory based on env name, default sample perecentage and visibility."
+        help="If set, build output directory based on env name, default sample perecentage and visibility.",
     )
 
     parser.add_argument(
         "--steps_min",
         type=str,
         default=1e4,
-        help="Minimum number of steps for each hyperparameter configuration during (BO)HB optimization."
+        help="Minimum number of steps for each hyperparameter configuration during (BO)HB optimization.",
     )
 
     parser.add_argument(
         "--follow_evaluation_protocol",
         type=str2bool,
-        nargs='?',
+        nargs="?",
         const=True,
         default=False,
-        help="If true, follow evaluation protocol for context set creation. Overrides context_feature_args."
+        help="If true, follow evaluation protocol for context set creation. Overrides context_feature_args.",
     )
 
     parser.add_argument(
         "--evaluation_protocol_mode",
         type=str,
         choices=["A", "B", "C"],
-        help="Evaluation protocols from Kirk et al., 2021."
+        help="Evaluation protocols from Kirk et al., 2021.",
     )
 
     parser.add_argument(
         "--use_cgate",
         type=str2bool,
-        nargs='?',
+        nargs="?",
         const=True,
         default=False,
-        help="If true, use cGate architecture."
+        help="If true, use cGate architecture.",
     )
 
     return parser
@@ -258,16 +255,20 @@ def get_contexts(args):
     if not args.context_file:
         if args.follow_evaluation_protocol:
             contexts = get_train_contexts(
-                env_name=args.env, seed=args.seed, n_contexts=args.num_contexts, mode=args.evaluation_protocol_mode)
+                env_name=args.env,
+                seed=args.seed,
+                n_contexts=args.num_contexts,
+                mode=args.evaluation_protocol_mode,
+            )
         else:
             contexts = sample_contexts(
                 args.env,
                 args.context_feature_args,
                 args.num_contexts,
-                default_sample_std_percentage=args.default_sample_std_percentage
+                default_sample_std_percentage=args.default_sample_std_percentage,
             )
     else:
-        with open(args.context_file, 'r') as file:
+        with open(args.context_file, "r") as file:
             contexts = json.load(file)
     return contexts
 
@@ -281,11 +282,11 @@ def get_hps_from_file(hp_fn: str, env_name: str):
 
 
 def set_hps(
-        env_name: str,
-        agent_name: str,
-        hp_fn: Optional[str],
-        use_cgate: bool = False,
-        opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None
+    env_name: str,
+    agent_name: str,
+    hp_fn: Optional[str],
+    use_cgate: bool = False,
+    opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None,
 ):
     hyperparams = {}
     env_wrapper = None
@@ -293,16 +294,32 @@ def set_hps(
     schedule_kwargs = None
     # TODO create hyperparameter files for other agents as well, no hardcoding here
     if hp_fn is not None and agent_name == "PPO":
-        hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(hp_fn=hp_fn, env_name=env_name)
+        hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(
+            hp_fn=hp_fn, env_name=env_name
+        )
 
     if agent_name == "DDPG":
         hyperparams["policy"] = "MlpPolicy"
 
         if env_name == "CARLAnt":
-            hyperparams = {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "gae_lambda": 0.8, "ent_coef": 0.0,
-                           "max_grad_norm": 1.0, "vf_coef": 1.0}
-            post = {"batch_size": 128, "learning_rate": 0.00038113442133180797, "gamma": 0.887637734413147,
-                    "gae_lambda": 0.800000011920929, "ent_coef": 0.0, "max_grad_norm": 1.0, "vf_coef": 1.0}
+            hyperparams = {
+                "batch_size": 128,
+                "learning_rate": 3e-05,
+                "gamma": 0.99,
+                "gae_lambda": 0.8,
+                "ent_coef": 0.0,
+                "max_grad_norm": 1.0,
+                "vf_coef": 1.0,
+            }
+            post = {
+                "batch_size": 128,
+                "learning_rate": 0.00038113442133180797,
+                "gamma": 0.887637734413147,
+                "gae_lambda": 0.800000011920929,
+                "ent_coef": 0.0,
+                "max_grad_norm": 1.0,
+                "vf_coef": 1.0,
+            }
             hyperparams["policy"] = "MlpPolicy"
             schedule_kwargs["use_schedule"] = True
             schedule_kwargs["switching_point"] = 4
@@ -310,8 +327,11 @@ def set_hps(
 
         if env_name == "CARLPendulumEnv":
             hyperparams, env_wrapper, normalize_kwargs = get_hps_from_file(
-                hp_fn=os.path.join(os.path.dirname(__file__),
-                                   "hyperparameters/ddpg.yml"), env_name=env_name)
+                hp_fn=os.path.join(
+                    os.path.dirname(__file__), "hyperparameters/ddpg.yml"
+                ),
+                env_name=env_name,
+            )
 
         hyperparams["n_envs"] = 1
 
@@ -324,7 +344,7 @@ def set_hps(
         if env_name == "CARLLunarLanderEnv":
             hyperparams = {
                 # "n_timesteps": 1e5,
-                "policy": 'MlpPolicy',
+                "policy": "MlpPolicy",
                 "learning_rate": 6.3e-4,
                 "batch_size": 128,
                 "buffer_size": 50000,
@@ -335,7 +355,7 @@ def set_hps(
                 "gradient_steps": -1,
                 "exploration_fraction": 0.12,
                 "exploration_final_eps": 0.1,
-                "policy_kwargs": dict(net_arch=[256, 256])
+                "policy_kwargs": dict(net_arch=[256, 256]),
             }
 
         hyperparams["n_envs"] = 1
@@ -344,11 +364,11 @@ def set_hps(
 
         if env_name == "CARLBipedalWalkerEnv":
             hyperparams = {
-                "policy": 'MlpPolicy',
+                "policy": "MlpPolicy",
                 "learning_rate": 7.3e-4,
                 "buffer_size": 300000,
                 "batch_size": 256,
-                "ent_coef": 'auto',
+                "ent_coef": "auto",
                 "gamma": 0.98,
                 "tau": 0.02,
                 "train_freq": 64,
@@ -371,17 +391,17 @@ def set_hps(
 
 
 def get_env(
-        env_name,
-        n_envs: int = 1,
-        env_kwargs: Optional[Dict] = None,
-        wrapper_class: Optional[Callable[[gym.Env], gym.Env]] = None,
-        wrapper_kwargs=None,
-        normalize_kwargs: Optional[Dict] = None,
-        agent_cls: Optional = None,  # only important for eval env to appropriately wrap
-        eval_seed: Optional[int] = None,  # env is seeded in agent
-        return_vec_env: bool = True,
-        vec_env_cls: Optional[Type[Union[DummyVecEnv, SubprocVecEnv]]] = None,
-        return_eval_env: bool = False,
+    env_name,
+    n_envs: int = 1,
+    env_kwargs: Optional[Dict] = None,
+    wrapper_class: Optional[Callable[[gym.Env], gym.Env]] = None,
+    wrapper_kwargs=None,
+    normalize_kwargs: Optional[Dict] = None,
+    agent_cls: Optional = None,  # only important for eval env to appropriately wrap
+    eval_seed: Optional[int] = None,  # env is seeded in agent
+    return_vec_env: bool = True,
+    vec_env_cls: Optional[Type[Union[DummyVecEnv, SubprocVecEnv]]] = None,
+    return_eval_env: bool = False,
 ) -> Union[CARLEnv, Tuple[CARLEnv]]:
     if wrapper_kwargs is None:
         wrapper_kwargs = {}
@@ -389,7 +409,11 @@ def get_env(
         env_kwargs = {}
     EnvCls = partial(getattr(carl.envs, env_name), **env_kwargs)
 
-    make_vec_env_kwargs = dict(wrapper_class=wrapper_class, vec_env_cls=vec_env_cls, wrapper_kwargs=wrapper_kwargs)
+    make_vec_env_kwargs = dict(
+        wrapper_class=wrapper_class,
+        vec_env_cls=vec_env_cls,
+        wrapper_kwargs=wrapper_kwargs,
+    )
 
     # Wrap, Seed and Normalize Env
     if return_vec_env:
@@ -411,7 +435,9 @@ def get_env(
         if agent_cls is not None:
             eval_env = agent_cls._wrap_env(eval_env)
         else:
-            warnings.warn("agent_cls is None. Should be provided for eval_env to ensure that the correct wrappers are used.")
+            warnings.warn(
+                "agent_cls is None. Should be provided for eval_env to ensure that the correct wrappers are used."
+            )
         if eval_seed is not None:
             eval_env.seed(eval_seed)  # env is seeded in agent
 
@@ -431,11 +457,18 @@ def get_env(
     return ret
 
 
-def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None):
+def main(
+    args,
+    unknown_args,
+    parser,
+    opt_hyperparams: Optional[Union[Dict, "Configuration"]] = None,
+):
     print(args)
     if args.hide_context is True and args.use_cgate:
-        msg = "Skip run because hide_context is True and use_cgate is True. When using cGate, the context " \
-              "is always visible. Set hide_context to False if you want to use cGate."
+        msg = (
+            "Skip run because hide_context is True and use_cgate is True. When using cGate, the context "
+            "is always visible. Set hide_context to False if you want to use cGate."
+        )
         print(msg)
         return None
     # Manipulate args
@@ -459,8 +492,12 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         vdisplay.start()
     # Output Directory
     if args.build_outdir_from_args:
-        hide_context_dir_str = "contexthidden" if args.hide_context else "contextvisible"
-        state_context_features_str = "changing" if args.state_context_features is not None else ""
+        hide_context_dir_str = (
+            "contexthidden" if args.hide_context else "contextvisible"
+        )
+        state_context_features_str = (
+            "changing" if args.state_context_features is not None else ""
+        )
         if args.follow_evaluation_protocol:
             postdirs = f"{args.env}/evaluation_protocol-mode{args.evaluation_protocol_mode}-{state_context_features_str}{hide_context_dir_str}"
         else:
@@ -486,13 +523,13 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         agent_name=args.agent,
         hp_fn=args.hp_file,
         opt_hyperparams=opt_hyperparams,
-        use_cgate=args.use_cgate
+        use_cgate=args.use_cgate,
     )
     hp_content = {
         "hyperparameters": hyperparams,
         "env_wrapper": env_wrapper,
         "normalize_kwargs": normalize_kwargs,
-        "schedule_kwargs": schedule_kwargs
+        "schedule_kwargs": schedule_kwargs,
     }
     hp_fn = os.path.join(logger.logdir, "hyperparameters.json")
     lazy_json_dump(data=hp_content, filename=hp_fn)
@@ -517,7 +554,9 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     try:
         agent_cls = getattr(stable_baselines3, args.agent)
     except ValueError:
-        print(f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3")
+        print(
+            f"{args.agent} is an unknown agent class. Please use a classname from stable baselines 3"
+        )
 
     # Get Environment Class
     env_logger = logger if vec_env_cls is not SubprocVecEnv else None
@@ -527,7 +566,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         hide_context=args.hide_context,
         scale_context_features=args.scale_context_features,
         state_context_features=args.state_context_features,
-        dict_observation_space=args.use_cgate
+        dict_observation_space=args.use_cgate,
     )
     env, eval_env = get_env(
         env_name=args.env,
@@ -538,7 +577,7 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
         return_eval_env=True,
         normalize_kwargs=normalize_kwargs,
         agent_cls=agent_cls,
-        eval_seed=args.seed
+        eval_seed=args.seed,
     )
 
     # Setup Callbacks
@@ -547,17 +586,21 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     eval_callback = DACEvalCallback(
         eval_env=eval_env,
         log_path=logger.logdir,
-        eval_freq=1, #args.eval_freq,
+        eval_freq=1,  # args.eval_freq,
         n_eval_episodes=args.num_contexts,
         deterministic=True,
-        render=False
+        render=False,
     )
     callbacks = [eval_callback]
-    everynstep_callback = EveryNTimesteps(n_steps=args.eval_freq, callback=eval_callback)
+    everynstep_callback = EveryNTimesteps(
+        n_steps=args.eval_freq, callback=eval_callback
+    )
     callbacks = [everynstep_callback]
     if args.no_eval_callback:
         callbacks = None
-    chkp_cb = CheckpointCallback(save_freq=args.eval_freq, save_path=os.path.join(logger.logdir, "models"))
+    chkp_cb = CheckpointCallback(
+        save_freq=args.eval_freq, save_path=os.path.join(logger.logdir, "models")
+    )
     if callbacks is None:
         callbacks = [chkp_cb]
     else:
@@ -587,7 +630,9 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     # Save Agent
     model.save(os.path.join(logger.logdir, "model.zip"))
     if normalize:
-        model.get_vec_normalize_env().save(os.path.join(logger.logdir, "vecnormalize.pkl"))
+        model.get_vec_normalize_env().save(
+            os.path.join(logger.logdir, "vecnormalize.pkl")
+        )
 
     logdir = model.logger.get_dir()
     logfile = os.path.join(logdir, "progress.csv")
@@ -595,13 +640,13 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     # Evaluate Final Model
     try:
         episode_rewards, episode_lengths, episode_instances = evaluate_policy(
-                model=model,
-                env=eval_env,
-                n_eval_episodes=args.num_contexts,
-                deterministic=True,
-                render=False,
-                return_episode_rewards=True,
-                warn=True,
+            model=model,
+            env=eval_env,
+            n_eval_episodes=args.num_contexts,
+            deterministic=True,
+            render=False,
+            return_episode_rewards=True,
+            warn=True,
         )
         final_ep_mean_reward = np.mean(episode_rewards)
     except Exception as e:
@@ -613,8 +658,9 @@ def main(args, unknown_args, parser, opt_hyperparams: Optional[Union[Dict, "Conf
     return final_ep_mean_reward
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import gym
+
     gym.logger.set_level(40)
     parser = get_parser()
     args, unknown_args = parser.parse_known_args()

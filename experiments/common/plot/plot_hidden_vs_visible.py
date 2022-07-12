@@ -26,6 +26,7 @@ def adorn_ax(
     ax.set_title(axtitle)
     return ax
 
+
 fname = "data/alldata.csv"
 df = pd.read_csv(fname)
 
@@ -34,16 +35,16 @@ df = filter_group(df, ["hidden", "concat"])
 
 # filter concat all
 df["carl.state_context_features"].fillna("None", inplace=True)
-ids = np.logical_and(df["carl.state_context_features"] != "None", df["group"] == "concat")
+ids = np.logical_and(
+    df["carl.state_context_features"] != "None", df["group"] == "concat"
+)
 df = df[~ids]
 
 # filter std
 df = filter_std(df, [0.5])
 
 # filter context feature names
-df = filter_cf(df, [
-    "m", "g", "l", "dt", "max_speed"
-])
+df = filter_cf(df, ["m", "g", "l", "dt", "max_speed"])
 
 figsize = (9, 3)
 dpi = 300
@@ -80,7 +81,9 @@ axes = fig.subplots(nrows=1, ncols=n_groups, sharey=True)
 for i, (group_id, group_df) in enumerate(groups):
     axtitle = group_id
     ax = axes[i]
-    ax = sns.lineplot(ax=ax, data=group_df, x=xname, y=yname, hue=hue, palette=palette, style=style)
+    ax = sns.lineplot(
+        ax=ax, data=group_df, x=xname, y=yname, hue=hue, palette=palette, style=style
+    )
     if i != 1:
         ax.get_legend().remove()
     else:
@@ -96,6 +99,3 @@ for i, (group_id, group_df) in enumerate(groups):
     )
 fig.set_tight_layout(True)
 plt.show()
-
-
-

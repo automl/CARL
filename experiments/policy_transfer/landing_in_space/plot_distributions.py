@@ -27,6 +27,8 @@ if __name__ == "__main__":
         ax.hist(gravities, bins=100, color="cornflowerblue")
         ax.set_xlabel("Gravity [m/s²]")
         ax.set_ylabel("Counts")
-        ax.set_title(cfg.landing_in_space.sample_function._target_.split(".")[-1].split("_")[-1])
+        ax.set_title(
+            cfg.landing_in_space.sample_function._target_.split(".")[-1].split("_")[-1]
+        )
         fig.set_tight_layout(True)
         plt.show()

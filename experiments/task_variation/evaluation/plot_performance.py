@@ -10,7 +10,7 @@ import pandas as pd
 from experiments.common.eval.gather_data import gather_results
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/brax/CARLHalfcheetah"
     # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLMountainCarEnv"
     # # path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/box2d/CARLBipedalWalkerEnv"
@@ -77,7 +77,10 @@ if __name__ == '__main__':
         # Convert cf args list to string
         def cfargs_to_str(x):
             return ", ".join([str(el) for el in x])
-        results["context_feature_args"] = results["context_feature_args"].apply(cfargs_to_str)
+
+        results["context_feature_args"] = results["context_feature_args"].apply(
+            cfargs_to_str
+        )
 
     if experiment == "compounding":
         forbidden = ["dt", "max_speed", "g", "l"]
@@ -86,13 +89,12 @@ if __name__ == '__main__':
             ids = results["context_feature_args"] == forb
             results = results[~ids]
 
-
         if plot_across_magnitudes:
             allowed = 0.5
             ids = results["context_variation_magnitude"] == allowed
             df_c = df_c[ids]
 
-    env_names = results['env'].unique()
+    env_names = results["env"].unique()
     if len(env_names) > 1:
         raise NotImplementedError("Try to plot across different envs.")
     env_name = env_names[0]
@@ -112,11 +114,15 @@ if __name__ == '__main__':
 
         # figtitle
         if "context_visible" in key_plotgroup:
-            context_visibility_str = "context visible" if plot_id[0] else "context hidden"
+            context_visibility_str = (
+                "context visible" if plot_id[0] else "context hidden"
+            )
             figtitle = f"agent: {plot_id[1]}, {context_visibility_str}"
         elif "context_variation_magnitude" in key_plotgroup:
-            figtitle = f"agent: {plot_id[key_plotgroup.index('agent')]}, " \
-                       f"$\sigma_{{rel}}={plot_id[key_plotgroup.index('context_variation_magnitude')]}$"
+            figtitle = (
+                f"agent: {plot_id[key_plotgroup.index('agent')]}, "
+                f"$\sigma_{{rel}}={plot_id[key_plotgroup.index('context_variation_magnitude')]}$"
+            )
 
         # legendtitle
         if "context_feature_args" == key_huegroup:
@@ -129,8 +135,8 @@ if __name__ == '__main__':
         if plot_across_contextfeatures:
             plot_df = plot_df.sort_values(by="n_context_features")
         groups = plot_df.groupby(key_axgroup)
-        xmin = plot_df['step'].min()
-        xmax = plot_df['step'].max()
+        xmin = plot_df["step"].min()
+        xmax = plot_df["step"].max()
         xlims = (xmin, xmax)
         group_ids = []
         group_dfs = []
@@ -139,7 +145,14 @@ if __name__ == '__main__':
             group_dfs.append(group_df)
         if plot_across_contextfeatures:
             # sort along number of context features
-            ids = np.array([x for x, y in sorted(enumerate(group_ids), key=lambda x: x[1].count(","))])
+            ids = np.array(
+                [
+                    x
+                    for x, y in sorted(
+                        enumerate(group_ids), key=lambda x: x[1].count(",")
+                    )
+                ]
+            )
             group_ids = np.array(group_ids)[ids]
             group_dfs = [df for i, df in enumerate(group_dfs) if i in ids]
         for i, (group_id, group_df) in enumerate(zip(group_ids, group_dfs)):
@@ -155,7 +168,7 @@ if __name__ == '__main__':
             labels = []
             for j, (df_id, subset_group_df) in enumerate(groups_sub):
                 subset_group_df.reset_index(inplace=True)
-                n_seeds = subset_group_df['seed'].nunique()
+                n_seeds = subset_group_df["seed"].nunique()
                 msg = f"{plot_id}, {group_id}, {df_id}: n_seeds={n_seeds}"
                 print(msg)
                 color = colors[j]
@@ -167,7 +180,15 @@ if __name__ == '__main__':
                         else:
                             if first_none is not None:
                                 subset_group_df = first_none
-                ax = sns.lineplot(data=subset_group_df, x=xname, y=yname, ax=ax, color=color, marker='', hue=hue)
+                ax = sns.lineplot(
+                    data=subset_group_df,
+                    x=xname,
+                    y=yname,
+                    ax=ax,
+                    color=color,
+                    marker="",
+                    hue=hue,
+                )
                 legend_handles.append(Line2D([0], [0], color=color))
                 label = df_id
                 if plot_across_contextfeatures:
@@ -223,7 +244,7 @@ if __name__ == '__main__':
                 legend = fig.legend(
                     handles=legend_handles,
                     labels=labels,
-                    loc='lower center',
+                    loc="lower center",
                     title=legend_title,
                     ncol=ncols,
                     fontsize=legendfontsize,
@@ -242,22 +263,39 @@ if __name__ == '__main__':
         fig.set_tight_layout(True)
 
         if plot_across_contextfeatures and False:
-            index = results["n_context_features"].max()  # plus one to account for default/None
+            index = results[
+                "n_context_features"
+            ].max()  # plus one to account for default/None
             if index > 1:
                 # Get the bounding boxes of the axes including text decorations
                 r = fig.canvas.get_renderer()
-                get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
-                bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
+                get_bbox = lambda ax: ax.get_tightbbox(r).transformed(
+                    fig.transFigure.inverted()
+                )
+                bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(
+                    axes.shape
+                )
 
                 bbox = bboxes[index]
-                x = 0.5*(bbox.x1 + bboxes[index+1].x0) + 1 * bboxes[0].x0  # account for ylabel offset?
-                line = plt.Line2D([x, x], [0.05, 0.95], transform=fig.transFigure, color="black")
+                x = (
+                    0.5 * (bbox.x1 + bboxes[index + 1].x0) + 1 * bboxes[0].x0
+                )  # account for ylabel offset?
+                line = plt.Line2D(
+                    [x, x], [0.05, 0.95], transform=fig.transFigure, color="black"
+                )
                 fig.add_artist(line)
 
         if experiment == "compounding":
             df_tmp = df_c[df_c[key_plotgroup] == plot_id]
-            ax = sns.lineplot(data=subset_group_df, x=xname, y=yname, ax=ax, color=color, marker='', hue=hue)
-
+            ax = sns.lineplot(
+                data=subset_group_df,
+                x=xname,
+                y=yname,
+                ax=ax,
+                color=color,
+                marker="",
+                hue=hue,
+            )
 
         if experiment is not None:
             exp_str = str(experiment) + "__"

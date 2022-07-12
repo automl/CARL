@@ -1,5 +1,6 @@
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import os
@@ -27,7 +28,10 @@ from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
 from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
 
-from experiments.carlbench.context_logging import log_contexts_wandb_traineval, log_contexts_json
+from experiments.carlbench.context_logging import (
+    log_contexts_wandb_traineval,
+    log_contexts_json,
+)
 from experiments.carlbench.context_sampling import ContextSampler
 from experiments.common.utils.json_utils import lazy_json_load
 from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtocol
@@ -140,9 +144,9 @@ def train(cfg: DictConfig):
     print(cfg)
 
     hydra_job = (
-            os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
-            + "_"
-            + os.path.basename(HydraConfig.get().run.dir)
+        os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
+        + "_"
+        + os.path.basename(HydraConfig.get().run.dir)
     )
     cfg.wandb.id = hydra_job + "_" + id_generator()
 
@@ -176,7 +180,9 @@ def train(cfg: DictConfig):
     # ----------------------------------------------------------------------
     contexts, eval_contexts = get_traineval_contexts(cfg=cfg)
     if contexts:
-        log_contexts_wandb_traineval(train_contexts=contexts, eval_contexts=eval_contexts)
+        log_contexts_wandb_traineval(
+            train_contexts=contexts, eval_contexts=eval_contexts
+        )
 
     # ----------------------------------------------------------------------
     # Instantiate environments

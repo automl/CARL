@@ -28,7 +28,8 @@ from carl.context.sampling import sample_contexts
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+    return "".join(random.choice(chars) for _ in range(size))
+
 
 def check_config_valid(cfg):
     valid = True
@@ -160,16 +161,26 @@ def main(cfg: DictConfig):
     agent_kwargs["seed"] = int(agent_kwargs["seed"])
     if "action_noise" in agent_kwargs:
         if "mean" in agent_kwargs["action_noise"]:
-            agent_kwargs["action_noise"]["mean"] = np.array(agent_kwargs["action_noise"]["mean"])
-        agent_kwargs["action_noise"] = hydra.utils.instantiate(agent_kwargs["action_noise"])
+            agent_kwargs["action_noise"]["mean"] = np.array(
+                agent_kwargs["action_noise"]["mean"]
+            )
+        agent_kwargs["action_noise"] = hydra.utils.instantiate(
+            agent_kwargs["action_noise"]
+        )
     if cfg.carl.use_cgate:
         agent_kwargs["policy"] = hydra.utils.call(agent_kwargs["policy"])
     if "train_freq" in agent_kwargs:
         agent_kwargs["train_freq"] = tuple(agent_kwargs["train_freq"])
-        print(agent_kwargs["train_freq"], agent_kwargs["train_freq"][0], type(agent_kwargs["train_freq"][0]))
+        print(
+            agent_kwargs["train_freq"],
+            agent_kwargs["train_freq"][0],
+            type(agent_kwargs["train_freq"][0]),
+        )
     agent_kwargs["tensorboard_log"] = str(output_dir)
     if "learning_rate" in agent_kwargs and type(agent_kwargs["learning_rate"]) != float:
-        agent_kwargs["learning_rate"] = hydra.utils.instantiate(agent_kwargs["learning_rate"])
+        agent_kwargs["learning_rate"] = hydra.utils.instantiate(
+            agent_kwargs["learning_rate"]
+        )
     print(agent_kwargs)
     model = agent_cls(env=env, verbose=2, **agent_kwargs)
     model.set_logger(stable_baselines_logger)

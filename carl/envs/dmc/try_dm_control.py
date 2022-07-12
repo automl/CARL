@@ -12,11 +12,16 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     # Load one task:
-    
+
     stronger_act = walker_default.copy()
-    stronger_act["actuator_strength"] = walker_default["actuator_strength"]*2
+    stronger_act["actuator_strength"] = walker_default["actuator_strength"] * 2
     contexts = {0: stronger_act}
-    carl_env = CARLDmcWalkerEnv(task="stand_context", contexts=contexts, context_mask=walker_mask, hide_context=False)
+    carl_env = CARLDmcWalkerEnv(
+        task="stand_context",
+        contexts=contexts,
+        context_mask=walker_mask,
+        hide_context=False,
+    )
 
     # stronger_act = quadruped_default.copy()
     # stronger_act["actuator_strength"] = quadruped_default["actuator_strength"]*2
@@ -26,7 +31,7 @@ if __name__ == "__main__":
     # contexts = {0: fish_default}
     # carl_env = CARLDmcFishEnv(task="swim_context", contexts=contexts, context_mask=fish_mask, hide_context=False)
 
-    render = lambda : plt.imshow(carl_env.render(mode='rgb_array'))
+    render = lambda: plt.imshow(carl_env.render(mode="rgb_array"))
     s = carl_env.reset()
     render()
     plt.savefig("asdf_dm.png")

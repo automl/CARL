@@ -9,12 +9,12 @@ import pandas as pd
 
 
 def collect_results(
-        path: Union[str, Path],
-        progress_fname: str = "progress.csv",
-        eval_fname: str = "evaluations.npz",
-        yname: str = "ep_rew_mean",
-        from_progress: bool = False,
-        dirs_per_cf: Dict = None,
+    path: Union[str, Path],
+    progress_fname: str = "progress.csv",
+    eval_fname: str = "evaluations.npz",
+    yname: str = "ep_rew_mean",
+    from_progress: bool = False,
+    dirs_per_cf: Dict = None,
 ):
     """
     Assumend folder structure:
@@ -59,22 +59,26 @@ def collect_results(
             if from_progress:
                 progress_fn = cf_dir / progress_fname
                 df = pd.read_csv(progress_fn)
-                mean_reward_key = 'rollout/ep_rew_mean'
-                time_key = 'time/total_timesteps'
-                iteration_key = 'time/iterations'
+                mean_reward_key = "rollout/ep_rew_mean"
+                time_key = "time/total_timesteps"
+                iteration_key = "time/iterations"
                 if time_key not in df:
-                    time_key = 'time/total timesteps'
+                    time_key = "time/total timesteps"
                 if mean_reward_key not in df or time_key not in df:
-                    mean_reward_key = 'eval/mean_reward'
+                    mean_reward_key = "eval/mean_reward"
                 if iteration_key not in df:
-                    iteration_key = 'time/episodes'
+                    iteration_key = "time/episodes"
                 n = len(df[time_key])
-                D.append(pd.DataFrame({
-                    "seed": [seed] * n,
-                    "step": df[time_key].to_numpy(),
-                    iteration_key: df[iteration_key].to_numpy(),
-                    yname: df[mean_reward_key].to_numpy(),
-                }))
+                D.append(
+                    pd.DataFrame(
+                        {
+                            "seed": [seed] * n,
+                            "step": df[time_key].to_numpy(),
+                            iteration_key: df[iteration_key].to_numpy(),
+                            yname: df[mean_reward_key].to_numpy(),
+                        }
+                    )
+                )
             else:
                 eval_fn = cf_dir / eval_fname
                 try:
@@ -85,13 +89,17 @@ def collect_results(
                     iteration = None
                     y = np.mean(eval_data["results"], axis=1)
                     n = len(timesteps)
-                    D.append(pd.DataFrame({
-                        "seed": [seed] * n,
-                        "step": timesteps,
-                        "iteration": [iteration] * n,
-                        yname: y,
-                        "mean_ep_length": mean_ep_length
-                    }))
+                    D.append(
+                        pd.DataFrame(
+                            {
+                                "seed": [seed] * n,
+                                "step": timesteps,
+                                "iteration": [iteration] * n,
+                                yname: y,
+                                "mean_ep_length": mean_ep_length,
+                            }
+                        )
+                    )
                 except Exception as e:
                     print(e)
 
@@ -110,7 +118,7 @@ def load_trial_setup(path: Union[str, Path], info_fn: str = "trial_setup.json"):
         raise NotImplementedError
     path = Path(path)
     info_fname = path / info_fn
-    with open(info_fname, 'r') as file:
+    with open(info_fname, "r") as file:
         info = json.load(file)
     return info, info_fname
 
@@ -128,7 +136,7 @@ def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
         "config_filename": info_fname,
         "context_feature_args": info["context_feature_args"],
         "context_variation_magnitude": info["default_sample_std_percentage"],
-        "context_visible": not info["hide_context"]
+        "context_visible": not info["hide_context"],
     }
     if evaluation_protocol_mode is not None:
         data["evaluation_protocol_mode"] = evaluation_protocol_mode
@@ -137,13 +145,13 @@ def extract_info(path: Union[str, Path], info_fn: str = "trial_setup.json"):
 
 
 def gather_results(
-        path: Union[str, Path],
-        progress_fname: str = "progress.csv",
-        eval_fname: str = "evaluations.npz",
-        yname: str = "ep_rew_mean",
-        from_progress: bool = False,
-        dirs_per_cf: Dict = None,
-        trial_setup_fn: str = "trial_setup.json"
+    path: Union[str, Path],
+    progress_fname: str = "progress.csv",
+    eval_fname: str = "evaluations.npz",
+    yname: str = "ep_rew_mean",
+    from_progress: bool = False,
+    dirs_per_cf: Dict = None,
+    trial_setup_fn: str = "trial_setup.json",
 ):
     dirs = glob.glob(os.path.join(path, "**", trial_setup_fn), recursive=True)
 
@@ -159,25 +167,27 @@ def gather_results(
         if from_progress:
             progress_fn = result_dir / progress_fname
             df = pd.read_csv(progress_fn)
-            mean_reward_key = 'rollout/ep_rew_mean'
-            time_key = 'time/total_timesteps'
-            iteration_key = 'time/iterations'
+            mean_reward_key = "rollout/ep_rew_mean"
+            time_key = "time/total_timesteps"
+            iteration_key = "time/iterations"
             if time_key not in df:
-                time_key = 'time/total timesteps'
+                time_key = "time/total timesteps"
             if mean_reward_key not in df or time_key not in df:
-                mean_reward_key = 'eval/mean_reward'
+                mean_reward_key = "eval/mean_reward"
             if iteration_key not in df:
-                iteration_key = 'time/episodes'
+                iteration_key = "time/episodes"
             n = len(df[time_key])
 
             step = df[time_key].to_numpy()
             iter_key = "iteration" if "iteration" in iteration_key else "episode"
 
-            D = pd.DataFrame({
-                "step": df[time_key].to_numpy(),
-                iter_key: df[iteration_key].to_numpy(),
-                yname: df[mean_reward_key].to_numpy(),
-            })
+            D = pd.DataFrame(
+                {
+                    "step": df[time_key].to_numpy(),
+                    iter_key: df[iteration_key].to_numpy(),
+                    yname: df[mean_reward_key].to_numpy(),
+                }
+            )
         else:
             eval_fn = result_dir / eval_fname
             if not eval_fn.is_file():
@@ -190,7 +200,9 @@ def gather_results(
             instance_ids = np.squeeze(eval_data["episode_instances"])
             episode_rewards = eval_data["results"]
 
-            timesteps = np.concatenate([timesteps[:, np.newaxis]] * episode_rewards.shape[-1], axis=1)
+            timesteps = np.concatenate(
+                [timesteps[:, np.newaxis]] * episode_rewards.shape[-1], axis=1
+            )
 
             timesteps = timesteps.flatten()
             instance_ids = instance_ids.flatten()
@@ -200,12 +212,14 @@ def gather_results(
 
             n = len(timesteps)
 
-            D = pd.DataFrame({
-                "step": timesteps,
-                "instance_id": instance_ids,
-                "episode_reward": episode_rewards,
-                "episode_length": episode_lengths,
-            })
+            D = pd.DataFrame(
+                {
+                    "step": timesteps,
+                    "instance_id": instance_ids,
+                    "episode_reward": episode_rewards,
+                    "episode_length": episode_lengths,
+                }
+            )
 
         # merg info and results
         n = len(D)
@@ -214,13 +228,13 @@ def gather_results(
 
         if D is not None:
             data.append(D)
-    
+
     if data:
         data = pd.concat(data)
 
     return data
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     path = "/home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control"
     results = gather_results(path=path)

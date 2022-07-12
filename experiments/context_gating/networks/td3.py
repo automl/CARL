@@ -9,12 +9,9 @@ def pi_func(cfg, env):
     def pi(S, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
-                (
-                    hk.Linear(cfg.context_branch.width),
-                    jax.nn.relu
-                )
+                (hk.Linear(cfg.context_branch.width), jax.nn.relu)
             )
-            
+
             x = state_seq(S["state"])
 
             # Gate the context according to the requirement
@@ -26,8 +23,7 @@ def pi_func(cfg, env):
                 (
                     hk.Linear(256),
                     jax.nn.relu,
-                    hk.Linear(onp.prod(env.action_space.shape),
-                              w_init=jnp.zeros),
+                    hk.Linear(onp.prod(env.action_space.shape), w_init=jnp.zeros),
                     hk.Reshape(env.action_space.shape),
                 )
             )
@@ -39,8 +35,7 @@ def pi_func(cfg, env):
                     jax.nn.relu,
                     hk.Linear(256),
                     jax.nn.relu,
-                    hk.Linear(onp.prod(env.action_space.shape),
-                              w_init=jnp.zeros),
+                    hk.Linear(onp.prod(env.action_space.shape), w_init=jnp.zeros),
                     hk.Reshape(env.action_space.shape),
                 )
             )
@@ -56,10 +51,7 @@ def q_func(cfg, env):
     def q(S, A, is_training):
         if cfg.carl.dict_observation_space and not cfg.carl.hide_context:
             state_seq = hk.Sequential(
-                (
-                    hk.Linear(cfg.context_branch.width), 
-                    jax.nn.relu
-                )
+                (hk.Linear(cfg.context_branch.width), jax.nn.relu)
             )
             X = jnp.concatenate((S["state"], A), axis=-1)
             x = state_seq(X)
@@ -70,8 +62,7 @@ def q_func(cfg, env):
             if cfg.q_context:
                 x = context_gating(x, S)
             q_seq = hk.Sequential(
-                (hk.Linear(256), jax.nn.relu, hk.Linear(
-                    1, w_init=jnp.zeros), jnp.ravel)
+                (hk.Linear(256), jax.nn.relu, hk.Linear(1, w_init=jnp.zeros), jnp.ravel)
             )
             x = q_seq(x)
         else:

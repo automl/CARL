@@ -40,7 +40,7 @@ class CARLDmcEnv(CARLEnv):
                 task_name=self.task,
                 context={},
                 context_mask=[],
-                environment_kwargs={"flat_observation": True}
+                environment_kwargs={"flat_observation": True},
             )
             env = MujocoToGymWrapper(env)
         super().__init__(
@@ -73,6 +73,6 @@ class CARLDmcEnv(CARLEnv):
                 task_name=self.task,
                 context=self.context,
                 context_mask=self.context_mask,
-                environment_kwargs={"flat_observation": True}
+                environment_kwargs={"flat_observation": True},
             )
             self.env = MujocoToGymWrapper(env)

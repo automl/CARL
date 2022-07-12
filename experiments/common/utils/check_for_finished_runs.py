@@ -22,27 +22,31 @@ for path in paths:
                 n_points_per_seed = [len(g[1]) for g in df.groupby("seed")]
                 n_points = len(df)
                 n_avg_per_seed = n_points / n_seeds
-                data.append({
-                    "context_feature_name": cf_name,
-                    "n_seeds": n_seeds,
-                    "n_points": n_points,
-                    "n_avg_per_seed": n_avg_per_seed,
-                    "seeds": seeds,
-                    "n_points_per_seed": n_points_per_seed,
-                    "path": path,
-                })
+                data.append(
+                    {
+                        "context_feature_name": cf_name,
+                        "n_seeds": n_seeds,
+                        "n_points": n_points,
+                        "n_avg_per_seed": n_avg_per_seed,
+                        "seeds": seeds,
+                        "n_points_per_seed": n_points_per_seed,
+                        "path": path,
+                    }
+                )
                 counter += 1
                 multiindex.append((pathidx, counter))
         else:
-            data.append({
-                "context_feature_name": 0,
-                "n_seeds": 0,
-                "n_points": 0,
-                "n_avg_per_seed": 0,
-                "seeds": [],
-                "n_points_per_seed": 0,
-                "path": path,
-            })
+            data.append(
+                {
+                    "context_feature_name": 0,
+                    "n_seeds": 0,
+                    "n_points": 0,
+                    "n_avg_per_seed": 0,
+                    "seeds": [],
+                    "n_points_per_seed": 0,
+                    "path": path,
+                }
+            )
             counter += 1
             multiindex.append((pathidx, counter))
 

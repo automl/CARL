@@ -16,7 +16,9 @@ class MujocoToGymWrapper(gym.Env):
         self.env = env
 
         action_spec = self.env.action_spec()
-        self.action_space = spaces.Box(action_spec.minimum, action_spec.maximum, dtype=action_spec.dtype)
+        self.action_space = spaces.Box(
+            action_spec.minimum, action_spec.maximum, dtype=action_spec.dtype
+        )
 
         obs_spec = self.env.observation_spec()
         # obs_spaces = {
@@ -29,7 +31,9 @@ class MujocoToGymWrapper(gym.Env):
         lows = np.array([-np.inf] * shapes[0])
         highs = np.array([np.inf] * shapes[0])
         dtype = np.unique([[v.dtype for v in obs_spec.values()]])[0]
-        self.observation_space = spaces.Box(low=lows, high=highs, shape=shapes, dtype=dtype)
+        self.observation_space = spaces.Box(
+            low=lows, high=highs, shape=shapes, dtype=dtype
+        )
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
         """Run one timestep of the environment's dynamics. When end of
@@ -56,10 +60,7 @@ class MujocoToGymWrapper(gym.Env):
             observation = timestep.observation["observations"]
         else:
             raise NotImplementedError
-        info = {
-            "step_type": step_type,
-            "discount": discount
-        }
+        info = {"step_type": step_type, "discount": discount}
         done = step_type == StepType.LAST
         return observation, reward, done, info
 
@@ -70,7 +71,9 @@ class MujocoToGymWrapper(gym.Env):
         return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
-        super(MujocoToGymWrapper, self).reset(seed=seed, return_info=return_info, options=options)
+        super(MujocoToGymWrapper, self).reset(
+            seed=seed, return_info=return_info, options=options
+        )
         timestep = self.env.reset()
         if isinstance(self.observation_space, spaces.Box):
             observation = timestep.observation["observations"]

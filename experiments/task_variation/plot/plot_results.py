@@ -10,7 +10,12 @@ import numpy as np
 from experiments.common.plot.plotting_style import set_rc_params
 
 
-def load_data(experiment_setting: Dict, df_fname: Union[str, Path], reload_data: bool = False, groups: Optional[Dict] = None):
+def load_data(
+    experiment_setting: Dict,
+    df_fname: Union[str, Path],
+    reload_data: bool = False,
+    groups: Optional[Dict] = None,
+):
     if groups is None:
         groups = {
             "hidden_context": "hidden",
@@ -25,10 +30,7 @@ def load_data(experiment_setting: Dict, df_fname: Union[str, Path], reload_data:
         config_entries = experiment_setting["config_entries"]
 
         api = wandb.Api()
-        runs = api.runs(
-            "tnt/carl",
-            filters=filters
-        )
+        runs = api.runs("tnt/carl", filters=filters)
         dfs = []
         runs = list(runs)
         for run in tqdm(runs):
@@ -59,11 +61,11 @@ def load_data(experiment_setting: Dict, df_fname: Union[str, Path], reload_data:
 
 
 def set_legend(
-        fig,
-        ax,
-        legendtitle: Optional[str] = None,
-        legendfontsize: Optional[int] = None,
-        ncols: Optional[int] = None
+    fig,
+    ax,
+    legendtitle: Optional[str] = None,
+    legendfontsize: Optional[int] = None,
+    ncols: Optional[int] = None,
 ):
     legend = ax.get_legend()
     legend.set_title(legendtitle)
@@ -81,14 +83,14 @@ def set_legend(
     legend = fig.legend(
         handles=handles,
         labels=labels,
-        loc='lower center',
+        loc="lower center",
         title=legendtitle,
         ncol=ncols,
         fontsize=legendfontsize,
         columnspacing=0.5,
         handletextpad=0.5,
         handlelength=1.5,
-        bbox_to_anchor=(0.6, 0.205)
+        bbox_to_anchor=(0.6, 0.205),
     )
     return legend
 
@@ -99,16 +101,13 @@ if __name__ == "__main__":
 
     experiment_settings = {
         "compounding": {
-            "filters": {
-                "group": "hidden_context",
-                "state": "finished"
-            },
+            "filters": {"group": "hidden_context", "state": "finished"},
             "config_entries": {
                 "group",
                 "contexts.context_feature_args",
                 "carl.state_context_features",
                 "contexts.default_sample_std_percentage",
-                "seed"
+                "seed",
             },
             "plotting": {
                 "xname": "_step",
@@ -118,20 +117,20 @@ if __name__ == "__main__":
                 "xlabel": "step",
                 "ylabel": "mean reward",
                 "group": None,  # "contexts.default_sample_std_percentage"
-            }
+            },
         },
         "hidden_vs_visible": {
             "filters": {
                 # "config.contexts.default_sample_std_percentage": {"$in": [0.5]},
                 "group": {"$in": ["hidden_context", "concat_context"]},
-                "state": "finished"
+                "state": "finished",
             },
             "config_entries": {
                 "group",
                 "contexts.context_feature_args",
                 "carl.state_context_features",
                 "contexts.default_sample_std_percentage",
-                "seed"
+                "seed",
             },
             "plotting": {
                 "xname": "_step",
@@ -144,19 +143,19 @@ if __name__ == "__main__":
                 "xticks": [0, 250_000, 500_000],
                 "xticklabels": ["0", "250k", "500k"],
                 # "style": "contexts.default_sample_std_percentage",
-            }
+            },
         },
         "task_variation": {
             "filters": {
                 "group": {"$in": ["hidden_context", "concat_context"]},
-                "state": "finished"
+                "state": "finished",
             },
             "config_entries": {
                 "group",
                 "contexts.context_feature_args",
                 "carl.state_context_features",
                 "contexts.default_sample_std_percentage",
-                "seed"
+                "seed",
             },
             "plotting": {
                 "xname": "_step",
@@ -167,8 +166,8 @@ if __name__ == "__main__":
                 "ylabel": "mean reward\nacross contexts $\mathcal{C}_{train}$",
                 "group": ["group", "contexts.default_sample_std_percentage"],
                 "xticks": [0, 250_000, 500_000],
-                "xticklabels": ["0", "250k", "500k"]
-            }
+                "xticklabels": ["0", "250k", "500k"],
+            },
         },
         "context_gating": {
             "filters": {
@@ -181,29 +180,37 @@ if __name__ == "__main__":
                 "contexts.context_feature_args",
                 "carl.state_context_features",
                 "contexts.default_sample_std_percentage",
-                "seed"
-            }
-        }
+                "seed",
+            },
+        },
     }
     metrics = ["eval/return"]
 
     df_fname = Path(".") / f"data_{experiment}.csv"
     experiment_setting = experiment_settings[experiment]
-    df = load_data(experiment_setting=experiment_setting, reload_data=reload_data, df_fname=df_fname)
+    df = load_data(
+        experiment_setting=experiment_setting,
+        reload_data=reload_data,
+        df_fname=df_fname,
+    )
 
     no_varying_context_feature_name = "None"
     no_context_feature_varying_color = "black"
     legendfontsize = 10
     recolor_novarycf = False
     if "contexts.context_feature_args" in df:
-        df["contexts.context_feature_args"].fillna(value=no_varying_context_feature_name, inplace=True)
+        df["contexts.context_feature_args"].fillna(
+            value=no_varying_context_feature_name, inplace=True
+        )
         if experiment == "task_variation" or experiment == "hidden_vs_visible":
             # filter everything that varies more than one context feature
             ids = df["contexts.context_feature_args"].apply(lambda x: "," not in x)
             df = df[ids]
     if "carl.state_context_features" in df:
         # filter nan and concat
-        ids = np.logical_and(df["carl.state_context_features"] == np.nan, df["group"] == "concat")
+        ids = np.logical_and(
+            df["carl.state_context_features"] == np.nan, df["group"] == "concat"
+        )
         df = df[~ids]
     exp = experiment_settings[experiment]
 
@@ -213,7 +220,9 @@ if __name__ == "__main__":
 
         # filter concat: concat all
         df["carl.state_context_features"].fillna("None", inplace=True)
-        ids = np.logical_and(df["carl.state_context_features"] == "None", df["group"] == "concat")
+        ids = np.logical_and(
+            df["carl.state_context_features"] == "None", df["group"] == "concat"
+        )
         df = df[~ids]
 
     if experiment == "hidden_vs_visible":
@@ -221,8 +230,6 @@ if __name__ == "__main__":
         std = 0.5
         ids = df["contexts.default_sample_std_percentage"] == std
         df = df[ids]
-
-
 
     def plgetter(name: str) -> Optional[Any]:
         return exp["plotting"].get(name)
@@ -281,7 +288,15 @@ if __name__ == "__main__":
 
             for j, (subgroup_id, subgroup_df) in enumerate(subgroups):
                 ax = axes[j]
-                ax = sns.lineplot(data=subgroup_df, x=xname, y=yname, hue=hue, palette=palette, ax=ax, style=style)
+                ax = sns.lineplot(
+                    data=subgroup_df,
+                    x=xname,
+                    y=yname,
+                    hue=hue,
+                    palette=palette,
+                    ax=ax,
+                    style=style,
+                )
                 ax.set_xlabel(xlabel)
                 if j == 0:
                     ax.set_ylabel(ylabel)
@@ -306,19 +321,18 @@ if __name__ == "__main__":
                     legend = fig.legend(
                         handles=handles,
                         labels=labels,
-                        loc='lower center',
+                        loc="lower center",
                         title=legendtitle,
-                        ncol=3, #ncols,
+                        ncol=3,  # ncols,
                         fontsize=legendfontsize,
                         columnspacing=0.5,
                         handletextpad=0.5,
                         handlelength=1.5,
-                        bbox_to_anchor=(0.6, 0.205)
+                        bbox_to_anchor=(0.6, 0.205),
                     )
                     # ax.legend(handles, labels)
                 else:
                     ax.get_legend().remove()
-
 
                 xlim = group_df[xname].min(), group_df[xname].max()
                 ax.set_xlim(*xlim)
@@ -352,7 +366,15 @@ if __name__ == "__main__":
                 fig = plt.figure(figsize=figsize, dpi=dpi)
                 ax = fig.add_subplot(111)
 
-            ax = sns.lineplot(data=group_df, x=xname, y=yname, hue=hue, palette=palette, ax=ax, style=style)
+            ax = sns.lineplot(
+                data=group_df,
+                x=xname,
+                y=yname,
+                hue=hue,
+                palette=palette,
+                ax=ax,
+                style=style,
+            )
 
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
@@ -387,8 +409,12 @@ if __name__ == "__main__":
                                 child.set_color(no_context_feature_varying_color)
                         elif type(child) == mpl.collections.PolyCollection:
                             facecolors = child.get_fc()
-                            if np.all(np.isclose(facecolors[0, :3], np.array(orig_color))):
-                                color = np.array(mpl.colors.to_rgba(no_context_feature_varying_color))
+                            if np.all(
+                                np.isclose(facecolors[0, :3], np.array(orig_color))
+                            ):
+                                color = np.array(
+                                    mpl.colors.to_rgba(no_context_feature_varying_color)
+                                )
                                 color[-1] = facecolors[0, -1]
                                 child.set_color(no_context_feature_varying_color)
             ax.legend(handles, labels)
@@ -410,7 +436,7 @@ if __name__ == "__main__":
                         ax=ax,
                         legendtitle=legendtitle,
                         legendfontsize=legendfontsize,
-                        ncols=1
+                        ncols=1,
                     )
                 continue
             fig.set_tight_layout(True)

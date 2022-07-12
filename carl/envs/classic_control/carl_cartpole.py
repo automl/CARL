@@ -50,7 +50,9 @@ class CustomCartPoleEnv(CartPoleEnv):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
-        self.state = self.np_random.uniform(low=self.initial_state_lower, high=self.initial_state_upper, size=(4,))
+        self.state = self.np_random.uniform(
+            low=self.initial_state_lower, high=self.initial_state_upper, size=(4,)
+        )
         self.steps_beyond_done = None
         if not return_info:
             return np.array(self.state, dtype=np.float32)
@@ -62,6 +64,7 @@ class CARLCartPoleEnv(CARLEnv):
     """
     CartPole-v1
     """
+
     def __init__(
         self,
         env: gym.Env = CustomCartPoleEnv(),
@@ -76,7 +79,9 @@ class CARLCartPoleEnv(CARLEnv):
         state_context_features: Optional[List[str]] = None,
         context_mask: Optional[List[str]] = None,
         dict_observation_space: bool = False,
-        context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
         if not contexts:

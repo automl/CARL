@@ -38,7 +38,10 @@ from experiments.carlbench.context_logging import (
     load_wandb_contexts,
 )
 from experiments.carlbench.context_sampling import ContextSampler
-from experiments.benchmarking.training import id_generator, get_contexts_evaluation_protocol
+from experiments.benchmarking.training import (
+    id_generator,
+    get_contexts_evaluation_protocol,
+)
 from experiments.common.utils.json_utils import lazy_json_load
 from experiments.evaluation.loading import load_policy
 
@@ -94,11 +97,13 @@ def evaluate_policy(cfg: DictConfig):
     if cfg.kirk_evaluation_protocol.follow:
         is_valid = check_evaluation_protocol_combo(
             mode=traincfg.kirk_evaluation_protocol.mode,
-            distribution_type=cfg.kirk_evaluation_protocol.distribution_type
+            distribution_type=cfg.kirk_evaluation_protocol.distribution_type,
         )
         if not is_valid:
-            print("Skipping run because combination of evaluation protocol mode and distribution type "
-                  "is invalid.")
+            print(
+                "Skipping run because combination of evaluation protocol mode and distribution type "
+                "is invalid."
+            )
             return None
         cfg.kirk_evaluation_protocol.mode = traincfg.kirk_evaluation_protocol.mode
 
@@ -147,7 +152,9 @@ def evaluate_policy(cfg: DictConfig):
             contexts = ContextSampler(**traincfg.context_sampler).sample_contexts()
         elif cfg.kirk_evaluation_protocol.follow:
             # override train config for evaluation protocol with eval config
-            traincfg.kirk_evaluation_protocol.distribution_type = cfg.kirk_evaluation_protocol.distribution_type
+            traincfg.kirk_evaluation_protocol.distribution_type = (
+                cfg.kirk_evaluation_protocol.distribution_type
+            )
             contexts = get_contexts_evaluation_protocol(traincfg)
         else:
             # use train contexts
@@ -176,7 +183,9 @@ def evaluate_policy(cfg: DictConfig):
     # Instantiate environments
     # ----------------------------------------------------------------------
     EnvCls = partial(getattr(envs, traincfg.env), **traincfg.carl)
-    env = EnvCls(contexts=contexts,)
+    env = EnvCls(
+        contexts=contexts,
+    )
     env = coax.wrappers.TrainMonitor(env, name=traincfg.algorithm)
     key = jax.random.PRNGKey(traincfg.seed)
     if traincfg.state_context and traincfg.carl.dict_observation_space:
@@ -208,14 +217,25 @@ def evaluate_policy(cfg: DictConfig):
     # ----------------------------------------------------------------------
     weights_path = wandbdir / "latest-run" / "files" / "func_dict.pkl.lz4"
     policy = load_policy(traincfg, weights_path=weights_path)
-    returns, context_ids = evaluate(pi=policy, env=env, num_episodes=cfg.n_eval_episodes)
+    returns, context_ids = evaluate(
+        pi=policy, env=env, num_episodes=cfg.n_eval_episodes
+    )
     avg_return = onp.mean(returns)
-    df = pd.DataFrame(data=onp.vstack((context_ids, returns)).T, columns=["context_id", "return"])
+    df = pd.DataFrame(
+        data=onp.vstack((context_ids, returns)).T, columns=["context_id", "return"]
+    )
     return_per_context_table = wandb.Table(dataframe=df)
-    wandb.log({
-        "return_per_context": wandb.plot.bar(return_per_context_table, "context_id", "return", title="Return per Context"),
-        "average_return": avg_return,  # TODO log as scalar
-    })
+    wandb.log(
+        {
+            "return_per_context": wandb.plot.bar(
+                return_per_context_table,
+                "context_id",
+                "return",
+                title="Return per Context",
+            ),
+            "average_return": avg_return,  # TODO log as scalar
+        }
+    )
     print(avg_return)
 
     # ----------------------------------------------------------------------

@@ -20,9 +20,9 @@ state = env.reset(rng=jax.random.PRNGKey(seed=1))
 
 
 def visualize(sys, qps):
-  """Renders a 3D visualization of the environment."""
-  return HTML(html.render(sys, qps))
+    """Renders a 3D visualization of the environment."""
+    return HTML(html.render(sys, qps))
 
 
-#htmlrender = visualize(env.sys, [state.qp])
+# htmlrender = visualize(env.sys, [state.qp])
 html.save_html(path=f"tmp/env_render/{env_name}.html", sys=env.sys, qps=[state.qp])

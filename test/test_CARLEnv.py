@@ -240,7 +240,7 @@ class TestContextFeatureScaling(unittest.TestCase):
             "m": 1.0,
             "l": 1.0,
             "initial_angle_max": np.pi,
-            "initial_velocity_max": 1
+            "initial_velocity_max": 1,
         }
         contexts = {
             "0": {"max_speed": 8.0, "dt": 0.03, "g": 10.0, "m": 1.0, "l": 1.8},
@@ -259,7 +259,9 @@ class TestContextFeatureScaling(unittest.TestCase):
         state, reward, done, info = env.step(action=action)
         n_c = len(default_context)
         scaled_contexts = state[-n_c:]
-        self.assertTrue(np.all(np.array([1.0, 0.6, 1, 1, 1.8, 1, 1]) == scaled_contexts))
+        self.assertTrue(
+            np.all(np.array([1.0, 0.6, 1, 1, 1.8, 1, 1]) == scaled_contexts)
+        )
 
     def test_context_feature_scaling_by_default_nodefcontext(self):
         with self.assertRaises(ValueError):
@@ -318,7 +320,9 @@ class TestContextFeatureScaling(unittest.TestCase):
         )
         s = env.reset()
         s_c = s["context"]
-        forbidden_in_context = [f for f in env.state_context_features if f in context_mask]
+        forbidden_in_context = [
+            f for f in env.state_context_features if f in context_mask
+        ]
         self.assertTrue(len(s_c) == len(list(env.default_context.keys())) - 2)
         self.assertTrue(len(forbidden_in_context) == 0)
 

@@ -39,23 +39,24 @@ CONTEXT_BOUNDS = {
 
 class CARLAnt(CARLEnv):
     def __init__(
-            self,
-            env: Ant = Ant(),
-            n_envs: int = 1,
-            contexts: Dict[str, Dict] = {},
-            hide_context=False,
-            add_gaussian_noise_to_context: bool = False,
-            gaussian_noise_std_percentage: float = 0.01,
-            logger: Optional[TrialLogger] = None,
-            scale_context_features: str = "no",
-            default_context: Optional[Dict] = DEFAULT_CONTEXT,
-            state_context_features: Optional[List[str]] = None,
-            context_mask: Optional[List[str]] = None,
-            dict_observation_space: bool = False,
-            context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]] = None,
-            context_selector_kwargs: Optional[Dict] = None,
-            max_episode_length: int = 1000,
-
+        self,
+        env: Ant = Ant(),
+        n_envs: int = 1,
+        contexts: Dict[str, Dict] = {},
+        hide_context=False,
+        add_gaussian_noise_to_context: bool = False,
+        gaussian_noise_std_percentage: float = 0.01,
+        logger: Optional[TrialLogger] = None,
+        scale_context_features: str = "no",
+        default_context: Optional[Dict] = DEFAULT_CONTEXT,
+        state_context_features: Optional[List[str]] = None,
+        context_mask: Optional[List[str]] = None,
+        dict_observation_space: bool = False,
+        context_selector: Optional[
+            Union[AbstractSelector, type(AbstractSelector)]
+        ] = None,
+        context_selector_kwargs: Optional[Dict] = None,
+        max_episode_length: int = 1000,
     ):
         env = GymWrapper(env)
         self.base_config = MessageToDict(

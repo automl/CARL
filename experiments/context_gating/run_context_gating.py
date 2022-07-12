@@ -38,7 +38,10 @@ def check_config_valid(cfg):
     valid = True
     if cfg.carl.hide_context and cfg.carl.state_context_features:
         valid = False
-    if not cfg.contexts.context_feature_args and cfg.carl.state_context_features is not None:
+    if (
+        not cfg.contexts.context_feature_args
+        and cfg.carl.state_context_features is not None
+    ):
         valid = False
     return valid
 
@@ -46,7 +49,20 @@ def check_config_valid(cfg):
 @hydra.main("./configs", "base")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    if (not check_config_valid(cfg) or check_wandb_exists(dict_cfg, unique_fields=["env", "seed", "group", "contexts.context_feature_args", "contexts.default_sample_std_percentage", "carl.state_context_features"])) and not cfg.debug:
+    if (
+        not check_config_valid(cfg)
+        or check_wandb_exists(
+            dict_cfg,
+            unique_fields=[
+                "env",
+                "seed",
+                "group",
+                "contexts.context_feature_args",
+                "contexts.default_sample_std_percentage",
+                "carl.state_context_features",
+            ],
+        )
+    ) and not cfg.debug:
         print(f"Skipping run with cfg {dict_cfg}")
         return
     wandb.init(
@@ -84,8 +100,7 @@ def train(cfg: DictConfig):
         eval_table = wandb.Table(
             columns=sorted(eval_contexts[0].keys()),
             data=[
-                [eval_contexts[idx][key]
-                    for key in sorted(eval_contexts[idx].keys())]
+                [eval_contexts[idx][key] for key in sorted(eval_contexts[idx].keys())]
                 for idx in eval_contexts.keys()
             ],
         )

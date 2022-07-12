@@ -13,7 +13,7 @@ output_filename = "slurmout/slurm-%j.out"
 partition = "gpu_normal"
 time = "03:00:00"
 mem_per_cpu = "1000M" if env != "CARLVehicleRacingEnv" else "16000M"
-basecommand = 'python experiments/policy_transfer/run.py'
+basecommand = "python experiments/policy_transfer/run.py"
 # outdir = f"results/experiments/policy_transfer/{env}"
 # basecommand += f" --outdir {outdir}  "
 basecommand += " --seed $SLURM_ARRAY_TASK_ID "
@@ -35,11 +35,7 @@ sbuilder = SlurmBuilder(
     mem_per_cpu=mem_per_cpu,
     output_filename=output_filename,
     iteration_list=[
-        {
-            "name": "env",
-            "id": "env",
-            "values": [env]
-        },
-    ]
+        {"name": "env", "id": "env", "values": [env]},
+    ],
 )
 sbuilder.build_shfiles()

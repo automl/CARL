@@ -28,50 +28,75 @@ from carl.envs.dmc.dmc_tasks.utils import adapt_context
 
 
 _DEFAULT_TIME_LIMIT = 40
-_CONTROL_TIMESTEP = .04
+_CONTROL_TIMESTEP = 0.04
 STEP_LIMIT = 1000
-_JOINTS = ['tail1',
-           'tail_twist',
-           'tail2',
-           'finright_roll',
-           'finright_pitch',
-           'finleft_roll',
-           'finleft_pitch']
+_JOINTS = [
+    "tail1",
+    "tail_twist",
+    "tail2",
+    "finright_roll",
+    "finright_pitch",
+    "finleft_roll",
+    "finleft_pitch",
+]
 SUITE = containers.TaggedTasks()
 
 
 def get_model_and_assets():
     """Returns a tuple containing the model XML string and a dict of assets."""
-    return common.read_model('fish.xml'), common.ASSETS
+    return common.read_model("fish.xml"), common.ASSETS
 
 
-@SUITE.add('benchmarking')
-def upright_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None,
-                    environment_kwargs=None):
+@SUITE.add("benchmarking")
+def upright_context(
+    context={},
+    context_mask=[],
+    time_limit=_DEFAULT_TIME_LIMIT,
+    random=None,
+    environment_kwargs=None,
+):
     """Returns the Fish Upright task."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
+        xml_string = adapt_context(
+            xml_string=xml_string, context=context, context_mask=context_mask
+        )
     physics = Physics.from_xml_string(xml_string, assets)
     task = Upright(random=random)
     environment_kwargs = environment_kwargs or {}
     return control.Environment(
-        physics, task, control_timestep=_CONTROL_TIMESTEP, time_limit=time_limit,
-        **environment_kwargs)
+        physics,
+        task,
+        control_timestep=_CONTROL_TIMESTEP,
+        time_limit=time_limit,
+        **environment_kwargs,
+    )
 
 
-@SUITE.add('benchmarking')
-def swim_context(context={}, context_mask=[], time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
+@SUITE.add("benchmarking")
+def swim_context(
+    context={},
+    context_mask=[],
+    time_limit=_DEFAULT_TIME_LIMIT,
+    random=None,
+    environment_kwargs=None,
+):
     """Returns the Fish Swim task."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(xml_string=xml_string, context=context, context_mask=context_mask)
+        xml_string = adapt_context(
+            xml_string=xml_string, context=context, context_mask=context_mask
+        )
     physics = Physics.from_xml_string(xml_string, assets)
     task = Swim(random=random)
     environment_kwargs = environment_kwargs or {}
     return control.Environment(
-        physics, task, control_timestep=_CONTROL_TIMESTEP, time_limit=time_limit,
-        **environment_kwargs)
+        physics,
+        task,
+        control_timestep=_CONTROL_TIMESTEP,
+        time_limit=time_limit,
+        **environment_kwargs,
+    )
 
 
 class Physics(mujoco.Physics):
@@ -79,7 +104,7 @@ class Physics(mujoco.Physics):
 
     def upright(self):
         """Returns projection from z-axes of torso to the z-axes of worldbody."""
-        return self.named.data.xmat['torso', 'zz']
+        return self.named.data.xmat["torso", "zz"]
 
     def torso_velocity(self):
         """Returns velocities and angular velocities of the torso."""
@@ -96,8 +121,8 @@ class Physics(mujoco.Physics):
     def mouth_to_target(self):
         """Returns a vector, from mouth to target in local coordinate of mouth."""
         data = self.named.data
-        mouth_to_target_global = data.geom_xpos['target'] - data.geom_xpos['mouth']
-        return mouth_to_target_global.dot(data.geom_xmat['mouth'].reshape(3, 3))
+        mouth_to_target_global = data.geom_xpos["target"] - data.geom_xpos["mouth"]
+        return mouth_to_target_global.dot(data.geom_xmat["mouth"].reshape(3, 3))
 
 
 class Upright(base.Task):
@@ -115,19 +140,19 @@ class Upright(base.Task):
     def initialize_episode(self, physics):
         """Randomizes the tail and fin angles and the orientation of the Fish."""
         quat = self.random.randn(4)
-        physics.named.data.qpos['root'][3:7] = quat / np.linalg.norm(quat)
+        physics.named.data.qpos["root"][3:7] = quat / np.linalg.norm(quat)
         for joint in _JOINTS:
-            physics.named.data.qpos[joint] = self.random.uniform(-.2, .2)
+            physics.named.data.qpos[joint] = self.random.uniform(-0.2, 0.2)
         # Hide the target. It's irrelevant for this task.
-        physics.named.model.geom_rgba['target', 3] = 0
+        physics.named.model.geom_rgba["target", 3] = 0
         super().initialize_episode(physics)
 
     def get_observation(self, physics):
         """Returns an observation of joint angles, velocities and uprightness."""
         obs = collections.OrderedDict()
-        obs['joint_angles'] = physics.joint_angles()
-        obs['upright'] = physics.upright()
-        obs['velocity'] = physics.velocity()
+        obs["joint_angles"] = physics.joint_angles()
+        obs["upright"] = physics.upright()
+        obs["velocity"] = physics.velocity()
         return obs
 
     def get_reward(self, physics):
@@ -151,28 +176,31 @@ class Swim(base.Task):
         """Sets the state of the environment at the start of each episode."""
 
         quat = self.random.randn(4)
-        physics.named.data.qpos['root'][3:7] = quat / np.linalg.norm(quat)
+        physics.named.data.qpos["root"][3:7] = quat / np.linalg.norm(quat)
         for joint in _JOINTS:
-            physics.named.data.qpos[joint] = self.random.uniform(-.2, .2)
+            physics.named.data.qpos[joint] = self.random.uniform(-0.2, 0.2)
         # Randomize target position.
-        physics.named.model.geom_pos['target', 'x'] = self.random.uniform(-.4, .4)
-        physics.named.model.geom_pos['target', 'y'] = self.random.uniform(-.4, .4)
-        physics.named.model.geom_pos['target', 'z'] = self.random.uniform(.1, .3)
+        physics.named.model.geom_pos["target", "x"] = self.random.uniform(-0.4, 0.4)
+        physics.named.model.geom_pos["target", "y"] = self.random.uniform(-0.4, 0.4)
+        physics.named.model.geom_pos["target", "z"] = self.random.uniform(0.1, 0.3)
         super().initialize_episode(physics)
 
     def get_observation(self, physics):
         """Returns an observation of joints, target direction and velocities."""
         obs = collections.OrderedDict()
-        obs['joint_angles'] = physics.joint_angles()
-        obs['upright'] = physics.upright()
-        obs['target'] = physics.mouth_to_target()
-        obs['velocity'] = physics.velocity()
+        obs["joint_angles"] = physics.joint_angles()
+        obs["upright"] = physics.upright()
+        obs["target"] = physics.mouth_to_target()
+        obs["velocity"] = physics.velocity()
         return obs
 
     def get_reward(self, physics):
         """Returns a smooth reward."""
-        radii = physics.named.model.geom_size[['mouth', 'target'], 0].sum()
-        in_target = rewards.tolerance(np.linalg.norm(physics.mouth_to_target()),
-                                      bounds=(0, radii), margin=2*radii)
+        radii = physics.named.model.geom_size[["mouth", "target"], 0].sum()
+        in_target = rewards.tolerance(
+            np.linalg.norm(physics.mouth_to_target()),
+            bounds=(0, radii),
+            margin=2 * radii,
+        )
         is_upright = 0.5 * (physics.upright() + 1)
-        return (7*in_target + is_upright) / 8
+        return (7 * in_target + is_upright) / 8

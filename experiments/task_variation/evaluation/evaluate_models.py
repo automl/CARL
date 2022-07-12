@@ -1,4 +1,5 @@
 import sys
+
 # FIXME does not run
 sys.path.append("")
 sys.path.append("../../carl/experiments")
@@ -32,7 +33,9 @@ def rollout(cfg):
         model_fnames = glob.glob(str(model_fname / "rl_model_*.zip"))
         model_fnames.sort()
     else:
-        raise NotImplementedError("evaluations.npz would be overwritten otherwise, is a todo")
+        raise NotImplementedError(
+            "evaluations.npz would be overwritten otherwise, is a todo"
+        )
         model_fnames = [model_fname]
 
     for mf in model_fnames:
@@ -44,7 +47,11 @@ def rollout(cfg):
     evaluations_instances = []
     for model_fname in model_fnames:
         model_fname = Path(model_fname)
-        exp_dir = model_fname.parent if not "rl_model" in str(model_fname) else model_fname.parent.parent
+        exp_dir = (
+            model_fname.parent
+            if not "rl_model" in str(model_fname)
+            else model_fname.parent.parent
+        )
         setup_fn = exp_dir / "trial_setup.json"
         setup = lazy_json_load(setup_fn)
         seed = setup["seed"]
@@ -74,16 +81,16 @@ def rollout(cfg):
         # Setup env
         env_kwargs = dict(
             contexts=contexts_test,
-            hide_context=setup['hide_context'],
-            scale_context_features=setup['scale_context_features'],
-            state_context_features=setup['state_context_features']
+            hide_context=setup["hide_context"],
+            scale_context_features=setup["scale_context_features"],
+            state_context_features=setup["state_context_features"],
         )
         env = get_env(
             env_name=env_name,
             n_envs=1,
             env_kwargs=env_kwargs,
             wrapper_class=None,
-            wrapper_kwargs = None,
+            wrapper_kwargs=None,
             normalize_kwargs=None,
             agent_cls=None,
             eval_seed=None,
@@ -143,7 +150,7 @@ def main(cfg: DictConfig):
     rollout(cfg=cfg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 # run with (--multirun starts it on slurm): python evaluate_models.py --multirun model_fname=path0,path1,path2,path3

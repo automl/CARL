@@ -40,9 +40,7 @@ def load_wandb_contexts(path: Union[str, Path]) -> Dict[Any, Dict[Any, Any]]:
     cols = data["columns"]
     D = data["data"]
     contexts = {
-        i: {
-            cols[j]: v for j, v in enumerate(context_values)
-        } for i, context_values in enumerate(D)
+        i: {cols[j]: v for j, v in enumerate(context_values)}
+        for i, context_values in enumerate(D)
     }
     return contexts
-

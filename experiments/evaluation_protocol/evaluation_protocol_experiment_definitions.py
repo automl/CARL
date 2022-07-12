@@ -3,7 +3,7 @@ from experiments.evaluation_protocol.evaluation_protocol import ContextFeature
 
 def get_context_features(env_name):
     if env_name == "CARLCartPoleEnv":
-        cf0 = ContextFeature("gravity", 9., 9.5, 10., 11.)
+        cf0 = ContextFeature("gravity", 9.0, 9.5, 10.0, 11.0)
         cf1 = ContextFeature("pole_length", 0.4, 0.5, 0.6, 0.8)
     else:
         raise NotImplementedError

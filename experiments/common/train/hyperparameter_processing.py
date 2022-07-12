@@ -1,7 +1,9 @@
 # Preprocessing from stable baselines zoo
 # Source: https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/utils/exp_manager.py
 from experiments.common.utils.rl_baselines3_zoo.utils.utils import get_wrapper_class
-from experiments.common.utils.rl_baselines3_zoo.utils.exp_manager import ExperimentManager
+from experiments.common.utils.rl_baselines3_zoo.utils.exp_manager import (
+    ExperimentManager,
+)
 from typing import Any, Dict
 
 
@@ -16,7 +18,9 @@ def preprocess_hyperparams(hyperparams: Dict[str, Any]):
     # Pre-process policy/buffer keyword arguments
     # Convert to python object if needed
     for kwargs_key in {"policy_kwargs", "replay_buffer_class", "replay_buffer_kwargs"}:
-        if kwargs_key in hyperparams.keys() and isinstance(hyperparams[kwargs_key], str):
+        if kwargs_key in hyperparams.keys() and isinstance(
+            hyperparams[kwargs_key], str
+        ):
             hyperparams[kwargs_key] = eval(hyperparams[kwargs_key])
 
     # Delete keys so the dict can be pass to the model constructor
