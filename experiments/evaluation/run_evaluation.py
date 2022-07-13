@@ -9,14 +9,14 @@ from subprocess import Popen, DEVNULL
 from rich import print
 import glob
 import regex as re
-from typing import List
+from typing import List, Union
 
 
 def glob_re(pattern, strings):
     return filter(re.compile(pattern).match, strings)
 
 
-def find_multirun_paths(result_dir: str) -> List[str]:
+def find_multirun_paths(result_dir: Union[str, List[str]]) -> List[str]:
     """
     Find all folders with a number as name
 
@@ -24,8 +24,8 @@ def find_multirun_paths(result_dir: str) -> List[str]:
 
     Parameters
     ----------
-    result_dir : str
-        Path to hydra result dir containing multirun folders.
+    result_dir : Union[str, List[str]]
+        Path(s) to hydra result dir containing multirun folders.
 
     Returns
     -------
@@ -33,9 +33,15 @@ def find_multirun_paths(result_dir: str) -> List[str]:
         Paths to individual runs
 
     """
-    filenames = list(glob_re(r"\d\d*", os.listdir(result_dir)))
-    filenames.sort(key=float)
-    result_paths = [f"{os.path.join(result_dir, f)}" for f in filenames]
+    if type(result_dir) != list:
+        result_dir = [result_dir]
+    result_paths = []
+    for rdir in result_dir:
+        filenames = list(glob_re(r"\d\d*", os.listdir(rdir)))
+        filenames.sort(key=float)
+        rpaths = [f"{os.path.join(rdir, f)}" for f in filenames]
+        result_paths.extend(rpaths)
+
     return result_paths
 
 
