@@ -116,4 +116,17 @@ python experiments/benchmarking/training.py '+experiments=landing_in_space' 'wan
 
 # Training
 python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard' -m  
+
+# Result dirs
+# /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/
+# /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/10-27-33_benchmark_train/
+# /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-11/17-45-22_benchmark_train/
+
+# Evaluation Run
+python experiments/evaluation/run_evaluation.py '+experiments=landing_in_space' --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/' '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/10-27-33_benchmark_train/' '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-11/17-45-22_benchmark_train/' -m
+
+# Evaluation Debug
+python experiments/evaluation/evaluate.py '+experiments=landing_in_space' results_path='/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/0' 'wandb.debug=True'
+
 ```
+

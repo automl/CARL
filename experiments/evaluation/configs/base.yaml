@@ -22,3 +22,8 @@ n_eval_episodes: 5  # will be overwritten if n_eval_episodes_per_context is not 
 contexts_path: null
 sample_contexts: false
 eval_on_train_contexts: false
+
+kirk_evaluation_protocol:
+  follow: false
+landing_in_space:
+  follow: false

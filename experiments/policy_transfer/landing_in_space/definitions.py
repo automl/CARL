@@ -85,3 +85,8 @@ def sample_gravities_uniform(
     gravities = np.concatenate(G)
     gravities[gravities > 0] = 0
     return gravities
+
+
+def create_test_gravity_contexts() -> Contexts:
+    contexts = {planet_name: {"GRAVITY_Y": gravity} for planet_name, gravity in gravities.items()}
+    return contexts
