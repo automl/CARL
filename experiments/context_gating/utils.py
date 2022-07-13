@@ -47,6 +47,7 @@ def log_wandb(train_monitor_env: coax.wrappers.TrainMonitor):
         "train/avg_reward": train_monitor_env.avg_r,
         "train/return": train_monitor_env.G,
         "train/steps": train_monitor_env.t,
+        "train/global_step": train_monitor_env.T,
         "train/avg_step_duration_ms": train_monitor_env.dt_ms,
     }
 
