@@ -118,7 +118,8 @@ python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_pr
 python experiments/benchmarking/training.py '+experiments=landing_in_space' 'wandb.debug=true' 'eval_episodes=5'
 
 # Training
-python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard' -m  
+python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm' -m
+python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 'seed=range(1,11)' '+context_visibility=visible_all,visible_changing' -m  
 
 # Result dirs
 # /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/
