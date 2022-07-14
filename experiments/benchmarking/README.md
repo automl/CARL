@@ -46,16 +46,19 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=p
 - [ ] SAC hidden, SAC cGate on walker 0.1 for all context features + all context features at once, 1M
 - [ ] SAC hidden, SAC cGate on quadruped 0.1 for all context features + whichever combination is manageable, 1M
 - [ ] SAC hidden, SAC cGate on fish 0.1 for all context features + all context features at once, 500k
-    ```bash
-    # Full
-    python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
-    # Half seeds
-    python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
-    # Half seeds, hidden + cGate Hadamard
-    python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
-    # Half seeds + cpu
-    python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpu' -m
-    ```
+```bash
+# Full
+python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+# Half seeds
+python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+# Half seeds, hidden + cGate Hadamard
+python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+# Half seeds + cpu
+python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpu' -m
+
+# Half seeds + cpu +  only hidden + only [] + learning rates + network widths
+python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=range(1,6)' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' 'context_sampler.sigma_rel=0.1' '+slurm=cpu' 'learning_rate=0.001,0.02,0.005'  'network.width=32,64' 'hydra.launcher.mem_gb=10' -m
+ ```
 - [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length), 100k
 - [ ] SAC hidden, SAC cGate Mario with only one context dist, 1M
 - [ ] SAC hidden, SAC cGate brax HalfCheetah, 1M
