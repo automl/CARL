@@ -64,6 +64,12 @@ python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=r
 - [ ] SAC hidden, SAC cGate brax HalfCheetah, 1M
 - [ ] LSTM baseline for whatever makes sense
 
+- MountainCar +  C51, 0.1, 0.25, 0.5, all visibilities, 100k steps, cfs: goal_velocity,force,gravity
+```bash
+python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[goal_velocity,force,gravity],[goal_velocity],[force],[gravity]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' -m
+```
+
+
 
 ## Experiment Preparations
 Find HPs for
@@ -125,9 +131,11 @@ python experiments/benchmarking/run_training.py '+experiments=landing_in_space' 
 # /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/
 # /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/10-27-33_benchmark_train/
 # /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-11/17-45-22_benchmark_train/
+# concat all
+# /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-14/16-21-59_benchmark_train
 
 # Evaluation Run
-python experiments/evaluation/run_evaluation.py '+experiments=landing_in_space' --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/' '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/10-27-33_benchmark_train/' '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-11/17-45-22_benchmark_train/' -m
+python experiments/evaluation/run_evaluation.py '+experiments=landing_in_space' --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-14/16-21-59_benchmark_train' -m
 
 # Evaluation Debug
 python experiments/evaluation/evaluate.py '+experiments=landing_in_space' results_path='/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-12/12-45-57_benchmark_train/0' 'wandb.debug=True'
