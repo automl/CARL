@@ -66,7 +66,11 @@ python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=r
 
 - MountainCar +  C51, 0.1, 0.25, 0.5, all visibilities, 100k steps, cfs: goal_velocity,force,gravity
 ```bash
+# Train
 python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[goal_velocity,force,gravity],[goal_velocity],[force],[gravity]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' -m
+
+# Debug
+python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' max_num_frames=150_000 'seed=1' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' 'context_sampler.sigma_rel=0.1' 'wandb.debug=True'
 ```
 
 
