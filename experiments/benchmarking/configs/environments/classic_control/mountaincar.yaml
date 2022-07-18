@@ -3,7 +3,7 @@ defaults:
   - ../../algorithm/c51
 
 env: CARLMountainCarEnv
-max_num_frames: 100_000
+max_num_frames: 200_000
 
 pi_temperature: 0.1
 q_min_value: -100
