@@ -10,6 +10,8 @@ q_min_value: -100
 q_max_value: 0
 gamma: 0.99
 
+learning_rate: 0.001
+
 network:
-  width: 32
+  width: 64
   num_atoms: 51
