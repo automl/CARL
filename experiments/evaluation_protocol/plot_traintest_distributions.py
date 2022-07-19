@@ -12,6 +12,45 @@ from experiments.evaluation_protocol.evaluation_protocol import (
 )
 
 
+def get_legend_elements():
+    colors = sns.color_palette("colorblind")
+    color_T = colors[0]
+    color_I = colors[1]
+    color_ES = colors[2]
+    color_EB = colors[3]
+    color_IC = colors[4]
+    ec_test = "black"
+    legend_elements = [
+        Line2D(
+            [0],
+            [0],
+            label="Train Contexts",
+            marker="o",
+            color="w",
+            markerfacecolor=color_T,
+            markeredgecolor=color_T,
+            markersize=8,
+            linewidth=0,
+        ),
+        Line2D(
+            [0],
+            [0],
+            label="Test Contexts",
+            marker="o",
+            color="w",
+            markerfacecolor="w",
+            markeredgecolor=ec_test,
+            markersize=8,
+            linewidth=0,
+        ),
+        Patch(label="Interpolation", facecolor=color_I),
+        Patch(label="Combinatorial Interpolation", facecolor=color_IC),
+        Patch(label="Extrapolation (Single Factor)", facecolor=color_ES),
+        Patch(label="Extrapolation (Both Factors)", facecolor=color_EB),
+    ]
+    return legend_elements
+
+
 def plot_evaluation_protocol(
     context_features, seed, n_contexts, axes=None, set_aspect: bool = True
 ):
@@ -214,34 +253,7 @@ def plot_evaluation_protocol(
         ax.set_yticks(yticks)
 
     # Legend
-    legend_elements = [
-        Line2D(
-            [0],
-            [0],
-            label="Train Contexts",
-            marker="o",
-            color="w",
-            markerfacecolor=color_T,
-            markeredgecolor=color_T,
-            markersize=8,
-            linewidth=0,
-        ),
-        Line2D(
-            [0],
-            [0],
-            label="Test Contexts",
-            marker="o",
-            color="w",
-            markerfacecolor="w",
-            markeredgecolor=ec_test,
-            markersize=8,
-            linewidth=0,
-        ),
-        Patch(label="Interpolation", facecolor=color_I),
-        Patch(label="Combinatorial Interpolation", facecolor=color_IC),
-        Patch(label="Extrapolation (Single Factor)", facecolor=color_ES),
-        Patch(label="Extrapolation (Both Factors)", facecolor=color_EB),
-    ]
+    legend_elements = get_legend_elements()
 
     if is_standalone:
         ax = axes[-1]
