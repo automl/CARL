@@ -1,0 +1,39 @@
+# @package _global_
+defaults:
+  - ../slurm/cpushort
+  - override /hydra/sweeper: SMAC
+  - override /hydra/launcher: submitit_smac_slurm
+
+wandb:
+  job_type: hpo
+
+hydra:
+  launcher:
+    cpus_per_task: ${hydra.sweeper.n_jobs}
+  sweeper:
+    n_jobs: 16
+    seed: ${seed}
+    n_trials: 160
+    smac_class: smac.facade.smac_mf_facade.SMAC4MF
+    smac_kwargs:
+      scenario:
+        run_obj: quality
+        deterministic: true
+      intensifier: ${get_class:smac.intensification.hyperband.Hyperband}
+      intensifier_kwargs:
+        initial_budget: 1
+        max_budget: 1
+    search_space:
+      hyperparameters:
+        learning_rate:
+          type: uniform_float
+          lower: 1e-5
+          upper: 1e-2
+          default: 0.001
+          log: true
+        gamma:
+          type: uniform_float
+          lower: 0.8
+          upper: 0.9999
+          log: true
+          default_value: 0.99

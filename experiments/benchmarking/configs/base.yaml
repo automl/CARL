@@ -1,6 +1,6 @@
 defaults:
-  - slurm/gpu
   - _self_
+  - slurm/gpu
   - algorithm/sac
   - override hydra/launcher: submitit_slurm
   - override hydra/job_logging: colorlog
