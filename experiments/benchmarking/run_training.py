@@ -7,6 +7,7 @@ import pathlib, shutil
 from datetime import datetime
 from subprocess import Popen, DEVNULL
 from rich import print
+from tqdm import tqdm
 
 
 def make_code_snap(experiment, slurm_dir="exp_sweep"):
@@ -24,6 +25,7 @@ def make_code_snap(experiment, slurm_dir="exp_sweep"):
         ignore_patterns = [
             "*CARL/tmp*",
             "*exp_sweep*",
+            "*results*",
         ]
         shutil.copytree(
             search_dir,
@@ -49,7 +51,8 @@ def make_code_snap(experiment, slurm_dir="exp_sweep"):
 
     # Copy repository / environment infos
     rootfiles = src_dir.glob("*")
-    for f in rootfiles:
+    print("Make code snap")
+    for f in tqdm(rootfiles):
         if f.is_file() and not str(f.name).startswith("."):
             shutil.copyfile(f, snap_dir / "code" / f.name)
 
