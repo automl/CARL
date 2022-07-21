@@ -3,14 +3,17 @@ from pathlib import Path
 
 import coax
 from experiments.context_gating.networks.sac import pi_func
+from experiments.evaluation.loading import load_policy
 
 
 def make_sac_policy(cfg, env, path: Optional[Union[str, Path]] = None):
-    func_pi = pi_func(cfg, env)
-    # main function approximators
-    pi = coax.Policy(func_pi, env, random_seed=cfg.seed)
+    if path is None:
+        func_pi = pi_func(cfg, env)
+        # main function approximators
+        pi = coax.Policy(func_pi, env, random_seed=cfg.seed)
+    else:
+        pi = load_policy(cfg=cfg, weights_path=path)
 
-    # TODO load from path
     return pi
 
 

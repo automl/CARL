@@ -39,6 +39,11 @@ Inputs:
 - record state distributions
 - record cumulative rewards
 - n_episodes, n_seeds
+
+Run
+```bash
+python experiments/attack_on_agents/run_perturbance_optimization.py 'agent_checkpoint_path=/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-10/11-35-33_benchmark_train/336/wandb/latest-run/files/func_dict.pkl.lz4'
+```
     
 ## analyze_perturbance
 - visualize state distributions per perturbation
