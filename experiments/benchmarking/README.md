@@ -73,7 +73,7 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=m
 python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' max_num_frames=150_000 'seed=1' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' 'context_sampler.sigma_rel=0.1' 'wandb.debug=True'
 
 # HPO
-python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' max_num_frames=1_000 'seed=456' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' '+hpo=mountaincar' 'wandb.debug=True' -m
+python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' max_num_frames=1_000 'seed=456' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' '+hpo=mountaincar' 'wandb.debug=True' 'hydra.launcher=submitit_smac_local' -m
 ```
 
 
