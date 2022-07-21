@@ -35,7 +35,12 @@ Relative standard deviation
 ## Experiment Plan
 - [ ] SAC hidden, visible full, visible change only, SAC cGate, on CARLPendulum with 0.1, 0.25, 0.5 for all single context features + all context features at once, 100k
 ```bash
+# Train
 python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' -m
+
+
+# Compare n_samples
+python experiments/benchmarking/run_training.py 'experiment=benchmarking_n_samples' '+environments/classic_control=pendulum' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed]' 'context_sampler.n_samples=100,1000,10000' 'context_sampler.sigma_rel=0.1' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
 ```
 280 combinations
 
@@ -44,6 +49,13 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=p
 'environments/box2d=lunarlander' '+context_visibility=hidden,cgate_hadamard'
 ```
 - [ ] SAC hidden, SAC cGate on walker 0.1 for all context features + all context features at once, 1M
+```bash
+# Full
+python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+
+# Only 0.1
+python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1' '+slurm=cpu' -m
+```
 - [ ] SAC hidden, SAC cGate on quadruped 0.1 for all context features + whichever combination is manageable, 1M
 - [ ] SAC hidden, SAC cGate on fish 0.1 for all context features + all context features at once, 500k
 ```bash
