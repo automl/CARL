@@ -22,7 +22,7 @@ from smac.facade.smac_bb_facade import SMAC4BB
 from smac.optimizer.acquisition import EI
 
 import carl.envs
-from experiments.common.train.utils import make_carl_env
+from experiments.common.utils.env_instantiation import make_carl_env
 from experiments.common.utils.search_space_encoding import search_space_to_config_space
 from experiments.attack_on_agents.agent_creation import make_agent
 

@@ -1,22 +1,10 @@
-# import os
-# from pathlib import Path
-# import random
-# import sys
 from functools import partial
-from typing import Optional, cast, Dict, Any, Union
+from typing import Optional, Dict
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv
 
-# import coax
-import gym
-import hydra
-
-# import numpy as onp
-# import wandb
-from omegaconf import DictConfig, OmegaConf
-
-
-import carl.envs
+from omegaconf import DictConfig
+from common.utils.env_instantiation import make_carl_env
 
 
 def make_env(
@@ -32,20 +20,4 @@ def make_env(
         env = make_vec_env(EnvCls, n_envs=num_envs, vec_env_cls=vec_env_cls)
     else:
         env = make_carl_env(cfg)
-    return env
-
-
-def make_carl_env(
-    cfg: DictConfig, contexts: Dict[str, Dict] = None, log_wandb: bool = False
-):
-    env = getattr(carl.envs, cfg.env)(contexts=contexts, **cfg.carl.env_kwargs)
-    env.seed(cfg.seed)
-    # env.spec = gym.envs.registration.EnvSpec(cfg.env + "-v0")
-    if "env_wrappers" in cfg:
-        for wrapper in cfg.env_wrappers:
-            env = hydra.utils.instantiate(wrapper, env)
-
-    # env = coax.wrappers.TrainMonitor(
-    #     env, name=name or cfg.algo, tensorboard_dir=tensorboard_dir)
-
     return env
