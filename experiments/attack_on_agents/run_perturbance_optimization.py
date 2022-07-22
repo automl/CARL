@@ -1,9 +1,11 @@
 import os
 import sys
 
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(root_dir)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 print(sys.path)
+print(os.getcwd())
 import numpy as np
 from functools import partial
 import importlib
@@ -13,8 +15,7 @@ import time
 from typing import Dict, Any, Optional
 
 import hydra
-from omegaconf import DictConfig
-import coax
+from omegaconf import DictConfig, OmegaConf
 
 from smac.scenario.scenario import Scenario
 from smac.configspace import ConfigurationSpace, Configuration, UniformFloatHyperparameter
@@ -22,9 +23,9 @@ from smac.facade.smac_bb_facade import SMAC4BB
 from smac.optimizer.acquisition import EI
 
 import carl.envs
+from experiments.attack_on_agents.agent_creation import make_agent
 from experiments.common.utils.env_instantiation import make_carl_env
 from experiments.common.utils.search_space_encoding import search_space_to_config_space
-from experiments.attack_on_agents.agent_creation import make_agent
 
 
 def evaluate(pi, env, num_episodes):
@@ -128,7 +129,7 @@ def create_tae_runner(cfg: DictConfig) -> callable:
 
 @hydra.main("./configs", "base")
 def main(cfg: DictConfig):
-    print(cfg)
+    print(OmegaConf.to_container(cfg, resolve=True))
     configuration_space = search_space_to_config_space(search_space=cfg.context_feature_search_space)
     configuration_space.seed(cfg.seed)
     print(configuration_space)
