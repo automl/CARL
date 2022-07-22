@@ -47,7 +47,7 @@ training:
 
 carl:
   env_kwargs:
-    hide_context: false
+    hide_context: true
     dict_observation_space: ${carl.use_cgate}
     scale_context_features: "no" # by_mean, by_default
     state_context_features: null
