@@ -23,6 +23,8 @@ from smac.facade.smac_bb_facade import SMAC4BB
 from smac.optimizer.acquisition import EI
 
 import carl.envs
+import experiments
+import experiments.attack_on_agents
 from experiments.attack_on_agents.agent_creation import make_agent
 from experiments.common.utils.env_instantiation import make_carl_env
 from experiments.common.utils.search_space_encoding import search_space_to_config_space
@@ -31,6 +33,7 @@ from experiments.common.utils.search_space_encoding import search_space_to_confi
 def evaluate(pi, env, num_episodes):
     returns = []
     transitions = []
+    episodes = []
     for i in range(num_episodes):
         ret = 0
         s = env.reset()
@@ -45,7 +48,8 @@ def evaluate(pi, env, num_episodes):
                 break
             s = s_next
         returns.append(ret)
-    return returns, transitions
+        episodes.append(i)
+    return returns, transitions, episodes
 
 
 def context_features_to_configuration_space(env_name: str) -> ConfigurationSpace:
@@ -100,7 +104,7 @@ def eval_agent(config_smac: Configuration, cfg: DictConfig, file_id: Optional[st
     # Instantiate agent
     policy = make_agent(cfg=cfg, env=eval_env)
 
-    returns, transitions = evaluate(policy, eval_env, cfg.n_eval_episodes)
+    returns, transitions, episodes = evaluate(policy, eval_env, cfg.n_eval_episodes)
 
     mean_return = float(np.mean(returns))
 
@@ -108,7 +112,8 @@ def eval_agent(config_smac: Configuration, cfg: DictConfig, file_id: Optional[st
         "context": context,
         "returns": returns,
         "transitions": transitions,
-        "performance": mean_return
+        "performance": mean_return,
+        "episodes": episodes,
     })
     if file_id is None:
         file_id = time.time_ns()
