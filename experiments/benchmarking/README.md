@@ -37,8 +37,14 @@ Relative standard deviation
 ```bash
 # Train
 python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' -m
+```
+seeds [1-5]
+`/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-08-07/12-00-34_benchmark_train`
+seeds [6-10]
+`/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-08-07/12-02-27_benchmark_train`
 
 
+```bash
 # Compare n_samples
 python experiments/benchmarking/run_training.py 'experiment=benchmarking_n_samples' '+environments/classic_control=pendulum' 'seed=range(1,6)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed]' 'context_sampler.n_samples=100,1000,10000' 'context_sampler.sigma_rel=0.1' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
 ```
@@ -86,6 +92,17 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=m
 
 # HPO
 python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' max_num_frames=1_000 'seed=456' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' '+hpo=mountaincar' 'wandb.debug=True' 'hydra.launcher=submitit_smac_local' -m
+```
+
+Acrobot
+```bash
+# Train
+python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[link_length_1,link_length_2,link_mass_1,link_mass_2],[link_length_1],[link_length_2],[link_mass_1],[link_mass_2]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
+```
+
+```bash
+# Debug
+ python experiments/benchmarking/run_training.py max_num_frames=100000 '+environments/classic_control=acrobot' '+context_visibility=hidden' 'wandb.debug=true' '+algorithm=c51' 'eval_episodes=5' 
 ```
 
 
