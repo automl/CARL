@@ -44,7 +44,10 @@ class ActionLimitingWrapper(gym.Wrapper):
     def __init__(self, env, lower, upper):
         super().__init__(env)
         action_dim = self.env.action_space.low.shape
-        self.action_space = gym.Spaces.Box(lower=np.ones(action_dim)*lower, upper=np.ones(action_dim)*upper)
+        self.action_space = gym.spaces.Box(low=onp.ones(action_dim)*lower, high=onp.ones(action_dim)*upper)
+    
+    def __getattr__(self, name):
+        return getattr(self.env, name)
 
 
 class StateNormalizingWrapper(gym.Wrapper):
@@ -52,17 +55,21 @@ class StateNormalizingWrapper(gym.Wrapper):
         super().__init__(env)
 
     def normalize_state(self, state):
-        mean = np.mean(state)
-        var = np.var(state)
-        return (state - mean)/var
+        mean = onp.mean(state)
+        var = onp.var(state)
+        normalized = (state - mean)/var
+        return normalized
 
     def reset(self):
-        state = env.reset()
+        state = self.env.reset()
         return self.normalize_state(state)
 
     def step(self, action):
-        s, a, r, d = env.step(action)
+        s, a, r, d = self.env.step(action)
         return self.normalize_state(s), a, r, d
+
+    def __getattr__(self, name):
+        return getattr(self.env, name)
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -232,9 +239,9 @@ def train(cfg: DictConfig):
 
     # Normalization and action scaling for dmc envs
     if cfg.env.startswith("CARLDmc"):
-        env = ActionLimitingWrapper(env, lower=-1 + 1e6, upper=1 - 1e6)
+        env = ActionLimitingWrapper(env, lower=-1 + 1e-6, upper=1 - 1e-6)
         env = StateNormalizingWrapper(env)
-        eval_env = ActionLimitingWrapper(eval_env, lower=-1 + 1e6, upper=1 - 1e6)
+        eval_env = ActionLimitingWrapper(eval_env, lower=-1 + 1e-6, upper=1 - 1e-6)
         eval_env = StateNormalizingWrapper(env)
 
     # ----------------------------------------------------------------------
