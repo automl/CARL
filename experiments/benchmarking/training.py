@@ -3,7 +3,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import os
+import gym
 from functools import partial
 from pathlib import Path
 import string
@@ -38,6 +38,31 @@ from experiments.evaluation_protocol.evaluation_protocol import EvaluationProtoc
 
 
 base_dir = os.getcwd()
+
+
+class ActionLimitingWrapper(gym.Wrapper):
+    def __init__(self, env, lower, upper):
+        super().__init__(env)
+        action_dim = self.env.action_space.low.shape
+        self.action_space = gym.Spaces.Box(lower=np.ones(action_dim)*lower, upper=np.ones(action_dim)*upper)
+
+
+class StateNormalizingWrapper(gym.Wrapper):
+    def __init__(self, env):
+        super().__init__(env)
+
+    def normalize_state(self, state):
+        mean = np.mean(state)
+        var = np.var(state)
+        return (state - mean)/var
+
+    def reset(self):
+        state = env.reset()
+        return self.normalize_state(state)
+
+    def step(self, action):
+        s, a, r, d = env.step(action)
+        return self.normalize_state(s), a, r, d
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -205,6 +230,13 @@ def train(cfg: DictConfig):
         context_state_indices = None
     cfg.context_state_indices = context_state_indices
 
+    # Normalization and action scaling for dmc envs
+    if cfg.env.startswith("CARLDmc"):
+        env = ActionLimitingWrapper(env, lower=-1 + 1e6, upper=1 - 1e6)
+        env = StateNormalizingWrapper(env)
+        eval_env = ActionLimitingWrapper(eval_env, lower=-1 + 1e6, upper=1 - 1e6)
+        eval_env = StateNormalizingWrapper(env)
+
     # ----------------------------------------------------------------------
     # Log experiment
     # ----------------------------------------------------------------------
@@ -226,6 +258,7 @@ def train(cfg: DictConfig):
         algorithm = c51
     else:
         raise ValueError(f"Unknown algorithm {cfg.algorithm}")
+
     avg_return = algorithm(cfg, env, eval_env)
 
     # ----------------------------------------------------------------------
