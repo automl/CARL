@@ -80,6 +80,13 @@ python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=r
 - [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length), 100k
 - [ ] SAC hidden, SAC cGate Mario with only one context dist, 1M
 - [ ] SAC hidden, SAC cGate brax HalfCheetah, 1M
+
+### Ant
+SAC
+```bash
+python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,friction,joint_stiffness],[gravity],[friction],[joint_stiffness]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+```
+
 - [ ] LSTM baseline for whatever makes sense
 
 - MountainCar +  C51, 0.1, 0.25, 0.5, all visibilities, 100k steps, cfs: goal_velocity,force,gravity
