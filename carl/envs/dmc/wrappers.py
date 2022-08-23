@@ -10,6 +10,24 @@ ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
 
 
+def get_shape(shape: tuple) -> tuple:
+    """
+    Get shape of array or scalar.
+
+    If scalar (shape = ()), return (1,).
+
+    Parameters
+    ----------
+    shape: tuple
+        Shape of array, can be empty tuple
+
+    Returns
+    -------
+    Shape: Same as before if not empty, else (1,)
+    """
+    return shape if shape else (1,)
+
+
 class MujocoToGymWrapper(gym.Env):
     def __init__(self, env: dm_env) -> None:
         # TODO set seeds
@@ -27,7 +45,7 @@ class MujocoToGymWrapper(gym.Env):
         # }
         # self.observation_space = spaces.Dict(spaces=obs_spaces)
         # TODO add support for Dict Spaces in CARLEnv (later)
-        shapes = [int(np.sum([v.shape for v in obs_spec.values()]))]
+        shapes = [int(np.sum([get_shape(v.shape) for v in obs_spec.values()]))]
         lows = np.array([-np.inf] * shapes[0])
         highs = np.array([np.inf] * shapes[0])
         dtype = np.unique([[v.dtype for v in obs_spec.values()]])[0]
