@@ -79,6 +79,7 @@ def setup_model(
         hide_context=hide_context,
     )
     env = EnvCls()
+    env = coax.wrappers.TrainMonitor(env, name="sac")
     eval_env = EnvCls()
 
     # This is intended for dmc and might cause issues with other envs!
@@ -152,7 +153,7 @@ def setup_model(
         checkpoint = os.path.join(checkpoint_dir, "checkpoint")
         pi, q1, q2, q1_targ, q2_targ, qlearning1, qlearning2, soft_pg = coax.utils.load(checkpoint)
 
-    return pi, buffer, qlearning1, qlearning2, soft_pg, q1_targ, q2_targ, q1, env, eval_env
+    return pi, buffer, qlearning1, qlearning2, soft_pg, q1_targ, q2_targ, q1, q2, tracer, env, eval_env
 
 
 def eval_model(pi, eval_env, config):
@@ -175,7 +176,7 @@ def train_sac(
     config,
     checkpoint_dir=None,
 ):
-    pi, buffer, qlearning1, qlearning2, soft_pg, q1_targ, q2_targ, q1, env, eval_env = setup_model(
+    pi, buffer, qlearning1, qlearning2, soft_pg, q1_targ, q2_targ, q1, q2, tracer, env, eval_env = setup_model(
         env=env,
         cfg=config,
         checkpoint_dir=checkpoint_dir,
@@ -199,7 +200,7 @@ def train_sac(
                 buffer.add(tracer.pop())
 
             # learn
-            if len(buffer) >= cfg["warmup_num_frames"]:
+            if len(buffer) >= config["warmup_num_frames"]:
                 transition_batch = buffer.sample(batch_size=config["batch_size"])
 
                 metrics = {}
@@ -210,8 +211,8 @@ def train_sac(
 
                 # delayed policy updates
                 if (
-                        env.T >= config["pi_warmup_num_frames"]
-                        and env.T % config["pi_update_freq"] == 0
+                        et >= config["pi_warmup_num_frames"]
+                        and et % config["pi_update_freq"] == 0
                 ):
                     metrics.update(soft_pg.update(transition_batch))
 
@@ -225,7 +226,7 @@ def train_sac(
                 break
 
             s = s_next
-            if et%config["eval_interval"]==0:
+            if et%config["evaL_interval"]==0:
                 if checkpoint_dir:
                     path = os.path.join(checkpoint_dir, "checkpoint")
                     agent = (pi, q1, q2, q1_targ, q2_targ, qlearning1, qlearning2, soft_pg)
