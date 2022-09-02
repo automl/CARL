@@ -3,17 +3,22 @@
 env: CARLDmcWalkerEnv
 max_num_frames: 1_000_000
 
-batch_size: 256
 replay_capacity: 1000000
 eval_episodes: 10
 eval_freq: 50000
 pi_log_sigma: -1.0
 gamma: 0.99
-learning_rate: 0.003
 q_targ_tau: 0.005
 pi_targ_tau: 0.005
 
-tanh_policy: true
+learning_rate: 1.0e-4
+batch_size: 256
+alpha: 0.1
+
+network:
+  width: 1024
+
+pi_update_freq: 2
 
 action_noise:
   type: null

@@ -38,7 +38,7 @@ def pi_func(cfg, env):
                 (
                     hk.Linear(width),
                     jax.nn.relu,
-                    hk.Linear(onp.prod(env.action_space.shape) * 2, w_init=jnp.zeros),
+                    hk.Linear(onp.prod(env.action_space.shape) * 2),
                     hk.Reshape((*env.action_space.shape, 2)),
                 )
             )
@@ -49,18 +49,18 @@ def pi_func(cfg, env):
             state_seq = hk.Sequential(
                 (
                     hk.Linear(cfg.network.width),
-                    jax.nn.relu,
+                    hk.LayerNorm(-1, create_scale=True, create_offset=True),
+                    jax.nn.tanh,
                     hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(cfg.network.width),
-                    jax.nn.relu,
-                    hk.Linear(onp.prod(env.action_space.shape) * 2, w_init=jnp.zeros),
+                    hk.Linear(onp.prod(env.action_space.shape) * 2),
                     hk.Reshape((*env.action_space.shape, 2)),
                 )
             )
             x = state_seq(S)
 
         mu, logvar = x[..., 0], x[..., 1]
+        
         return {"mu": mu, "logvar": logvar}
 
     return pi
@@ -97,7 +97,7 @@ def q_func(cfg, env):
                 (
                     hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(1, w_init=jnp.zeros),
+                    hk.Linear(1),
                     jnp.ravel,
                 )
             )
@@ -108,12 +108,11 @@ def q_func(cfg, env):
             state_seq = hk.Sequential(
                 (
                     hk.Linear(cfg.network.width),
-                    jax.nn.relu,
+                    hk.LayerNorm(-1, create_scale=True, create_offset=True),
+                    jax.nn.tanh,
                     hk.Linear(cfg.network.width),
                     jax.nn.relu,
-                    hk.Linear(cfg.network.width),
-                    jax.nn.relu,
-                    hk.Linear(1, w_init=jnp.zeros),
+                    hk.Linear(1),
                     jnp.ravel,
                 )
             )
