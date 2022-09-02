@@ -5,7 +5,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 
 import gym
 from functools import partial
-from pathlib import Path
 import string
 import random
 import carl.envs as envs
@@ -14,7 +13,6 @@ import hydra
 import jax
 import numpy as onp
 import wandb
-import torch as th
 from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 from rich import print
