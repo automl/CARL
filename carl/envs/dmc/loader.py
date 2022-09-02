@@ -9,8 +9,10 @@ from carl.envs.dmc.dmc_tasks import (  # type: ignore [import]  # noqa: F401
     fish,
     quadruped,
     walker,
+    finger
 )
 from carl.utils.types import Context
+
 
 _DOMAINS = {
     name: module

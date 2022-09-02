@@ -1,3 +1,6 @@
+# 0.2.1
+- Add Finger (DMC) env
+
 # 0.2.0
 - Integrate dm control environments (#55)
 - Add context masks to only append those to the state (#54)
