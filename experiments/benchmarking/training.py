@@ -1,8 +1,13 @@
 import os
 import sys
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=UserWarning)
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
+from jax.config import config
+# config.update('jax_disable_jit', True)
 import gym
 from functools import partial
 import string
@@ -149,7 +154,7 @@ def get_contexts(cfg: DictConfig) -> Contexts:
     return contexts
 
 
-@hydra.main("./configs", "base")
+@hydra.main("./configs", "base", version_base="1.1")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
     if (
@@ -220,7 +225,7 @@ def train(cfg: DictConfig):
     EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
     env = EnvCls(contexts=contexts)
     eval_env = EnvCls(contexts=eval_contexts)
-    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm)
+    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
         key, subkey = jax.random.split(key)
@@ -236,11 +241,11 @@ def train(cfg: DictConfig):
     cfg.context_state_indices = context_state_indices
 
     # Normalization and action scaling for dmc envs
-    if cfg.env.startswith("CARLDmc"):
-        env = ActionLimitingWrapper(env, lower=-1 + 1e-6, upper=1 - 1e-6)
-        env = StateNormalizingWrapper(env)
-        eval_env = ActionLimitingWrapper(eval_env, lower=-1 + 1e-6, upper=1 - 1e-6)
-        eval_env = StateNormalizingWrapper(env)
+    # if cfg.env.startswith("CARLDmc"):
+        # env = ActionLimitingWrapper(env, lower=-1 + 1e-6, upper=1 - 1e-6)
+        # env = StateNormalizingWrapper(env)
+        # eval_env = ActionLimitingWrapper(eval_env, lower=-1 + 1e-6, upper=1 - 1e-6)
+        # eval_env = StateNormalizingWrapper(eval_env)
 
     # ----------------------------------------------------------------------
     # Log experiment

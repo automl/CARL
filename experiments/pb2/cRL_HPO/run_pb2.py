@@ -3,32 +3,65 @@ import sys
 from functools import partial
 import numpy as np
 import yaml
+import gym
 from pathlib import Path
+import argparse
 
 import ray
 from ray import tune
 from ray.tune.schedulers.pb2 import PB2
 
-from stable_baselines3 import PPO, DDPG
-from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import VecNormalize
+import coax
+import jax
+import jax.numpy as jnp
+import numpy as onp
+import optax
+import wandb
+from experiments.context_gating.networks.sac import pi_func, q_func
 
-from src.utils.hyperparameter_processing import preprocess_hyperparams
-from src.train import get_parser
-from src.context.sampling import sample_contexts
+from carl.context.sampling import sample_contexts
+
+
+class ActionLimitingWrapper(gym.Wrapper):
+    def __init__(self, env, lower, upper):
+        super().__init__(env)
+        action_dim = self.env.action_space.low.shape
+        self.action_space = gym.spaces.Box(low=onp.ones(action_dim) * lower, high=onp.ones(action_dim) * upper)
+
+    def __getattr__(self, name):
+        return getattr(self.env, name)
+
+
+class StateNormalizingWrapper(gym.Wrapper):
+    def __init__(self, env):
+        super().__init__(env)
+
+    def normalize_state(self, state):
+        mean = onp.mean(state)
+        var = onp.var(state)
+        normalized = (state - mean) / var
+        return normalized
+
+    def reset(self):
+        state = self.env.reset()
+        return self.normalize_state(state)
+
+    def step(self, action):
+        s, a, r, d = self.env.step(action)
+        return self.normalize_state(s), a, r, d
+
+    def __getattr__(self, name):
+        return getattr(self.env, name)
 
 
 def setup_model(
     env,
-    num_envs,
     hide_context,
     context_feature_args,
     default_sample_std_percentage,
-    config,
+    cfg,
     checkpoint_dir,
 ):
-    hyperparams = {}
-    env_wrapper = None
     num_contexts = 100
     contexts = sample_contexts(
         env,
@@ -37,7 +70,7 @@ def setup_model(
         default_sample_std_percentage=default_sample_std_percentage,
     )
     env_logger = None
-    from src.envs import CARLPendulumEnv, CARLBipedalWalkerEnv, CARLLunarLanderEnv
+    from carl.envs import CARLDmcWalkerEnv
 
     EnvCls = partial(
         eval(env),
@@ -45,67 +78,165 @@ def setup_model(
         logger=env_logger,
         hide_context=hide_context,
     )
-    env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
-    eval_env = make_vec_env(EnvCls, n_envs=1, wrapper_class=env_wrapper)
+    env = EnvCls()
+    env = coax.wrappers.TrainMonitor(env, name="sac")
+    eval_env = EnvCls()
+
+    # This is intended for dmc and might cause issues with other envs!
+    env = StateNormalizingWrapper(ActionLimitingWrapper(env, lower=-1+1e-6, upper=1-1e-6))
+    eval_env = StateNormalizingWrapper(ActionLimitingWrapper(eval_env, lower=-1+1e-6, upper=1-1e-6))
+
+    network_config = {"carl": {"dict_observation_space": False, "hide_context": True},
+                      "network": {"width": 32}}
+    from omegaconf import OmegaConf
+    network_config = OmegaConf.create(network_config)
+    func_pi = pi_func(network_config, env)
+    func_q = q_func(network_config, env)
+
+    # main function approximators
+    pi = coax.Policy(func_pi, env, random_seed=cfg["seed"])
+    q1 = coax.Q(
+        func_q,
+        env,
+        action_preprocessor=pi.proba_dist.preprocess_variate,
+        random_seed=cfg["seed"],
+    )
+    q2 = coax.Q(
+        func_q,
+        env,
+        action_preprocessor=pi.proba_dist.preprocess_variate,
+        random_seed=cfg["seed"],
+    )
+
+    # target network
+    q1_targ = q1.copy()
+    q2_targ = q2.copy()
+
+    # experience tracer
+    tracer = coax.reward_tracing.NStep(
+        n=cfg["n_step"], gamma=cfg["gamma"], record_extra_info=True
+    )
+    buffer = coax.experience_replay.SimpleReplayBuffer(
+        capacity=cfg["replay_capacity"], random_seed=cfg["seed"]
+    )
+    policy_regularizer = coax.regularizers.NStepEntropyRegularizer(
+        pi, beta=cfg["alpha"] / tracer.n, gamma=tracer.gamma, n=[tracer.n]
+    )
+
+    qlearning1 = coax.td_learning.SoftClippedDoubleQLearning(
+        q1,
+        pi_targ_list=[pi],
+        q_targ_list=[q1_targ, q2_targ],
+        loss_function=coax.value_losses.mse,
+        optimizer=optax.adam(cfg["learning_rate"]),
+        policy_regularizer=policy_regularizer,
+    )
+    qlearning2 = coax.td_learning.SoftClippedDoubleQLearning(
+        q2,
+        pi_targ_list=[pi],
+        q_targ_list=[q1_targ, q2_targ],
+        loss_function=coax.value_losses.mse,
+        optimizer=optax.adam(cfg["learning_rate"]),
+        policy_regularizer=policy_regularizer,
+    )
+    soft_pg = coax.policy_objectives.SoftPG(
+        pi,
+        [q1_targ, q2_targ],
+        optimizer=optax.adam(cfg["learning_rate"]),
+        regularizer=coax.regularizers.NStepEntropyRegularizer(
+            pi, beta=cfg["alpha"] / tracer.n, gamma=tracer.gamma, n=jnp.arange(tracer.n)
+        ),
+    )
 
     if checkpoint_dir:
         checkpoint_dir = str(checkpoint_dir)
         checkpoint = os.path.join(checkpoint_dir, "checkpoint")
-        model = PPO.load(checkpoint, env=env)
-    else:
-        model = PPO("MlpPolicy", env, **config)
-    return model, eval_env
+        pi, q1, q2, q1_targ, q2_targ, qlearning1, qlearning2, soft_pg = coax.utils.load(checkpoint)
+
+    return pi, buffer, qlearning1, qlearning2, soft_pg, q1_targ, q2_targ, q1, q2, tracer, env, eval_env
 
 
-def eval_model(model, eval_env, config):
+def eval_model(pi, eval_env, config):
     eval_reward = 0
     for i in range(100):
         done = False
         state = eval_env.reset()
         while not done:
-            action, _ = model.predict(state)
+            action, _ = pi(state)
             state, reward, done, _ = eval_env.step(action)
             eval_reward += reward
     return eval_reward / 100
 
 
-def train_ppo(
+def train_sac(
     env,
-    num_envs,
     hide_context,
     context_feature_args,
     default_sample_std_percentage,
     config,
     checkpoint_dir=None,
 ):
-    model, eval_env = setup_model(
+    pi, buffer, qlearning1, qlearning2, soft_pg, q1_targ, q2_targ, q1, q2, tracer, env, eval_env = setup_model(
         env=env,
-        num_envs=num_envs,
-        config=config,
+        cfg=config,
         checkpoint_dir=checkpoint_dir,
         hide_context=hide_context,
         context_feature_args=context_feature_args,
         default_sample_std_percentage=default_sample_std_percentage,
     )
-    model.learning_rate = config["learning_rate"]
-    model.gamma = config["gamma"]
-    # model.tau = config["tau"]
-    model.ent_coef = config["ent_coef"]
-    model.vf_coef = config["vf_coef"]
-    model.gae_lambda = config["gae_lambda"]
-    model.max_grad_norm = config["max_grad_norm"]
 
-    for _ in range(100):
-        model.learn(1e6)
-        if checkpoint_dir:
-            path = os.path.join(checkpoint_dir, "checkpoint")
-            model.save(path)
-        eval_reward = eval_model(model, eval_env, config)
-        tune.report(mean_accuracy=eval_reward, current_config=config)
+    et = 0
+
+    while et < config["steps"]:
+        s = env.reset()
+
+        for t in range(env.env.cutoff):
+            a = pi(s)
+            s_next, r, done, info = env.step(a)
+            et += 1
+            # trace rewards and add transition to replay buffer
+            tracer.add(s, a, r, done)
+            while tracer:
+                buffer.add(tracer.pop())
+
+            # learn
+            if len(buffer) >= config["warmup_num_frames"]:
+                transition_batch = buffer.sample(batch_size=config["batch_size"])
+
+                metrics = {}
+
+                # flip a coin to decide which of the q-functions to update
+                qlearning = qlearning1 if jax.random.bernoulli(q1.rng) else qlearning2
+                metrics.update(qlearning.update(transition_batch))
+
+                # delayed policy updates
+                if (
+                        et >= config["pi_warmup_num_frames"]
+                        and et % config["pi_update_freq"] == 0
+                ):
+                    metrics.update(soft_pg.update(transition_batch))
+
+                env.record_metrics(metrics)
+
+                # sync target networks
+                q1_targ.soft_update(q1, tau=config["q_targ_tau"])
+                q2_targ.soft_update(q2, tau=config["q_targ_tau"])
+
+            if done:
+                break
+
+            s = s_next
+            if et%config["evaL_interval"]==0:
+                if checkpoint_dir:
+                    path = os.path.join(checkpoint_dir, "checkpoint")
+                    agent = (pi, q1, q2, q1_targ, q2_targ, qlearning1, qlearning2, soft_pg)
+                    coax.utils.dump(agent, path)
+                eval_reward = eval_model(pi, eval_env, config)
+                tune.report(mean_accuracy=eval_reward, current_config=config)
 
 
 def run_experiment(args):
-    parser = get_parser()
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "--server-address",
         type=str,
@@ -120,6 +251,8 @@ def run_experiment(args):
     parser.add_argument("--hide_context", action="store_true")
     parser.add_argument("--default_sample_std_percentage", type=float, default=0.1)
     parser.add_argument("--context_feature", type=str, help="Context feature to adapt")
+    parser.add_argument("--steps", type=int, default=1e6)
+    parser.add_argument("--eval_interval", type=int, default=1e4)
 
     args, unknown_args = parser.parse_known_args()
     local_dir = os.path.join(args.outdir, "ray")
@@ -142,27 +275,34 @@ def run_experiment(args):
         hyperparam_bounds={
             "learning_rate": [0.00001, 0.02],
             "gamma": [0.8, 0.999],
-            "gae_lambda": [0.8, 0.999],
-            "ent_coef": [0.0, 0.5],
-            "max_grad_norm": [0.0, 1.0],
-            "vf_coef": [0.0, 1.0],
-            #'tau': [0.0, 0.99]
+            "q_targ_tau": [0.00001, 0.01],
+            "alpha": [0.01, 0.5]
         },
         log_config=True,
         require_attrs=True,
     )
 
     defaults = {
-        "batch_size": 128,  # 1024,
-        "learning_rate": 3e-5,
-        "gamma": 0.99,  # 0.95,
+        "batch_size": 256,
+        "learning_rate": 0.0003,
+        "gamma": 0.99,
+        "seed": 0,
+        #TODO: add continuous ones to configurable
+        "pi_warmup_num_frames": 7500,
+        "q_targ_tau": 0.005,
+        "pi_update_freq": 4,
+        "steps": args.steps,
+        "evaL_interval": args.eval_interval,
+        "warmup_num_frames": 5000,
+        "alpha": 0.2,
+        "replay_capacity": 1e6,
+        "n_step": 5,
     }
 
     analysis = tune.run(
         partial(
-            train_ppo,
+            train_sac,
             args.env,
-            args.num_envs,
             args.hide_context,
             args.context_feature_args,
             args.default_sample_std_percentage,
@@ -174,7 +314,6 @@ def run_experiment(args):
         verbose=3,
         stop={
             "training_iteration": 250,
-            # "timesteps_total": 1e6,
         },
         num_samples=8,
         fail_fast=True,

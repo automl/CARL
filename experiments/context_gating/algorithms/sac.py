@@ -14,18 +14,27 @@ def sac(cfg, env, eval_env):
     func_q = q_func(cfg, env)
 
     # main function approximators
-    pi = coax.Policy(func_pi, env, random_seed=cfg.seed)
+    pi = coax.Policy(
+        func_pi,
+        env,
+        random_seed=cfg.seed,
+        proba_dist=coax.proba_dists.NormalDist(
+            env.action_space,
+            clip_logvar=(-10.0, 4.0),
+            squash=True,
+        ),
+    )
     q1 = coax.Q(
         func_q,
         env,
-        action_preprocessor=pi.proba_dist.preprocess_variate,
         random_seed=cfg.seed,
+        action_preprocessor=pi.proba_dist.preprocess_variate,
     )
     q2 = coax.Q(
         func_q,
         env,
-        action_preprocessor=pi.proba_dist.preprocess_variate,
         random_seed=cfg.seed,
+        action_preprocessor=pi.proba_dist.preprocess_variate,
     )
 
     # target network
@@ -40,7 +49,7 @@ def sac(cfg, env, eval_env):
         capacity=cfg.replay_capacity, random_seed=cfg.seed
     )
     policy_regularizer = coax.regularizers.NStepEntropyRegularizer(
-        pi, beta=cfg.alpha / tracer.n, gamma=tracer.gamma, n=[tracer.n]
+        pi, beta=cfg.alpha, gamma=tracer.gamma, n=[tracer.n]
     )
 
     qlearning1 = coax.td_learning.SoftClippedDoubleQLearning(
@@ -63,9 +72,7 @@ def sac(cfg, env, eval_env):
         pi,
         [q1_targ, q2_targ],
         optimizer=optax.adam(cfg.learning_rate),
-        regularizer=coax.regularizers.NStepEntropyRegularizer(
-            pi, beta=cfg.alpha / tracer.n, gamma=tracer.gamma, n=jnp.arange(tracer.n)
-        ),
+        regularizer=policy_regularizer,
     )
     while env.T < cfg.max_num_frames:
         s = env.reset()
