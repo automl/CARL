@@ -1,3 +1,4 @@
+import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt, colors as mplc
 from matplotlib.lines import Line2D
@@ -262,6 +263,7 @@ def plot_evaluation_protocol(
 
         # Adjust spaces for savin plot
         fig.subplots_adjust(wspace=0.2)
+        Path("figures").mkdir(parents=True, exist_ok=True)
         fig.savefig(
             Path("figures")
             / f"evaluation_protocol_traintest_distributions_seed{seed}.png",
@@ -276,12 +278,56 @@ def plot_evaluation_protocol(
     return legend_elements
 
 
+def plot_legend(single_elements: bool = False):
+    legend_elements = get_legend_elements()
+    if single_elements:
+        legend_elements = [[le] for le in legend_elements]
+    else:
+        legend_elements = [legend_elements]
+    for i, legend_els in enumerate(legend_elements):
+        fig = plt.figure(figsize=(4, 4), dpi=300)
+        ax = fig.add_subplot(111)
+        ax.set_axis_off()
+        ax.legend(handles=legend_els, loc="center", fontsize=8)
+        legend = ax.get_legend()
+        # Adjust spaces for saving plot
+        fig.set_tight_layout(True)
+
+        def export_legend(legend, filename="legend.png", expand=[-5,-5,5,5], with_bbox_frame=False):
+            fig  = legend.figure
+            fig.canvas.draw()
+            bbox  = legend.get_window_extent()
+            if not with_bbox_frame:
+                expand = [0,0,0,0]
+            bbox = bbox.from_extents(*(bbox.extents + np.array(expand)))
+            bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
+            fig.savefig(filename, dpi="figure", bbox_inches=bbox)
+
+        
+        if not single_elements:
+            single_el_id = ""
+        else:
+            single_el_id = f"_{i}"
+        p = "experiments/evaluation_protocol/figures"
+        filename = Path(p) / f"evaluation_protocol_traintest_distributions_legend{single_el_id}.png"
+        Path(p).mkdir(parents=True, exist_ok=True)
+        # fig.savefig(
+        #     filename,
+        #     dpi=300,
+        #     bbox_inches="tight",
+        # )
+
+        export_legend(legend=legend, filename=filename, with_bbox_frame=False)
+
+
+
 if __name__ == "__main__":
     cf0 = ContextFeature("gravity", 9.0, 9.5, 10.0, 11.0)
     cf1 = ContextFeature("pole_length", 0.4, 0.5, 0.6, 0.8)
     seed = 1
     n_contexts = 100
     context_features = [cf0, cf1]
-    plot_evaluation_protocol(
-        context_features=context_features, seed=seed, n_contexts=n_contexts
-    )
+    # plot_evaluation_protocol(
+    #     context_features=context_features, seed=seed, n_contexts=n_contexts
+    # )
+    plot_legend(single_elements=True)
