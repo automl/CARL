@@ -86,3 +86,4 @@ hydra:
   launcher:
     setup:
       - export XLA_PYTHON_CLIENT_PREALLOCATE=false
+      - export MUJOCO_GL=egl
