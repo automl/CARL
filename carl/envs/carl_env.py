@@ -336,7 +336,12 @@ class CARLEnv(Wrapper):
 
         """
         # Step the environment
-        state, reward, done, info = self.env.step(action)
+        step_output = self.env.step(action)
+        if len(step_output) == 5: 
+            state, reward, terminated, truncated, info = step_output
+            done = terminated or truncated
+        else:
+            state, reward, done, info = step_output
 
         if not self.hide_context:
             # Scale context features

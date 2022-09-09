@@ -173,6 +173,7 @@ def sample_contexts(
                 random_variable = sample_dists[k][0]
                 context_feature_type = sample_dists[k][1]
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
+                assert lower_bound <= upper_bound, f"context variable {k}: lower bound [{lower_bound}] is higher than upper bound [{upper_bound}]!"
                 if context_feature_type == list:
                     length = np.random.randint(
                         500000
