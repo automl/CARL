@@ -8,7 +8,6 @@ from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
-
 DEFAULT_CONTEXT = {
     "gravity": -9.81,  # Gravity is disabled via flag
     "friction_tangential": 1,  # Scaling factor for tangential friction of all geoms (objects)

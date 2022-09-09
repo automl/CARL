@@ -6,13 +6,12 @@ import dm_env  # type: ignore
 from dm_control import suite  # type: ignore
 
 from carl.envs.dmc.dmc_tasks import (  # type: ignore [import]  # noqa: F401
+    finger,
     fish,
     quadruped,
     walker,
-    finger
 )
 from carl.utils.types import Context
-
 
 _DOMAINS = {
     name: module

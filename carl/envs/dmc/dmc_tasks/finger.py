@@ -15,6 +15,7 @@
 
 """Finger Domain."""
 from __future__ import annotations
+
 from multiprocessing.sharedctypes import Value
 
 import numpy as np
@@ -36,22 +37,28 @@ from carl.utils.types import Context
 
 
 def check_constraints(
-  spinner_length: float,
-  limb_length_0: float,
-  limb_length_1: float,
-  x_spinner: float = 0.2,
-  x_finger: float = -0.2, 
+    spinner_length: float,
+    limb_length_0: float,
+    limb_length_1: float,
+    x_spinner: float = 0.2,
+    x_finger: float = -0.2,
 ) -> None:
-  spinner_half_length = spinner_length / 2
-  # Check if spinner collides with finger hinge
-  distance_spinner_to_fingerhinge = (x_spinner - x_finger) - spinner_half_length
-  if distance_spinner_to_fingerhinge < 0:
-      raise ValueError(f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, spinner can't spin. Decrease spinner_length ({spinner_length}).")
+    spinner_half_length = spinner_length / 2
+    # Check if spinner collides with finger hinge
+    distance_spinner_to_fingerhinge = (x_spinner - x_finger) - spinner_half_length
+    if distance_spinner_to_fingerhinge < 0:
+        raise ValueError(
+            f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, spinner can't spin. Decrease spinner_length ({spinner_length})."
+        )
 
-  # Check if finger can reach spinner (distance should be negative)
-  distance_fingertip_to_spinner = (x_spinner - spinner_half_length) - (x_finger + limb_length_0 + limb_length_1)
-  if distance_fingertip_to_spinner > 0:
-    raise ValueError(f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either limb_length_0, limb_length_1 or spinner_length.")
+    # Check if finger can reach spinner (distance should be negative)
+    distance_fingertip_to_spinner = (x_spinner - spinner_half_length) - (
+        x_finger + limb_length_0 + limb_length_1
+    )
+    if distance_fingertip_to_spinner > 0:
+        raise ValueError(
+            f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either limb_length_0, limb_length_1 or spinner_length."
+        )
 
 
 def get_finger_xml_string(
@@ -59,7 +66,7 @@ def get_finger_xml_string(
     limb_length_1: float = 0.16,
     spinner_radius: float = 0.04,
     spinner_length: float = 0.18,
-    **kwargs
+    **kwargs,
 ) -> bytes:
     # Finger position
     x_finger = -0.2
@@ -76,17 +83,19 @@ def get_finger_xml_string(
     spinner_half_length = spinner_length / 2
     spinner_tip_radius = 0.02
     distance_spinner_tip_to_captop = 0.06
-    y_spinner_tip = spinner_half_length + distance_spinner_tip_to_captop - spinner_tip_radius  # originally 0.13
+    y_spinner_tip = (
+        spinner_half_length + distance_spinner_tip_to_captop - spinner_tip_radius
+    )  # originally 0.13
 
     check_constraints(
-      limb_length_0=limb_length_0,
-      limb_length_1=limb_length_1,
-      x_spinner=x_spinner,
-      x_finger=x_finger,
-      spinner_length=spinner_length,
+        limb_length_0=limb_length_0,
+        limb_length_1=limb_length_1,
+        x_spinner=x_spinner,
+        x_finger=x_finger,
+        spinner_length=spinner_length,
     )
 
-    proximal_to = - limb_length_0
+    proximal_to = -limb_length_0
     xml_string = f"""
      <mujoco model="finger">
       <include file="./common/visual.xml"/>
