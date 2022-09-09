@@ -1,7 +1,12 @@
 import unittest
 
+from carl.envs.dmc.dmc_tasks.finger import (
+    check_constraints,
+    spin_context,
+    turn_easy_context,
+    turn_hard_context,
+)
 from carl.envs.dmc.loader import load_dmc_env
-from carl.envs.dmc.dmc_tasks.finger import check_constraints, spin_context, turn_easy_context, turn_hard_context
 
 
 class TestDMCLoader(unittest.TestCase):
@@ -36,10 +41,14 @@ class TestDmcEnvs(unittest.TestCase):
     def test_finger_constraints(self):
         # Finger can reach spinner?
         with self.assertRaises(ValueError):
-            check_constraints(limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.1)
+            check_constraints(
+                limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.1
+            )
         # Spinner collides with finger hinge?
         with self.assertRaises(ValueError):
-            check_constraints(limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.81)
+            check_constraints(
+                limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.81
+            )
 
     def test_finger_tasks(self):
         tasks = [spin_context, turn_hard_context, turn_easy_context]
