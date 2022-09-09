@@ -44,4 +44,6 @@ dependencies:
       - hydra-core
       - hydra-submitit-launcher
       - hydra-optuna-sweeper
+      - hydra_colorlog
       - coax
+      - wandb
