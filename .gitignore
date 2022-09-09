@@ -21,3 +21,4 @@ exp_sweep
 multirun
 outputs
 testvenv
+*.egg-info
