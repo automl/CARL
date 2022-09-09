@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, TypeVar, Union
+from typing import Any, Optional, Tuple, TypeVar, Union
 
 import dm_env  # type: ignore
 import gym
@@ -96,7 +96,9 @@ class MujocoToGymWrapper(gym.Env):
             raise NotImplementedError
         return observation
 
-    def render(self, mode: str = "human", camera_id: int = 0, **kwargs) -> np.ndarray:
+    def render(
+        self, mode: str = "human", camera_id: int = 0, **kwargs: Any
+    ) -> np.ndarray:
         """Renders the environment.
 
         The set of supported modes varies per environment. (And some

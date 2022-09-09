@@ -1,3 +1,4 @@
+# flake8: noqa: E501
 # Copyright 2017 The dm_control Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,8 @@
 
 """Finger Domain."""
 from __future__ import annotations
+
+from typing import Any
 
 from multiprocessing.sharedctypes import Value
 
@@ -48,7 +51,8 @@ def check_constraints(
     distance_spinner_to_fingerhinge = (x_spinner - x_finger) - spinner_half_length
     if distance_spinner_to_fingerhinge < 0:
         raise ValueError(
-            f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, spinner can't spin. Decrease spinner_length ({spinner_length})."
+            f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, "
+            f"spinner can't spin. Decrease spinner_length ({spinner_length})."
         )
 
     # Check if finger can reach spinner (distance should be negative)
@@ -57,7 +61,8 @@ def check_constraints(
     )
     if distance_fingertip_to_spinner > 0:
         raise ValueError(
-            f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either limb_length_0, limb_length_1 or spinner_length."
+            f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
+            f"limb_length_0, limb_length_1 or spinner_length."
         )
 
 
@@ -66,7 +71,7 @@ def get_finger_xml_string(
     limb_length_1: float = 0.16,
     spinner_radius: float = 0.04,
     spinner_length: float = 0.18,
-    **kwargs,
+    **kwargs: Any,
 ) -> bytes:
     # Finger position
     x_finger = -0.2
@@ -169,8 +174,8 @@ def get_finger_xml_string(
 
     </mujoco>
     """
-    xml_string = xml_string.encode()
-    return xml_string
+    xml_string_bytes = xml_string.encode()
+    return xml_string_bytes
 
 
 @SUITE.add("benchmarking")  # type: ignore[misc]
