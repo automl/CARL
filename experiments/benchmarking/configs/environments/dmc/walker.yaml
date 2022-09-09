@@ -18,6 +18,9 @@ alpha: 0.1
 network:
   width: 1024
 
+context_branch:
+  width: 1024
+
 pi_update_freq: 2
 
 action_noise:
