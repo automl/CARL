@@ -34,6 +34,110 @@ from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
 from carl.utils.types import Context
 
 
+def get_finger_xml_string(
+    limb_length_0: float = 0.17,
+    limb_length_1: float = 0.16,
+    spinner_radius: float = 0.04,
+    spinner_length: float = 0.18,
+    **kwargs
+) -> str:
+    # Finger position
+    x_finger = -0.2
+    y_finger = 0.4
+
+    # Spinner position
+    x_spinner = 0.2
+    y_spinner = 0.4
+
+    # Spinner geometry
+    spinner_half_length = spinner_length / 2
+    spinner_tip_radius = 0.02
+    distance_spinner_tip_to_captop = 0.06
+    y_spinner_tip = spinner_half_length + distance_spinner_tip_to_captop - spinner_tip_radius  # originally 0.13
+
+    # check constraints
+    min_distance_to_finger = (x_spinner - x_finger) - spinner_length
+    if min_distance_to_finger < 0:
+        raise ValueError(f"Distance finger to spinner ({min_distance_to_finger}) not big enough, spinner can't spin. Decrease spinner_length ({spinner_length}).")
+
+
+    proximal_to = - limb_length_0
+    xml_string = f"""
+     <mujoco model="finger">
+      <include file="./common/visual.xml"/>
+      <include file="./common/skybox.xml"/>
+      <include file="./common/materials.xml"/>
+
+      <option timestep="0.01" cone="elliptic" iterations="200">
+        <flag gravity="disable"/>
+      </option>
+
+      <default>
+        <geom solimp="0 0.9 0.01" solref=".02 1"/>
+        <joint type="hinge" axis="0 -1 0"/>
+        <motor ctrllimited="true" ctrlrange="-1 1"/>
+        <default class="finger">
+          <joint damping="2.5" limited="true"/>
+          <site type="ellipsoid" size=".025 .03 .025" material="site" group="3"/>
+        </default>
+      </default>
+
+      <worldbody>
+        <light name="light" directional="true" diffuse=".6 .6 .6" pos="0 0 2" specular=".3 .3 .3"/>
+        <geom name="ground" type="plane" pos="0 0 0" size=".6 .2 10" material="grid"/>
+        <camera name="cam0" pos="0 -1 .8" xyaxes="1 0 0 0 1 2"/>
+        <camera name="cam1" pos="0 -1 .4" xyaxes="1 0 0 0 0 1" />
+
+        <body name="proximal" pos="{x_finger} 0 {y_finger}" childclass="finger">
+          <geom name="proximal_decoration" type="cylinder" fromto="0 -.033 0 0 .033 0" size=".034" material="decoration"/>
+          <joint name="proximal" range="-110 110" ref="-90"/>
+          <geom name="proximal" type="capsule" material="self" size=".03" fromto="0 0 0 0 0 {proximal_to}"/>
+          <body name="distal" pos="0 0 {proximal_to - 0.01}" childclass="finger">
+            <joint name="distal" range="-110 110"/>
+            <geom name="distal" type="capsule" size=".028" material="self" fromto="0 0 0 0 0 {-limb_length_1}" contype="0" conaffinity="0"/>
+            <geom name="fingertip" type="capsule" size=".03" material="effector" fromto="0 0 {-limb_length_1 - 0.03} 0 0 {-limb_length_1 - 0.001}"/>
+            <site name="touchtop" pos=".01 0 -.17"/>
+            <site name="touchbottom" pos="-.01 0 -.17"/>
+          </body>
+        </body>
+
+        <body name="spinner" pos="{x_spinner} 0 {y_spinner}">
+          <joint name="hinge" frictionloss=".1" damping=".5"/>
+          <geom name="cap1" type="capsule" size="{spinner_radius}" fromto="{spinner_radius/2} 0 {-spinner_half_length} {spinner_radius} 0 {spinner_half_length}" material="self"/>
+          <geom name="cap2" type="capsule" size="{spinner_radius}" fromto="{-spinner_radius/2} 0 {-spinner_half_length} 0 0 {spinner_half_length}" material="self"/>
+          <site name="tip" type="sphere"  size="{spinner_tip_radius}" pos="0 0 {y_spinner_tip}" material="target"/>
+          <geom name="spinner_decoration" type="cylinder" fromto="0 -.045 0 0 .045 0" size="{spinner_radius/2}" material="decoration"/>
+        </body>
+
+        <site name="target" type="sphere" size=".03" pos="0 0 .4" material="target"/>
+      </worldbody>
+
+      <actuator>
+        <motor name="proximal" joint="proximal" gear="30"/>
+        <motor name="distal" joint="distal" gear="15"/>
+      </actuator>
+
+      <!-- All finger observations are functions of sensors. This is useful for finite-differencing. -->
+      <sensor>
+        <jointpos name="proximal" joint="proximal"/>
+        <jointpos name="distal" joint="distal"/>
+        <jointvel name="proximal_velocity" joint="proximal"/>
+        <jointvel name="distal_velocity" joint="distal"/>
+        <jointvel name="hinge_velocity" joint="hinge"/>
+        <framepos name="tip" objtype="site" objname="tip"/>
+        <framepos name="target" objtype="site" objname="target"/>
+        <framepos name="spinner" objtype="xbody" objname="spinner"/>
+        <touch name="touchtop" site="touchtop"/>
+        <touch name="touchbottom" site="touchbottom"/>
+        <framepos name="touchtop_pos" objtype="site" objname="touchtop"/>
+        <framepos name="touchbottom_pos" objtype="site" objname="touchbottom"/>
+      </sensor>
+
+    </mujoco>
+    """
+    return xml_string
+
+
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def spin_context(
     context: Context = {},
@@ -44,6 +148,8 @@ def spin_context(
 ) -> control.Environment:
     """Returns the Spin task."""
     xml_string, assets = get_model_and_assets()
+    xml_string = get_finger_xml_string(**context)
+    xml_string = xml_string.encode()
     if context != {}:
         xml_string = adapt_context(
             xml_string=xml_string, context=context, context_mask=context_mask

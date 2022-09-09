@@ -23,6 +23,10 @@ DEFAULT_CONTEXT = {
     "wind_x": 0.0,
     "wind_y": 0.0,
     "wind_z": 0.0,
+    "limb_length_0": 0.17,
+    "limb_length_1": 0.16,
+    "spinner_radius": 0.04,
+    "spinner_length": 0.18,
 }
 
 CONTEXT_BOUNDS = {
@@ -44,6 +48,10 @@ CONTEXT_BOUNDS = {
     "wind_x": (-np.inf, np.inf, float),
     "wind_y": (-np.inf, np.inf, float),
     "wind_z": (-np.inf, np.inf, float),
+    "limb_length_0": (0.01, 0.2, float),
+    "limb_length_1": (0.01, 0.2, float),
+    "spinner_radius": (0.01, 0.05, float),
+    "spinner_length": (0.01, 0.4, float),
 }
 
 CONTEXT_MASK = [
