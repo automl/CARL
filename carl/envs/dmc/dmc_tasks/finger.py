@@ -15,6 +15,7 @@
 
 """Finger Domain."""
 from __future__ import annotations
+from multiprocessing.sharedctypes import Value
 
 import numpy as np
 from dm_control.rl import control  # type: ignore
@@ -34,13 +35,32 @@ from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
 from carl.utils.types import Context
 
 
+def check_constraints(
+  spinner_length: float,
+  limb_length_0: float,
+  limb_length_1: float,
+  x_spinner: float = 0.2,
+  x_finger: float = -0.2, 
+) -> None:
+  spinner_half_length = spinner_length / 2
+  # Check if spinner collides with finger hinge
+  distance_spinner_to_fingerhinge = (x_spinner - x_finger) - spinner_half_length
+  if distance_spinner_to_fingerhinge < 0:
+      raise ValueError(f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, spinner can't spin. Decrease spinner_length ({spinner_length}).")
+
+  # Check if finger can reach spinner (distance should be negative)
+  distance_fingertip_to_spinner = (x_spinner - spinner_half_length) - (x_finger + limb_length_0 + limb_length_1)
+  if distance_fingertip_to_spinner > 0:
+    raise ValueError(f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either limb_length_0, limb_length_1 or spinner_length.")
+
+
 def get_finger_xml_string(
     limb_length_0: float = 0.17,
     limb_length_1: float = 0.16,
     spinner_radius: float = 0.04,
     spinner_length: float = 0.18,
     **kwargs
-) -> str:
+) -> bytes:
     # Finger position
     x_finger = -0.2
     y_finger = 0.4
@@ -49,17 +69,22 @@ def get_finger_xml_string(
     x_spinner = 0.2
     y_spinner = 0.4
 
+    # Target position
+    y_target = 0.4
+
     # Spinner geometry
     spinner_half_length = spinner_length / 2
     spinner_tip_radius = 0.02
     distance_spinner_tip_to_captop = 0.06
     y_spinner_tip = spinner_half_length + distance_spinner_tip_to_captop - spinner_tip_radius  # originally 0.13
 
-    # check constraints
-    min_distance_to_finger = (x_spinner - x_finger) - spinner_length
-    if min_distance_to_finger < 0:
-        raise ValueError(f"Distance finger to spinner ({min_distance_to_finger}) not big enough, spinner can't spin. Decrease spinner_length ({spinner_length}).")
-
+    check_constraints(
+      limb_length_0=limb_length_0,
+      limb_length_1=limb_length_1,
+      x_spinner=x_spinner,
+      x_finger=x_finger,
+      spinner_length=spinner_length,
+    )
 
     proximal_to = - limb_length_0
     xml_string = f"""
@@ -109,7 +134,7 @@ def get_finger_xml_string(
           <geom name="spinner_decoration" type="cylinder" fromto="0 -.045 0 0 .045 0" size="{spinner_radius/2}" material="decoration"/>
         </body>
 
-        <site name="target" type="sphere" size=".03" pos="0 0 .4" material="target"/>
+        <site name="target" type="sphere" size=".03" pos="0 0 {y_target}" material="target"/>
       </worldbody>
 
       <actuator>
@@ -135,6 +160,7 @@ def get_finger_xml_string(
 
     </mujoco>
     """
+    xml_string = xml_string.encode()
     return xml_string
 
 
@@ -149,7 +175,6 @@ def spin_context(
     """Returns the Spin task."""
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
-    xml_string = xml_string.encode()
     if context != {}:
         xml_string = adapt_context(
             xml_string=xml_string, context=context, context_mask=context_mask
@@ -176,6 +201,7 @@ def turn_easy_context(
 ) -> control.Environment:
     """Returns the easy Turn task."""
     xml_string, assets = get_model_and_assets()
+    xml_string = get_finger_xml_string(**context)
     if context != {}:
         xml_string = adapt_context(
             xml_string=xml_string, context=context, context_mask=context_mask
@@ -202,6 +228,7 @@ def turn_hard_context(
 ) -> control.Environment:
     """Returns the hard Turn task."""
     xml_string, assets = get_model_and_assets()
+    xml_string = get_finger_xml_string(**context)
     if context != {}:
         xml_string = adapt_context(
             xml_string=xml_string, context=context, context_mask=context_mask
