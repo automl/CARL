@@ -1,5 +1,5 @@
 from __future__ import annotations
-from asyncio.format_helpers import _format_callback_source
+
 from typing import List
 
 from lxml import etree  # type: ignore
@@ -14,15 +14,17 @@ def adapt_context(
 
     def check_okay_to_set(context_feature: str | list[str]) -> bool:
         """Set context feature if present in context and not in context mask."""
-        is_okay : bool = True
-        if type(context_feature) is not list:
-            context_feature = [context_feature]
-        for cf in context_feature:
+        is_okay: bool = True
+        context_features: list[str]
+        if type(context_feature) is str:
+            context_features = [context_feature]  # type: ignore[assignment]
+        else:
+            context_features = context_feature  # type: ignore[assignment]
+        for cf in context_features:
             if not (cf in context and cf not in context_mask):
                 is_okay = False
                 break
         return is_okay
-
 
     mjcf = etree.fromstring(xml_string)
     default = mjcf.find("./default/")
@@ -62,7 +64,9 @@ def adapt_context(
             joint.set("stiffness", default_joint_stiffness)
 
     # adjust friction for all geom elements with friction attribute
-    if check_okay_to_set(["friction_tangential", "friction_torsional", "friction_rolling"]):
+    if check_okay_to_set(
+        ["friction_tangential", "friction_torsional", "friction_rolling"]
+    ):
         for geom_find in mjcf.findall(".//geom[@friction]"):
             friction = geom_find.get("friction").split(" ")
             frict_str = ""
@@ -101,7 +105,9 @@ def adapt_context(
         default.addnext(geom)
 
     # set default friction
-    if geom.get("friction") is None and check_okay_to_set(["friction_tangential", "friction_torsional", "friction_rolling"]):
+    if geom.get("friction") is None and check_okay_to_set(
+        ["friction_tangential", "friction_torsional", "friction_rolling"]
+    ):
         default_friction_tangential = 1.0
         default_friction_torsional = 0.005
         default_friction_rolling = 0.0001
