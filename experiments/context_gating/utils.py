@@ -94,6 +94,12 @@ def check_wandb_exists(cfg, unique_fields: List[str]):
             if episode < 500:
                 # run not completed
                 continue
+        elif cfg["env"].startswith("CARLDmc"):
+            episode = (
+                run.summary["train/episode"] if "train/episode" in run.summary else -1
+            )
+            if episode < 999:
+                continue
         found_run = True
 
     return found_run
