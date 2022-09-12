@@ -64,6 +64,9 @@ q_context: true
 context_state_indices: null
 
 context_branch:
+  width: ${network.width}
+
+network:
   width: 32
 
 context_sampler:
