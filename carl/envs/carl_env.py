@@ -138,9 +138,9 @@ class CARLEnv(Wrapper):
             )
         context_keys: Vector
         if state_context_features is not None:
-            if (
-                state_context_features == "changing_context_features"
-                or state_context_features[0] == "changing_context_features"
+            if state_context_features == "changing_context_features" or (
+                type(state_context_features) == list
+                and state_context_features[0] == "changing_context_features"
             ):
                 # if we have only one context the context features do not change during training
                 if len(self.contexts) > 1:
