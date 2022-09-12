@@ -6,8 +6,6 @@ hydra:
     mem_gb: 16
     cpus_per_task: 6
     timeout_min: 1440 # 24h
-    setup:
-      - export XLA_PYTHON_CLIENT_PREALLOCATE=false
   run:
     dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
