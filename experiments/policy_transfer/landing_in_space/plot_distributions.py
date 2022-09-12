@@ -31,4 +31,5 @@ if __name__ == "__main__":
             cfg.landing_in_space.sample_function._target_.split(".")[-1].split("_")[-1]
         )
         fig.set_tight_layout(True)
+        fig.savefig("landing_in_space_distribution.png", bbox_inches="tight", dpi=300)
         plt.show()
