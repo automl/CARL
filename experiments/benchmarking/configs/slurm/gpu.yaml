@@ -3,7 +3,7 @@ hydra:
   launcher:
     partition: gpu_normal
     gres: gpu:1
-    mem_gb: 12
+    mem_gb: 16
     cpus_per_task: 6
     timeout_min: 1440 # 24h
     setup:
