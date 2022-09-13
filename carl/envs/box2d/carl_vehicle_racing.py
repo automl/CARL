@@ -127,7 +127,7 @@ class CustomCarRacingEnv(CarRacing):
         else:
             return self.step(None)[0], {}  # type: ignore [arg-type]
 
-    def render_indicators(self, W: int, H: int) -> None:
+    def _render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing
         s = W / 40.0
         h = H / 40.0
