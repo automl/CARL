@@ -26,7 +26,7 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "gravity": (-0.1, -np.inf, float),
+    "gravity": (-np.inf, -0.1, float),
     "friction_tangential": (0, np.inf, float),
     "friction_torsional": (0, np.inf, float),
     "friction_rolling": (0, np.inf, float),
