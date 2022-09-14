@@ -90,7 +90,7 @@ gravity, limb_length_0, limb_length_1, spinner_radius, spinner_length
 python experiments/benchmarking/run_training.py '+environments/dmc=finger' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[limb_length_0,limb_length_1,spinner_length],[limb_length_0],[limb_length_1],[spinner_length]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
 
 # Debug
-python experiments/benchmarking/run_training.py '+environments/dmc=finger' 'seed=4' '+context_visibility=cgate_hadamard' 'context_sampler.context_feature_names=[limb_length_0,limb_length_1,spinner_length]' 'context_sampler.sigma_rel=0.5' wandb.debug=true
+python experiments/benchmarking/training.py '+environments/dmc=finger' 'seed=4' '+context_visibility=cgate_hadamard' 'context_sampler.context_feature_names=[limb_length_0,limb_length_1,spinner_length]' 'context_sampler.sigma_rel=0.5' wandb.debug=true
 ```
 
 ### Ant
