@@ -1,5 +1,9 @@
 # flake8: noqa: F401
 # Contexts and bounds by name
+from carl.envs.dmc.carl_dm_finger import CONTEXT_BOUNDS as CARLDmcFingerEnv_bounds
+from carl.envs.dmc.carl_dm_finger import CONTEXT_MASK as CARLDmcFingerEnv_mask
+from carl.envs.dmc.carl_dm_finger import DEFAULT_CONTEXT as CARLDmcFingerEnv_defaults
+from carl.envs.dmc.carl_dm_finger import CARLDmcFingerEnv
 from carl.envs.dmc.carl_dm_fish import CONTEXT_BOUNDS as CARLDmcFishEnv_bounds
 from carl.envs.dmc.carl_dm_fish import CONTEXT_MASK as CARLDmcFishEnv_mask
 from carl.envs.dmc.carl_dm_fish import DEFAULT_CONTEXT as CARLDmcFishEnv_defaults
