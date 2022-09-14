@@ -320,14 +320,13 @@ def plot_legend(single_elements: bool = False):
         export_legend(legend=legend, filename=filename, with_bbox_frame=False)
 
 
-
 if __name__ == "__main__":
     cf0 = ContextFeature("gravity", 9.0, 9.5, 10.0, 11.0)
     cf1 = ContextFeature("pole_length", 0.4, 0.5, 0.6, 0.8)
     seed = 1
     n_contexts = 100
-    context_features = [cf0, cf1]
-    # plot_evaluation_protocol(
-    #     context_features=context_features, seed=seed, n_contexts=n_contexts
-    # )
+    context_features = [cf1, cf0]
+    plot_evaluation_protocol(
+        context_features=context_features, seed=seed, n_contexts=n_contexts
+    )
     plot_legend(single_elements=True)
