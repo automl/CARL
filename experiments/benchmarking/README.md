@@ -63,6 +63,8 @@ python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed
 python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' 'context_sampler.sigma_rel=0.1' '+slurm=cpu' -m
 ```
 - [ ] SAC hidden, SAC cGate on quadruped 0.1 for all context features + whichever combination is manageable, 1M
+
+### DMC Fish
 - [ ] SAC hidden, SAC cGate on fish 0.1 for all context features + all context features at once, 500k
 ```bash
 # Full
@@ -80,6 +82,16 @@ python experiments/benchmarking/run_training.py '+environments/dmc=fish' 'seed=r
 - [ ] SAC hidden, SAC cGate on CartPole with train and test dists for the Kirk experiment (gravity + pole_length), 100k
 - [ ] SAC hidden, SAC cGate Mario with only one context dist, 1M
 - [ ] SAC hidden, SAC cGate brax HalfCheetah, 1M
+
+### DMC Finger
+gravity, limb_length_0, limb_length_1, spinner_radius, spinner_length
+```bash
+# Train
+python experiments/benchmarking/run_training.py '+environments/dmc=finger' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[limb_length_0,limb_length_1,spinner_length],[limb_length_0],[limb_length_1],[spinner_length]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+
+# Debug
+python experiments/benchmarking/run_training.py '+environments/dmc=finger' 'seed=4' '+context_visibility=cgate_hadamard' 'context_sampler.context_feature_names=[limb_length_0,limb_length_1,spinner_length]' 'context_sampler.sigma_rel=0.5' wandb.debug=true
+```
 
 ### Ant
 SAC
