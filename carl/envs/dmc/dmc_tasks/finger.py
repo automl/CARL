@@ -45,26 +45,34 @@ def check_constraints(
     limb_length_1: float,
     x_spinner: float = 0.2,
     x_finger: float = -0.2,
+    raise_error: bool = False,
     **kwargs: Any
-) -> None:
+) -> bool:
+    is_okay = True
     spinner_half_length = spinner_length / 2
     # Check if spinner collides with finger hinge
     distance_spinner_to_fingerhinge = (x_spinner - x_finger) - spinner_half_length
     if distance_spinner_to_fingerhinge < 0:
-        raise ValueError(
-            f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, "
-            f"spinner can't spin. Decrease spinner_length ({spinner_length})."
-        )
+        is_okay = False
+        if raise_error:
+            raise ValueError(
+                f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, "
+                f"spinner can't spin. Decrease spinner_length ({spinner_length})."
+            )
 
     # Check if finger can reach spinner (distance should be negative)
     distance_fingertip_to_spinner = (x_spinner - spinner_half_length) - (
         x_finger + limb_length_0 + limb_length_1
     )
     if distance_fingertip_to_spinner > 0:
-        raise ValueError(
-            f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
-            f"limb_length_0, limb_length_1 or spinner_length."
-        )
+        is_okay = False
+        if raise_error:
+            raise ValueError(
+                f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
+                f"limb_length_0, limb_length_1 or spinner_length."
+            )
+
+    return is_okay
 
 
 def get_finger_xml_string(
@@ -99,6 +107,7 @@ def get_finger_xml_string(
         x_spinner=x_spinner,
         x_finger=x_finger,
         spinner_length=spinner_length,
+        raise_error=True
     )
 
     proximal_to = -limb_length_0
