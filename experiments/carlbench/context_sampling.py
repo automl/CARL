@@ -1,7 +1,10 @@
+from __future__ import annotations
 from typing import Union, Optional, List
 from enum import Enum
 from typing import Dict, Any
 import warnings
+from omegaconf import DictConfig
+from hydra.utils import instantiate
 
 from carl.context.sampling import get_default_context_and_bounds, sample_contexts
 
@@ -31,6 +34,7 @@ class ContextSampler(AbstractContextSampler):
         difficulty: str = "easy",
         n_samples: Union[str, int] = 100,
         sigma_rel: Optional[float] = None,  # overrides difficulty
+        check_constraints_fn: callable | DictConfig = None,
     ):
         """
         Sample contexts for training or evaluation.
@@ -55,6 +59,9 @@ class ContextSampler(AbstractContextSampler):
             Relative standard deviation, overrides argument `difficulty`.
         """
         super(ContextSampler, self).__init__()
+        if type(check_constraints_fn) == DictConfig:
+            check_constraints_fn = instantiate(check_constraints_fn)
+        self.check_constraints_fn = check_constraints_fn
         self.seed = seed
         self.contexts = None
         self.env_name = env_name
@@ -99,13 +106,36 @@ class ContextSampler(AbstractContextSampler):
             return self.contexts
 
         context_feature_args = self.context_feature_names
-        self.contexts = sample_contexts(
-            env_name=self.env_name,
-            num_contexts=self.n_samples,
-            default_sample_std_percentage=self.sigma_rel,
-            context_feature_args=context_feature_args,
-            seed=self.seed,
-        )
+        if self.check_constraints_fn is None:
+            self.contexts = sample_contexts(
+                env_name=self.env_name,
+                num_contexts=self.n_samples,
+                default_sample_std_percentage=self.sigma_rel,
+                context_feature_args=context_feature_args,
+                seed=self.seed,
+            )
+        else:
+            valid_context_list = []
+            i = 0
+            while i < self.n_samples:
+                # Sample context
+                contexts = sample_contexts(
+                    env_name=self.env_name,
+                    num_contexts=1,
+                    default_sample_std_percentage=self.sigma_rel,
+                    context_feature_args=context_feature_args,
+                    seed=self.seed,
+                )
+                context = contexts[0]
+
+                # If context ist valid, add to sampled contexts and increase counter
+                if self.check_constraints_fn(**context):
+                    valid_context_list.append(context)
+                    i = i + 1
+                else:
+                    warnings.warn("Context sample invalid. Resample.")
+            self.contexts = {k: v for k, v in enumerate(valid_context_list)}
+
         return self.contexts
 
 
