@@ -45,6 +45,7 @@ def check_constraints(
     limb_length_1: float,
     x_spinner: float = 0.2,
     x_finger: float = -0.2,
+    **kwargs: Any
 ) -> None:
     spinner_half_length = spinner_length / 2
     # Check if spinner collides with finger hinge
