@@ -2,3 +2,8 @@
 defaults:
   - /environments/dmc/base
 env: CARLDmcFingerEnv
+
+context_sampler:
+  check_constraints_fn:
+    _target_: carl.envs.dmc.dmc_tasks.finger.check_constraints
+    _partial_: true
