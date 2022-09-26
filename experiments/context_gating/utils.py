@@ -76,7 +76,7 @@ def check_wandb_exists(cfg, unique_fields: List[str]):
     print(query_wandb)
 
     api = wandb.Api()
-    runs = api.runs(cfg["wandb"]["project"], query_wandb)
+    runs = api.runs(cfg["wandb"]["entity"] + "/" + cfg["wandb"]["project"], query_wandb)
 
     found_run = False
     for run in runs:
