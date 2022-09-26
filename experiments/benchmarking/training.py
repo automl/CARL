@@ -176,6 +176,7 @@ def train(cfg: DictConfig):
         )
     ) and not cfg.wandb.debug:
         print(f"Skipping run with cfg {dict_cfg}")
+        return
     print(cfg)
 
     hydra_job = (
