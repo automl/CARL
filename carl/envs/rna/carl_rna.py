@@ -16,7 +16,6 @@ from carl.envs.rna.carl_rna_definitions import (
 )
 from carl.utils.trial_logger import TrialLogger
 
-from carl.context_encoders import ContextEncoder
 
 
 class CARLRnaDesignEnv(CARLEnv):
@@ -32,7 +31,6 @@ class CARLRnaDesignEnv(CARLEnv):
         logger: Optional[TrialLogger] = None,
         scale_context_features: str = "no",
         default_context: Optional[Dict] = DEFAULT_CONTEXT,
-        context_encoder: Optional[ContextEncoder] = None,
     ):
         """
         Parameters
@@ -73,8 +71,7 @@ class CARLRnaDesignEnv(CARLEnv):
             gaussian_noise_std_percentage=gaussian_noise_std_percentage,
             logger=logger,
             scale_context_features=scale_context_features,
-            default_context=default_context,
-            context_encoder=context_encoder,
+            default_context=default_context
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
 
