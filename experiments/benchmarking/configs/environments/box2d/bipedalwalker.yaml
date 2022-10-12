@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - ../../algorithm/sac
+
+env: CARLBipedalWalkerEnv
+max_num_frames: 500000
