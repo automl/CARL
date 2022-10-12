@@ -124,6 +124,23 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=a
  python experiments/benchmarking/run_training.py max_num_frames=100000 '+environments/classic_control=acrobot' '+context_visibility=hidden' 'wandb.debug=true' '+algorithm=c51' 'eval_episodes=5' 
 ```
 
+CartPole
+```bash
+# Train
+python experiments/benchmarking/run_training.py '+environments/classic_control=cartpole' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity],[masscart],[masspole],[pole_length],[gravity,masscart,masspole,pole_length]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
+```
+
+Bipedal Walker
+```bash
+# Train
+python experiments/benchmarking/run_training.py '+environments/box2d=bipedalwalker' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[FRICTION],[GRAVITY_Y],[MOTORS_TORQUE],[FRICTION,GRAVITY_Y,MOTORS_TORQUE]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpu' -m
+```
+
+Lunar Lander
+```bash
+# Train
+python experiments/benchmarking/run_training.py '+environments/box2d=lunarlander' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[MAIN_ENGINE_POWER],[GRAVITY_Y],[SIDE_ENGINE_POWER],[MAIN_ENGINE_POWER,GRAVITY_Y,SIDE_ENGINE_POWER]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpu' -m
+```
 
 
 ## Experiment Preparations
