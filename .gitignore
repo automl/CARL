@@ -22,3 +22,9 @@ multirun
 outputs
 testvenv
 *.egg-info
+
+*.png
+*.pdf
+*.csv
+*.pickle
+*.ipynb_checkpoints
