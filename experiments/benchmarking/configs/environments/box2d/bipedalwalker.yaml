@@ -4,3 +4,14 @@ defaults:
 
 env: CARLBipedalWalkerEnv
 max_num_frames: 500000
+
+gamma: 0.98
+q_targ_tau: 0.02
+pi_targ_tau: 0.02
+pi_update_freq: 2
+
+learning_rate: 7.3e-4
+batch_size: 256
+
+network:
+  width: 256

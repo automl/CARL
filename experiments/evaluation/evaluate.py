@@ -182,7 +182,10 @@ def evaluate_policy(cfg: DictConfig):
     # ----------------------------------------------------------------------
     # Instantiate environments
     # ----------------------------------------------------------------------
-    EnvCls = partial(getattr(envs, traincfg.env), **traincfg.carl)
+    env_kwargs = OmegaConf.to_container(traincfg.carl, resolve=True)
+    # if cfg.landing_in_space.follow:
+    #     env_kwargs["high_gameover_penalty"] = True
+    EnvCls = partial(getattr(envs, traincfg.env), **env_kwargs)
     env = EnvCls(
         contexts=contexts,
     )
@@ -217,6 +220,7 @@ def evaluate_policy(cfg: DictConfig):
     # ----------------------------------------------------------------------
     weights_path = wandbdir / "latest-run" / "files" / "func_dict.pkl.lz4"
     policy = load_policy(traincfg, weights_path=weights_path)
+    policy.observation_preprocessor = coax.utils.default_preprocessor(env.observation_space)
     returns, context_ids = evaluate(
         pi=policy, env=env, num_episodes=cfg.n_eval_episodes
     )
