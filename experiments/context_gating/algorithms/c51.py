@@ -66,18 +66,18 @@ def c51(cfg, env, eval_env):
 
             s = s_next
 
-        if env.period(name="evaluate", T_period=cfg.eval_freq):
-            path = dump_func_dict(locals())
-            average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
-            eval_avg_G = onp.mean(average_returns)
-            wandb.log(
-                {
-                    "eval/return_hist": wandb.Histogram(average_returns),
-                    "eval/return": eval_avg_G,
-                },
-                commit=False,
-            )
-            print(f"eval_avg_G: {eval_avg_G}")
+            if env.period(name="evaluate", T_period=cfg.eval_freq):
+                path = dump_func_dict(locals())
+                average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+                eval_avg_G = onp.mean(average_returns)
+                wandb.log(
+                    {
+                        "eval/return_hist": wandb.Histogram(average_returns),
+                        "eval/return": eval_avg_G,
+                    },
+                    commit=False,
+                )
+                print(f"eval_avg_G: {eval_avg_G}")
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
     return onp.mean(average_returns)

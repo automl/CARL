@@ -110,23 +110,23 @@ def td3(cfg, env, eval_env):
                 break
 
             s = s_next
-        # if env.period(name='generate_gif', T_period=cfg.render_freq) and env.T > cfg.q_warmup_num_frames:
-        #     T = env.T - env.T % cfg.render_freq  # round
-        #     gif_path = f"{os.getcwd()}/gifs/T{T:08d}.gif"
-        #     coax.utils.generate_gif(
-        #         env=env, policy=pi, filepath=gif_path)
-        #     wandb.log({"eval/episode": wandb.Video(
-        #         gif_path, caption=str(T), fps=30)}, commit=False)
-        if env.period(name="evaluate", T_period=cfg.eval_freq):
-            path = dump_func_dict(locals())
-            average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
-            wandb.log(
-                {
-                    "eval/return_hist": wandb.Histogram(average_returns),
-                    "eval/return": onp.mean(average_returns),
-                },
-                commit=False,
-            )
+            # if env.period(name='generate_gif', T_period=cfg.render_freq) and env.T > cfg.q_warmup_num_frames:
+            #     T = env.T - env.T % cfg.render_freq  # round
+            #     gif_path = f"{os.getcwd()}/gifs/T{T:08d}.gif"
+            #     coax.utils.generate_gif(
+            #         env=env, policy=pi, filepath=gif_path)
+            #     wandb.log({"eval/episode": wandb.Video(
+            #         gif_path, caption=str(T), fps=30)}, commit=False)
+            if env.period(name="evaluate", T_period=cfg.eval_freq):
+                path = dump_func_dict(locals())
+                average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+                wandb.log(
+                    {
+                        "eval/return_hist": wandb.Histogram(average_returns),
+                        "eval/return": onp.mean(average_returns),
+                    },
+                    commit=False,
+                )
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
     return onp.mean(average_returns)
