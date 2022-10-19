@@ -20,8 +20,7 @@ def sac(cfg, env, eval_env):
         random_seed=cfg.seed,
         proba_dist=coax.proba_dists.NormalDist(
             env.action_space,
-            clip_logvar=(-10.0, 4.0),
-            squash=True,
+            clip_box=(-10.0, 4.0),
         ),
     )
     q1 = coax.Q(
