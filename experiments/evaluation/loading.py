@@ -1,9 +1,7 @@
 from typing import Union
 from pathlib import Path
 from omegaconf import DictConfig
-from typing import Dict, Any
 import coax
-from rich import print
 
 
 def load_func_dict(path: Union[str, Path]):
