@@ -7,7 +7,7 @@ import json
 
 
 def plot_gravities_vlines(
-    ax, gravities, yvalue, mean, std, fontsize, shortanno: bool = False
+    ax, gravities, yvalue, mean, std, fontsize, shortanno: bool = False, colorline: str = "mediumvioletred"
 ):
     yvals = np.linspace(0.01, yvalue, len(gravities))
     keys = np.array(list(gravities.keys()))
@@ -15,7 +15,7 @@ def plot_gravities_vlines(
     ids = np.argsort(values)
     values = values[ids]
     keys = keys[ids]
-    colorline = "mediumvioletred"
+    
     for i in range(len(gravities)):
         key = keys[i]
         value = values[i]
