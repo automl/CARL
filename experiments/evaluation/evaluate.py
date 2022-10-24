@@ -129,7 +129,7 @@ def evaluate_policy(cfg: DictConfig):
         slurm_id = hydra_cfg.job.id
     else:
         slurm_id = None
-    wandb.config.update({"command": command, "slurm_id": slurm_id})
+    wandb.config.update({"command": command, "slurm_id": slurm_id, "rundir": HydraConfig.get().run.dir})
     set_seed_everywhere(traincfg.seed)
 
     # ----------------------------------------------------------------------
