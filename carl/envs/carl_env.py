@@ -232,6 +232,10 @@ class CARLEnv(Wrapper):
     def context(self) -> Dict:
         return self._context
 
+    @property
+    def context_key(self) -> str:
+        return list(self.contexts.keys())[self.context_index]
+
     @context.setter
     def context(self, context: Context) -> None:
         self._context = self.fill_context_with_default(context=context)
