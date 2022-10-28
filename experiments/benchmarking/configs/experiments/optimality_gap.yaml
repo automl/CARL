@@ -1,0 +1,19 @@
+# @package _global_
+defaults:
+  - ../environments/classic_control/pendulum
+  - ../context_visibility/hidden
+  - ../slurm/cpushort
+
+experiment: optimality_gap
+
+carl:
+  context_mask: null
+
+eval_on_train_context: true
+
+context_sampler:
+  env_name: ${env}
+  context_feature_names: ["l"]
+  seed: ${seed}
+  n_samples: 100
+  sigma_rel: 0.25  # 0.1, 0.25, 0.5
