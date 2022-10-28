@@ -2,7 +2,7 @@
 
 results_path: /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-01/14-14-50_benchmark_train/118
 n_eval_episodes_per_context: 3
-experiment: kirk_evaluation_protocol
+experiment: kirk_evaluation_protocol2
 kirk_evaluation_protocol:
   follow: true
   distribution_type: test_extrapolation_single  # train,test_interpolation,test_interpolation_combinatorial,test_extrapolation_single,test_extrapolation_all

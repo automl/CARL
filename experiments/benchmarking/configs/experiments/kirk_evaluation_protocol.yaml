@@ -4,7 +4,7 @@ defaults:
   - ../context_visibility/hidden
   - ../slurm/cpushort
 
-experiment: kirk_evaluation_protocol
+experiment: kirk_evaluation_protocol2
 
 context_sampler:
   n_samples: 1000
@@ -24,13 +24,13 @@ kirk_evaluation_protocol:
   context_features:
     - _target_: experiments.evaluation_protocol.evaluation_protocol.ContextFeature
       name: gravity
-      lower: 9.
-      lower_constraint: 9.5
+      lower: 8.
+      lower_constraint: 9.
       mid: 10.
-      upper: 11.
+      upper: 12.
     - _target_: experiments.evaluation_protocol.evaluation_protocol.ContextFeature
       name: pole_length
-      lower: 0.4
-      lower_constraint: 0.5
-      mid: 0.6
-      upper: 0.8
+      lower: 0.25
+      lower_constraint: 0.375
+      mid: 0.5
+      upper: 0.75

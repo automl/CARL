@@ -171,6 +171,8 @@ python experiments/benchmarking/run_training.py max_num_frames=10000 '+environme
 ```
 
 ## Evaluation Protocol [Kirk]
+experiment=kirk_evaluation_protocol2
+
 Debug
 ```bash
 python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol' 'wandb.debug=true' 'eval_episodes=5' 
@@ -178,7 +180,7 @@ python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_pr
 
 Run
 ```bash
-python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol' 'seed=range(1,11)' 'kirk_evaluation_protocol.mode=A,B,C' '+context_visibility=hidden,cgate,visible_all,visible_changing' -m
+python experiments/benchmarking/run_training.py '+experiments=kirk_evaluation_protocol' 'seed=range(1,11)' 'kirk_evaluation_protocol.mode=A,B,C' '+context_visibility=hidden,visible_all,cgate_hadamard,cgate_lstm' -m
 ```
 
 Evaluate debug
@@ -186,8 +188,13 @@ Evaluate debug
 python experiments/evaluation/evaluate.py +experiments=kirk_evaluation_protocol kirk_evaluation_protocol.distribution_type=test_extrapolation_all wandb.debug=True
 ```
 
+
 ```bash
+# old
 python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_protocol' 'kirk_evaluation_protocol.distribution_type=train,test_interpolation,test_interpolation_combinatorial,test_extrapolation_single,test_extrapolation_all' -m --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-07-01/14-14-50_benchmark_train/'
+
+# new
+python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_protocol' 'kirk_evaluation_protocol.distribution_type=train,test_interpolation,test_interpolation_combinatorial,test_extrapolation_single,test_extrapolation_all' -m --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-10-27/17-41-56_benchmark_train'
 ```
 
 ## Landing in Space
@@ -220,3 +227,11 @@ python experiments/evaluation/evaluate.py '+experiments=landing_in_space' result
 
 ```
 
+## Optimality Gap
+```bash
+# General Agent
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=optimality_gap' -m
+
+# Oracles
+
+```
