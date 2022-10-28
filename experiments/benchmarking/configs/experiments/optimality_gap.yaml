@@ -17,3 +17,6 @@ context_sampler:
   seed: ${seed}
   n_samples: 100
   sigma_rel: 0.25  # 0.1, 0.25, 0.5
+
+# SAC
+alpha: 0.1
