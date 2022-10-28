@@ -28,3 +28,5 @@ testvenv
 *.csv
 *.pickle
 *.ipynb_checkpoints
+*optgap*
+*smac3*
