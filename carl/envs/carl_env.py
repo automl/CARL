@@ -193,9 +193,7 @@ class CARLEnv(Wrapper):
         # where it is allowed to add gaussian noise
 
         # Set initial context
-        self.context_index = 0  # type: int
-        context_keys = list(self.contexts.keys())
-        self.context = self.contexts[context_keys[self.context_index]]
+        self.context = self.context_selector.select()
 
         # Scale context features
         if scale_context_features not in self.available_scale_methods:
@@ -234,7 +232,7 @@ class CARLEnv(Wrapper):
 
     @property
     def context_key(self) -> str:
-        return list(self.contexts.keys())[self.context_index]
+        return self.context_selector.contexts_keys[self.context_selector.context_index]
 
     @context.setter
     def context(self, context: Context) -> None:
