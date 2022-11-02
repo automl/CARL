@@ -245,3 +245,13 @@ python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments
 3. Prepare context files and runscripts with `prepare_optimality_gap_oracle_training.ipynb`
 4. Train oracles with `for i in {0..5}; do bash experiments/evaluation/tmp/runcommands_optimality_gap/run_$i.sh; done`
 5. Collect run folders of general agent and oracles and use `eval_optimality_gap.ipynb` for plotting
+
+
+## Context Sample Efficiency
+Pendulum, l, sigma rel = 0.25, hidden vs visible, 
+n_contexts=1,2,4,8,16,32,64,128,256,512,1024
+10 seeds
+
+```bash
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128,256,512,1024' '+context_visibility=hidden,visible_changing' -m
+```
