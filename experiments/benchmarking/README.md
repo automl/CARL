@@ -96,7 +96,15 @@ python experiments/benchmarking/training.py '+environments/dmc=finger' 'seed=4' 
 ### Ant
 SAC
 ```bash
+# train
 python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,friction,joint_stiffness],[gravity],[friction],[joint_stiffness]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=gpu' -m
+
+# debug on cluster
+python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=range(1,2)' '+context_visibility=cgate_hadamard' 'context_sampler.context_feature_names=[gravity,friction,joint_stiffness]' 'context_sampler.sigma_rel=0.5' '+slurm=gpu' 'wandb.debug=true' -m
+
+
+# debug local
+python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=1' '+context_visibility=cgate_hadamard' 'context_sampler.context_feature_names=[gravity,friction,joint_stiffness]' 'context_sampler.sigma_rel=0.5' 'wandb.debug=true'
 ```
 
 - [ ] LSTM baseline for whatever makes sense
@@ -228,10 +236,12 @@ python experiments/evaluation/evaluate.py '+experiments=landing_in_space' result
 ```
 
 ## Optimality Gap
+1. Train general agent
 ```bash
 # General Agent
 python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=optimality_gap' -m
-
-# Oracles
-
 ```
+2. Evaluate general agent
+3. Prepare context files and runscripts with `prepare_optimality_gap_oracle_training.ipynb`
+4. Train oracles with `for i in {0..5}; do bash experiments/evaluation/tmp/runcommands_optimality_gap/run_$i.sh; done`
+5. Collect run folders of general agent and oracles and use `eval_optimality_gap.ipynb` for plotting

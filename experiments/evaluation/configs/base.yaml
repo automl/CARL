@@ -17,8 +17,8 @@ wandb:
   project: carl-tmlr
 
 results_path: ???  # set in experiments/???
-n_eval_episodes_per_context: null
-n_eval_episodes: 5  # will be overwritten if n_eval_episodes_per_context is not None
+n_eval_episodes_per_context: 5
+n_eval_episodes: null  # will be overwritten if n_eval_episodes_per_context is not None
 contexts_path: null
 sample_contexts: false
 eval_on_train_contexts: false

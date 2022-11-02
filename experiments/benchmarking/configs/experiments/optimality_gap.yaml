@@ -3,8 +3,9 @@ defaults:
   - ../environments/classic_control/pendulum
   - ../context_visibility/hidden
   - ../slurm/cpushort
+  - ../algorithm/td3
 
-experiment: optimality_gap
+experiment: optimality_gap2
 
 carl:
   context_mask: null
@@ -15,8 +16,8 @@ context_sampler:
   env_name: ${env}
   context_feature_names: ["l"]
   seed: ${seed}
-  n_samples: 100
+  n_samples: 10
   sigma_rel: 0.25  # 0.1, 0.25, 0.5
 
-# SAC
-alpha: 0.1
+# # SAC
+# alpha: 0.1
