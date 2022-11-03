@@ -198,12 +198,7 @@ class CARLEnv(Wrapper):
         # where it is allowed to add gaussian noise
 
         # Set initial context
-        # TODO only set context during reset?
-        # Don't use the context selector. This way after the first reset we actually
-        # start with the first context. We just need a default/initial context here
-        # so all the tests and the rest does not break.
-        context_keys = list(self.contexts.keys())
-        self.context = self.contexts[context_keys[0]]
+        self.context = self.context_selector.select()
 
         # Scale context features
         if scale_context_features not in self.available_scale_methods:
@@ -239,6 +234,10 @@ class CARLEnv(Wrapper):
     @property
     def context(self) -> Dict:
         return self._context
+
+    @property
+    def context_key(self) -> str:
+        return self.context_selector.contexts_keys[self.context_selector.context_index]
 
     @context.setter
     def context(self, context: Context) -> None:
