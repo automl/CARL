@@ -226,7 +226,9 @@ class TestContextFeatureScaling(unittest.TestCase):
         state, reward, done, info = env.step(action=action)
         n_c = len(env.default_context)
         scaled_contexts = state[-n_c:]
-        target = np.array([16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7, 1, 1])
+        target = np.array(
+            [16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7, 1, 1]
+        )  # for context "1"
         self.assertTrue(
             np.all(target == scaled_contexts),
             f"target {target} != actual {scaled_contexts}",
@@ -346,9 +348,7 @@ class TestContextSelection(unittest.TestCase):
         self.assertEqual(env.context_selector.n_calls, 1)
 
         env.reset()
-        self.assertEqual(
-            env.context_selector.contexts_keys[env.context_selector.context_id], "b"
-        )
+        self.assertEqual(env.context_key, "b")
 
     def test_roundrobin_selector_init(self):
         from carl.context.selection import RoundRobinSelector
@@ -379,6 +379,47 @@ class TestContextSelection(unittest.TestCase):
         with self.assertRaises(ValueError):
             contexts = self.generate_contexts()
             _ = CARLPendulumEnv(contexts=contexts, context_selector="bork")
+
+    def test_get_context_key(self):
+        contexts = self.generate_contexts()
+        env = CARLPendulumEnv(contexts=contexts)
+        self.assertEqual(env.context_key, None)
+
+
+class TestContextSampler(unittest.TestCase):
+    def test_get_defaults(self):
+        from carl.context.sampling import get_default_context_and_bounds
+
+        defaults, bounds = get_default_context_and_bounds(env_name="CARLPendulumEnv")
+        DEFAULT_CONTEXT = {
+            "max_speed": 8.0,
+            "dt": 0.05,
+            "g": 10.0,
+            "m": 1.0,
+            "l": 1.0,
+            "initial_angle_max": np.pi,
+            "initial_velocity_max": 1,
+        }
+        self.assertDictEqual(defaults, DEFAULT_CONTEXT)
+
+    def test_sample_contexts(self):
+        from carl.context.sampling import sample_contexts
+
+        contexts = sample_contexts(
+            env_name="CARLPendulumEnv",
+            context_feature_args=["l"],
+            num_contexts=1,
+            default_sample_std_percentage=0.0,
+        )
+        self.assertEqual(contexts[0]["l"], 1)
+
+
+class TestContextAugmentation(unittest.TestCase):
+    def test_gaussian_noise(self):
+        from carl.context.augmentation import add_gaussian_noise
+
+        c = add_gaussian_noise(default_value=1, percentage_std=0)
+        self.assertEqual(c, 1)
 
 
 if __name__ == "__main__":
