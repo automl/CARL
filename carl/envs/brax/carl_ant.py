@@ -40,7 +40,7 @@ CONTEXT_BOUNDS = {
 class CARLAnt(CARLEnv):
     def __init__(
         self,
-        env: Ant = Ant(),
+        env: Ant = Ant(legacy_spring=True),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
