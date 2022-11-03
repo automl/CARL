@@ -226,7 +226,7 @@ class TestContextFeatureScaling(unittest.TestCase):
         state, reward, done, info = env.step(action=action)
         n_c = len(env.default_context)
         scaled_contexts = state[-n_c:]
-        target = np.array([16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7, 1, 1])
+        target = np.array([16 / 12, 0.06 / 0.045, 20 / 15, 2 / 1.5, 3.6 / 2.7, 1, 1])  # for context "1"
         self.assertTrue(
             np.all(target == scaled_contexts),
             f"target {target} != actual {scaled_contexts}",
@@ -347,7 +347,7 @@ class TestContextSelection(unittest.TestCase):
 
         env.reset()
         self.assertEqual(
-            env.context_selector.contexts_keys[env.context_selector.context_id], "b"
+            env.context_key, "b"
         )
 
     def test_roundrobin_selector_init(self):

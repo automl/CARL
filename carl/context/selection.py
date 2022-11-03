@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import abstractmethod
 from typing import Any, Callable, List, Optional, Tuple
 
@@ -72,6 +74,25 @@ class AbstractSelector(object):
         self.context_id = context_id
         self.n_calls += 1
         return context
+
+    @property
+    def context_key(self) -> Any | None:
+        """
+        Return context key
+
+        If no context has been selected yet (context_id=None),
+        return None.
+
+        Returns
+        -------
+        Any | None
+            The key of the current context or None
+        """
+        if self.context_id:
+            key = self.contexts_keys[self.context_id]
+        else:
+            key = None
+        return key
 
 
 class RandomSelector(AbstractSelector):
