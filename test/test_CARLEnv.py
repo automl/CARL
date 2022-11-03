@@ -380,6 +380,10 @@ class TestContextSelection(unittest.TestCase):
             contexts = self.generate_contexts()
             _ = CARLPendulumEnv(contexts=contexts, context_selector="bork")
 
+    def test_get_context_key(self):
+        contexts = self.generate_contexts()
+        env = CARLPendulumEnv(contexts=contexts)
+        self.assertEqual(env.context_key, None)
 
 if __name__ == "__main__":
     unittest.main()
