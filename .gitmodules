@@ -1,9 +1,12 @@
 [submodule "carl/envs/rna/learna"]
 	path = carl/envs/rna/learna
 	url = https://github.com/automl/learna.git
-# [submodule "src/envs/mario/TOAD-GUI"]
-# 	path = src/envs/mario/TOAD-GUI
-# 	url = https://github.com/Mawiszus/TOAD-GUI
-# [submodule "src/envs/mario/Mario-AI-Framework"]
-# 	path = src/envs/mario/Mario-AI-Framework
-# 	url = https://github.com/frederikschubert/Mario-AI-Framework
+[submodule "src/envs/mario/TOAD-GUI"]
+	path = src/envs/mario/TOAD-GUI
+	url = https://github.com/Mawiszus/TOAD-GUI
+[submodule "src/envs/mario/Mario-AI-Framework"]
+	path = src/envs/mario/Mario-AI-Framework
+	url = https://github.com/frederikschubert/Mario-AI-Framework
+[submodule "experiments/cRL_HPO"]
+	path = experiments/cRL_HPO
+	url = https://github.com/automl-private/cRL_HPO.git

@@ -1,0 +1,2 @@
+["6", "5", 0, 1, {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.99}, {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.99}]
+["7", "6", 1, 1, {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.99}, {"batch_size": 128, "learning_rate": 3e-05, "gamma": 0.99, "tau": 0.99}]

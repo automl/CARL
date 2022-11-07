@@ -1,0 +1,6 @@
+# @package _global_
+group: Ant_encoder
+
+encoder:
+  weights: '../../carl/context_encoders/saved_models/Ant/AE_4_2.zip'
+  model: ContextAE

@@ -1,0 +1,9 @@
+# @package _global_
+wandb:
+  group: cgate_hadamard
+
+carl:
+  hide_context: false
+  dict_observation_space: true
+
+gating_type: Hadamard

@@ -1,0 +1,15 @@
+# @package _global_
+
+env: CARLMountainCarContinuousEnv
+
+noise_decay: 1.0 # no decay
+action_noise:
+  type: ornsteinuhlenbeck
+  kwargs:
+    mu: 0.0
+    sigma: 0.5
+    theta: 0.15
+
+eval_episodes: 10
+tanh_policy: true
+learning_rate: 0.0003

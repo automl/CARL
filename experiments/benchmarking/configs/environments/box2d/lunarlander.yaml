@@ -1,0 +1,15 @@
+# @package _global_
+defaults:
+  - ../../algorithm/c51
+
+env: CARLLunarLanderEnv
+max_num_frames: 200000
+
+pi_temperature: 0.1
+q_min_value: -100
+q_max_value: 100
+gamma: 0.99
+
+network:
+  width: 64
+  num_atoms: 51

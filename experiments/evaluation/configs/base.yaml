@@ -1,0 +1,29 @@
+defaults:
+  - slurm/cpushort
+  - _self_
+  - override hydra/launcher: submitit_slurm
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+
+experiment: benchmarking
+wandb:
+  id: null
+  entity: tnt
+  debug: false
+  group: ???  # set in experiments/???
+  job_type: eval
+  tags: []
+  notes: null
+  project: carl-tmlr
+
+results_path: ???  # set in experiments/???
+n_eval_episodes_per_context: null
+n_eval_episodes: 5  # will be overwritten if n_eval_episodes_per_context is not None
+contexts_path: null
+sample_contexts: false
+eval_on_train_contexts: false
+
+kirk_evaluation_protocol:
+  follow: false
+landing_in_space:
+  follow: false

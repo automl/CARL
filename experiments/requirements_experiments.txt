@@ -1,0 +1,11 @@
+hydra-core
+hydra-colorlog
+rich
+matplotlib
+seaborn
+pandas
+wandb
+coax
+dm-haiku
+jax[cuda,cpu]
+hydra-submitit-launcher

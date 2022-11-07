@@ -1,0 +1,22 @@
+# @package _global_
+defaults:
+  - ../environments/box2d/lunarlander
+  - ../context_visibility/hidden
+  - ../slurm/cpu
+  - lis/gravities_normal
+
+experiment: landing_in_space
+
+context_sampler:
+  n_samples: 1000
+
+carl:
+  # Don't append these to the state or pass these to cGate
+  # we only vary GRAVITY_Y
+  context_mask: [FPS,SCALE,MAIN_ENGINE_POWER,SIDE_ENGINE_POWER,INITIAL_RANDOM,GRAVITY_X,LEG_AWAY,LEG_DOWN,LEG_W,LEG_H,LEG_SPRING_TORQUE,SIDE_ENGINE_HEIGHT,SIDE_ENGINE_AWAY,VIEWPORT_W,VIEWPORT_H,]
+
+eval_on_train_context: true
+
+landing_in_space:
+  follow: true
+  context_feature_key: GRAVITY_Y

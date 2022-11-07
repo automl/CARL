@@ -1,12 +1,14 @@
 if __name__ == "__main__":
+    import numpy as np
     from typing import List
 
     import matplotlib.pyplot as plt
-    import numpy as np
     import pandas as pd
     import seaborn as sns
 
     from carl.utils.doc_building.plotting import radar_factory
+
+    plot_legend = True
 
     env_context_feature_names = {
         "CARLMountainCarEnv": [

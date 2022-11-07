@@ -1,0 +1,15 @@
+# @package _global_
+defaults:
+  - ../../algorithm/c51
+
+env: CARLCartPoleEnv
+max_num_frames: 100_000
+
+pi_temperature: 0.1
+q_min_value: 0     # -100,100 reaches 500 avg return after ~50000 steps
+q_max_value: 110
+gamma: 0.99
+
+network:
+  width: 32
+  num_atoms: 51

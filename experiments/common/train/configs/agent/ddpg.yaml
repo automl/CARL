@@ -1,0 +1,32 @@
+# @package _global_
+# CARLPendulumEnv
+
+training:
+  num_envs: 1
+
+agent:
+  name: DDPG
+  kwargs:
+     # sb3 zoo HPs (learning rate = 0.001)
+#    n_timesteps: 20000
+    policy: 'MlpPolicy'
+    gamma: 0.98
+    buffer_size: 200000
+    learning_starts: 10000
+#    noise_type: 'normal'
+#    noise_std: 0.1
+    action_noise:
+      _target_: stable_baselines3.common.noise.NormalActionNoise
+      mean: 0.0
+      sigma: 0.1
+    gradient_steps: -1
+    train_freq:
+      - !!int 1
+      - "episode"
+    learning_rate:
+      _target_: experiments.common.train.schedules.CosineAnnealingLRSchedule
+      lr_min: 1e-4
+      lr_max: 1e-3
+    seed: ${seed}
+    policy_kwargs:
+      net_arch: [400, 300]

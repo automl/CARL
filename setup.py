@@ -54,6 +54,13 @@ extras_require = {
         "sphinx-gallery>=0.10.0",
         "image>=1.5.33",
         "sphinx-autoapi>=1.8.4",
+        "gym[box2d]==0.24.1",
+        "brax>=0.0.10",
+        "protobuf>=3.17.3",
+        "dm_control>=1.0.3",
+        "torch>=1.9.0",
+        "Pillow>=8.3.1",
+        "py4j>=0.10.9.2"
     ]
 }
 

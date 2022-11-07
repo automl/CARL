@@ -1,0 +1,6 @@
+defaults:
+  - slurm
+  - _self_
+
+model_fname: /home/benjamin/Dokumente/code/tmp/CARL/src/results/base_vs_context/classic_control/CARLAcrobotEnv/0.25_changingcontexthidden/link_length_2/DQN_4/models/  # rl_model_450000_steps.zip #null
+context_file: null

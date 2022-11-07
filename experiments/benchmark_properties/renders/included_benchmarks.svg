@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="594.35999mm"
+   height="297.17999mm"
+   viewBox="0 0 594.35999 297.17999"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="included_benchmarks.svg"
+   inkscape:export-filename="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/included_benchmarks.png"
+   inkscape:export-xdpi="200"
+   inkscape:export-ydpi="200">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="1149.7277"
+     inkscape:cy="594.85422"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1375"
+     inkscape:window-x="0"
+     inkscape:window-y="684"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <sodipodi:guide
+       position="396.23999,297.18001"
+       orientation="0,-1"
+       id="guide1075" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-16.642609,55.37532)">
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLAcrobotEnv.png"
+       xlink:href="render_CARLAcrobotEnv.png"
+       y="43.684677"
+       x="16.642609"
+       id="image861"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLAnt.png"
+       xlink:href="render_CARLAnt.png"
+       y="142.74467"
+       x="313.8226"
+       id="image875"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLBipedalWalkerEnv.png"
+       xlink:href="render_CARLBipedalWalkerEnv.png"
+       y="174.13907"
+       x="214.7626"
+       id="image889"
+       preserveAspectRatio="none"
+       height="67.665604"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLCartPoleEnv.png"
+       xlink:href="render_CARLCartPoleEnv.png"
+       y="-23.980927"
+       x="16.642609"
+       id="image903"
+       preserveAspectRatio="none"
+       height="67.665604"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLDmcFishEnv.png"
+       xlink:href="render_CARLDmcFishEnv.png"
+       y="142.74467"
+       x="511.9426"
+       id="image917"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLDmcQuadrupedEnv.png"
+       xlink:href="render_CARLDmcQuadrupedEnv.png"
+       y="43.684681"
+       x="511.9426"
+       id="image931"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLDmcWalkerEnv.png"
+       xlink:href="render_CARLDmcWalkerEnv.png"
+       y="-55.375317"
+       x="511.9426"
+       id="image945"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLFetch.png"
+       xlink:href="render_CARLFetch.png"
+       y="142.74467"
+       x="412.8826"
+       id="image959"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLGrasp.png"
+       xlink:href="render_CARLGrasp.png"
+       y="43.684681"
+       x="412.8826"
+       id="image973"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLHalfcheetah.png"
+       xlink:href="render_CARLHalfcheetah.png"
+       y="-55.37532"
+       x="313.8226"
+       id="image987"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLHumanoid.png"
+       xlink:href="render_CARLHumanoid.png"
+       y="-55.375317"
+       x="412.8826"
+       id="image1001"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLLunarLanderEnv.png"
+       xlink:href="render_CARLLunarLanderEnv.png"
+       y="-23.980927"
+       x="214.7626"
+       id="image1015"
+       preserveAspectRatio="none"
+       height="67.665604"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLMountainCarEnv.png"
+       xlink:href="render_CARLMountainCarEnv.png"
+       y="75.079071"
+       x="115.70261"
+       id="image1029"
+       preserveAspectRatio="none"
+       height="67.665604"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLPendulumEnv.png"
+       xlink:href="render_CARLPendulumEnv.png"
+       y="-55.37532"
+       x="115.70261"
+       id="image1043"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLUr5e.png"
+       xlink:href="render_CARLUr5e.png"
+       y="43.684677"
+       x="313.8226"
+       id="image1057"
+       preserveAspectRatio="none"
+       height="99.059998"
+       width="99.059998" />
+    <image
+       sodipodi:absref="/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/benchmark_properties/renders/render_CARLVehicleRacingEnv.png"
+       xlink:href="render_CARLVehicleRacingEnv.png"
+       y="75.079071"
+       x="214.7626"
+       id="image1071"
+       preserveAspectRatio="none"
+       height="67.665604"
+       width="99.059998" />
+  </g>
+</svg>
