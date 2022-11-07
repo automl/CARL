@@ -1,10 +1,11 @@
 # flake8: noqa: W605
+from __future__ import annotations
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import importlib
 
 import numpy as np
-from scipy.stats import norm, rv_continuous
+from scipy.stats import norm, rv_continuous, uniform
 
 import carl.envs
 from carl.utils.types import Context, Contexts
@@ -59,6 +60,8 @@ def sample_contexts(
     default_sample_std_percentage: float = 0.05,
     fallback_sample_std: float = 0.1,
     seed: Optional[int] = None,
+    uniform_distribution: bool = False,
+    uniform_bounds_rel: tuple(float, float) | None = None
 ) -> Dict[int, Dict[str, Any]]:
     """
     Sample contexts.
@@ -158,7 +161,13 @@ def sample_contexts(
                 # the sample mean. Therefore we use a fallback sample standard deviation.
                 sample_std = fallback_sample_std  # TODO change this back to sample_std
 
-            random_variable = norm(loc=sample_mean, scale=sample_std)
+            if not uniform_distribution:
+                random_variable = norm(loc=sample_mean, scale=sample_std)
+            else:
+                # bounds defined as [loc, loc+scale]
+                loc = uniform_bounds_rel[0] * sample_mean
+                scale = uniform_bounds_rel[1] * sample_mean - loc
+                random_variable = uniform(loc=loc, scale=scale)
             context_feature_type = env_bounds[context_feature_name][2]
             sample_dists[context_feature_name] = (random_variable, context_feature_type)
 

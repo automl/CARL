@@ -35,6 +35,8 @@ class ContextSampler(AbstractContextSampler):
         n_samples: Union[str, int] = 100,
         sigma_rel: Optional[float] = None,  # overrides difficulty
         check_constraints_fn: callable | DictConfig = None,
+        uniform_distribution: bool = False,
+        uniform_bounds_rel: tuple(float, float) | None = None
     ):
         """
         Sample contexts for training or evaluation.
@@ -65,6 +67,8 @@ class ContextSampler(AbstractContextSampler):
         self.seed = seed
         self.contexts = None
         self.env_name = env_name
+        self.uniform_distribution = uniform_distribution
+        self.uniform_bounds_rel = uniform_bounds_rel
         self.C_def, self.C_bounds = get_default_context_and_bounds(
             env_name=self.env_name
         )
@@ -113,6 +117,8 @@ class ContextSampler(AbstractContextSampler):
                 default_sample_std_percentage=self.sigma_rel,
                 context_feature_args=context_feature_args,
                 seed=self.seed,
+                uniform_distribution=self.uniform_distribution,
+                uniform_bounds_rel=self.uniform_bounds_rel,
             )
         else:
             valid_context_list = []
@@ -125,6 +131,8 @@ class ContextSampler(AbstractContextSampler):
                     default_sample_std_percentage=self.sigma_rel,
                     context_feature_args=context_feature_args,
                     seed=self.seed,
+                uniform_distribution=self.uniform_distribution,
+                uniform_bounds_rel=self.uniform_bounds_rel,
                 )
                 context = contexts[0]
 
