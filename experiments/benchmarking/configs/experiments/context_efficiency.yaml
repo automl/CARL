@@ -18,6 +18,8 @@ context_sampler:
   seed: ${seed}
   n_samples: 10
   sigma_rel: 0.25  # 0.1, 0.25, 0.5
+  uniform_distribution: true
+  uniform_bounds_rel: [0.5, 1.5]
 
 # # SAC
 # alpha: 0.1
