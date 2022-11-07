@@ -255,3 +255,30 @@ n_contexts=1,2,4,8,16,32,64,128,256,512,1024
 ```bash
 python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128,256,512,1024' '+context_visibility=hidden,visible_changing' -m
 ```
+
+```python
+# hidden, visible_changing
+result_dir = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-02/21-22-36_benchmark_train"
+# cgate_hadamard, cgate_lstm, visible_all
+result_dir = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-03/17-15-06_benchmark_train"
+```
+
+Create eval contexts with `experiments/notebooks/create_context_efficiency_test_contexts.ipynb`.
+
+Evaluation
+```bash
+# hidden, visible_changing
+python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/evaluation/data/context_efficiency/contexts_evaluation.json' 'n_eval_episodes_per_context=10' --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-02/21-22-36_benchmark_train' -m
+
+# eval result dir:  "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-03/12-29-52/"
+
+# cgate_hadamard, cgate_lstm, visible_all
+python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/evaluation/data/context_efficiency/contexts_evaluation.json' 'n_eval_episodes_per_context=10' --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-03/17-15-06_benchmark_train' -m
+
+# eval result dir: "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-03/19-59-39"
+```
+
+The whole thing with a uniform distribution:
+```bash
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128' '+context_visibility=hidden,visible_changing,visible_all,cgate_hadamard,cgate_lstm' -m
+```
