@@ -30,3 +30,4 @@ testvenv
 *.ipynb_checkpoints
 *optgap*
 *smac3*
+*.json
