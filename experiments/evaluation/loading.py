@@ -49,10 +49,17 @@ def load_from_path(p):
     fn_cfg = p / fn_config
     fn_wbsum = p / fn_wbsummary
     fn_wbcfg = p / fn_wbconfig
+    # If there is no run metadata, leave
     if not fn_wbcfg.is_file() or not fn_wbsum.is_file() or not fn_cfg.is_file():
         return None
+
+    # Load eval config
     cfg = OmegaConf.load(fn_cfg)
+
+    # Load train config
     traincfg = recover_traincfg_from_wandb(fn_wbcfg)
+
+    # Load summary
     summary = lazy_json_load(fn_wbsum)
 
     if "average_return" in summary:
@@ -60,30 +67,34 @@ def load_from_path(p):
     else:
         average_return = None
 
+    # If the evaluation was not successful, leave
     if average_return is None:
         return None
 
-    
-
-
+    # Load return per context id
     path_to_table = fn_wbsum.parent / summary["return_per_context_table"]["path"]
     return_per_context = load_wandb_table(path_to_table)
 
+    # Load eval contexts
     contexts_path = fn_wbsum.parent / summary["evalpost/contexts"]["path"]
     contexts = load_wandb_table(contexts_path)
 
-    visibility = traincfg.wandb.group
-    seed = traincfg.seed
-    n_contexts = traincfg.context_sampler.n_samples
+    # Add context info to return per context id
 
     context_ids = return_per_context["context_id"].apply(int).to_list()
     contexts_to_table = pd.DataFrame([contexts.iloc[cidx] for cidx in context_ids])
+    printr(contexts_to_table.shape)
     for col in contexts_to_table.columns:
         return_per_context[col] = contexts_to_table[col].to_numpy()
     n = len(return_per_context)
     # return_per_context["mode"] = [mode] * n
     # return_per_context["distribution_type"] = [distribution_type] * n
     # return_per_context["average_return"] = [average_return] * n
+
+    # Get metadata
+    visibility = traincfg.wandb.group
+    seed = traincfg.seed
+    n_contexts = traincfg.context_sampler.n_samples
     return_per_context["seed"] = seed
     return_per_context["visibility"] = visibility
     return_per_context["n_contexts"] = n_contexts
@@ -91,8 +102,9 @@ def load_from_path(p):
     if cfg.get("contexts_path", None):
         contexts = lazy_json_load(cfg.contexts_path)
         context_id = int(list(contexts.keys())[0])
+        context_id = list(contexts.values())
         return_per_context["context_id"] = context_id
-
+ 
     reps = []
     new_df = []
     for gid, gdf in return_per_context.groupby("context_id"):
@@ -112,7 +124,7 @@ def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False):
     paths = find_multirun_paths(result_dir=folder_eval)
 
     if reload_rpc:
-        with Pool() as pool:
+        with Pool(1) as pool:
             rpc_list = pool.map(load_from_path, paths)
         rpc_list = [r for r in rpc_list if r is not None]
         df_rpc = pd.concat(rpc_list)
@@ -121,3 +133,9 @@ def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False):
         df_rpc = pd.read_csv(rpc_fn)
     
     return df_rpc
+
+
+if __name__ == "__main__":
+    folder = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-07/20-45-00"
+    reload = True
+    df = load_from_path("/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-07/20-45-00/0")  # folder_eval=folder, rpc_fn=f"tmp/rpc_context_efficiency_{0}.csv", reload_rpc=reload)
