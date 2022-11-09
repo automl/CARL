@@ -73,7 +73,7 @@ context_sampler:
   env_name: ${env}
   context_feature_names: []
   seed: ${seed}
-  n_samples: 1000
+  n_samples: 128
   sigma_rel: 0.1  # 0.1, 0.25, 0.5
 
 encoder:
