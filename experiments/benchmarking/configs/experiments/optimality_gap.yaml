@@ -5,7 +5,7 @@ defaults:
   - ../slurm/cpushort
   - ../algorithm/td3
 
-experiment: optimality_gap2
+experiment: optimality_gap3
 
 carl:
   context_mask: null
