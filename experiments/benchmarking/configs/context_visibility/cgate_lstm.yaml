@@ -7,3 +7,6 @@ carl:
   dict_observation_space: true
 
 gating_type: LSTM
+
+context_branch:
+  width: ${network.width}

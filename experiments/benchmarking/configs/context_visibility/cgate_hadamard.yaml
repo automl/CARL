@@ -6,4 +6,7 @@ carl:
   hide_context: false
   dict_observation_space: true
 
+context_branch:
+  width: ${network.width}
+
 gating_type: Hadamard
