@@ -3,9 +3,9 @@ defaults:
   - ../environments/classic_control/pendulum
   - ../context_visibility/hidden
   - ../slurm/cpushort
-  - ../algorithm/td3
+  - ../algorithm/sac
 
-experiment: context_efficiency
+experiment: context_efficiency2
 
 carl:
   context_mask: null
