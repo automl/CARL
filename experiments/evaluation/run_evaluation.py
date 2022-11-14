@@ -68,7 +68,7 @@ def main():
     if args.result_dir is not None:
         result_paths = find_multirun_paths(result_dir=args.result_dir)
         result_paths = [Path(p) for p in result_paths]
-        result_paths = [f"'{p.resolve()}'" for p in result_paths]
+        result_paths = [f"{p.resolve()}" for p in result_paths]
         result_paths_str = ",".join(result_paths)
         result_paths_arg = f"results_path={result_paths_str}"
         unknown_args.append(result_paths_arg)
