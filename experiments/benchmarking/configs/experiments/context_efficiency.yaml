@@ -5,12 +5,13 @@ defaults:
   - ../slurm/cpushort
   - ../algorithm/sac
 
-experiment: context_efficiency2
+experiment: context_efficiency3
 
 carl:
   context_mask: null
 
 eval_on_train_context: true
+max_num_frames: 204_800
 
 context_sampler:
   env_name: ${env}
@@ -21,5 +22,12 @@ context_sampler:
   uniform_distribution: true
   uniform_bounds_rel: [0.5, 1.5]
 
-# # SAC
-# alpha: 0.1
+hydra:
+  run:
+    dir: ./runs/context_efficiency/${env}/train
+  sweep:
+    dir: ./runs/context_efficiency/${env}/train
+  launcher:
+    setup:
+      - export XLA_PYTHON_CLIENT_PREALLOCATE=false
+      - export MUJOCO_GL=egl
