@@ -256,13 +256,24 @@ python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments
 ```
 2. Evaluate general agent
 3. Prepare context files and runscripts with `prepare_optimality_gap_oracle_training.ipynb`
-4. Train oracles with `for i in {0..10}; do bash experiments/evaluation/tmp/runcommands_optimality_gap/run_$i.sh; done`
-5. Collect run folders of general agent and oracles and use `eval_optimality_gap.ipynb` for plotting
+4. Train oracles with `for i in {0..9}; do bash experiments/evaluation/tmp/runcommands_optimality_gap/run_$i.sh; done`
+5. Evaluate oracles with 
+6. Collect run folders of general agent and oracles and use `eval_optimality_gap.ipynb` for plotting
 
 
 Results: optimality_gap3
 general agent dir: `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-13/10-09-12_benchmark_train`
 eval dir general agent: `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-13/11-09-22`
+train dirs optimal agents: 
+```python
+train_dirs = [
+
+]
+eval_dirs = [
+
+]
+```
+
 
 
 
