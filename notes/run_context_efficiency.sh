@@ -12,7 +12,7 @@ python experiments/evaluation/run_evaluation.py '+experiments=context_efficiency
 echo "Create Test Contexts"
 echo "-----------------------------------------"
 python experiments/benchmarking/create_context_efficiency_test_contexts.py $env_name
-export contexts_path=runs/context_efficiency/${env_name}/contexts_evaluation.json
+export contexts_path=/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/context_efficiency/${env_name}/contexts_evaluation.json
 
 
 
