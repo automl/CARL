@@ -6,7 +6,7 @@ Note: We want to see each context at least twice during training.
 ## Setup
 - agent: SAC
 - env: Pendulum
-- vary: l ~ U(0.5, 1.5)
+- vary: l ~ U(0.5, 1.5) (default: l=1m)
 - 10 seeds
 - hidden
 - n contexts=1,2,4,8,16,32,64,128,256,512
