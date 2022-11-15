@@ -180,7 +180,7 @@ def evaluate_policy(cfg: DictConfig):
         skip_eval = True
 
     wandb.Table.MAX_ROWS = 50000
-    table_entries = len(contexts) * cfg.n_eval_episodes 
+    table_entries = cfg.n_eval_episodes 
     if table_entries > wandb.Table.MAX_ROWS:
         raise ValueError(f"Wandb table too small ({wandb.Table.MAX_ROWS}) for {table_entries}. Increase wandb.Table.MAX_ROWS.")
 
