@@ -243,6 +243,11 @@ python experiments/evaluation/evaluate.py '+experiments=landing_in_space' result
 python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[link_length_1,link_length_2,link_mass_1,link_mass_2],[link_length_1],[link_length_2],[link_mass_1],[link_mass_2]' '+context_sampling=glob(*)' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
 ```
 
+## Walker
+```bash
+python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' '+slurm=gpu' '+context_sampling=glob(*)' -m
+```
+
 ## Optimality Gap
 1. Train general agent
 ```bash
@@ -251,8 +256,25 @@ python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments
 ```
 2. Evaluate general agent
 3. Prepare context files and runscripts with `prepare_optimality_gap_oracle_training.ipynb`
-4. Train oracles with `for i in {0..5}; do bash experiments/evaluation/tmp/runcommands_optimality_gap/run_$i.sh; done`
-5. Collect run folders of general agent and oracles and use `eval_optimality_gap.ipynb` for plotting
+4. Train oracles with `for i in {0..9}; do bash experiments/evaluation/tmp/runcommands_optimality_gap/run_$i.sh; done`
+5. Evaluate oracles with 
+6. Collect run folders of general agent and oracles and use `eval_optimality_gap.ipynb` for plotting
+
+
+Results: optimality_gap3
+general agent dir: `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-13/10-09-12_benchmark_train`
+eval dir general agent: `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-13/11-09-22`
+train dirs optimal agents: 
+```python
+train_dirs = [
+
+]
+eval_dirs = [
+
+]
+```
+
+
 
 
 ## Context Sample Efficiency
@@ -292,6 +314,9 @@ python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments
 ```
 
 Result dir = `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-07/14-01-36_benchmark_train`
+Rerun (only cgate_lstm) = `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-13/10-59-12_benchmark_train`
+
+
 
 Eval:
 ```bash
@@ -299,3 +324,8 @@ python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Do
 
 # result dir: /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-07/20-45-00
 ```
+
+
+
+ Rerun with SAC, context_efficiency2, hadamard small network width
+ result dir: `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-13/11-06-36_benchmark_train`

@@ -80,4 +80,5 @@ def c51(cfg, env, eval_env):
                 print(f"eval_avg_G: {eval_avg_G}")
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+    path = dump_func_dict(locals())
     return onp.mean(average_returns)

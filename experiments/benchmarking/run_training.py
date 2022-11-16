@@ -8,13 +8,16 @@ from datetime import datetime
 from subprocess import Popen, DEVNULL
 from rich import print
 from tqdm import tqdm
+from pathlib import Path
 
 
-def make_code_snap(experiment, slurm_dir="exp_sweep"):
-    now = datetime.now()
-    snap_dir = pathlib.Path.cwd() / slurm_dir
-    snap_dir /= now.strftime("%Y-%m-%d")
-    snap_dir /= now.strftime("%H-%M-%S") + f"_{experiment}"
+def make_code_snap(experiment, slurm_dir="exp_sweep", snap_dir=None):
+    if snap_dir is None:
+        now = datetime.now()
+        snap_dir = pathlib.Path.cwd() / slurm_dir
+        snap_dir /= now.strftime("%Y-%m-%d")
+        snap_dir /= now.strftime("%H-%M-%S") + f"_{experiment}"
+    snap_dir = Path(snap_dir)
     snap_dir.mkdir(exist_ok=True, parents=True)
 
     def copy_dir(dir):
@@ -69,6 +72,7 @@ def make_code_snap(experiment, slurm_dir="exp_sweep"):
             and not str(f.name).startswith(".")
             and np.any([d in str(f) for d in initdirs])
             and "exp_sweep" not in str(f)
+            and "runs" not in str(f)
         ):
             fn = str(f)[len(str(src_dir)) + 1 :]
             newfn = snap_dir / "code" / fn
@@ -80,11 +84,12 @@ def make_code_snap(experiment, slurm_dir="exp_sweep"):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry", action="store_true")
+    parser.add_argument("--snap_dir", type=str)
     args, unknown_args = parser.parse_known_args()  # unknown args are hydra commands
     # unknown_args = [f"'{a}'" for a in unknown_args]
 
     experiment = "benchmark_train"
-    snap_dir = make_code_snap(experiment)
+    snap_dir = make_code_snap(experiment, snap_dir=args.snap_dir)
     print("Snap dir:", str(snap_dir))
 
     add_multirun_flag = False

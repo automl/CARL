@@ -22,6 +22,7 @@ multirun
 outputs
 testvenv
 *.egg-info
+runs
 
 *.png
 *.pdf

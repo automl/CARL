@@ -129,4 +129,5 @@ def td3(cfg, env, eval_env):
                 )
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+    path = dump_func_dict(locals())
     return onp.mean(average_returns)

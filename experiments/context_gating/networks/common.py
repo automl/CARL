@@ -81,7 +81,8 @@ def get_gating_function(cfg: DictConfig):
     if gating_type == "Hadamard":
         context_gating = context_gating_func(cfg)
     elif gating_type == "LSTM":
-        assert cfg.network.width == cfg.context_branch.width
+        if cfg.network.width != cfg.context_branch.width:
+            raise ValueError("cfg.network.width != cfg.context_branch.width", cfg.network.width, "!=", cfg.context_branch.width)
 
         context_gating = context_LSTM(cfg)
     else:
