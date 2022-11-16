@@ -1,7 +1,7 @@
 echo "Start Training"
 echo "-----------------------------------------"
 export env_name=$1
-python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128,256,512' '+context_visibility=hidden' --snap_dir ./runs/context_efficiency/${env_name}/train -m
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128,256,512' '+context_visibility=glob(*)' --snap_dir ./runs/context_efficiency/${env_name}/train -m
 
 
 echo "Evaluate on Train Contexts"
