@@ -2,6 +2,7 @@ from typing import Union
 from pathlib import Path
 from omegaconf import DictConfig
 import coax
+import warnings
 
 
 def load_func_dict(path: Union[str, Path]):
@@ -83,7 +84,6 @@ def load_from_path(p):
 
     context_ids = return_per_context["context_id"].apply(int).to_list()
     contexts_to_table = pd.DataFrame([contexts.iloc[cidx] for cidx in context_ids])
-    printr(contexts_to_table.shape)
     for col in contexts_to_table.columns:
         return_per_context[col] = contexts_to_table[col].to_numpy()
     n = len(return_per_context)
@@ -103,7 +103,10 @@ def load_from_path(p):
         contexts = lazy_json_load(cfg.contexts_path)
         context_id = int(list(contexts.keys())[0])
         context_id = list(contexts.values())
-        return_per_context["context_id"] = context_id
+        if len(context_id) == len(return_per_context):
+            return_per_context["context_id"] = context_id
+        else:
+            warnings.warn("Context IDs not updated via the contexts_path. Mismatched length.")
  
     reps = []
     new_df = []
@@ -138,4 +141,4 @@ def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False):
 if __name__ == "__main__":
     folder = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-07/20-45-00"
     reload = True
-    df = load_from_path("/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-07/20-45-00/0")  # folder_eval=folder, rpc_fn=f"tmp/rpc_context_efficiency_{0}.csv", reload_rpc=reload)
+    df = load_from_path("/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/context_efficiency/CARLPendulumEnv/eval/on_test/0")  # folder_eval=folder, rpc_fn=f"tmp/rpc_context_efficiency_{0}.csv", reload_rpc=reload)
