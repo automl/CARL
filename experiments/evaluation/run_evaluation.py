@@ -60,8 +60,7 @@ def find_multirun_paths(result_dir: Union[str, List[str]]) -> List[str]:
         dirs = get_all_subpaths(rdir=rdir)
         filenames = list(glob_re(r".*/\d*$", dirs))
         filenames.sort(key=lambda x: float(x.split("/")[-1]))
-        rpaths = [f"{os.path.join(rdir, f)}" for f in filenames]
-        result_paths.extend(rpaths)
+        result_paths.extend(filenames)
 
     if len(result_paths) == 0:
         raise ValueError(f"Could not find any result paths in {result_dir}.")
