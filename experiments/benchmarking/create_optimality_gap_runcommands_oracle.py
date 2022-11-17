@@ -14,7 +14,7 @@ if __name__ == "__main__":
     outdir = f"./runs/optimality_gap/{env_name}/train_general"
     outdir = Path(outdir)
 
-    target_path = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/optimality_gap/contexts"
+    target_path = f"/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/optimality_gap/{env_name}/contexts"
     target_path = Path(target_path)
 
     command_dir = Path(f"/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/optimality_gap/{env_name}/runcommands")
