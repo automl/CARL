@@ -67,7 +67,7 @@ context_branch:
   width: ${network.width}
 
 network:
-  width: 32
+  width: 256
 
 context_sampler:
   env_name: ${env}
