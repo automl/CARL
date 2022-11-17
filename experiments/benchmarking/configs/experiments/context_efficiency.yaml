@@ -10,6 +10,9 @@ experiment: context_efficiency3
 carl:
   context_mask: null
 
+wandb:
+  debug: true
+
 eval_on_train_context: true
 max_num_frames: 204_800
 
