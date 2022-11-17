@@ -11,10 +11,29 @@ import glob
 import regex as re
 from typing import List, Union
 from pathlib import Path
+from functools import partial
+
+
+def filter_fn(string, pattern):
+    allowed = False
+    match = re.compile(pattern).match(string)
+    if match and ".submitit" not in string:
+        allowed = True
+    return allowed 
 
 
 def glob_re(pattern, strings):
-    return filter(re.compile(pattern).match, strings)
+    filter_fn_partial = partial(filter_fn, pattern=pattern)
+    return filter(filter_fn_partial, strings)
+
+
+def get_all_subpaths(rdir: str):
+    paths = []
+    for root, dirs, files in os.walk(rdir):
+         for p in dirs:
+             p = os.path.join(root, p)
+             paths.append(p)
+    return paths
 
 
 def find_multirun_paths(result_dir: Union[str, List[str]]) -> List[str]:
@@ -38,10 +57,14 @@ def find_multirun_paths(result_dir: Union[str, List[str]]) -> List[str]:
         result_dir = [result_dir]
     result_paths = []
     for rdir in result_dir:
-        filenames = list(glob_re(r"\d\d*", os.listdir(rdir)))
-        filenames.sort(key=float)
+        dirs = get_all_subpaths(rdir=rdir)
+        filenames = list(glob_re(r".*/\d*$", dirs))
+        filenames.sort(key=lambda x: float(x.split("/")[-1]))
         rpaths = [f"{os.path.join(rdir, f)}" for f in filenames]
         result_paths.extend(rpaths)
+
+    if len(result_paths) == 0:
+        raise ValueError(f"Could not find any result paths in {result_dir}.")
 
     return result_paths
 
