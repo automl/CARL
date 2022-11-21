@@ -14,3 +14,7 @@
 3. Train 1 agent each on the 64 contexts
 4. Evaluate all those
 
+Run
+```bash
+bash notes/run_optimality_gap.sh env_name
+```
