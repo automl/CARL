@@ -6,7 +6,6 @@ from carl.envs.rna.rna_environment import (
 )
 import numpy as np
 from typing import Optional, Dict, Union, List
-from gym import spaces
 from carl.utils.trial_logger import TrialLogger
 
 from carl.envs.rna.carl_rna_definitions import (
@@ -25,7 +24,7 @@ class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env=None,
-        data_location: str = "carl/envs/rna/data",
+        data_location: str = "carl/envs/rna/learna/data",
         contexts: Contexts = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
