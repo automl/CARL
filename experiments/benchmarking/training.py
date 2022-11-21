@@ -141,6 +141,11 @@ def get_traineval_contexts(cfg: DictConfig) -> Tuple[Contexts, Contexts]:
             eval_contexts = lazy_json_load(cfg.contexts_eval_path)
         else:
             eval_contexts = get_contexts(cfg=cfg)
+    
+    if cfg.consider_n_samples:
+        contexts = {k: contexts[k] for k in list(contexts)[:cfg.context_sampler.n_samples]}
+        eval_contexts = {k: eval_contexts[k] for k in list(eval_contexts)[:cfg.context_sampler.n_samples]}
+
     return contexts, eval_contexts
 
 

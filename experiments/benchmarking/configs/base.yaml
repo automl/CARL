@@ -52,6 +52,7 @@ eval_episodes: 100
 eval_on_train_context: true
 contexts_train_path: null  # priority over context_sampler
 contexts_eval_path: null
+consider_n_samples: false  # if true and context is loaded from a path, only include first n_samples contexts
 kirk_evaluation_protocol:
   follow: false
 landing_in_space:
