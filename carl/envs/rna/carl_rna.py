@@ -1,6 +1,6 @@
 from carl.envs.carl_env import CARLEnv
-from carl.envs.rna.learna.src.data.parse_dot_brackets import parse_dot_brackets
-from carl.envs.rna.learna.src.learna.environment import (
+from carl.envs.rna.parse_dot_brackets import parse_dot_brackets
+from carl.envs.rna.rna_environment import (
     RnaDesignEnvironment,
     RnaDesignEnvironmentConfig,
 )
