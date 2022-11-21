@@ -1,4 +1,11 @@
 env_name=$1
+
+if [ -z "$env_name" ]
+then
+    echo "env_name is not set. Exit."
+    exit 1
+fi
+
 overrides=""
 
 if [ "$env_name" = "CARLCartPoleEnv" ]; then
