@@ -8,7 +8,6 @@ q_max_value: 100
 gamma: 0.99
 
 network:
-  width: 64
   num_atoms: 51
 
 context_branch:
