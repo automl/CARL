@@ -25,7 +25,7 @@ class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env=None,
-        data_location: str = "carl/envs/rna/learna/data",
+        data_location: str = "carl/envs/rna/data",
         contexts: Contexts = {},
         hide_context: bool = False,
         add_gaussian_noise_to_context: bool = False,
@@ -110,3 +110,4 @@ class CARLRnaDesignEnv(CARLEnv):
             state_radius=self.context["state_radius"],
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
+        self.build_observation_space(low= -np.inf * np.ones(11), high = np.inf * np.ones(11), context_bounds=CONTEXT_BOUNDS)

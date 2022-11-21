@@ -1,3 +1,5 @@
+# TODO Cite original code
+
 import time
 
 from itertools import product
@@ -5,7 +7,6 @@ from dataclasses import dataclass
 from distance import hamming
 
 import numpy as np
-# from tensorforce.environments import Environment
 
 from RNA import fold
 import gym
