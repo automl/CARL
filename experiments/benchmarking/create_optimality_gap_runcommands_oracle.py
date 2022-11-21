@@ -7,7 +7,13 @@ from rich import print as printr
 
 
 if __name__ == "__main__":
+    printr(sys.argv)
+
     env_name = sys.argv[1]
+    overrides = " ".join(sys.argv[2:])
+
+    printr(env_name)
+    print(overrides)
     
     bash_fn = f"/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/optimality_gap/{env_name}/run_train_oracles.sh"
 
@@ -45,7 +51,7 @@ if __name__ == "__main__":
         # train
         new_contexts_paths_str = ",".join(new_contexts_paths)
         snap_dir = f"./runs/optimality_gap/{env_name}/train_oracle/seed_{seed}"
-        command = f"'seed={seed}' 'contexts_train_path={new_contexts_paths_str}' --snap_dir {snap_dir}"
+        command = f"'seed={seed}' 'contexts_train_path={new_contexts_paths_str}' {overrides} --snap_dir {snap_dir}"
         fullcommand = "python experiments/benchmarking/run_training.py '+experiments=optimality_gap' " + command + " -m" 
 
         # Save runcommand
