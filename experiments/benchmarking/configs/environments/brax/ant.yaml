@@ -11,6 +11,7 @@ gamma: 0.99
 learning_rate: 0.0003
 q_targ_tau: 0.005
 pi_targ_tau: 0.005
+max_num_frames: 1000000
 
 tanh_policy: true
 
