@@ -5,7 +5,7 @@ import json
 
 import brax
 import numpy as np
-from brax.envs.grasp import _SYSTEM_CONFIG, Grasp
+from brax.envs.grasp import _SYSTEM_CONFIG_SPRING, Grasp
 from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
@@ -44,7 +44,7 @@ CONTEXT_BOUNDS = {
 class CARLGrasp(CARLEnv):
     def __init__(
         self,
-        env: Grasp = Grasp(),
+        env: Grasp = Grasp(legacy_spring=True),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -67,7 +67,7 @@ class CARLGrasp(CARLEnv):
             env = VectorGymWrapper(VectorWrapper(env, n_envs))
 
         self.base_config = MessageToDict(
-            text_format.Parse(_SYSTEM_CONFIG, brax.Config())
+            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
         )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}

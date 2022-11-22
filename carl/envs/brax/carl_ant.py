@@ -5,7 +5,7 @@ import json
 
 import brax
 import numpy as np
-from brax.envs.ant import _SYSTEM_CONFIG, Ant
+from brax.envs.ant import _SYSTEM_CONFIG_SPRING, Ant
 from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
@@ -63,7 +63,7 @@ class CARLAnt(CARLEnv):
             env = VectorGymWrapper(VectorWrapper(env, n_envs))
 
         self.base_config = MessageToDict(
-            text_format.Parse(_SYSTEM_CONFIG, brax.Config())
+            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
         )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}

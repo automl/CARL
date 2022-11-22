@@ -6,7 +6,7 @@ import json
 import brax
 import numpy as np
 from brax import jumpy as jp
-from brax.envs.humanoid import _SYSTEM_CONFIG, Humanoid
+from brax.envs.humanoid import _SYSTEM_CONFIG_SPRING, Humanoid
 from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
 from brax.physics import bodies
 from google.protobuf import json_format, text_format
@@ -38,7 +38,7 @@ CONTEXT_BOUNDS = {
 class CARLHumanoid(CARLEnv):
     def __init__(
         self,
-        env: Humanoid = Humanoid(),
+        env: Humanoid = Humanoid(legacy_spring=True),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -61,7 +61,7 @@ class CARLHumanoid(CARLEnv):
             env = VectorGymWrapper(VectorWrapper(env, n_envs))
 
         self.base_config = MessageToDict(
-            text_format.Parse(_SYSTEM_CONFIG, brax.Config())
+            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
         )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}

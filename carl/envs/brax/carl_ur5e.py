@@ -5,7 +5,7 @@ import json
 
 import brax
 import numpy as np
-from brax.envs.ur5e import _SYSTEM_CONFIG, Ur5e
+from brax.envs.ur5e import _SYSTEM_CONFIG_SPRING, Ur5e
 from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
@@ -44,7 +44,7 @@ CONTEXT_BOUNDS = {
 class CARLUr5e(CARLEnv):
     def __init__(
         self,
-        env: Ur5e = Ur5e(),
+        env: Ur5e = Ur5e(legacy_spring=True),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -67,7 +67,7 @@ class CARLUr5e(CARLEnv):
             env = VectorGymWrapper(VectorWrapper(env, n_envs))
 
         self.base_config = MessageToDict(
-            text_format.Parse(_SYSTEM_CONFIG, brax.Config())
+            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
         )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
