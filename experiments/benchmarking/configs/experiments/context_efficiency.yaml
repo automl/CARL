@@ -7,6 +7,8 @@ defaults:
 
 experiment: context_efficiency3
 
+consider_n_samples: true
+
 carl:
   context_mask: null
 
