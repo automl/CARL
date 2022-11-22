@@ -146,6 +146,8 @@ def get_traineval_contexts(cfg: DictConfig) -> Tuple[Contexts, Contexts]:
         contexts = {k: contexts[k] for k in list(contexts)[:cfg.context_sampler.n_samples]}
         eval_contexts = {k: eval_contexts[k] for k in list(eval_contexts)[:cfg.context_sampler.n_samples]}
 
+    print("N contexts: ", len(contexts))
+
     return contexts, eval_contexts
 
 
