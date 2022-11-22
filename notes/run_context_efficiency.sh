@@ -15,7 +15,7 @@ contexts_path_test=/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/context_e
 
 echo "Start Training"
 echo "-----------------------------------------"
-python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128,256,512' contexts_train_path=${contexts_path_train} '+context_visibility=glob(*)' --snap_dir ./runs/context_efficiency/${env_name}/train -m
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=context_efficiency' 'context_sampler.n_samples=1,2,4,8,16,32,64,128,256,512' contexts_train_path=${contexts_path_train} '+context_visibility=glob(*)' 'wandb.debug=true' --snap_dir ./runs/context_efficiency/${env_name}/train -m
 
 
 echo "Evaluate on Train Contexts"
