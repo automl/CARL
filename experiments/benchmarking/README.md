@@ -105,6 +105,9 @@ python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=r
 
 # debug local
 python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=1' '+context_visibility=cgate_hadamard' 'context_sampler.context_feature_names=[gravity,friction,joint_stiffness]' 'context_sampler.sigma_rel=0.5' 'wandb.debug=true'
+
+# train uniform benchmarking
+python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[gravity,friction,joint_stiffness]' '+context_sampling=glob(*)' '+slurm=gpu' -m
 ```
 
 - [ ] LSTM baseline for whatever makes sense
