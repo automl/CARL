@@ -5,6 +5,8 @@ import numpy as onp
 import optax
 import wandb
 
+from experiments.context_gating.algorithms.proba_dists.squashed_normal import SquashedNormalDist
+
 from ..networks.sac import pi_func, q_func
 from ..utils import evaluate, log_wandb, dump_func_dict
 
@@ -18,9 +20,9 @@ def sac(cfg, env, eval_env):
         func_pi,
         env,
         random_seed=cfg.seed,
-        proba_dist=coax.proba_dists.NormalDist(
+        proba_dist=SquashedNormalDist(
             env.action_space,
-            clip_box=(-10.0, 4.0),
+            clip_logvar=(-10.0, 4.0),
         ),
     )
     q1 = coax.Q(
