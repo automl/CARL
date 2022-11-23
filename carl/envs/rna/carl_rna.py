@@ -66,9 +66,6 @@ class CARLRnaDesignEnv(CARLEnv):
                 target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
-            import pdb
-
-            pdb.set_trace()
 
         env.action_space = ACTION_SPACE
         env.observation_space = OBSERVATION_SPACE
