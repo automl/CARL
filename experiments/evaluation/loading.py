@@ -33,6 +33,7 @@ from typing import Union, Dict, Optional
 from pathlib import Path
 from experiments.evaluation.utils import recover_traincfg_from_wandb
 from multiprocessing import Pool
+from functools import partial
 
 
 def load_wandb_table(fn: str | Path) -> pd.DataFrame:
@@ -45,7 +46,7 @@ fn_wbsummary = "wandb/latest-run/files/wandb-summary.json"
 fn_wbconfig = "wandb/latest-run/files/config.yaml"
 
 
-def load_from_path(p):
+def load_from_path(p, is_optgap_exp: bool = False):
     p = Path(p)
     fn_cfg = p / fn_config
     fn_wbsum = p / fn_wbsummary
@@ -107,6 +108,14 @@ def load_from_path(p):
             return_per_context["context_id"] = context_id
         else:
             warnings.warn("Context IDs not updated via the contexts_path. Mismatched length.")
+    elif is_optgap_exp:
+        # If it is the optimality gap experiment the train contexts are split into single context
+        # files.
+        contexts_train_path = traincfg.contexts_train_path
+        context_id = int(Path(contexts_train_path).stem.split("_")[-1])  # --> context_{seed}_{id}.json --> context_1_1.json
+        return_per_context["context_id"] = context_id
+
+    return_per_context["path"] = str(p)
  
     reps = []
     new_df = []
@@ -119,16 +128,18 @@ def load_from_path(p):
     return return_per_context
 
 
-def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False):
+def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False, is_optgap_exp: bool = False):
     rpc_fn = Path(rpc_fn)
     if not rpc_fn.is_file():
         reload_rpc = True
 
     paths = find_multirun_paths(result_dir=folder_eval)
 
+    load_from_path_partial = partial(load_from_path, is_optgap_exp=is_optgap_exp)
+
     if reload_rpc:
         with Pool(1) as pool:
-            rpc_list = pool.map(load_from_path, paths)
+            rpc_list = pool.map(load_from_path_partial, paths )
         rpc_list = [r for r in rpc_list if r is not None]
         df_rpc = pd.concat(rpc_list)
         df_rpc.to_csv(rpc_fn, index=False)
@@ -141,4 +152,7 @@ def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False):
 if __name__ == "__main__":
     folder = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/multirun/2022-11-07/20-45-00"
     reload = True
-    df = load_from_path("/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/context_efficiency/CARLPendulumEnv/eval/on_test/0")  # folder_eval=folder, rpc_fn=f"tmp/rpc_context_efficiency_{0}.csv", reload_rpc=reload)
+    path = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/context_efficiency/CARLPendulumEnv/eval/on_test/0"
+    path = "/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/runs/optimality_gap/CARLCartPoleEnv/eval_oracle/10"
+    df = load_from_path(path, is_optgap_exp=True)  # folder_eval=folder, rpc_fn=f"tmp/rpc_context_efficiency_{0}.csv", reload_rpc=reload)
+    print(df["context_id"].unique())
