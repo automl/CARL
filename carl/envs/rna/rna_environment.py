@@ -1,4 +1,6 @@
-# TODO Cite original code
+"""
+Code adapted from https://github.com/automl/learna
+"""
 
 import time
 
@@ -10,6 +12,7 @@ import numpy as np
 
 from RNA import fold
 import gym
+
 
 @dataclass
 class RnaDesignEnvironmentConfig:
@@ -74,8 +77,7 @@ def _encode_dot_bracket(secondary, env_config):
 
 
 def _encode_pairing(secondary):
-    """TODO
-    """
+
     pairing_encoding = [None] * len(secondary)
     stack = []
     for index, symbol in enumerate(secondary, 0):
@@ -89,7 +91,7 @@ def _encode_pairing(secondary):
 
 
 class _Target(object):
-    """TODO
+    """
     Class of the target structure. Provides encodings and id.
     """
 
@@ -120,7 +122,7 @@ class _Target(object):
             site: The site to check the pairing site for.
 
         Returns:
-            The site that pairs with <site> if exists.TODO
+            The site that pairs with <site> if exists.
         """
         return self._pairing_encoding[site]
 
@@ -225,15 +227,20 @@ class RnaDesignEnvironment(gym.Env):
     """
 
     def __init__(self, dot_brackets, env_config):
-        """TODO
-        Initialize an environemnt.
+        """Initialize the environment
 
-        Args:
-            env_config: The configuration of the environment.
+        Parameters
+        ----------
+        dot_brackets : _type_
+            _description_
+        env_config : _type_
+            _description_
         """
         self._env_config = env_config
 
-        targets = [_Target(dot_bracket, self._env_config) for dot_bracket in dot_brackets]
+        targets = [
+            _Target(dot_bracket, self._env_config) for dot_bracket in dot_brackets
+        ]
         self._target_gen = _random_epoch_gen(targets)
 
         self.target = None
@@ -265,7 +272,9 @@ class RnaDesignEnvironment(gym.Env):
             action: The action chosen by the agent.
         """
         current_site = self.design.first_unassigned_site
-        paired_site = self.target.get_paired_site(current_site)  # None for unpaired sites
+        paired_site = self.target.get_paired_site(
+            current_site
+        )  # None for unpaired sites
         self.design.assign_sites(action, current_site, paired_site)
 
     def _get_state(self):

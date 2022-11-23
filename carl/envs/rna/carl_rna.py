@@ -12,18 +12,20 @@ from carl.envs.rna.carl_rna_definitions import (
     DEFAULT_CONTEXT,
     ACTION_SPACE,
     OBSERVATION_SPACE,
-    CONTEXT_BOUNDS
+    CONTEXT_BOUNDS,
 )
 
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 from carl.context.selection import AbstractSelector
 
+import gym
+
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env=None,
+        env: gym.Env = None,
         data_location: str = "carl/envs/rna/learna/data",
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -64,6 +66,10 @@ class CARLRnaDesignEnv(CARLEnv):
                 target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
+            import pdb
+
+            pdb.set_trace()
+
         env.action_space = ACTION_SPACE
         env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
@@ -109,4 +115,8 @@ class CARLRnaDesignEnv(CARLEnv):
             state_radius=self.context["state_radius"],
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
-        self.build_observation_space(low= -np.inf * np.ones(11), high = np.inf * np.ones(11), context_bounds=CONTEXT_BOUNDS)
+        self.build_observation_space(
+            low=-np.inf * np.ones(11),
+            high=np.inf * np.ones(11),
+            context_bounds=CONTEXT_BOUNDS,
+        )
