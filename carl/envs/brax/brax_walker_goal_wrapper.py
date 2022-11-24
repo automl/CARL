@@ -68,6 +68,7 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
             * self.context["target_distance"]
         )
         if return_info:
+            info["success"] = 0
             return state, info
         else:
             return state
@@ -86,4 +87,9 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
             direction_reward = direction_reward * 10
         augmented_reward = reward + direction_reward
         self.position = new_position
+        if abs(current_distance_to_goal) <= 5:
+            done = True
+            info["success"] = 1
+        else:
+            info["success"] = 0
         return state, augmented_reward, done, info
