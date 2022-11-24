@@ -18,3 +18,7 @@ from carl.envs.brax.carl_humanoid import CARLHumanoid
 from carl.envs.brax.carl_ur5e import CONTEXT_BOUNDS as CARLUr5e_bounds
 from carl.envs.brax.carl_ur5e import DEFAULT_CONTEXT as CARLUr5e_defaults
 from carl.envs.brax.carl_ur5e import CARLUr5e
+
+from carl.envs.brax.brax_target_language_wrapper import BraxLanguageWrapper
+from carl.envs.brax.brax_walker_goal_wrapper import BraxWalkerGoalWrapper
+from carl.envs.brax.walker_language_context_sampling import sample_walker_language_goals

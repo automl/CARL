@@ -255,7 +255,7 @@ class CARLEnv(Wrapper):
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
 
-    def reset(self, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
+    def reset(self, info=False, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
         """
         Reset environment.
 
@@ -269,7 +269,7 @@ class CARLEnv(Wrapper):
         state
             State of environment after reset.
         info_dict : dict
-            Return also if return_info=True.
+            Return also if info=True.
 
         """
         self.episode_counter += 1
@@ -286,7 +286,8 @@ class CARLEnv(Wrapper):
             state = _ret
         state = self.build_context_adaptive_state(state=state)
         ret = state
-        if return_info:
+        if info:
+            info_dict["context"] = self.context
             ret = state, info_dict
         return ret
 
@@ -346,6 +347,7 @@ class CARLEnv(Wrapper):
         """
         # Step the environment
         state, reward, done, info = self.env.step(action)
+        info["context"] = self.context
 
         if not self.hide_context:
             # Scale context features
