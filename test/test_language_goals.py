@@ -80,30 +80,24 @@ class TestGoalWrapper(unittest.TestCase):
         contexts = sample_walker_language_goals(10, low=4, high=200)
         env = CARLAnt(contexts=contexts)
         wrapped_env = BraxWalkerGoalWrapper(env)
-        basic_env = CARLAnt()
 
         for _ in range(10):
             wrapped_env.reset()
-            basic_env.reset()
             for _ in range(10):
-                action = basic_env.action_space.sample()
+                action = wrapped_env.action_space.sample()
                 _, wrapped_reward, _, _ = wrapped_env.step(action)
-                _, basic_reward, _, _ = basic_env.step(action)
-                assert wrapped_reward >= basic_reward - 0.01
+                assert wrapped_reward >= 0
 
         contexts = sample_walker_language_goals(10, low=4, high=200)
         env = CARLHalfcheetah(contexts=contexts)
         wrapped_env = BraxWalkerGoalWrapper(env)
-        basic_env = CARLHalfcheetah()
 
         for _ in range(10):
             wrapped_env.reset()
-            basic_env.reset()
             for _ in range(10):
-                action = basic_env.action_space.sample()
+                action = wrapped_env.action_space.sample()
                 _, wrapped_reward, _, _ = wrapped_env.step(action)
-                _, basic_reward, _, _ = basic_env.step(action)
-                assert wrapped_reward >= basic_reward - 0.01
+                assert wrapped_reward >= 0
 
 
 class TestLanguageWrapper(unittest.TestCase):

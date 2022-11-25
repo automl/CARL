@@ -82,14 +82,10 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         current_distance_to_goal = np.linalg.norm(self.goal_position - new_position)
         previous_distance_to_goal = np.linalg.norm(self.goal_position - self.position)
         direction_reward = max(0, previous_distance_to_goal - current_distance_to_goal)
-        if self.env.__class__.__name__ == "CARLAnt":
-            # Since we can't set the forward reward to 0 here, we simply increase the reward range
-            direction_reward = direction_reward * 10
-        augmented_reward = reward + direction_reward
         self.position = new_position
         if abs(current_distance_to_goal) <= 5:
             done = True
             info["success"] = 1
         else:
             info["success"] = 0
-        return state, augmented_reward, done, info
+        return state, direction_reward, done, info
