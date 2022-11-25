@@ -6,7 +6,7 @@ import json
 import brax
 import numpy as np
 from brax.envs.halfcheetah import _SYSTEM_CONFIG, Halfcheetah
-from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
+from brax.envs.wrappers import GymWrapper, EpisodeWrapper, VectorGymWrapper, VectorWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from numpyencoder import NumpyEncoder
@@ -55,6 +55,7 @@ class CARLHalfcheetah(CARLEnv):
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
     ):
+        env = EpisodeWrapper(env, 1000, 1)
         if n_envs == 1:
             env = GymWrapper(env)
         else:
