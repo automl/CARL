@@ -495,7 +495,10 @@ class CARLEnv(Wrapper):
             pass
         else:
             if env_lower_bounds is None and env_upper_bounds is None:
-                obs_dim = obs_shape[0]
+                if len(obs_shape)==2:
+                    obs_dim = obs_shape[1]
+                else:
+                    obs_dim = obs_shape[0]
                 env_lower_bounds = -np.inf * np.ones(obs_dim)
                 env_upper_bounds = np.inf * np.ones(obs_dim)
 
@@ -546,9 +549,13 @@ class CARLEnv(Wrapper):
                     high: Vector = np.concatenate(
                         (np.array(env_upper_bounds), np.array(context_upper_bounds))
                     )
+                    if len(obs_shape) == 2:
+                        low = np.vstack([[low] for _ in range(obs_shape[0])])
+                        high = np.vstack([[high] for _ in range(obs_shape[0])])
                     self.env.observation_space = spaces.Box(
                         low=np.array(low), high=np.array(high), dtype=np.float32
                     )
+
             self.observation_space = (
                 self.env.observation_space
             )  # make sure it is the same object
