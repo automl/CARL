@@ -23,7 +23,6 @@ def parse_dot_brackets(
         Use specific targets by ids., by default None
     target_structure_path : Optional[str], optional
         pecify a path to the targets., by default None
-
     Returns
     -------
     Generator[int]
@@ -39,3 +38,4 @@ def parse_dot_brackets(
         target_paths = list(Path(data_dir, dataset).glob("*.rna"))
 
     return [data_path.read_text().rstrip() for data_path in target_paths]  # type: ignore[union-attr]
+
