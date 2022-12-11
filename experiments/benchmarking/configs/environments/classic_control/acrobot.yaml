@@ -11,5 +11,4 @@ q_max_value: 0
 gamma: 0.99
 
 network:
-  width: 64
-  num_atoms: 25  # 51
+  num_atoms: 51  #25  # 51
