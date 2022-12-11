@@ -19,6 +19,3 @@ warmup_num_frames: 10000
 warmup_pi_num_frames: 15000
 
 tanh_policy: false
-
-context_branch:
-  width: 512
