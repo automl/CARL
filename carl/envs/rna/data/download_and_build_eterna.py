@@ -3,7 +3,7 @@ from tqdm import tqdm
 import requests
 
 
-def _download_dataset_from_http(url: str, download_path: str):
+def _download_dataset_from_http(url: str, download_path: str) -> None:
     """Donwload the dataset from a given url
 
     Parameters
@@ -26,7 +26,7 @@ def _download_dataset_from_http(url: str, download_path: str):
             dataset_file.write(data)
 
 
-def download_eterna(download_path: str):
+def download_eterna(download_path: str) -> None:
 
     eterna_url = (
         "https://ars.els-cdn.com/content/image/1-s2.0-S0022283615006567-mmc5.txt"
@@ -34,7 +34,7 @@ def download_eterna(download_path: str):
     _download_dataset_from_http(eterna_url, download_path)
 
 
-def extract_secondarys(download_path: str, dump_path: str):
+def extract_secondarys(download_path: str, dump_path: str) -> None:
     """Download secondary information/features
 
     Parameters
