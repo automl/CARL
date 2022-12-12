@@ -1,19 +1,35 @@
+from email.generator import Generator
 from pathlib import Path
+
+from typing import List
 
 
 def parse_dot_brackets(
-    dataset, data_dir, target_structure_ids=None, target_structure_path=None
-):
-    """TODO
-    Generate the targets for next epoch.
-    Args:
-        dataset: The name of the benchmark to use targets from.
-        data_dir: The directory of the target structures.
-        target_structure_ids: Use specific targets by ids.
-        target path: Specify a path to the targets.
-    Returns:
-        An epoch generator for the specified target structures.
+    dataset: str,
+    data_dir: str,
+    target_structure_ids: List[int] = None,
+    target_structure_path: Path = None,
+) -> List[str]:
+
+    """Generate the targets for next epoch.
+
+    Parameters
+    ----------
+    dataset: str
+        The name of the benchmark to use targets from
+    data_dir: str
+        The directory of the target structures.
+    target_structure_ids: List[int]
+        Use specific targets by ids.
+    target_structure_path: str
+        Specify a path to the targets
+
+    Returns
+    -------
+    List[str]
+        An epoch generator for the specified target structure(s)
     """
+
     if target_structure_path:
         target_paths = [target_structure_path]
     elif target_structure_ids:
