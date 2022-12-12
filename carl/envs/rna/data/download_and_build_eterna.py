@@ -1,6 +1,7 @@
 # flake8: noqa: F401
 # # isort: skip_file
 from urllib.request import Request
+
 from tqdm import tqdm
 import requests  # type: ignore[import]
 
@@ -15,6 +16,7 @@ def _download_dataset_from_http(url: str, download_path: str) -> None:
     download_path : str
         Location of storing the dataset
     """
+
     response = requests.get(url, stream=True)
     with open(download_path, "wb+") as dataset_file:
         progress_bar = tqdm(
@@ -45,6 +47,7 @@ def extract_secondarys(download_path: str, dump_path: str) -> None:
     dump_path : str
         path to dump secondary features
     """
+    
     with open(download_path) as input:
         parsed = list(zip(*(line.strip().split("\t") for line in input)))
 
