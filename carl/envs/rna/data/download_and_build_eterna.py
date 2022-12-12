@@ -16,7 +16,7 @@ def _download_dataset_from_http(url: str, download_path: str) -> None:
     download_path : str
         Location of storing the dataset
     """
-
+    
     response = requests.get(url, stream=True)
     with open(download_path, "wb+") as dataset_file:
         progress_bar = tqdm(
