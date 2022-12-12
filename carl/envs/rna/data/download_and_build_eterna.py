@@ -1,8 +1,18 @@
+from urllib.request import Request
 from tqdm import tqdm
 import requests
 
 
-def _download_dataset_from_http(url, download_path):
+def _download_dataset_from_http(url: str, download_path: str):
+    """Donwload the dataset from a given url
+
+    Parameters
+    ----------
+    url : string
+        URL for the dataset location
+    download_path : str
+        Location of storing the dataset
+    """
     response = requests.get(url, stream=True)
     with open(download_path, "wb+") as dataset_file:
         progress_bar = tqdm(
@@ -16,14 +26,24 @@ def _download_dataset_from_http(url, download_path):
             dataset_file.write(data)
 
 
-def download_eterna(download_path):
+def download_eterna(download_path: str):
+
     eterna_url = (
         "https://ars.els-cdn.com/content/image/1-s2.0-S0022283615006567-mmc5.txt"
     )
     _download_dataset_from_http(eterna_url, download_path)
 
 
-def extract_secondarys(download_path, dump_path):
+def extract_secondarys(download_path: str, dump_path: str):
+    """Download secondary information/features
+
+    Parameters
+    ----------
+    download_path : str
+        path to downloaded files
+    dump_path : str
+        path to dump secondary features
+    """
     with open(download_path) as input:
         parsed = list(zip(*(line.strip().split("\t") for line in input)))
 
