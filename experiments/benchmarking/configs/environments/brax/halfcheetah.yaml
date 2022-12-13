@@ -2,7 +2,7 @@
 defaults:
   - ../../algorithm/sac
 
-env: CARLAnt
+env: CARLHalfcheetah
 
 max_num_frames: 1_000_000
 replay_capacity: 1_000_000

@@ -6,7 +6,7 @@ import json
 import brax
 import numpy as np
 from brax.envs.ant import _SYSTEM_CONFIG_SPRING, Ant
-from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
+from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper, EpisodeWrapper, AutoResetWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict
 from numpyencoder import NumpyEncoder
@@ -37,10 +37,11 @@ CONTEXT_BOUNDS = {
 }
 
 
+
 class CARLAnt(CARLEnv):
     def __init__(
         self,
-        env: Ant = Ant(legacy_spring=True),
+        env: Ant = Ant(legacy_spring=True),  #AutoResetWrapper(EpisodeWrapper(Ant(legacy_spring=True), episode_length=1000, action_repeat=1)),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -56,6 +57,7 @@ class CARLAnt(CARLEnv):
             Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
+        max_episode_length = 1000,
     ):
         if n_envs == 1:
             env = GymWrapper(env)
@@ -82,6 +84,7 @@ class CARLAnt(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_mask=context_mask,
+            max_episode_length=max_episode_length,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()

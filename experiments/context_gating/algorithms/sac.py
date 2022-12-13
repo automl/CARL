@@ -4,6 +4,7 @@ import jax.numpy as jnp
 import numpy as onp
 import optax
 import wandb
+import os
 
 from experiments.context_gating.algorithms.proba_dists.squashed_normal import SquashedNormalDist
 
