@@ -128,6 +128,9 @@ Acrobot
 ```bash
 # Train
 python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[link_length_1,link_length_2,link_mass_1,link_mass_2],[link_length_1],[link_length_2],[link_mass_1],[link_mass_2]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
+
+# uniform bounds
+python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[link_length_1,link_length_2,link_mass_1,link_mass_2]' '+context_sampling=glob(*)' '+slurm=cpushort' 'hydra.launcher.timeout_min=240' -m
 ```
 
 ```bash
@@ -148,11 +151,17 @@ python experiments/benchmarking/run_training.py '+environments/box2d=bipedalwalk
 ```
 
 Lunar Lander
+- normal distribution
 ```bash
 # Train
 python experiments/benchmarking/run_training.py '+environments/box2d=lunarlander' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[MAIN_ENGINE_POWER],[GRAVITY_Y],[SIDE_ENGINE_POWER],[MAIN_ENGINE_POWER,GRAVITY_Y,SIDE_ENGINE_POWER]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpu' -m
 ```
 
+- uniform distribution
+```bash
+# Train
+python experiments/benchmarking/run_training.py '+environments/box2d=lunarlander' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[MAIN_ENGINE_POWER],[GRAVITY_Y],[MAIN_ENGINE_POWER,GRAVITY_Y]' '+context_sampling=glob(*)' '+slurm=cpu' -m
+```
 
 ## Experiment Preparations
 Find HPs for
@@ -248,7 +257,8 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=a
 
 ## Walker
 ```bash
-python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping],[gravity],[density],[joint_damping]' '+slurm=gpu' '+context_sampling=glob(*)' -m
+# ,[gravity],[density],[joint_damping]
+python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping]' '+slurm=gpu' '+context_sampling=glob(*)' -m
 ```
 
 ## Optimality Gap
@@ -332,3 +342,8 @@ python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Do
 
  Rerun with SAC, context_efficiency2, hadamard small network width
  result dir: `/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-11-13/11-06-36_benchmark_train`
+
+ ## Compounding
+ ```bash
+ python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(6,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed],[m,l],[m,l,g],[m,l,g,dt]' '+context_sampling=glob(*)' '+slurm=cpu' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' -m
+ ```
