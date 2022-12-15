@@ -54,7 +54,7 @@ class CARLHalfcheetah(CARLEnv):
             Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        max_episode_steps: int = 1000,
+        max_episode_length: int = 1000,
     ):
         if n_envs == 1:
             env = GymWrapper(env)
@@ -81,7 +81,7 @@ class CARLHalfcheetah(CARLEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
             context_mask=context_mask,
-            max_episode_steps=max_episode_steps,
+            max_episode_length=max_episode_length,
         )
         self.whitelist_gaussian_noise = list(
             DEFAULT_CONTEXT.keys()
