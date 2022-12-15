@@ -165,8 +165,16 @@ def sample_contexts(
                 random_variable = norm(loc=sample_mean, scale=sample_std)
             else:
                 # bounds defined as [loc, loc+scale]
-                loc = uniform_bounds_rel[0] * sample_mean
-                scale = uniform_bounds_rel[1] * sample_mean - loc
+                if sample_mean == 0:
+                    # relative bounds are centered around 1 so subtract here for the percentages
+                    loc = uniform_bounds_rel[0] - 1  
+                    scale = uniform_bounds_rel[1] - uniform_bounds_rel[0]
+                elif sample_mean < 0:
+                    loc = uniform_bounds_rel[1] * sample_mean
+                    scale = uniform_bounds_rel[0] * sample_mean - loc
+                else:
+                    loc = uniform_bounds_rel[0] * sample_mean
+                    scale = uniform_bounds_rel[1] * sample_mean - loc
                 random_variable = uniform(loc=loc, scale=scale)
             context_feature_type = env_bounds[context_feature_name][2]
             sample_dists[context_feature_name] = (random_variable, context_feature_type)
