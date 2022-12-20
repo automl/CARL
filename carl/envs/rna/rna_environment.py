@@ -15,6 +15,8 @@ from RNA import fold
 import gymnasium as gym
 from typing import Any, List
 
+import pdb
+
 
 @dataclass
 class RnaDesignEnvironmentConfig:
