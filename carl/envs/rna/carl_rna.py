@@ -42,6 +42,8 @@ class CARLRnaDesignEnv(CARLEnv):
             Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
+        obs_low: Optional[int] = 11,
+        obs_high: Optional[int] = 11,
     ):
         """
         Parameters
@@ -91,6 +93,8 @@ class CARLRnaDesignEnv(CARLEnv):
             context_mask=context_mask,
         )
         self.whitelist_gaussian_noise = list(DEFAULT_CONTEXT)
+        self.obs_low = obs_low
+        self.obs_high = obs_high
 
     def step(self, action):
         # Step function has a different name in this env
@@ -111,7 +115,7 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
         self.build_observation_space(
-            low=-np.inf * np.ones(11),
-            high=np.inf * np.ones(11),
+            low=-np.inf * np.ones(self.obs_low),
+            high=np.inf * np.ones(self.obs_high),
             context_bounds=CONTEXT_BOUNDS,
         )
