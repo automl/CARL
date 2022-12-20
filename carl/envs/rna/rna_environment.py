@@ -12,8 +12,7 @@ from distance import hamming
 import numpy as np
 
 from RNA import fold
-import gymnasium as gym 
-from typing import Any, List
+import gym
 
 import pdb
 
