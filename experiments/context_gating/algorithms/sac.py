@@ -6,7 +6,9 @@ import optax
 import wandb
 import os
 
-from experiments.context_gating.algorithms.proba_dists.squashed_normal import SquashedNormalDist
+from experiments.context_gating.algorithms.proba_dists.squashed_normal import (
+    SquashedNormalDist,
+)
 
 from ..networks.sac import pi_func, q_func
 from ..utils import evaluate, log_wandb, dump_func_dict
@@ -124,7 +126,15 @@ def sac(cfg, env, eval_env):
             #     wandb.log({"eval/episode": wandb.Video(
             #         gif_path, caption=str(T), fps=30)}, commit=False)
             if env.period(name="evaluate", T_period=cfg.eval_freq):
-                path = dump_func_dict(locals())
+                path = dump_func_dict(
+                    {
+                        "pi": pi,
+                        "q1": q1,
+                        "q2": q2,
+                        "q1_targ": q1_targ,
+                        "q2_targ": q2_targ,
+                    }
+                )
                 average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
                 wandb.log(
                     {
@@ -135,5 +145,13 @@ def sac(cfg, env, eval_env):
                 )
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
-    path = dump_func_dict(locals())
+    path = dump_func_dict(
+        {
+            "pi": pi,
+            "q1": q1,
+            "q2": q2,
+            "q1_targ": q1_targ,
+            "q2_targ": q2_targ,
+        }
+    )
     return onp.mean(average_returns)
