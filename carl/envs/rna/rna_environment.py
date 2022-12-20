@@ -20,13 +20,18 @@ from typing import Any, List
 class RnaDesignEnvironmentConfig:
     """
     Dataclass for the configuration of the environment.
+    
     Default values describe:
+        
         mutation_threshold: Defines the minimum distance needed before applying the local
             improvement step.
+       
         reward_exponent: A parameter to shape the reward function.
+        
         state_radius: The state representation is a (2*<state_radius> + 1)-gram
         at each position.
         use_conv: Bool to state if a convolutional network is used or not.
+        
         use_embedding: Bool to state if embedding is used or not.
     """
 
@@ -109,9 +114,10 @@ class _Target(object):
     def __init__(self, dot_bracket, env_config):  # type: ignore[no-untyped-def]
         """
         Initialize a target structure.
+        
         Args:
-             dot_bracket: dot_bracket encoded target structure.
-             env_config: The environment configuration.
+            dot_bracket: dot_bracket encoded target structure.
+            env_config: The environment configuration.
         """
         _Target._id_counter += 1
         self.id = _Target._id_counter  # For processing results
@@ -253,9 +259,9 @@ class RnaDesignEnvironment(gym.Env):
         self, dot_brackets: List[str], env_config
     ):  # type: ignore[no-untyped-def]
         """Initialize the environment
-
         Args
             dot_brackets : dot_bracket encoded target structure
+
             env_config : The environment configuration.
         """
         self._env_config = env_config
@@ -314,7 +320,7 @@ class RnaDesignEnvironment(gym.Env):
     def _local_improvement(self, folded_design):  # type: ignore[no-untyped-def]
         """
         Compute Hamming distance of locally improved candidate solutions.
-        Agrs
+        Args:
             folded_design: The folded candidate solution.
 
         Returns:
