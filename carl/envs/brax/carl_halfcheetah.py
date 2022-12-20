@@ -17,12 +17,11 @@ from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
-    "joint_stiffness": 15000.0,
-    "gravity": -9.8,
-    "friction": 0.6,
-    "angular_damping": -0.05,
-    "joint_angular_damping": 20,
-    "torso_mass": 9.457333,
+    "joint_stiffness": 25000.0,
+    "gravity": -9.8100004196167,
+    "friction": 0.77459666924,
+    "angular_damping": -0.009999999776482582,
+    "torso_mass": 9.457332611083984,
 }
 
 CONTEXT_BOUNDS = {
@@ -30,7 +29,6 @@ CONTEXT_BOUNDS = {
     "gravity": (-np.inf, -0.1, float),
     "friction": (-np.inf, np.inf, float),
     "angular_damping": (-np.inf, np.inf, float),
-    "joint_angular_damping": (0, np.inf, float),
     "torso_mass": (0.1, np.inf, float),
 }
 
@@ -92,11 +90,8 @@ class CARLHalfcheetah(CARLEnv):
         config = copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
-        config["angularDamping"] = self.context["angular_damping"]
+        config["angular_damping"] = self.context["angular_damping"]
         for j in range(len(config["joints"])):
-            config["joints"][j]["angularDamping"] = self.context[
-                "joint_angular_damping"
-            ]
             config["joints"][j]["stiffness"] = self.context["joint_stiffness"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
