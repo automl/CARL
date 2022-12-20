@@ -1,3 +1,5 @@
+# So far RNA has been tested only on linux systems
+
 cd data/
 
 mkdir rfam_taneda

@@ -1,3 +1,5 @@
+# So far RNA has been tested only on linux systems
+
 DATAPATH=$1
 SECONDARY_FILE=$2
 
