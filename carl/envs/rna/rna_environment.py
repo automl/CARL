@@ -13,8 +13,6 @@ import numpy as np
 from RNA import fold
 import gym
 
-import pdb
-
 
 @dataclass
 class RnaDesignEnvironmentConfig:
@@ -57,7 +55,9 @@ def _string_difference_indices(s1, s2):
     return [index for index in range(len(s1)) if s1[index] != s2[index]]
 
 
-def _encode_dot_bracket(secondary, env_config):
+def _encode_dot_bracket(
+                secondary: str, 
+                env_config: RnaDesignEnvironmentConfig):
     """
     Encode the dot_bracket notated target structure. The encoding can either be binary
     or by the embedding layer.
@@ -86,7 +86,7 @@ def _encode_dot_bracket(secondary, env_config):
     return [site_encoding[site] for site in padded_secondary]
 
 
-def _encode_pairing(secondary):
+def _encode_pairing(secondary: str):
 
     pairing_encoding = [None] * len(secondary)
     stack = []
@@ -234,7 +234,9 @@ class RnaDesignEnvironment(gym.Env):
     The environment for RNA design using deep reinforcement learning.
     """
 
-    def __init__(self, dot_brackets, env_config):
+    def __init__(self, 
+                    dot_brackets: List[str], 
+                    env_config):
         """Initialize the environment
         
         Args
