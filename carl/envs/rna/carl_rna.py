@@ -147,7 +147,7 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
         self.build_observation_space(
-            low=-np.inf * np.ones(11),
-            high=np.inf * np.ones(11),
+            low=-np.inf * np.ones(self.obs_low),
+            high=np.inf * np.ones(self.obs_high),
             context_bounds=CONTEXT_BOUNDS,
         )
