@@ -12,21 +12,28 @@ from distance import hamming
 import numpy as np
 
 from RNA import fold
-import gymnasium as gym
+import gymnasium as gym 
 from typing import Any, List
+
+import pdb
 
 
 @dataclass
 class RnaDesignEnvironmentConfig:
     """
     Dataclass for the configuration of the environment.
+    
     Default values describe:
+        
         mutation_threshold: Defines the minimum distance needed before applying the local
             improvement step.
+       
         reward_exponent: A parameter to shape the reward function.
+        
         state_radius: The state representation is a (2*<state_radius> + 1)-gram
         at each position.
         use_conv: Bool to state if a convolutional network is used or not.
+        
         use_embedding: Bool to state if embedding is used or not.
     """
 
