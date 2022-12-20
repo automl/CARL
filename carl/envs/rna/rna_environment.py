@@ -29,11 +29,15 @@ class RnaDesignEnvironmentConfig:
         mutation_threshold:
             Defines the minimum distance needed before applying the local
             improvement step.
-        reward_exponent: A parameter to shape the reward function.
-        state_radius: The state representation is a (2*<state_radius> + 1)-gram
+        reward_exponent:
+            A parameter to shape the reward function.
+        state_radius:
+            The state representation is a (2*<state_radius> + 1)-gram
             at each position.
-        use_conv: Bool to state if a convolutional network is used or not.
-        use_embedding: Bool to state if embedding is used or not.
+        use_conv:
+            Bool to state if a convolutional network is used or not.
+        use_embedding:
+            Bool to state if embedding is used or not.
     """
 
     mutation_threshold: Any = 5
@@ -90,6 +94,9 @@ def _encode_dot_bracket(  # type: ignore[no-untyped-def]
     # Sites corresponds to 1 pixel with 1 channel if convs are applied directly
     if env_config.use_conv and not env_config.use_embedding:
         return [[site_encoding[site]] for site in padded_secondary]
+    
+    pdb.set_trace()
+    
     return [site_encoding[site] for site in padded_secondary]
 
 
