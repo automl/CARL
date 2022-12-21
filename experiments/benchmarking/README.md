@@ -110,6 +110,12 @@ python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=1
 python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[gravity,friction,joint_stiffness]' '+context_sampling=glob(*)' '+slurm=gpu' -m
 ```
 
+Halfcheetah
+```bash
+# train uniform benchmarking
+python experiments/benchmarking/run_training.py '+environments/brax=halfcheetah' 'seed=range(1,6)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[gravity,friction,torso_mass]' '+context_sampling=glob(*)' '+slurm=gpu' -m
+```
+
 - [ ] LSTM baseline for whatever makes sense
 
 - MountainCar +  C51, 0.1, 0.25, 0.5, all visibilities, 100k steps, cfs: goal_velocity,force,gravity
@@ -218,6 +224,9 @@ python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_pr
 
 # new
 python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_protocol' 'kirk_evaluation_protocol.distribution_type=train,test_interpolation,test_interpolation_combinatorial,test_extrapolation_single,test_extrapolation_all' -m --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-10-27/17-41-56_benchmark_train'
+
+# rerun (21.12.2022)
+python experiments/evaluation/run_evaluation.py '+experiments=kirk_evaluation_protocol' 'kirk_evaluation_protocol.distribution_type=train,test_interpolation,test_interpolation_combinatorial,test_extrapolation_single,test_extrapolation_all' -m --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2022-12-21/17-19-39_benchmark_train'
 ```
 
 ## Landing in Space
