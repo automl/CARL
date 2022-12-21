@@ -117,6 +117,9 @@ python experiments/benchmarking/run_training.py '+environments/brax=ant' 'seed=r
 # Train
 python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,cgate_lstm,visible_all,visible_changing' 'context_sampler.context_feature_names=[],[goal_velocity,force,gravity],[goal_velocity],[force],[gravity]' 'context_sampler.sigma_rel=0.1,0.25,0.5' '+slurm=cpushort' -m
 
+# uniform
+python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[goal_velocity,force,gravity],[goal_velocity],[force],[gravity]' '+context_sampling=glob(*)' '+slurm=cpushort' -m
+
 # Debug
 python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' max_num_frames=150_000 'seed=1' '+context_visibility=hidden' 'context_sampler.context_feature_names=[]' 'context_sampler.sigma_rel=0.1' 'wandb.debug=True'
 
