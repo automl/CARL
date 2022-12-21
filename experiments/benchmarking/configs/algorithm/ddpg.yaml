@@ -19,3 +19,4 @@ pi_log_sigma: -10.0
 replay_capacity: 25000
 warmup_num_frames: 5000
 n_steps: 5
+tanh_policy: false

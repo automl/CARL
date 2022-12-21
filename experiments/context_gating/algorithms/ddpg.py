@@ -40,7 +40,7 @@ def ddpg(cfg, env, eval_env):
         noise.reset()
         noise.sigma *= cfg.noise_decay  # slowly decrease noise scale
 
-        for t in range(env.spec.max_episode_steps):
+        for t in range(env.env.cutoff):
             a = noise(pi(s))
             s_next, r, done, _ = env.step(a)
 
