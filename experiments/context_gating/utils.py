@@ -13,7 +13,10 @@ def dump_func_dict(locals_dict: Dict[str, Any]):
     func_dict = {}
     for key, val in locals_dict.items():
         if key in ["q", "q1", "q2", "pi", "pi_targ", "q_targ", "q1_targ", "q2_targ"]:
-            func_dict[key] = val
+            func_dict[key] = {
+                "params": val.params,
+                "function_state": val.function_state,
+            }
     path = Path(wandb.run.dir) / "func_dict.pkl.lz4"
     coax.utils.dump(func_dict, path)
     return path
