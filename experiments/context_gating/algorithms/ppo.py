@@ -23,11 +23,14 @@ def ppo(cfg, env, eval_env):
     pi = coax.Policy(func_pi, env)
 
     # slow-moving avg of pi
-    pi_behavior = pi.copy()
+    pi_target = pi.copy()
 
     # specify how to update policy and value function
-    ppo_clip = coax.policy_objectives.PPOClip(pi, optimizer=optax.adam(cfg.learning_rate))
+    ppo_clip = coax.policy_objectives.PPOClip(pi, optimizer=optax.adam(cfg.clip_lr))
     simple_td = coax.td_learning.SimpleTD(v, optimizer=optax.adam(cfg.learning_rate))
+
+    # policy regularizer (avoid premature exploitation)
+    policy_reg = coax.regularizers.EntropyRegularizer(pi, beta=cfg.entropy_regularizer_beta)
 
     # specify how to trace the transitions
     tracer = coax.reward_tracing.NStep(n=cfg.n_step, gamma=cfg.gamma)
@@ -37,7 +40,7 @@ def ppo(cfg, env, eval_env):
         s = env.reset()
 
         for t in range(env.env.cutoff):
-            a, logp = pi_behavior(s, return_logp=True)
+            a, logp = pi_target(s, return_logp=True)
             s_next, r, done, info = env.step(a)
 
             # add transition to buffer
@@ -55,7 +58,7 @@ def ppo(cfg, env, eval_env):
                     env.record_metrics(metrics_pi)
 
                 buffer.clear()
-                pi_behavior.soft_update(pi, tau=cfg.tau)
+                pi_target.soft_update(pi, tau=cfg.pi_target_tau)
 
             if done:
                 break

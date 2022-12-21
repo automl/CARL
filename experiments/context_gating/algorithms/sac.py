@@ -126,15 +126,7 @@ def sac(cfg, env, eval_env):
             #     wandb.log({"eval/episode": wandb.Video(
             #         gif_path, caption=str(T), fps=30)}, commit=False)
             if env.period(name="evaluate", T_period=cfg.eval_freq):
-                path = dump_func_dict(
-                    {
-                        "pi": pi,
-                        "q1": q1,
-                        "q2": q2,
-                        "q1_targ": q1_targ,
-                        "q2_targ": q2_targ,
-                    }
-                )
+                dump_func_dict(locals())
                 average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
                 wandb.log(
                     {
@@ -145,13 +137,5 @@ def sac(cfg, env, eval_env):
                 )
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
-    path = dump_func_dict(
-        {
-            "pi": pi,
-            "q1": q1,
-            "q2": q2,
-            "q1_targ": q1_targ,
-            "q2_targ": q2_targ,
-        }
-    )
+    dump_func_dict(locals())
     return onp.mean(average_returns)
