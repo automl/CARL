@@ -10,7 +10,7 @@ from ..networks.ddpg import pi_func, q_func
 from ..utils import dump_func_dict, evaluate, log_wandb
 
 
-def td3(cfg, env, eval_env):
+def ddpg(cfg, env, eval_env):
     func_pi = pi_func(cfg, env)
     func_q = q_func(cfg, env)
 
