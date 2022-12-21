@@ -4,7 +4,7 @@ defaults:
   - ../context_visibility/hidden
   - ../slurm/cpushort
 
-experiment: kirk_evaluation_protocol2
+experiment: kirk_evaluation_protocol3
 
 context_sampler:
   n_samples: 1000
