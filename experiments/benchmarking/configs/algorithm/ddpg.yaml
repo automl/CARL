@@ -1,0 +1,21 @@
+# @package _global_
+
+algorithm: ddpg
+
+
+action_noise:
+  type: ornsteinuhlenbeck
+  kwargs:
+    mu: 0.0
+    sigma: 0.2
+    theta: 0.15
+noise_decay: 0.99
+learning_rate: 1e-3
+learning_rate_pg: 1e-4
+gamma: 0.9
+pi_targ_tau: 0.001
+q_targ_tau: 0.001
+pi_log_sigma: -10.0
+replay_capacity: 25000
+warmup_num_frames: 5000
+n_steps: 5
