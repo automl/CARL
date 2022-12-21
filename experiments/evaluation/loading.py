@@ -3,6 +3,7 @@ from pathlib import Path
 from omegaconf import DictConfig
 import coax
 import warnings
+import importlib
 
 
 def load_func_dict(path: Union[str, Path]):
@@ -10,9 +11,38 @@ def load_func_dict(path: Union[str, Path]):
     return func_dict
 
 
-def load_policy(cfg: DictConfig, weights_path: Union[str, Path]):
+def load_policy(env, cfg: DictConfig, weights_path: Union[str, Path]):
     func_dict = load_func_dict(weights_path)
-    policy = func_dict["pi"]
+    # module = importlib.import_module(f"experiments.context_gating.networks.{cfg.algorithm}")
+    # func_pi = module.pi_func(cfg, env)
+    # policy = coax.Policy(
+    #     func_pi,
+    #     env,
+    #     random_seed=cfg.seed,
+    # )
+    # policy.params = func_dict["pi"].params
+    # policy.function_state = func_dict["pi"].function_state
+
+    if cfg.algorithm != "c51":
+        raise NotImplementedError("Adjust loading.")
+
+    from experiments.context_gating.networks.c51 import q_func
+
+    func_q = q_func(cfg, env)
+
+    # main function approximators
+    q = coax.StochasticQ(
+        func_q,
+        env,
+        value_range=(cfg.q_min_value, cfg.q_max_value),
+        num_bins=cfg.network.num_atoms,
+    )
+    q.params = func_dict["q"]["params"]
+    q.function_state = func_dict["q"]["function_state"]
+    policy = coax.BoltzmannPolicy(q, temperature=cfg.pi_temperature)
+
+
+    
     return policy
 
 

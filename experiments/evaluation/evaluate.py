@@ -224,7 +224,7 @@ def evaluate_policy(cfg: DictConfig):
     # Evaluate
     # ----------------------------------------------------------------------
     weights_path = wandbdir / "latest-run" / "files" / "func_dict.pkl.lz4"
-    policy = load_policy(traincfg, weights_path=weights_path)
+    policy = load_policy(env, traincfg, weights_path=weights_path)
     policy.observation_preprocessor = coax.utils.default_preprocessor(env.observation_space)
     returns, context_ids = evaluate(
         pi=policy, env=env, num_episodes=cfg.n_eval_episodes
