@@ -1,0 +1,9 @@
+# @package _global_
+
+algorithm: ppo
+
+# Hyperparameters from here: https://github.com/araffin/rl-baselines-zoo/blob/master/hyperparams/ppo2.yml
+learning_rate: 3e-4
+gamma: 0.99
+replay_capacity: 16384
+tau: 0.1

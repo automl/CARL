@@ -29,6 +29,7 @@ from carl.utils.types import Contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
+from experiments.context_gating.algorithms.ppo import ppo
 from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
 
 from experiments.carlbench.context_logging import (
@@ -274,6 +275,8 @@ def train(cfg: DictConfig):
         algorithm = td3
     elif cfg.algorithm == "c51":
         algorithm = c51
+    elif cfg.algorithm == "ppo":
+        algorithm = ppo
     else:
         raise ValueError(f"Unknown algorithm {cfg.algorithm}")
 
