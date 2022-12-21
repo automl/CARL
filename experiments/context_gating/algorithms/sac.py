@@ -5,6 +5,7 @@ import numpy as onp
 import optax
 import wandb
 import os
+from experiments.context_gating.algorithms.experience_replay.simple import SimpleReplayBuffer
 
 from experiments.context_gating.algorithms.proba_dists.squashed_normal import (
     SquashedNormalDist,
@@ -49,7 +50,7 @@ def sac(cfg, env, eval_env):
     tracer = coax.reward_tracing.NStep(
         n=cfg.n_step, gamma=cfg.gamma, record_extra_info=True
     )
-    buffer = coax.experience_replay.SimpleReplayBuffer(
+    buffer = SimpleReplayBuffer(
         capacity=cfg.replay_capacity, random_seed=cfg.seed
     )
     policy_regularizer = coax.regularizers.NStepEntropyRegularizer(
