@@ -2,6 +2,7 @@ defaults:
   - _self_
   - slurm/gpu
   - algorithm/sac
+  - context_visibility/hidden
   - override hydra/launcher: submitit_slurm
   - override hydra/job_logging: colorlog
   - override hydra/hydra_logging: colorlog
@@ -48,7 +49,7 @@ pi_update_freq: 4
 replay_capacity: 100000
 render_freq: 10000
 eval_freq: 10000
-eval_episodes: 100
+eval_episodes: 128
 eval_on_train_context: true
 contexts_train_path: null  # priority over context_sampler
 contexts_eval_path: null
