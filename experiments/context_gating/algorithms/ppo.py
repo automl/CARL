@@ -79,7 +79,7 @@ def ppo(cfg, env, eval_env):
                     commit=False,
                 )
         log_wandb(env)
-    average_returns = evaluate(pi, eval_env, cfg.eval_episodes)
+    average_returns = evaluate(pi, eval_env, cfg.n_final_eval_episodes * cfg.context_sampler.n_contexts)
     path = dump_func_dict(locals())
     return onp.mean(average_returns)
 

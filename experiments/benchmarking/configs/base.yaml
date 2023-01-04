@@ -50,6 +50,7 @@ replay_capacity: 100000
 render_freq: 10000
 eval_freq: 10000
 eval_episodes: 128
+n_final_eval_episodes: 5  # will be multiplied by the number of contexts
 eval_on_train_context: true
 contexts_train_path: null  # priority over context_sampler
 contexts_eval_path: null
