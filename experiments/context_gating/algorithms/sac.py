@@ -137,6 +137,6 @@ def sac(cfg, env, eval_env):
                     commit=False,
                 )
         log_wandb(env)
-    average_returns = evaluate(pi, eval_env, cfg.n_final_eval_episodes * cfg.context_sampler.n_contexts)
+    average_returns = evaluate(pi, eval_env, cfg.n_final_eval_episodes * cfg.context_sampler.n_samples)
     dump_func_dict(locals())
     return onp.mean(average_returns)
