@@ -23,25 +23,28 @@ def load_policy(env, cfg: DictConfig, weights_path: Union[str, Path]):
     # policy.params = func_dict["pi"].params
     # policy.function_state = func_dict["pi"].function_state
 
-    if cfg.algorithm != "c51":
-        raise NotImplementedError("Adjust loading.")
-
-    from experiments.context_gating.networks.c51 import q_func
-
-    func_q = q_func(cfg, env)
-
-    # main function approximators
-    q = coax.StochasticQ(
-        func_q,
-        env,
-        value_range=(cfg.q_min_value, cfg.q_max_value),
-        num_bins=cfg.network.num_atoms,
-    )
-    q.params = func_dict["q"]["params"]
-    q.function_state = func_dict["q"]["function_state"]
-    policy = coax.BoltzmannPolicy(q, temperature=cfg.pi_temperature)
-
-
+    if cfg.algorithm == "c51":
+        from experiments.context_gating.networks.c51 import q_func
+        func_q = q_func(cfg, env)
+        # main function approximators
+        q = coax.StochasticQ(
+            func_q,
+            env,
+            value_range=(cfg.q_min_value, cfg.q_max_value),
+            num_bins=cfg.network.num_atoms,
+        )
+        q.params = func_dict["q"]["params"]
+        q.function_state = func_dict["q"]["function_state"]
+        policy = coax.BoltzmannPolicy(q, temperature=cfg.pi_temperature)
+    elif cfg.algorithm == "td3":
+        from experiments.context_gating.networks.td3 import pi_func, q_func
+        func_pi = pi_func(cfg, env)
+        policy = coax.Policy(func_pi, env, random_seed=cfg.seed)
+        from rich import inspect
+        policy.params = func_dict["pi"]["params"]
+        policy.function_state = func_dict["pi"]["function_state"]
+    else:
+        raise NotImplementedError(f"Adjust loading for {cfg.algorithm}.")
     
     return policy
 
