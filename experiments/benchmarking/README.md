@@ -359,3 +359,10 @@ python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Do
  ```bash
  python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(6,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[m, l, g, dt, max_speed],[m],[g],[l],[dt],[max_speed],[m,l],[m,l,g],[m,l,g,dt]' '+context_sampling=glob(*)' '+slurm=cpu' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' -m
  ```
+
+
+
+ # Check
+ ```bash
+ python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,visible_changing' 'context_sampler.context_feature_names=[],[m],[g],[l],[dt],[max_speed]' '+context_sampling=glob(*)' '+slurm=cpu' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'wandb.tags=[rerun]' -m
+ ```
