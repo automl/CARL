@@ -128,6 +128,6 @@ def td3(cfg, env, eval_env):
                     commit=False,
                 )
         log_wandb(env)
-    average_returns = evaluate(pi, eval_env, cfg.n_final_eval_episodes * cfg.context_sampler.n_samples)
+    average_returns = evaluate(pi, eval_env, cfg.n_final_eval_episodes * cfg.context_sampler.n_samples)  # TODO use evaluate function from evaluation and log
     path = dump_func_dict(locals())
     return onp.mean(average_returns)
