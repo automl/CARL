@@ -4,7 +4,9 @@ defaults:
   - ../context_visibility/hidden
   - ../slurm/cpushort
 
-experiment: kirk_evaluation_protocol3
+experiment: kirk_evaluation_protocol4
+
+max_num_frames: 200_000
 
 context_sampler:
   n_samples: 1000
