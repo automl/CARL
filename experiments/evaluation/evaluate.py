@@ -93,7 +93,8 @@ def evaluate_policy(cfg: DictConfig):
     traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
 
     if cfg.experiment == "hidden_on_variations":
-        if traincfg.wandb.group != "hidden":
+        if traincfg.wandb.group != "hidden" and traincfg.context_sampler.context_feature_names != []:
+            print("Abort. Is not hidden and trained on variations.", traincfg.wandb.group, traincfg.context_sampler.context_feature_names)
             return None
 
     wandbdir = Path(cfg.results_path) / "wandb"
