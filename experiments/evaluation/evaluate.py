@@ -92,6 +92,10 @@ def evaluate_policy(cfg: DictConfig):
 
     traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
 
+    if cfg.experiment == "hidden_on_variations":
+        if traincfg.wandb.group != "hidden":
+            return None
+
     wandbdir = Path(cfg.results_path) / "wandb"
 
     if cfg.kirk_evaluation_protocol.follow:

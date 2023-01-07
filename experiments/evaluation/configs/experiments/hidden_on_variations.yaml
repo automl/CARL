@@ -1,0 +1,4 @@
+# @package _global_
+
+experiment: hidden_on_variations
+n_eval_episodes_per_context: 10
