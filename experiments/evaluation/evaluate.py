@@ -93,8 +93,8 @@ def evaluate_policy(cfg: DictConfig):
     traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
 
     if cfg.experiment == "hidden_on_variations":
-        if traincfg.wandb.group != "hidden" and traincfg.context_sampler.context_feature_names != []:
-            print("Abort. Is not hidden and trained on variations.", traincfg.wandb.group, traincfg.context_sampler.context_feature_names)
+        if traincfg.wandb.group != cfg.visibility and traincfg.context_sampler.context_feature_names != []:
+            print(f"Abort. Is not {cfg.visibility} and trained on variations.", traincfg.wandb.group, traincfg.context_sampler.context_feature_names)
             return None
 
     wandbdir = Path(cfg.results_path) / "wandb"
@@ -176,6 +176,9 @@ def evaluate_policy(cfg: DictConfig):
             contexts = load_wandb_contexts(contexts_path)
     else:
         contexts = lazy_json_load(cfg.contexts_path)
+        print(f"Load contexts from {cfg.contexts_path}")
+        from rich import print as printr
+        printr(contexts)
     if contexts is not None and len(contexts) > 0:
         log_contexts_wandb(contexts=contexts, wandb_key="evalpost/contexts")
         cfg.n_eval_episodes = cfg.n_eval_episodes_per_context * len(contexts)
