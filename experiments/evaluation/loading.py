@@ -161,7 +161,80 @@ def load_from_path(p, is_optgap_exp: bool = False):
     return return_per_context
 
 
-def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False, is_optgap_exp: bool = False):
+def load_from_path_eval(p, **kwargs):
+    replacements_bounds = {
+    "[0.9, 1.1]": 0.1,
+    "[0.75, 1.25]": 0.25,
+    "[0.5, 1.5]": 0.5,
+}
+    key_interval = "$\Delta_{rel}$"
+    key_visibility = "visibility"
+    key_performance = "return"
+    key_cf = "context_sampler.context_feature_names"
+
+    p = Path(p)
+    fn_cfg = p / fn_config
+    fn_wbsum = p / fn_wbsummary
+    fn_wbcfg = p / fn_wbconfig
+    if not fn_wbcfg.is_file() or not fn_wbsum.is_file() or not fn_cfg.is_file():
+        return None
+    cfg = OmegaConf.load(fn_cfg)
+    traincfg = recover_traincfg_from_wandb(fn_wbcfg)
+    summary = lazy_json_load(fn_wbsum)
+
+    if "average_return" in summary:
+        average_return = summary["average_return"]
+    else:
+        average_return = None
+
+    if average_return is None:
+        return None
+
+    entry = {
+        "average_return": average_return,
+    }
+
+    path_to_table = fn_wbsum.parent / summary["return_per_context_table"]["path"]
+    return_per_context = load_wandb_table(path_to_table)
+
+    # Sort by context id so we can add repetition info
+    return_per_context.sort_values(by="context_id", inplace=True)
+    n_contexts = return_per_context["context_id"].nunique()
+    n_reps = len(return_per_context) // n_contexts
+    assert n_contexts * n_reps == len(return_per_context)
+    repetitions = np.concatenate([np.arange(0, n_reps)] * n_contexts)
+    return_per_context["rep"] = repetitions
+
+    contexts_path = fn_wbsum.parent / summary["evalpost/contexts"]["path"]
+    contexts = load_wandb_table(contexts_path)
+
+    visibility = traincfg.wandb.group
+
+    context_ids = return_per_context["context_id"].apply(int).to_list()
+    contexts_to_table = pd.DataFrame([contexts.iloc[cidx] for cidx in context_ids])
+    for col in contexts_to_table.columns:
+        return_per_context[col] = contexts_to_table[col].to_numpy()
+    n = len(return_per_context)
+    # return_per_context["average_return"] = [average_return] * n
+    return_per_context[key_visibility] = visibility
+    return_per_context[key_interval] = replacements_bounds[str(traincfg.context_sampler.uniform_bounds_rel)]
+    return_per_context["context_sampler.context_feature_names"] = str(traincfg.context_sampler.context_feature_names)
+    return_per_context["seed"] = traincfg.seed
+    return_per_context["algorithm"] = traincfg.algorithm
+
+
+    # if cfg.get("contexts_path", None):
+    #     contexts = lazy_json_load(cfg.contexts_path)
+    #     context_id = int(list(contexts.keys())[0])
+    #     context_id = list(contexts.values())
+    #     if len(context_id) == len(return_per_context):
+    #         return_per_context["context_id"] = context_id
+    #     else:
+    #         warnings.warn("Context IDs not updated via the contexts_path. Mismatched length.")
+    return return_per_context
+
+
+def load(folder_eval: str, rpc_fn: str | Path, reload_rpc: bool = False, is_optgap_exp: bool = False, load_from_path: callable = load_from_path):
     rpc_fn = Path(rpc_fn)
     if not rpc_fn.is_file():
         reload_rpc = True
