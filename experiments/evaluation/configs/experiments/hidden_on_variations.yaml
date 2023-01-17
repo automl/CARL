@@ -2,3 +2,4 @@
 
 experiment: hidden_on_variations
 n_eval_episodes_per_context: 10
+visibility: hidden  # the visibility which is allowed to be evaluated
