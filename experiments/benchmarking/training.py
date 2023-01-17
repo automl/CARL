@@ -174,6 +174,7 @@ def train(cfg: DictConfig):
                 "env",
                 "seed",
                 "experiment",
+                "wandb.tags",
                 # "group",
                 "context_sampler.context_feature_names",
                 "context_sampler.sigma_rel",
