@@ -40,9 +40,30 @@ def load_policy(env, cfg: DictConfig, weights_path: Union[str, Path]):
         from experiments.context_gating.networks.td3 import pi_func, q_func
         func_pi = pi_func(cfg, env)
         policy = coax.Policy(func_pi, env, random_seed=cfg.seed)
-        from rich import inspect
         policy.params = func_dict["pi"]["params"]
         policy.function_state = func_dict["pi"]["function_state"]
+    elif cfg.algorithm == "sac":
+        if type(func_dict["pi"]) == coax.Policy:
+            policy = func_dict["pi"]
+        else:
+            from experiments.context_gating.networks.sac import pi_func, q_func
+            from experiments.context_gating.algorithms.proba_dists.squashed_normal import (
+                SquashedNormalDist,
+            )
+            func_pi = pi_func(cfg, env)
+            func_q = q_func(cfg, env)
+
+            policy = coax.Policy(
+                func_pi,
+                env,
+                random_seed=cfg.seed,
+                proba_dist=SquashedNormalDist(
+                    env.action_space,
+                    clip_logvar=(-10.0, 4.0),
+                ),
+            )
+            policy.params = func_dict["pi"]["params"]
+            policy.function_state = func_dict["pi"]["function_state"]    
     else:
         raise NotImplementedError(f"Adjust loading for {cfg.algorithm}.")
     
@@ -223,14 +244,18 @@ def load_from_path_eval(p, **kwargs):
     return_per_context["algorithm"] = traincfg.algorithm
 
 
-    # if cfg.get("contexts_path", None):
-    #     contexts = lazy_json_load(cfg.contexts_path)
-    #     context_id = int(list(contexts.keys())[0])
-    #     context_id = list(contexts.values())
-    #     if len(context_id) == len(return_per_context):
-    #         return_per_context["context_id"] = context_id
-    #     else:
-    #         warnings.warn("Context IDs not updated via the contexts_path. Mismatched length.")
+    if cfg.get("contexts_path", None):
+        contexts = lazy_json_load(cfg.contexts_path)
+        # context_id = int(list(contexts.keys())[0])
+        # context_id = list(contexts.values())
+        context_ids_new = list(contexts.keys())
+        context_ids = return_per_context["context_id"].apply(int).to_list()
+        if len(context_ids_new) == len(return_per_context):
+            return_per_context["context_id"] = context_ids_new
+        else:
+            ids = [context_ids_new[k] for k in context_ids]
+            return_per_context["context_id"] = ids
+            # warnings.warn("Context IDs not updated via the contexts_path. Mismatched length.")
     return return_per_context
 
 
