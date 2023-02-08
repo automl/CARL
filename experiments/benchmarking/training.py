@@ -182,6 +182,7 @@ def train(cfg: DictConfig):
                 "carl.hide_context",
                 "carl.dict_observation_space",
                 "carl.gating_type",
+                "algorithm",
             ],
         )
     ) and not cfg.wandb.debug:
