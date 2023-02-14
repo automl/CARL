@@ -184,11 +184,11 @@ def load_from_path(p, is_optgap_exp: bool = False):
 
 def load_from_path_eval(p, **kwargs):
     replacements_bounds = {
-    "[0.9, 1.1]": 0.1,
-    "[0.75, 1.25]": 0.25,
-    "[0.5, 1.5]": 0.5,
-}
-    key_interval = "$\Delta_{rel}$"
+        "[0.9, 1.1]": 0.1,
+        "[0.75, 1.25]": 0.25,
+        "[0.5, 1.5]": 0.5,
+    }
+    key_interval = r"$\Delta_{rel}$"
     key_visibility = "visibility"
     key_performance = "return"
     key_cf = "context_sampler.context_feature_names"
