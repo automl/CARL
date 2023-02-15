@@ -46,7 +46,6 @@ extras_require = {
         "isort",
         "pydocstyle",
         "pre-commit",
-        "automl-sphinx-theme>=0.1.9"
     ],
     "docs": [
         "sphinx>=4.2.0",
