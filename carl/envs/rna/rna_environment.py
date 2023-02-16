@@ -21,9 +21,10 @@ class RnaDesignEnvironmentConfig:
     """
     Dataclass for the configuration of the environment.
     
-    Default values describe:
-        
-        mutation_threshold: Defines the minimum distance needed before applying the local
+    Parameters
+    ----------
+        mutation_threshold: 
+            Defines the minimum distance needed before applying the local
             improvement step.
        
         reward_exponent: A parameter to shape the reward function.
@@ -114,9 +115,12 @@ class _Target(object):
         """
         Initialize a target structure.
         
-        Args:
-            dot_bracket: dot_bracket encoded target structure.
-            env_config: The environment configuration.
+        Parameters
+        ----------
+            dot_bracket: 
+                dot_bracket encoded target structure.
+            env_config: 
+                The environment configuration.
         """
         _Target._id_counter += 1
         self.id = _Target._id_counter  # For processing results
