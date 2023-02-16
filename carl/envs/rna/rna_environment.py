@@ -13,6 +13,8 @@ import numpy as np
 from RNA import fold
 import gym
 
+from typing import Any, List
+
 
 @dataclass
 class RnaDesignEnvironmentConfig:
@@ -34,9 +36,9 @@ class RnaDesignEnvironmentConfig:
         use_embedding: Bool to state if embedding is used or not.
     """
 
-    mutation_threshold: int = 5
-    reward_exponent: float = 1.0
-    state_radius: int = 5
+    mutation_threshold: Any = 5
+    reward_exponent: Any = 1.0
+    state_radius: Any = 5
     use_conv: bool = True
     use_embedding: bool = False
 
@@ -81,7 +83,6 @@ def _encode_dot_bracket(
     if env_config.use_conv and not env_config.use_embedding:
         return [[site_encoding[site]] for site in padded_secondary]
     
-    pdb.set_trace()
     
     return [site_encoding[site] for site in padded_secondary]
 

@@ -6,9 +6,9 @@ from typing import List, Optional, Union, Generator
 def parse_dot_brackets(
     dataset: str,
     data_dir: str,
-    target_structure_ids: Optional[Union[List[int], int]] = None,
-    target_structure_path: Optional[str] = None,
-) -> Generator[int]:
+    target_structure_ids: Optional[List[int]] = None,
+    target_structure_path: Optional[Union[str, Path]] = None,
+) -> List[str]:
     """Generate the targets for next epoch.
     Returns:
     Parameters
@@ -34,10 +34,5 @@ def parse_dot_brackets(
         ]
     else:
         target_paths = list(Path(data_dir, dataset).glob("*.rna"))
-
-    x = [data_path.read_text().rstrip() for data_path in target_paths]
-    import pdb
-
-    pdb.set_trace()
-
-    return x
+        
+    return [data_path.read_text().rstrip() for data_path in target_paths]
