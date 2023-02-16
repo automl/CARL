@@ -14,7 +14,6 @@ import numpy as np
 from RNA import fold
 import gymnasium as gym
 from typing import Any, List
-import pdb
 
 import pdb
 
@@ -86,7 +85,6 @@ def _encode_dot_bracket(  # type: ignore[no-untyped-def]
     if env_config.use_conv and not env_config.use_embedding:
         return [[site_encoding[site]] for site in padded_secondary]
     
-    pdb.set_trace()
     
     return [site_encoding[site] for site in padded_secondary]
 
