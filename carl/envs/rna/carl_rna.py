@@ -15,14 +15,14 @@ from carl.envs.rna.carl_rna_definitions import (
     CONTEXT_BOUNDS,
 )
 
-from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 from carl.context.selection import AbstractSelector
 
 import gym
 
 
-class CARLRnaDesignEnv(CARLEnv):
+# TODO: mypy
+class CARLRnaDesignEnv(CARLEnv): 
     def __init__(
         self,
         env: gym.Env = None,
