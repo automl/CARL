@@ -40,23 +40,23 @@ jobs:
       run: |
         make clean
         make docs
-    - name: Pull latest gh-pages
+    - name: Pull latest gh_pages
       if: (contains(github.ref, 'version_0.2.0') || contains(github.ref, 'main')) && github.event_name == 'push'
       run: |
         cd ..
-        git clone https://github.com/${{ github.repository }}.git --branch gh-pages --single-branch gh-pages
-    - name: Copy new docs into gh-pages
+        git clone https://github.com/${{ github.repository }}.git --branch gh_pages --single-branch gh_pages
+    - name: Copy new docs into gh_pages
       if: (contains(github.ref, 'version_0.2.0') || contains(github.ref, 'main')) && github.event_name == 'push'
       run: |
         branch_name=${GITHUB_REF##*/}
-        cd ../gh-pages
+        cd ../gh_pages
         rm -rf $branch_name
         cp -r ../${{ env.name }}/docs/build/html $branch_name
-    - name: Push to gh-pages
+    - name: Push to gh_pages
       if: (contains(github.ref, 'version_0.2.0') || contains(github.ref, 'main')) && github.event_name == 'push'
       run: |
         last_commit=$(git log --pretty=format:"%an: %s")
-        cd ../gh-pages
+        cd ../gh_pages
         branch_name=${GITHUB_REF##*/}
         git add $branch_name/
         git config --global user.name 'Github Actions'
