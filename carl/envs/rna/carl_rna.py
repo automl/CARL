@@ -21,7 +21,9 @@ from carl.context.selection import AbstractSelector
 ACTION_SPACE = gym.spaces.Discrete(4)
 OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.ones(11))
 
-class CARLRnaDesignEnv(CARLEnv):
+
+
+class CARLRnaDesignEnv(CARLEnv): 
     def __init__(
         self,
         env: RnaDesignEnvironment | None = None,
