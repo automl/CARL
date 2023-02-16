@@ -12,7 +12,7 @@ def parse_dot_brackets(
     target_structure_path: Optional[Union[str, Path]] = None,
 ) -> List[str]:
     """Generate the targets for next epoch.
-
+    
     Parameters
     ----------
     dataset : str
