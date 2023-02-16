@@ -10,7 +10,7 @@ def parse_dot_brackets(
     target_structure_path: Optional[Union[str, Path]] = None,
 ) -> List[str]:
     """Generate the targets for next epoch.
-    Returns:
+    
     Parameters
     ----------
     dataset : str
@@ -21,6 +21,7 @@ def parse_dot_brackets(
         Use specific targets by ids., by default None
     target_structure_path : Optional[str], optional
         pecify a path to the targets., by default None
+    
     Returns
     -------
     Generator[int]
