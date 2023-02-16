@@ -21,19 +21,20 @@ class RnaDesignEnvironmentConfig:
     """
     Dataclass for the configuration of the environment.
     
-    Default values describe:
-        
-        mutation_threshold: Defines the minimum distance needed before applying the local
+    Parameters
+    ----------
+        mutation_threshold: 
+            Defines the minimum distance needed before applying the local
             improvement step.
-       
-        reward_exponent: A parameter to shape the reward function.
-        
-        state_radius: The state representation is a (2*<state_radius> + 1)-gram
+        reward_exponent: 
+            A parameter to shape the reward function.
+        state_radius: 
+            The state representation is a (2*<state_radius> + 1)-gram
             at each position.
-        
-        use_conv: Bool to state if a convolutional network is used or not.
-        
-        use_embedding: Bool to state if embedding is used or not.
+        use_conv: 
+            Bool to state if a convolutional network is used or not.
+        use_embedding: 
+            Bool to state if embedding is used or not.
     """
 
     mutation_threshold: Any = 5
@@ -47,11 +48,15 @@ def _string_difference_indices(s1, s2):
     """
     Returns all indices where s1 and s2 differ.
     
-    Args:
-        s1: The first sequence.
-        s2: The second sequence.
+    Parameters
+    ----------
+        s1: 
+            The first sequence.
+        s2: 
+            The second sequence.
     
-    Returns:
+    Returns
+    -------
         List of indices where s1 and s2 differ.
     """
     return [index for index in range(len(s1)) if s1[index] != s2[index]]
@@ -64,11 +69,15 @@ def _encode_dot_bracket(
     Encode the dot_bracket notated target structure. The encoding can either be binary
     or by the embedding layer.
     
-    Args:
-        secondary: The target structure in dot_bracket notation.
-        env_config: The configuration of the environment.
+    Parameters
+    ----------
+        secondary: 
+            The target structure in dot_bracket notation.
+        env_config: 
+            The configuration of the environment.
     
-    Returns:
+    Returns
+    -------
         List of encoding for each site of the padded target structure.
     """
     padding = "=" * env_config.state_radius
@@ -112,9 +121,12 @@ class _Target(object):
         """
         Initialize a target structure.
         
-        Args:
-            dot_bracket: dot_bracket encoded target structure.
-            env_config: The environment configuration.
+        Parameters
+        ----------
+            dot_bracket: 
+                dot_bracket encoded target structure.
+            env_config: 
+                The environment configuration.
         """
         _Target._id_counter += 1
         self.id = _Target._id_counter  # For processing results
@@ -150,9 +162,13 @@ class _Design(object):
         """
         Initialize a candidate solution.
         
-        Args:
-            length: The length of the candidate solution.
-            primary: The sequence of the candidate solution.
+        Parameters
+        ----------
+        length: 
+            The length of the candidate solution.
+        primary: 
+            The sequence of the candidate solution.
+        
         """
         if primary:
             self._primary_list = primary
@@ -165,11 +181,15 @@ class _Design(object):
         """
         Locally change the candidate solution.
         
-        Args:
-            mutations: Possible mutations for the specified sites
-            sites: The sites to be mutated
+        Parameters
+        ----------
+        mutations: 
+            Possible mutations for the specified sites
+        sites: 
+            The sites to be mutated
         
-        Returns:
+        Returns
+        -------
             A Design object with the mutated candidate solution.
         """
         mutatedprimary = self._primary_list.copy()
@@ -180,10 +200,16 @@ class _Design(object):
     def assign_sites(self, action, site, paired_site=None):
         """
         Assign nucleotides to sites for designing a candidate solution.
-        Args:
-            action: The agents action to assign a nucleotide.
-            site: The site to which the nucleotide is assigned to.
-            paired_site: defines if the site is assigned with a base pair or not.
+        
+        Parameters
+        ----------
+        action: 
+            The agents action to assign a nucleotide.
+        site: 
+            The site to which the nucleotide is assigned to.
+        paired_site: 
+            Defines if the site is assigned with a base pair or not.
+        
         """
         self._current_site += 1
         if paired_site:
@@ -210,8 +236,11 @@ class _Design(object):
 def _random_epoch_gen(data):
     """
     Generator to get epoch data.
-    Args:
-        data: The targets of the epoch
+    
+    Parameters
+    ----------
+        data: 
+            The targets of the epoch
     """
     while True:
         for i in np.random.permutation(len(data)):
