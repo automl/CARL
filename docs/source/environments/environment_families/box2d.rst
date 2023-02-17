@@ -1,7 +1,7 @@
 CARL Box 2D Environments
 ========================
 
-`OpenAI's gym Box2D <https://gym.openai.com/envs/#box2d>`_ provides environments for continuous control tasks.
+`OpenAI's gym Box2D <https://gymnasium.farama.org/environments/box2d/>`_ provides environments for continuous control tasks.
 In CARL BipedalWalker, LunarLander and CarRacing are included, each with their own modification possibilities like
 new vehicles to race.
 
