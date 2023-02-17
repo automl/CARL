@@ -30,3 +30,7 @@ html-noexamples:
 		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 docs: html linkcheck
+
+all:
+	make clean
+	make docs
