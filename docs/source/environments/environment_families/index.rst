@@ -64,8 +64,6 @@ constraints with structures from different datasets to choose from
 .. toctree::
     :maxdepth: 2
 
-    rna 2
-
     rna
 
 
