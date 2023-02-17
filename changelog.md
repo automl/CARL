@@ -1,6 +1,7 @@
 # 0.2.1
 - Make sampling of contexts deterministic with seed
 - Add Finger (DMC) env
+- Readd RNA env (#78)
 
 # 0.2.0
 - Integrate dm control environments (#55)
