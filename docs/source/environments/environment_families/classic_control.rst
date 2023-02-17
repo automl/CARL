@@ -1,7 +1,7 @@
 CARL Classic Control Environments
 =================================
 
-Classic Control is a problem suite included in `OpenAI's gym <https://gym.openai.com/envs/#classic_control>`_ consisting
+Classic Control is a problem suite included in `OpenAI's gym <https://gymnasium.farama.org/environments/classic_control/>`_ consisting
 of simply physics simulation tasks. Context features here are therefore
 also physics-based, e.g. friction, mass or gravity.
 

@@ -17,7 +17,7 @@ CARL currently contains the following benchmarks which are contextually extended
 
 Classic Control
 ---------------
-`OpenAI gym classic control suite <https://gym.openai.com/envs/#classic_control>`_ extended with several physics
+`OpenAI gym classic control suite <https://gymnasium.farama.org/environments/classic_control/>`_ extended with several physics
 context features like gravity or friction
 
 .. toctree::
@@ -27,7 +27,7 @@ context features like gravity or friction
 
 Box2D
 -----
-`OpenAI gym Box2D <https://gym.openai.com/envs/#box2d>`_ BipedalWalker, LunarLander and
+`OpenAI gym Box2D <https://gymnasium.farama.org/environments/box2d/>`_ BipedalWalker, LunarLander and
 CarRacing, each with their own modification possibilities like
 new vehicles to race
 
