@@ -1,36 +1,29 @@
-# Makefile for Sphinx documentation
+SPHINXBUILD = sphinx-build
+BUILDDIR = build
+SPHINXOPTS =
+ALLSPHINXOPTS = $(SPHINXOPTS) .
 
-SPHINXBUILD   = sphinx-build
-
-# User-friendly check for sphinx-build
-ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
-$(error The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx installed, then set the SPHINXBUILD environment variable to point to the full path of the '$(SPHINXBUILD)' executable. Alternatively you can add the directory with the executable to your PATH. If you don't have Sphinx installed, grab it from http://sphinx-doc.org/)
-endif
-
-.PHONY: help clean buildapi html
-
-help:
-	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  clean      remove rendered files"
-	@echo "  buildapi   to rebuild the api-documentation"
-	@echo "  html       to make standalone HTML files"
-	@echo "  all        clean, buildapi, html"
+.PHONY: clean buildapi linkcheck html docs html-noexamples
 
 clean:
-	rm -rf apidoc
-	rm -rf html
-	rm -rf pages/examples
+		rm -rf $(BUILDDIR)/*
+		rm -rf api
+		rm -rf examples
 
-buildapi:
-	rm -rf apidoc
-
-	sphinx-apidoc -fePTMo apidoc/ ../carl/
-	rm apidoc/carl.rst
+linkcheck:
+		SPHINX_GALLERY_PLOT=False $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+		@echo
+		@echo "Link check complete; look for any errors in the above output " \				
+		"or in $(BUILDDIR)/linkcheck/output.txt."
 
 html:
-	sphinx-build -b html . html -a
+		$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+		@echo
+		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
-all:
-	make clean
-	make buildapi
-	make html
+html-noexamples:
+		SPHINX_GALLERY_PLOT=False $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(SOURCEDIR) $(BUILDDIR)/html
+		@echo
+		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+docs: html linkcheck
