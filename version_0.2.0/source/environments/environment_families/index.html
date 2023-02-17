@@ -1,0 +1,558 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Environment Families &#8212; CARL Documentation 0.2.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="CARL Classic Control Environments" href="classic_control.html" />
+    <link rel="prev" title="The CARL Environment" href="../carl_env.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+  <a class="navbar-brand" href="../../../index.html">
+    <img src="../../../_static/logo.png" class="logo" alt="logo">
+  </a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/automl/automl_sphinx_theme" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/automl_org?lang=de" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown mt-1">
+    <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
+        data-toggle="dropdown">
+        v0.2.0
+        <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
+        <a class="list-group-item list-group-item-action" href="#">v0.2.0 (stable)</a>
+    </div>
+</div>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search align-items-center" action="../../../search.html" method="get" style="width: 100%;">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control btn btn-md" name="q" id="search-input"
+    placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../../../index.html">CARL Documentation</a></h4>
+<div class="mb-3">v0.2.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../getting_started/index.html">
+   Getting Started
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../getting_started/installation.html">
+     Installing CARL
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../getting_started/quickstart.html">
+     Quickstart
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="../index.html">
+   Environments
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../carl_env.html">
+     The CARL Environment
+    </a>
+   </li>
+   <li class="toctree-l2 current active has-children">
+    <a class="current reference internal" href="#">
+     Environment Families
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="classic_control.html">
+       CARL Classic Control Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="box2d.html">
+       CARL Box 2D Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="brax.html">
+       CARL Brax Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="toad_gan.html">
+       CARL Mario Environment
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="rna.html">
+       CARL RNA Design Environment
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../benchmark_properties.html">
+     Benchmark Properties
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../carlify.html">
+     CARLify your Environment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../api/index.html">
+   API Reference
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../cite.html">
+   Citing CARL
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../license.html">
+   License
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#classic-control">
+   Classic Control
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#box2d">
+   Box2D
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#brax">
+   Brax
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mario">
+   Mario
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rna-design">
+   RNA Design
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview-table">
+   Overview Table
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="environment-families">
+<h1>Environment Families<a class="headerlink" href="#environment-families" title="Permalink to this heading">¶</a></h1>
+<p>In CARL we provide several contextually extended environments where we can set and augment their contexts.
+With this we can analyze how the context and its augmentation influences the agent’s generalization capabilities,
+learning and behavior.</p>
+<a class="reference internal image-reference" href="../../../_images/envs_overview.png"><img alt="Screenshot of each environment included in CARL." class="align-center" src="../../../_images/envs_overview.png" style="width: 90%;" /></a>
+<p>Although each environment has different tasks, goals and mechanics, the behavior of the dynamics and the rewards is
+influenced by physical properties.</p>
+<p>CARL currently contains the following benchmarks which are contextually extended:</p>
+<section id="classic-control">
+<h2>Classic Control<a class="headerlink" href="#classic-control" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://gymnasium.farama.org/environments/classic_control/">OpenAI gym classic control suite</a> extended with several physics
+context features like gravity or friction</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classic_control.html">CARL Classic Control Environments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classic_control.html#carl-pendulum-environment">CARL Pendulum Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classic_control.html#carl-cartpole-environment">CARL CartPole Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classic_control.html#carl-acrobot-environment">CARL Acrobot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classic_control.html#carl-mountaincar-environment">CARL MountainCar Environment</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="box2d">
+<h2>Box2D<a class="headerlink" href="#box2d" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://gymnasium.farama.org/environments/box2d/">OpenAI gym Box2D</a> BipedalWalker, LunarLander and
+CarRacing, each with their own modification possibilities like
+new vehicles to race</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="box2d.html">CARL Box 2D Environments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="box2d.html#carl-bipedalwalker-environment">CARL BipedalWalker Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="box2d.html#carl-lunarlander-environment">CARL LunarLander Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="box2d.html#carl-vehicleracing-environment">CARL VehicleRacing Environment</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="brax">
+<h2>Brax<a class="headerlink" href="#brax" title="Permalink to this heading">¶</a></h2>
+<p>All <a class="reference external" href="https://github.com/google/brax">Brax locomotion environments</a> with exposed internal features
+like joint strength or torso mass</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="brax.html">CARL Brax Environments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="brax.html#carl-ant-environment">CARL Ant Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brax.html#carl-fetch-environment">CARL Fetch Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brax.html#carl-grasp-environment">CARL Grasp Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brax.html#carl-halfcheetah-environment">CARL Halfcheetah Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brax.html#carl-humanoid-environment">CARL Humanoid Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brax.html#carl-ur5e-environment">CARL UR5e Environment</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="mario">
+<h2>Mario<a class="headerlink" href="#mario" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/Mawiszus/TOAD-GAN">Super Mario (TOAD-GAN)</a>, a procedurally generated jump’n’run game with control
+over level similarity</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="toad_gan.html">CARL Mario Environment</a></li>
+</ul>
+</div>
+</section>
+<section id="rna-design">
+<h2>RNA Design<a class="headerlink" href="#rna-design" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/automl/learna/">RNADesign</a>, an environment for RNA design given structure
+constraints with structures from different datasets to choose from</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rna.html">CARL RNA Design Environment</a></li>
+</ul>
+</div>
+</section>
+<section id="overview-table">
+<h2>Overview Table<a class="headerlink" href="#overview-table" title="Permalink to this heading">¶</a></h2>
+<p>Below every environment is listed with its number of context features and the type of action and observation space.</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Env. Family</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p># Context Features</p></th>
+<th class="head"><p>Action Space</p></th>
+<th class="head"><p>Obs. Space</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>classic_control</p></td>
+<td><p>CARLMountainCarEnv</p></td>
+<td><p>11</p></td>
+<td><p>Discrete(3)</p></td>
+<td><p>Box(-inf, inf, (13,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>classic_control</p></td>
+<td><p>CARLPendulumEnv</p></td>
+<td><p>5</p></td>
+<td><p>Box(-2.0, 2.0, (1,), float32)</p></td>
+<td><p>Box(-inf, inf, (8,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>classic_control</p></td>
+<td><p>CARLAcrobotEnv</p></td>
+<td><p>10</p></td>
+<td><p>Discrete(3)</p></td>
+<td><p>Box(-28.274333953857422, 282.74334716796875, (16,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>classic_control</p></td>
+<td><p>CARLCartPoleEnv</p></td>
+<td><p>6</p></td>
+<td><p>Discrete(2)</p></td>
+<td><p>Box(-3.4028234663852886e+38, inf, (10,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>classic_control</p></td>
+<td><p>CARLMountainCarContinuousEnv</p></td>
+<td><p>10</p></td>
+<td><p>Box(-1.0, 1.0, (1,), float32)</p></td>
+<td><p>Box(-inf, inf, (12,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>box2d</p></td>
+<td><p>CARLLunarLanderEnv</p></td>
+<td><p>16</p></td>
+<td><p>Discrete(4)</p></td>
+<td><p>Box(-inf, inf, (24,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>box2d</p></td>
+<td><p>CARLVehicleRacingEnv</p></td>
+<td><p>1</p></td>
+<td><p>Box(-1.0, 1.0, (3,), float32)</p></td>
+<td><p>Box(0, 255, (96, 96, 3), uint8)</p></td>
+</tr>
+<tr class="row-odd"><td><p>box2d</p></td>
+<td><p>CARLBipedalWalkerEnv</p></td>
+<td><p>20</p></td>
+<td><p>Box(-1.0, 1.0, (4,), float32)</p></td>
+<td><p>Box(-inf, inf, (44,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>brax</p></td>
+<td><p>CARLAnt</p></td>
+<td><p>7</p></td>
+<td><p>Box(-1.0, 1.0, (8,), float32)</p></td>
+<td><p>Box(-inf, inf, (94,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>brax</p></td>
+<td><p>CARLHalfcheetah</p></td>
+<td><p>6</p></td>
+<td><p>Box(-1.0, 1.0, (6,), float32)</p></td>
+<td><p>Box(-inf, inf, (29,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>brax</p></td>
+<td><p>CARLHumanoid</p></td>
+<td><p>5</p></td>
+<td><p>Box(-1.0, 1.0, (17,), float32)</p></td>
+<td><p>Box(-inf, inf, (304,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>brax</p></td>
+<td><p>CARLFetch</p></td>
+<td><p>9</p></td>
+<td><p>Box(-1.0, 1.0, (10,), float32)</p></td>
+<td><p>Box(-inf, inf, (110,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>brax</p></td>
+<td><p>CARLGrasp</p></td>
+<td><p>9</p></td>
+<td><p>Box(-1.0, 1.0, (19,), float32)</p></td>
+<td><p>Box(-inf, inf, (141,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>brax</p></td>
+<td><p>CARLUr5e</p></td>
+<td><p>9</p></td>
+<td><p>Box(-1.0, 1.0, (6,), float32)</p></td>
+<td><p>Box(-inf, inf, (75,), float32)</p></td>
+</tr>
+<tr class="row-even"><td><p>RNA</p></td>
+<td><p>CARLRnaDesignEnv</p></td>
+<td><p>5</p></td>
+<td><p>Discrete(4)</p></td>
+<td><p>Box(-inf, inf, (11,), float32)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mario</p></td>
+<td><p>CARLMarioEnv</p></td>
+<td><p>4</p></td>
+<td><p>Discrete(10)</p></td>
+<td><p>Box(0, 255, (4, 64, 64), uint8)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="../carl_env.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">The CARL Environment</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="classic_control.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">CARL Classic Control Environments</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.9ea38e314b9e6d9dab77.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 
+    Copyright 2023, AutoML.org Freiburg-Hannover
+.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+5.3.0. Template is modified version of <a
+href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
