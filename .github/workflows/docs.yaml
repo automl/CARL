@@ -38,7 +38,8 @@ jobs:
         pip install ".[docs]"
     - name: Make docs
       run: |
-        make all
+        make clean
+        make doc
     - name: Pull latest gh_pages
       if: (contains(github.ref, 'version_0.2.0') || contains(github.ref, 'main')) && github.event_name == 'push'
       run: |
