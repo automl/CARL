@@ -18,4 +18,8 @@ carl:
 
 eval_on_train_context: true
 
+hydra:
+  launcher:
+    timeout_min: 300
+
 
