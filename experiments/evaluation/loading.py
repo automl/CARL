@@ -190,6 +190,7 @@ def load_from_path_eval(p, **kwargs):
         "[0.9, 1.1]": 0.1,
         "[0.75, 1.25]": 0.25,
         "[0.5, 1.5]": 0.5,
+        "None": 0,
     }
     key_interval = r"$\Delta_{rel}$"
     key_visibility = "visibility"
@@ -241,11 +242,16 @@ def load_from_path_eval(p, **kwargs):
     n = len(return_per_context)
     # return_per_context["average_return"] = [average_return] * n
     return_per_context[key_visibility] = visibility
-    return_per_context[key_interval] = replacements_bounds[str(traincfg.context_sampler.uniform_bounds_rel)]
+    return_per_context[key_interval] = replacements_bounds[str(OmegaConf.select(traincfg, "context_sampler.uniform_bounds_rel", default=None))]
     return_per_context["context_sampler.context_feature_names"] = str(traincfg.context_sampler.context_feature_names)
     return_per_context["seed"] = traincfg.seed
     return_per_context["algorithm"] = traincfg.algorithm
 
+    if traincfg.experiment == "kirk_ep":
+        cptp = traincfg.contexts_train_path
+        # ".../${env}/contexts_A.json"
+        mode = Path(cptp).stem.split("_")[-1]
+        return_per_context["mode"] = mode
 
     if cfg.get("contexts_path", None):
         contexts = lazy_json_load(cfg.contexts_path)
