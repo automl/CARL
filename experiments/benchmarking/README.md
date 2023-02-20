@@ -366,3 +366,16 @@ python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Do
  ```bash
  python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,cgate_hadamard,visible_changing' 'context_sampler.context_feature_names=[],[m],[g],[l],[dt],[max_speed]' '+context_sampling=glob(*)' '+slurm=cpu' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'wandb.tags=[rerun]' -m
  ```
+
+ ## New Bounds For Pendulum
+ g, l, m, [1, 2.2]
+ ```bash
+  python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=glob(*)' 'experiment=benchmarking_u_wider' '+context_sampling=uniform_10' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[],[g],[l],[m]' 'context_sampler.uniform_bounds_rel=[1, 2.2]' -m
+ ```
+
+Acrobot
+ link_length_1
+ link_mass_2
+ ```bash
+  python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=glob(*)' 'experiment=benchmarking_u_wider' '+context_sampling=uniform_10' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[],[link_length_1],[link_mass_2]' 'context_sampler.uniform_bounds_rel=[1, 2.5]' -m
+ ```
