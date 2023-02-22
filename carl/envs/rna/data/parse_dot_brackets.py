@@ -1,3 +1,5 @@
+# flake8: noqa: F401
+# isort: skip_file
 from email.generator import Generator
 from pathlib import Path
 
