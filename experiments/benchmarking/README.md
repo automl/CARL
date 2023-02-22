@@ -273,11 +273,19 @@ python experiments/benchmarking/run_training.py '+environments/classic_control=a
 python experiments/benchmarking/run_training.py '+environments/dmc=walker' 'seed=range(1,11)' '+context_visibility=glob(*)' 'context_sampler.context_feature_names=[],[gravity,density,joint_damping]' '+slurm=gpu' '+context_sampling=glob(*)' -m
 ```
 
-## Optimality Gap
+# Optimality Gap
 1. Train general agent
 ```bash
 # General Agent
+
+# CartPole
 python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=optimality_gap' -m
+
+# Pendulum
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=optimality_gap' +experiments/optgap=pendulum  -m
+
+# Walker
+python experiments/benchmarking/run_training.py 'seed=range(1,11)' '+experiments=optimality_gap' +experiments/optgap=walker  +slurm=gpu -m
 ```
 2. Evaluate general agent
 3. Prepare context files and runscripts with `prepare_optimality_gap_oracle_training.ipynb`

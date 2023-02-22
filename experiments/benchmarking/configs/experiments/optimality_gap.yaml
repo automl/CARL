@@ -4,7 +4,7 @@ defaults:
   - ../context_visibility/hidden
   - ../slurm/cpushort
 
-experiment: optimality_gap4
+experiment: optimality_gap
 
 carl:
   context_mask: null
