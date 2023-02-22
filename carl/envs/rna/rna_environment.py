@@ -413,7 +413,3 @@ class RnaDesignEnvironment(gym.Env):
     @property
     def actions(self):  # type: ignore[no-untyped-def]
         return dict(type="int", num_actions=4)
-
-    @property
-    def actions(self):
-        return dict(type="int", num_actions=4)
