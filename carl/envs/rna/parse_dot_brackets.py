@@ -38,4 +38,4 @@ def parse_dot_brackets(
     else:
         target_paths = list(Path(data_dir, dataset).glob("*.rna"))
 
-    return [data_path.read_text().rstrip() for data_path in target_paths]
+    return [data_path.read_text().rstrip() for data_path in target_paths]  # type: ignore[union-attr]
