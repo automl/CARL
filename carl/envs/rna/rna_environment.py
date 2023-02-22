@@ -61,7 +61,9 @@ def _string_difference_indices(s1, s2):  # type: ignore[no-untyped-def]
     return [index for index in range(len(s1)) if s1[index] != s2[index]]
 
 
-def _encode_dot_bracket(secondary, env_config):
+def _encode_dot_bracket(  # type: ignore[no-untyped-def]
+    secondary: str, env_config: RnaDesignEnvironmentConfig
+):  # type: ignore[no-untyped-def]
     """
     Encode the dot_bracket notated target structure. The encoding can either be binary
     or by the embedding layer.
