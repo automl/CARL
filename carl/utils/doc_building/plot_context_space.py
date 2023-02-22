@@ -14,7 +14,6 @@ if __name__ == "__main__":
     import numpy as np
     import pandas as pd
     import seaborn as sns
-    from rich import print as printr
 
     import carl.envs
 

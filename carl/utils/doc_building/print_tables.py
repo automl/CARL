@@ -6,7 +6,6 @@ if __name__ == "__main__":
     import pandas as pd
     import seaborn as sns
     from matplotlib.offsetbox import AnchoredText
-    from rich import print as printr
     from pathlib import Path
 
     import carl.envs
@@ -107,7 +106,6 @@ if __name__ == "__main__":
     dfs = []
     n_context_features = []
     for env_name in env_names:
-        printr(env_name)
         defaults = pd.Series(getattr(eval(getattr(carl.envs, env_name).__module__), "DEFAULT_CONTEXT"))  # pd.Series(vars[env_name + "_defaults"])
         n_context_features.append(len(defaults))
         bounds = getattr(eval(getattr(carl.envs, env_name).__module__), "CONTEXT_BOUNDS")  # vars[env_name + "_bounds"]
