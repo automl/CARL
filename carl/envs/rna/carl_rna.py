@@ -1,13 +1,12 @@
+from typing import Optional, Dict, Union, List, Tuple, Any
+import numpy as np
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.parse_dot_brackets import parse_dot_brackets
 from carl.envs.rna.rna_environment import (
     RnaDesignEnvironment,
     RnaDesignEnvironmentConfig,
 )
-import numpy as np
-from typing import Optional, Dict, Union, List
 from carl.utils.trial_logger import TrialLogger
-
 from carl.envs.rna.carl_rna_definitions import (
     DEFAULT_CONTEXT,
     ACTION_SPACE,
@@ -22,7 +21,7 @@ import gym
 
 
 # TODO: mypy
-class CARLRnaDesignEnv(CARLEnv): 
+class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env: gym.Env = None,
@@ -63,9 +62,9 @@ class CARLRnaDesignEnv(CARLEnv):
                 state_radius=DEFAULT_CONTEXT["state_radius"],
             )
             dot_brackets = parse_dot_brackets(
-                dataset=DEFAULT_CONTEXT["dataset"],
+                dataset=DEFAULT_CONTEXT["dataset"],  # type: ignore[arg-type]
                 data_dir=data_location,
-                target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],
+                target_structure_ids=DEFAULT_CONTEXT["target_structure_ids"],  # type: ignore[arg-type]
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
 
@@ -96,16 +95,16 @@ class CARLRnaDesignEnv(CARLEnv):
         self.obs_low = obs_low
         self.obs_high = obs_high
 
-    def step(self, action):
+    def step(self, action: np.ndarray) -> Tuple[List[int], float, Any, Any]:
         # Step function has a different name in this env
-        state, reward, done = self.env.execute(action)
+        state, reward, done = self.env.execute(action)  # type: ignore[has-type]
         self.step_counter += 1
         return state, reward, done, {}
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
-            data_dir=self.env.data_location,
+            data_dir=self.env.data_location,  # type: ignore[has-type]
             target_structure_ids=self.context["target_structure_ids"],
         )
         env_config = RnaDesignEnvironmentConfig(
@@ -115,7 +114,7 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
         self.build_observation_space(
-            low=-np.inf * np.ones(self.obs_low),
-            high=np.inf * np.ones(self.obs_high),
-            context_bounds=CONTEXT_BOUNDS,
+            env_lower_bounds=-np.inf * np.ones(self.obs_low),
+            env_upper_bounds=np.inf * np.ones(self.obs_high),
+            context_bounds=CONTEXT_BOUNDS,  # type: ignore[arg-type]
         )
