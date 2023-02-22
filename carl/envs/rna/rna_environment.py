@@ -1,3 +1,4 @@
+# isort: skip_file
 """
 Code adapted from https://github.com/automl/learna
 """
@@ -44,7 +45,7 @@ class RnaDesignEnvironmentConfig:
     use_embedding: bool = False
 
 
-def _string_difference_indices(s1, s2):
+def _string_difference_indices(s1, s2):  # type: ignore[no-untyped-def]
     """
     Returns all indices where s1 and s2 differ.
 
@@ -62,7 +63,9 @@ def _string_difference_indices(s1, s2):
     return [index for index in range(len(s1)) if s1[index] != s2[index]]
 
 
-def _encode_dot_bracket(secondary: str, env_config: RnaDesignEnvironmentConfig):
+def _encode_dot_bracket(  # type: ignore[no-untyped-def]
+    secondary: str, env_config: RnaDesignEnvironmentConfig
+):  # type: ignore[no-untyped-def]
     """
     Encode the dot_bracket notated target structure. The encoding can either be binary
     or by the embedding layer.
@@ -93,7 +96,7 @@ def _encode_dot_bracket(secondary: str, env_config: RnaDesignEnvironmentConfig):
     return [site_encoding[site] for site in padded_secondary]
 
 
-def _encode_pairing(secondary: str):
+def _encode_pairing(secondary: str):  # type: ignore[no-untyped-def]
 
     pairing_encoding = [None] * len(secondary)
     stack = []
@@ -102,8 +105,8 @@ def _encode_pairing(secondary: str):
             stack.append(index)
         elif symbol == ")":
             paired_site = stack.pop()
-            pairing_encoding[paired_site] = index
-            pairing_encoding[index] = paired_site
+            pairing_encoding[paired_site] = index  # type: ignore[no-untyped-def,call-overload]
+            pairing_encoding[index] = paired_site  # type: ignore[call-overload]
     return pairing_encoding
 
 
@@ -114,7 +117,7 @@ class _Target(object):
 
     _id_counter = 0
 
-    def __init__(self, dot_bracket, env_config):
+    def __init__(self, dot_bracket, env_config):  # type: ignore[no-untyped-def]
         """
         Initialize a target structure.
 
@@ -131,10 +134,10 @@ class _Target(object):
         self._pairing_encoding = _encode_pairing(self.dot_bracket)
         self.padded_encoding = _encode_dot_bracket(self.dot_bracket, env_config)
 
-    def __len__(self):
+    def __len__(self):  # type: ignore[no-untyped-def]
         return len(self.dot_bracket)
 
-    def get_paired_site(self, site):
+    def get_paired_site(self, site):  # type: ignore[no-untyped-def]
         """
         Get the paired site for <site> (base pair).
 
@@ -155,7 +158,7 @@ class _Design(object):
     action_to_base = {0: "G", 1: "A", 2: "U", 3: "C"}
     action_to_pair = {0: "GC", 1: "CG", 2: "AU", 3: "UA"}
 
-    def __init__(self, length=None, primary=None):
+    def __init__(self, length=None, primary=None):  # type: ignore[no-untyped-def]
         """
         Initialize a candidate solution.
 
@@ -174,7 +177,7 @@ class _Design(object):
         self._dot_bracket = None
         self._current_site = 0
 
-    def get_mutated(self, mutations, sites):
+    def get_mutated(self, mutations, sites):  # type: ignore[no-untyped-def]
         """
         Locally change the candidate solution.
 
@@ -194,7 +197,9 @@ class _Design(object):
             mutatedprimary[site] = mutation
         return _Design(primary=mutatedprimary)
 
-    def assign_sites(self, action, site, paired_site=None):
+    def assign_sites(  # type: ignore[no-untyped-def]
+        self, action, site, paired_site=None
+    ):  # type: ignore[no-untyped-def]
         """
         Assign nucleotides to sites for designing a candidate solution.
 
@@ -217,7 +222,7 @@ class _Design(object):
             self._primary_list[site] = self.action_to_base[action]
 
     @property
-    def first_unassigned_site(self):
+    def first_unassigned_site(self):  # type: ignore[no-untyped-def]
         try:
             while self._primary_list[self._current_site] is not None:
                 self._current_site += 1
@@ -226,11 +231,11 @@ class _Design(object):
             return None
 
     @property
-    def primary(self):
+    def primary(self):  # type: ignore[no-untyped-def]
         return "".join(self._primary_list)
 
 
-def _random_epoch_gen(data):
+def _random_epoch_gen(data):  # type: ignore[no-untyped-def]
     """
     Generator to get epoch data.
 
@@ -261,7 +266,9 @@ class RnaDesignEnvironment(gym.Env):
     The environment for RNA design using deep reinforcement learning.
     """
 
-    def __init__(self, dot_brackets: List[str], env_config):
+    def __init__(  # type: ignore[no-untyped-def]
+        self, dot_brackets: List[str], env_config
+    ):  # type: ignore[no-untyped-def]
         """Initialize the environment
 
         Args
@@ -277,15 +284,15 @@ class RnaDesignEnvironment(gym.Env):
 
         self.target = None
         self.design = None
-        self.episodes_info = []
+        self.episodes_info = []  # type: ignore[var-annotated]
 
-    def __str__(self):
+    def __str__(self):  # type: ignore[no-untyped-def]
         return "RnaDesignEnvironment"
 
-    def seed(self, seed):
+    def seed(self, seed):  # type: ignore[no-untyped-def]
         return None
 
-    def reset(self):
+    def reset(self):  # type: ignore[no-untyped-def]
         """
         Reset the environment. First function called by runner. Returns first state.
         Returns:
@@ -295,7 +302,7 @@ class RnaDesignEnvironment(gym.Env):
         self.design = _Design(len(self.target))
         return self._get_state()
 
-    def _apply_action(self, action):
+    def _apply_action(self, action):  # type: ignore[no-untyped-def]
         """
         Assign a nucleotide to a site.
 
@@ -308,7 +315,7 @@ class RnaDesignEnvironment(gym.Env):
         )  # None for unpaired sites
         self.design.assign_sites(action, current_site, paired_site)
 
-    def _get_state(self):
+    def _get_state(self):  # type: ignore[no-untyped-def]
         """
         Get a state dependend on the padded encoding of the target structure.
         Returns:
@@ -319,7 +326,7 @@ class RnaDesignEnvironment(gym.Env):
             start : start + 2 * self._env_config.state_radius + 1
         ]
 
-    def _local_improvement(self, folded_design):
+    def _local_improvement(self, folded_design):  # type: ignore[no-untyped-def]
         """
         Compute Hamming distance of locally improved candidate solutions.
 
@@ -342,7 +349,7 @@ class RnaDesignEnvironment(gym.Env):
                 return 0
         return min(hamming_distances)
 
-    def _get_reward(self, terminal):
+    def _get_reward(self, terminal):  # type: ignore[no-untyped-def]
         """
         Compute the reward after assignment of all nucleotides.
 
@@ -372,7 +379,7 @@ class RnaDesignEnvironment(gym.Env):
 
         return (1 - normalized_hamming_distance) ** self._env_config.reward_exponent
 
-    def execute(self, actions):
+    def execute(self, actions):  # type: ignore[no-untyped-def]
         """
         Execute one interaction of the environment with the agent.
 
@@ -392,16 +399,16 @@ class RnaDesignEnvironment(gym.Env):
 
         return state, terminal, reward
 
-    def close(self):
+    def close(self):  # type: ignore[no-untyped-def]
         pass
 
     @property
-    def states(self):
+    def states(self):  # type: ignore[no-untyped-def]
         type = "int" if self._env_config.use_embedding else "float"
         if self._env_config.use_conv and not self._env_config.use_embedding:
             return dict(type=type, shape=(1 + 2 * self._env_config.state_radius, 1))
         return dict(type=type, shape=(1 + 2 * self._env_config.state_radius,))
 
     @property
-    def actions(self):
+    def actions(self):  # type: ignore[no-untyped-def]
         return dict(type="int", num_actions=4)
