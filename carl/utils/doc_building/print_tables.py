@@ -1,12 +1,13 @@
 if __name__ == "__main__":
     from typing import List
 
+    from pathlib import Path
+
     import matplotlib.pyplot as plt
     import numpy as np
     import pandas as pd
     import seaborn as sns
     from matplotlib.offsetbox import AnchoredText
-    from pathlib import Path
 
     import carl.envs
 
@@ -99,16 +100,24 @@ if __name__ == "__main__":
     vars = {
         k: v for k, v in global_vars.items() if "Env" in k or "Meta" in k or "CARL" in k
     }
-    env_names = [n for n in vars.keys() if "bounds" not in n and "defaults" not in n and "mask" not in n]
+    env_names = [
+        n
+        for n in vars.keys()
+        if "bounds" not in n and "defaults" not in n and "mask" not in n
+    ]
     env_context_feature_names = {}
 
     context_feature_names = []
     dfs = []
     n_context_features = []
     for env_name in env_names:
-        defaults = pd.Series(getattr(eval(getattr(carl.envs, env_name).__module__), "DEFAULT_CONTEXT"))  # pd.Series(vars[env_name + "_defaults"])
+        defaults = pd.Series(
+            getattr(eval(getattr(carl.envs, env_name).__module__), "DEFAULT_CONTEXT")
+        )  # pd.Series(vars[env_name + "_defaults"])
         n_context_features.append(len(defaults))
-        bounds = getattr(eval(getattr(carl.envs, env_name).__module__), "CONTEXT_BOUNDS")  # vars[env_name + "_bounds"]
+        bounds = getattr(
+            eval(getattr(carl.envs, env_name).__module__), "CONTEXT_BOUNDS"
+        )  # vars[env_name + "_bounds"]
         print_bounds = {}
         for k, v in bounds.items():
             lower = v[0]
@@ -163,7 +172,9 @@ if __name__ == "__main__":
         label="tab:context_features_defaults_bounds",
         # position="c",?
     )
-    df_cf_defbounds_fname = Path(__file__).parent / "generated" / "context_features_defaults_bounds.tex"
+    df_cf_defbounds_fname = (
+        Path(__file__).parent / "generated" / "context_features_defaults_bounds.tex"
+    )
     df_cf_defbounds_fname.parent.mkdir(exist_ok=True, parents=True)
     with open(df_cf_defbounds_fname, "w") as file:
         file.write(table_str)
@@ -191,7 +202,10 @@ if __name__ == "__main__":
             r"\begin{subtable}", r"\begin{subtable}{0.4\textwidth}"
         )
         # print(table_str)
-        fname = df_cf_defbounds_fname.parent / f"context_features_defaults_bounds_{env_name}.tex"
+        fname = (
+            df_cf_defbounds_fname.parent
+            / f"context_features_defaults_bounds_{env_name}.tex"
+        )
         with open(fname, "w") as file:
             file.write(table_str)
 

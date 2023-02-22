@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 if __name__ == "__main__":
-    from typing import List
+    from pathlib import Path
 
     import matplotlib.pyplot as plt
     import numpy as np
     import pandas as pd
     import seaborn as sns
-    from pathlib import Path
 
     from carl.utils.doc_building.plotting import radar_factory
 
@@ -161,29 +162,74 @@ if __name__ == "__main__":
             "target_structure_ids",
         ],
         "CARLMarioEnv": ["level_index", "noise", "mario_state"],
-        "CARLDmcWalkerEnv": ['gravity', 'friction_tangential', 'friction_torsional', 'friction_rolling', 'timestep', 'joint_damping', 'joint_stiffness', 'actuator_strength', 'density', 'viscosity', 'geom_density', 'wind_x', 'wind_y', 'wind_z'],
-        "CARLDmcQuadrupedEnv": ['gravity', 'friction_tangential', 'friction_torsional', 'friction_rolling', 'timestep', 'joint_damping', 'joint_stiffness', 'actuator_strength', 'density', 'viscosity', 'geom_density', 'wind_x', 'wind_y', 'wind_z'],
-        "CARLDmcFishEnv": ['gravity', 'friction_tangential', 'friction_torsional', 'friction_rolling', 'timestep', 'joint_damping', 'joint_stiffness', 'actuator_strength', 'density', 'viscosity', 'geom_density', 'wind_x', 'wind_y', 'wind_z'],
+        "CARLDmcWalkerEnv": [
+            "gravity",
+            "friction_tangential",
+            "friction_torsional",
+            "friction_rolling",
+            "timestep",
+            "joint_damping",
+            "joint_stiffness",
+            "actuator_strength",
+            "density",
+            "viscosity",
+            "geom_density",
+            "wind_x",
+            "wind_y",
+            "wind_z",
+        ],
+        "CARLDmcQuadrupedEnv": [
+            "gravity",
+            "friction_tangential",
+            "friction_torsional",
+            "friction_rolling",
+            "timestep",
+            "joint_damping",
+            "joint_stiffness",
+            "actuator_strength",
+            "density",
+            "viscosity",
+            "geom_density",
+            "wind_x",
+            "wind_y",
+            "wind_z",
+        ],
+        "CARLDmcFishEnv": [
+            "gravity",
+            "friction_tangential",
+            "friction_torsional",
+            "friction_rolling",
+            "timestep",
+            "joint_damping",
+            "joint_stiffness",
+            "actuator_strength",
+            "density",
+            "viscosity",
+            "geom_density",
+            "wind_x",
+            "wind_y",
+            "wind_z",
+        ],
         "CARLDmcFingerEnv": [
-            'gravity',
-            'friction_tangential',
-            'friction_torsional',
-            'friction_rolling',
-            'timestep',
-            'joint_damping',
-            'joint_stiffness',
-            'actuator_strength',
-            'density',
-            'viscosity',
-            'geom_density',
-            'wind_x',
-            'wind_y',
-            'wind_z',
-            'limb_length_0',
-            'limb_length_1',
-            'spinner_radius',
-            'spinner_length'
-        ]
+            "gravity",
+            "friction_tangential",
+            "friction_torsional",
+            "friction_rolling",
+            "timestep",
+            "joint_damping",
+            "joint_stiffness",
+            "actuator_strength",
+            "density",
+            "viscosity",
+            "geom_density",
+            "wind_x",
+            "wind_y",
+            "wind_z",
+            "limb_length_0",
+            "limb_length_1",
+            "spinner_radius",
+            "spinner_length",
+        ],
     }
     action_space_sizes = [
         (3,),
@@ -229,7 +275,25 @@ if __name__ == "__main__":
         (24,),
         (9,),
     ]
-    n_context_features = [11, 5, 9, 6, 10, 16, 1, 20, 7, 6, 5, 9, 9, 9, 5, 3, 14, ]
+    n_context_features = [
+        11,
+        5,
+        9,
+        6,
+        10,
+        16,
+        1,
+        20,
+        7,
+        6,
+        5,
+        9,
+        9,
+        9,
+        5,
+        3,
+        14,
+    ]
     env_names = [
         "CARLMountainCarEnv",
         "CARLPendulumEnv",
@@ -247,7 +311,7 @@ if __name__ == "__main__":
         "CARLUr5e",
         "CARLRnaDesignEnv",
         "CARLMarioEnv",
-        "CARLDmcWalkerEnv",        
+        "CARLDmcWalkerEnv",
         "CARLDmcQuadrupedEnv",
         "CARLDmcFishEnv",
         "CARLDmcFingerEnv",
@@ -270,11 +334,16 @@ if __name__ == "__main__":
         ],
         "box2d": ["CARLBipedalWalkerEnv", "CARLLunarLanderEnv", "CARLVehicleRacingEnv"],
         "brax": ["CARLAnt", "CARLFetch", "CARLGrasp", "CARLHumanoid", "CARLUr5e"],
-        "dmc": ["CARLDmcWalkerEnv", "CARLDmcQuadrupedEnv", "CARLDmcFishEnv", "CARLDmcFingerEnv"],
+        "dmc": [
+            "CARLDmcWalkerEnv",
+            "CARLDmcQuadrupedEnv",
+            "CARLDmcFishEnv",
+            "CARLDmcFingerEnv",
+        ],
         "misc": ["CARLMarioEnv", "CARLRnaDesignEnv"],
     }
 
-    data = []  # type: List[pd.DataFrame]
+    data: list[pd.DataFrame] = []
     for env_type in env_types:
         envs = env_types[env_type]
 
@@ -336,7 +405,11 @@ if __name__ == "__main__":
     figsize = (10, 2.5)
     dpi = 250
     fig, axs = plt.subplots(
-        figsize=figsize, nrows=1, ncols=len(env_types), subplot_kw=dict(projection="radar"), dpi=dpi
+        figsize=figsize,
+        nrows=1,
+        ncols=len(env_types),
+        subplot_kw=dict(projection="radar"),
+        dpi=dpi,
     )
     # fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.99, bottom=0.01)
 
