@@ -4,7 +4,6 @@ from typing import Optional, List, Tuple, Any
 import numpy as np
 import gymnasium as gym
 from itertools import chain, combinations
-
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.parse_dot_brackets import parse_dot_brackets
 from carl.envs.rna.rna_environment import (
@@ -24,7 +23,7 @@ OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.o
 
 
 # TODO: mypy
-class CARLRnaDesignEnv(CARLEnv): 
+class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env: RnaDesignEnvironment | None = None,
@@ -56,7 +55,7 @@ class CARLRnaDesignEnv(CARLEnv):
                 state_radius=context_space["state_radius"].default_value,
             )
             dot_brackets = parse_dot_brackets(
-                dataset=context_space["dataset"].default_value,  # type: ignore[arg-type]
+                dataset=context_space["dataset"].default_value,  # type: ignore[arg-type]  # type: ignore[arg-type]
                 data_dir=data_location,
                 target_structure_ids=context_space["target_structure_ids"].default_value,  # type: ignore[arg-type]
             )
@@ -134,11 +133,11 @@ class CARLRnaDesignEnv(CARLEnv):
                 name="target_structure_ids", choices=id_choices, default_value=False
             ),
         }
-    
+
     def _update_context(self):
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
-            data_dir=self.env.data_location,
+            data_dir=self.env.data_location,  # type: ignore[has-type]
             target_structure_ids=self.context["target_structure_ids"],
         )
         env_config = RnaDesignEnvironmentConfig(
@@ -148,7 +147,7 @@ class CARLRnaDesignEnv(CARLEnv):
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
         self.build_observation_space(
-            low=-np.inf * np.ones(self.obs_low),
-            high=np.inf * np.ones(self.obs_high),
-            context_bounds=CONTEXT_BOUNDS,
+            env_lower_bounds=-np.inf * np.ones(self.obs_low),
+            env_upper_bounds=np.inf * np.ones(self.obs_high),
+            context_bounds=CONTEXT_BOUNDS,  # type: ignore[arg-type]
         )
