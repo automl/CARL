@@ -134,7 +134,7 @@ class CARLRnaDesignEnv(CARLEnv):
             ),
         }
 
-    def _update_context(self):
+    def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],
             data_dir=self.env.data_location,  # type: ignore[has-type]
