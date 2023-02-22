@@ -50,8 +50,8 @@ repos:
         name: mypy carl
         files: carl/.*
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 4.0.1
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
     hooks:
       - id: flake8
         name: flake8 carl
