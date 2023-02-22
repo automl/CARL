@@ -26,6 +26,6 @@ Feel free to check out our `paper <https://arxiv.org/abs/2110.02102>`_ and our
 Contact
 -------
 
-CARL is developed by `<automl.org>`_.
+CARL is developed by `<https://www.automl.org/>`_.
 If you want to contribute or found an issue please visit our github page `<https://github.com/automl/CARL>`_.
 
