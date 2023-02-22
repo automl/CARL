@@ -20,20 +20,20 @@ from typing import Any, List
 class RnaDesignEnvironmentConfig:
     """
     Dataclass for the configuration of the environment.
-    
+
     Parameters
     ----------
-        mutation_threshold: 
+        mutation_threshold:
             Defines the minimum distance needed before applying the local
             improvement step.
-        reward_exponent: 
+        reward_exponent:
             A parameter to shape the reward function.
-        state_radius: 
+        state_radius:
             The state representation is a (2*<state_radius> + 1)-gram
             at each position.
-        use_conv: 
+        use_conv:
             Bool to state if a convolutional network is used or not.
-        use_embedding: 
+        use_embedding:
             Bool to state if embedding is used or not.
     """
 
@@ -47,14 +47,14 @@ class RnaDesignEnvironmentConfig:
 def _string_difference_indices(s1, s2):
     """
     Returns all indices where s1 and s2 differ.
-    
+
     Parameters
     ----------
-        s1: 
+        s1:
             The first sequence.
-        s2: 
+        s2:
             The second sequence.
-    
+
     Returns
     -------
         List of indices where s1 and s2 differ.
@@ -62,20 +62,18 @@ def _string_difference_indices(s1, s2):
     return [index for index in range(len(s1)) if s1[index] != s2[index]]
 
 
-def _encode_dot_bracket(
-                secondary: str, 
-                env_config: RnaDesignEnvironmentConfig):
+def _encode_dot_bracket(secondary: str, env_config: RnaDesignEnvironmentConfig):
     """
     Encode the dot_bracket notated target structure. The encoding can either be binary
     or by the embedding layer.
-    
+
     Parameters
     ----------
-        secondary: 
+        secondary:
             The target structure in dot_bracket notation.
-        env_config: 
+        env_config:
             The configuration of the environment.
-    
+
     Returns
     -------
         List of encoding for each site of the padded target structure.
@@ -91,8 +89,7 @@ def _encode_dot_bracket(
     # Sites corresponds to 1 pixel with 1 channel if convs are applied directly
     if env_config.use_conv and not env_config.use_embedding:
         return [[site_encoding[site]] for site in padded_secondary]
-    
-    
+
     return [site_encoding[site] for site in padded_secondary]
 
 
@@ -120,12 +117,12 @@ class _Target(object):
     def __init__(self, dot_bracket, env_config):
         """
         Initialize a target structure.
-        
+
         Parameters
         ----------
-            dot_bracket: 
+            dot_bracket:
                 dot_bracket encoded target structure.
-            env_config: 
+            env_config:
                 The environment configuration.
         """
         _Target._id_counter += 1
@@ -140,10 +137,10 @@ class _Target(object):
     def get_paired_site(self, site):
         """
         Get the paired site for <site> (base pair).
-        
+
         Args:
             site: The site to check the pairing site for.
-        
+
         Returns:
             The site that pairs with <site> if exists.
         """
@@ -161,14 +158,14 @@ class _Design(object):
     def __init__(self, length=None, primary=None):
         """
         Initialize a candidate solution.
-        
+
         Parameters
         ----------
-        length: 
+        length:
             The length of the candidate solution.
-        primary: 
+        primary:
             The sequence of the candidate solution.
-        
+
         """
         if primary:
             self._primary_list = primary
@@ -180,14 +177,14 @@ class _Design(object):
     def get_mutated(self, mutations, sites):
         """
         Locally change the candidate solution.
-        
+
         Parameters
         ----------
-        mutations: 
+        mutations:
             Possible mutations for the specified sites
-        sites: 
+        sites:
             The sites to be mutated
-        
+
         Returns
         -------
             A Design object with the mutated candidate solution.
@@ -200,16 +197,16 @@ class _Design(object):
     def assign_sites(self, action, site, paired_site=None):
         """
         Assign nucleotides to sites for designing a candidate solution.
-        
+
         Parameters
         ----------
-        action: 
+        action:
             The agents action to assign a nucleotide.
-        site: 
+        site:
             The site to which the nucleotide is assigned to.
-        paired_site: 
+        paired_site:
             Defines if the site is assigned with a base pair or not.
-        
+
         """
         self._current_site += 1
         if paired_site:
@@ -236,10 +233,10 @@ class _Design(object):
 def _random_epoch_gen(data):
     """
     Generator to get epoch data.
-    
+
     Parameters
     ----------
-        data: 
+        data:
             The targets of the epoch
     """
     while True:
@@ -264,11 +261,9 @@ class RnaDesignEnvironment(gym.Env):
     The environment for RNA design using deep reinforcement learning.
     """
 
-    def __init__(self, 
-                    dot_brackets: List[str], 
-                    env_config):
+    def __init__(self, dot_brackets: List[str], env_config):
         """Initialize the environment
-        
+
         Args
             dot_brackets : dot_bracket encoded target structure
             env_config : The environment configuration.
@@ -303,7 +298,7 @@ class RnaDesignEnvironment(gym.Env):
     def _apply_action(self, action):
         """
         Assign a nucleotide to a site.
-        
+
         Args:
             action: The action chosen by the agent.
         """
@@ -327,10 +322,10 @@ class RnaDesignEnvironment(gym.Env):
     def _local_improvement(self, folded_design):
         """
         Compute Hamming distance of locally improved candidate solutions.
-        
+
         Agrs
             folded_design: The folded candidate solution.
-        
+
         Returns:
             The minimum Hamming distance of all imporved candidate solutions.
         """
@@ -350,10 +345,10 @@ class RnaDesignEnvironment(gym.Env):
     def _get_reward(self, terminal):
         """
         Compute the reward after assignment of all nucleotides.
-        
+
         Args:
             terminal: Bool defining if final timestep is reached yet.
-        
+
         Returns:
             The reward at the terminal timestep or 0 if not at the terminal timestep.
         """
@@ -380,10 +375,10 @@ class RnaDesignEnvironment(gym.Env):
     def execute(self, actions):
         """
         Execute one interaction of the environment with the agent.
-        
+
         Args:
             action: Current action of the agent.
-        
+
         Returns:
             state: The next state for the agent.
             terminal: The signal for end of an episode.

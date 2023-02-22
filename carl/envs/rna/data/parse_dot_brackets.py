@@ -13,9 +13,9 @@ def parse_dot_brackets(
 
     """Generate the targets for next epoch.
 
-    The most common encoding for the RNA secondary structure is the dot-bracket 
-    notation, consisting in a balanced parentheses string composed by a 
-    three-character alphabet {.,(,)}, that can be unambiguously converted 
+    The most common encoding for the RNA secondary structure is the dot-bracket
+    notation, consisting in a balanced parentheses string composed by a
+    three-character alphabet {.,(,)}, that can be unambiguously converted
     in the RNA secondary structure.
 
     Parameters
