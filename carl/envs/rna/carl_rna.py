@@ -1,5 +1,8 @@
+# pylint: disable=missing-module-docstring  # isort: skip_file
 from typing import Optional, Dict, Union, List, Tuple, Any
 import numpy as np
+import gym
+
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.parse_dot_brackets import parse_dot_brackets
 from carl.envs.rna.rna_environment import (
@@ -13,14 +16,10 @@ from carl.envs.rna.carl_rna_definitions import (
     OBSERVATION_SPACE,
     CONTEXT_BOUNDS,
 )
-
 from carl.utils.types import Context, Contexts
 from carl.context.selection import AbstractSelector
 
-import gym
 
-
-# TODO: mypy
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
