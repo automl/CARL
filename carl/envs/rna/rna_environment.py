@@ -41,12 +41,12 @@ class RnaDesignEnvironmentConfig:
 def _string_difference_indices(s1, s2):  # type: ignore[no-untyped-def]
     """
     Returns all indices where s1 and s2 differ.
-    
+
     Parameters
     ----------
-        s1: 
+        s1:
             The first sequence.
-        s2: 
+        s2:
             The second sequence.
     
     Returns:
@@ -61,12 +61,12 @@ def _encode_dot_bracket(  # type: ignore[no-untyped-def]
     """
     Encode the dot_bracket notated target structure. The encoding can either be binary
     or by the embedding layer.
-    
+
     Parameters
     ----------
-        secondary: 
+        secondary:
             The target structure in dot_bracket notation.
-        env_config: 
+        env_config:
             The configuration of the environment.
     
     Returns:
@@ -110,12 +110,12 @@ class _Target(object):
     def __init__(self, dot_bracket, env_config):  # type: ignore[no-untyped-def]
         """
         Initialize a target structure.
-        
+
         Parameters
         ----------
-            dot_bracket: 
+            dot_bracket:
                 dot_bracket encoded target structure.
-            env_config: 
+            env_config:
                 The environment configuration.
         """
         _Target._id_counter += 1
@@ -151,7 +151,7 @@ class _Design(object):
     def __init__(self, length=None, primary=None):  # type: ignore[no-untyped-def]
         """
         Initialize a candidate solution.
-        
+
         Parameters
         ----------
             length: 
@@ -169,7 +169,7 @@ class _Design(object):
     def get_mutated(self, mutations, sites):  # type: ignore[no-untyped-def]
         """
         Locally change the candidate solution.
-        
+
         Parameters
         ----------
             mutations: 
