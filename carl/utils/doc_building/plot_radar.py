@@ -5,6 +5,7 @@ if __name__ == "__main__":
     import numpy as np
     import pandas as pd
     import seaborn as sns
+    from pathlib import Path
 
     from carl.utils.doc_building.plotting import radar_factory
 
@@ -160,6 +161,29 @@ if __name__ == "__main__":
             "target_structure_ids",
         ],
         "CARLMarioEnv": ["level_index", "noise", "mario_state"],
+        "CARLDmcWalkerEnv": ['gravity', 'friction_tangential', 'friction_torsional', 'friction_rolling', 'timestep', 'joint_damping', 'joint_stiffness', 'actuator_strength', 'density', 'viscosity', 'geom_density', 'wind_x', 'wind_y', 'wind_z'],
+        "CARLDmcQuadrupedEnv": ['gravity', 'friction_tangential', 'friction_torsional', 'friction_rolling', 'timestep', 'joint_damping', 'joint_stiffness', 'actuator_strength', 'density', 'viscosity', 'geom_density', 'wind_x', 'wind_y', 'wind_z'],
+        "CARLDmcFishEnv": ['gravity', 'friction_tangential', 'friction_torsional', 'friction_rolling', 'timestep', 'joint_damping', 'joint_stiffness', 'actuator_strength', 'density', 'viscosity', 'geom_density', 'wind_x', 'wind_y', 'wind_z'],
+        "CARLDmcFingerEnv": [
+            'gravity',
+            'friction_tangential',
+            'friction_torsional',
+            'friction_rolling',
+            'timestep',
+            'joint_damping',
+            'joint_stiffness',
+            'actuator_strength',
+            'density',
+            'viscosity',
+            'geom_density',
+            'wind_x',
+            'wind_y',
+            'wind_z',
+            'limb_length_0',
+            'limb_length_1',
+            'spinner_radius',
+            'spinner_length'
+        ]
     }
     action_space_sizes = [
         (3,),
@@ -178,6 +202,10 @@ if __name__ == "__main__":
         (6,),
         (8,),
         (10,),
+        (6,),
+        (12,),
+        (5,),
+        (2,),
     ]
     state_space_sizes = [
         (2,),
@@ -196,8 +224,12 @@ if __name__ == "__main__":
         (66,),
         (11,),
         (64, 64, 3),
+        (24,),
+        (78,),
+        (24,),
+        (9,),
     ]
-    n_context_features = [11, 5, 9, 6, 10, 16, 1, 20, 7, 6, 5, 9, 9, 9, 5, 3]
+    n_context_features = [11, 5, 9, 6, 10, 16, 1, 20, 7, 6, 5, 9, 9, 9, 5, 3, 14, ]
     env_names = [
         "CARLMountainCarEnv",
         "CARLPendulumEnv",
@@ -215,9 +247,13 @@ if __name__ == "__main__":
         "CARLUr5e",
         "CARLRnaDesignEnv",
         "CARLMarioEnv",
+        "CARLDmcWalkerEnv",        
+        "CARLDmcQuadrupedEnv",
+        "CARLDmcFishEnv",
+        "CARLDmcFingerEnv",
     ]
-    n_cfs_d = [11, 5, 8, 6, 10, 16, 1, 20, 7, 6, 5, 9, 9, 9, 4, 3]
-    n_cfs_r = [0, 0, 0, 0, 0, 4, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0]
+    n_cfs_d = [11, 5, 8, 6, 10, 16, 1, 20, 7, 6, 5, 9, 9, 9, 4, 3, 14, 14, 14, 18]
+    n_cfs_r = [0, 0, 0, 0, 0, 4, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
     n_cfs = 131
     n_dynami_changing = 129
     n_reward_changing = 7
@@ -234,6 +270,7 @@ if __name__ == "__main__":
         ],
         "box2d": ["CARLBipedalWalkerEnv", "CARLLunarLanderEnv", "CARLVehicleRacingEnv"],
         "brax": ["CARLAnt", "CARLFetch", "CARLGrasp", "CARLHumanoid", "CARLUr5e"],
+        "dmc": ["CARLDmcWalkerEnv", "CARLDmcQuadrupedEnv", "CARLDmcFishEnv", "CARLDmcFingerEnv"],
         "misc": ["CARLMarioEnv", "CARLRnaDesignEnv"],
     }
 
@@ -299,7 +336,7 @@ if __name__ == "__main__":
     figsize = (10, 2.5)
     dpi = 250
     fig, axs = plt.subplots(
-        figsize=figsize, nrows=1, ncols=4, subplot_kw=dict(projection="radar"), dpi=dpi
+        figsize=figsize, nrows=1, ncols=len(env_types), subplot_kw=dict(projection="radar"), dpi=dpi
     )
     # fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.99, bottom=0.01)
 
@@ -320,7 +357,7 @@ if __name__ == "__main__":
         ax.set_title(
             title,
             weight="normal",
-            size="medium",  # position=(0.5, 0.25), transform=ax.transAxes,
+            # size="medium",  # position=(0.5, 0.25), transform=ax.transAxes,
             horizontalalignment="center",
             verticalalignment="center",
             pad=15,
@@ -347,6 +384,6 @@ if __name__ == "__main__":
     #          size='large')
     fig.set_tight_layout(True)
 
-    figfname = "utils/radar_env_space.png"
-    fig.savefig(figfname, bbox_inches="tight")
+    figfname = Path(__file__).parent / "generated" / "radar_env_space.pdf"
+    fig.savefig(figfname, bbox_inches="tight", dpi=300)
     plt.show()
