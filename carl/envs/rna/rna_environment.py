@@ -20,10 +20,10 @@ from typing import Any, List
 class RnaDesignEnvironmentConfig:
     """
     Dataclass for the configuration of the environment.
-    
+
     Parameters
     ----------
-        mutation_threshold: 
+        mutation_threshold:
             Defines the minimum distance needed before applying the local
             improvement step.
        
@@ -114,12 +114,12 @@ class _Target(object):
     def __init__(self, dot_bracket, env_config):  # type: ignore[no-untyped-def]
         """
         Initialize a target structure.
-        
+
         Parameters
         ----------
-            dot_bracket: 
+            dot_bracket:
                 dot_bracket encoded target structure.
-            env_config: 
+            env_config:
                 The environment configuration.
         """
         _Target._id_counter += 1
