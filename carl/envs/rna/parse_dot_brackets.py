@@ -23,7 +23,7 @@ def parse_dot_brackets(
         Use specific targets by ids., by default None
     target_structure_path : Optional[str], optional
         pecify a path to the targets., by default None
-    
+
     Returns
     -------
     Generator[int]
