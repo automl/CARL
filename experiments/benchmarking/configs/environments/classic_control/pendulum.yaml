@@ -1,4 +1,7 @@
 # @package _global_
+defaults:
+  - ../../algorithm/sac
+
 env: CARLPendulumEnv
 max_num_frames: 100000
 context_sampler:
