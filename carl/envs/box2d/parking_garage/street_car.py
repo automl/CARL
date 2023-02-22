@@ -1,4 +1,4 @@
-from typing import List
+from __future__ import annotations
 
 import Box2D
 import numpy as np
@@ -363,7 +363,7 @@ class StreetCar(Car):
             self.drawlist = self.wheels + [self.hull, self.trailer, self.trailer_axel]
         else:
             self.drawlist = self.wheels + [self.hull]
-        self.particles = []  # type: List
+        self.particles: list = []
 
     def gas(self, gas: float) -> None:
         """control: rear wheel drive

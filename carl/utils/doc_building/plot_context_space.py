@@ -5,9 +5,9 @@ Boxplot
 - number of CFs changing the dynamics
 - number of CFs changing the reward
 """
-if __name__ == "__main__":
-    from typing import List
+from __future__ import annotations
 
+if __name__ == "__main__":
     from pathlib import Path
 
     import matplotlib.pyplot as plt
@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     env_context_feature_names = {}
 
-    context_feature_names = []  # type: List[str]
-    dfs = []  # type: List[pd.DataFrame]
+    context_feature_names: list[str] = []
+    dfs: list[pd.DataFrame] = []
     n_context_features_per_env = []
     n_float_cfs = 0
     for env_name in env_names:
