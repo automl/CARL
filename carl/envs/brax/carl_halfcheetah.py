@@ -5,7 +5,7 @@ import json
 
 import brax
 import numpy as np
-from brax.envs.half_cheetah import _SYSTEM_CONFIG, Halfcheetah
+from brax.envs.half_cheetah import _SYSTEM_CONFIG_SPRING, Halfcheetah
 from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
 from google.protobuf import json_format, text_format
 from google.protobuf.json_format import MessageToDict

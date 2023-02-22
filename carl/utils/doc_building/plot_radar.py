@@ -6,6 +6,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import pandas as pd
     import seaborn as sns
+    import numpy as np
 
     from carl.utils.doc_building.plotting import radar_factory
 
