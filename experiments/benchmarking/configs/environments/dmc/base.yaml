@@ -1,4 +1,7 @@
 # @package _global_
+defaults:
+  - ../../algorithm/sac
+  
 max_num_frames: 1_000_000
 replay_capacity: 1_000_000
 eval_episodes: 10
