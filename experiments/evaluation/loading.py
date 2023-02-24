@@ -247,7 +247,7 @@ def load_from_path_eval(p, **kwargs):
     return_per_context["seed"] = traincfg.seed
     return_per_context["algorithm"] = traincfg.algorithm
 
-    if traincfg.experiment == "kirk_ep":
+    if traincfg.experiment.startswith("kirk_ep"):
         cptp = traincfg.contexts_train_path
         # ".../${env}/contexts_A.json"
         mode = Path(cptp).stem.split("_")[-1]
