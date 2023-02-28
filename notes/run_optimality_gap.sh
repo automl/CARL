@@ -13,9 +13,9 @@ if [ "$env_name" = "CARLCartPoleEnv" ]; then
 elif [ "$env_name" = "CARLAcrobotEnv" ]; then
     overrides=" '+environments/classic_control=acrobot' '+context_sampler.context_feature_names=[link_length_1,link_length_2]' '+context_sampler.uniform_bounds_rel=[0.75,1.25]' "
 elif [ "$env_name" = "CARLPendulumEnv" ]; then
-    overrides = " '+experiments/optgap/pendulum' "
+    overrides=" '+experiments/optgap/pendulum' "
 elif [ "$env_name" = "CARLDmcWalkerEnv" ]; then
-    overrides = " '+experiments/optgap/walker' "
+    overrides=" '+experiments/optgap/walker' slurm=cpu "
 fi
 
 echo $env_name
