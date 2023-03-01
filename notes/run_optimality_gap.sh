@@ -15,7 +15,7 @@ elif [ "$env_name" = "CARLAcrobotEnv" ]; then
 elif [ "$env_name" = "CARLPendulumEnv" ]; then
     overrides=" '+experiments/optgap/pendulum' "
 elif [ "$env_name" = "CARLDmcWalkerEnv" ]; then
-    overrides=" '+experiments/optgap/walker' slurm=cpu "
+    overrides=" +experiments/optgap=walker +slurm=cpu carl.context_mask=[] "
 fi
 
 echo $env_name
