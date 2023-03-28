@@ -76,7 +76,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.9",
     install_requires=[
-        "gym==0.24.1",
+        "gymnasium>=0.27.1",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
         "numpy>=1.19.5",
