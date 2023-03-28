@@ -324,7 +324,7 @@ class CARLEnv(Wrapper):
                 state = tnp.concatenate((state, context_values))
         return state
 
-    def step(self, action: Any) -> Tuple[Any, Any, bool, Dict]:
+    def step(self, action: Any) -> Tuple[Any, Any, bool, bool, Dict]:
         """
         Step the environment.
 
@@ -345,7 +345,7 @@ class CARLEnv(Wrapper):
 
         """
         # Step the environment
-        state, reward, done, info = self.env.step(action)
+        state, reward, terminated, trunched,  info = self.env.step(action)
 
         if not self.hide_context:
             # Scale context features
@@ -369,8 +369,8 @@ class CARLEnv(Wrapper):
         self.total_timestep_counter += 1
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
-            done = True
-        return state, reward, done, info
+            trunched , terminated = True
+        return state, reward, terminated, trunched, info
 
     def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it
