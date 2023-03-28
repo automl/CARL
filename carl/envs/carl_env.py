@@ -8,9 +8,9 @@ import json
 import os
 from types import ModuleType
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import Wrapper, spaces
+from gymnasium import Wrapper, spaces
 
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
