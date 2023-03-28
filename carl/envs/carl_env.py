@@ -255,7 +255,7 @@ class CARLEnv(Wrapper):
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
 
-    def reset(self, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
         """
         Reset environment.
 
@@ -278,7 +278,7 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
-        _ret = self.env.reset(**kwargs)  # type: ignore [arg-type]
+        _ret , _ = self.env.reset(seed=seed , options=options , **kwargs)  # type: ignore [arg-type]
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
