@@ -8,9 +8,9 @@ import json
 import os
 from types import ModuleType
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import Wrapper, spaces
+from gymnasium import Wrapper, spaces
 
 from carl.context.augmentation import add_gaussian_noise
 from carl.context.selection import AbstractSelector, RoundRobinSelector
@@ -255,7 +255,7 @@ class CARLEnv(Wrapper):
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
 
-    def reset(self, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
         """
         Reset environment.
 
@@ -278,7 +278,7 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
-        _ret = self.env.reset(**kwargs)  # type: ignore [arg-type]
+        _ret , _ = self.env.reset(seed=seed , options=options , **kwargs)  # type: ignore [arg-type]
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
@@ -324,7 +324,7 @@ class CARLEnv(Wrapper):
                 state = tnp.concatenate((state, context_values))
         return state
 
-    def step(self, action: Any) -> Tuple[Any, Any, bool, Dict]:
+    def step(self, action: Any) -> Tuple[Any, Any, bool, bool, Dict]:
         """
         Step the environment.
 
@@ -345,7 +345,7 @@ class CARLEnv(Wrapper):
 
         """
         # Step the environment
-        state, reward, done, info = self.env.step(action)
+        state, reward, terminated, trunched,  info = self.env.step(action)
 
         if not self.hide_context:
             # Scale context features
@@ -369,8 +369,8 @@ class CARLEnv(Wrapper):
         self.total_timestep_counter += 1
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
-            done = True
-        return state, reward, done, info
+            trunched , terminated = True
+        return state, reward, terminated, trunched, info
 
     def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it
