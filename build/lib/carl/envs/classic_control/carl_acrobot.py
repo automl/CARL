@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Union
 
 import numpy as np
-from gym.envs.classic_control import AcrobotEnv
+from gymnasium.envs.classic_control import AcrobotEnv
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv

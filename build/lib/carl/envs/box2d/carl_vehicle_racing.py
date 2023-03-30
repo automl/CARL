@@ -2,8 +2,8 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 import numpy as np
 import pyglet
-from gym.envs.box2d import CarRacing
-from gym.envs.box2d.car_dynamics import Car
+from gymnasium.envs.box2d import CarRacing
+from gymnasium.envs.box2d.car_dynamics import Car
 from pyglet import gl
 
 from carl.context.selection import AbstractSelector

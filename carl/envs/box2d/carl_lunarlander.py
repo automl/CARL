@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Tuple, TypeVar, Union
-
+import gymnasium as gym
 from gymnasium import Wrapper
 from gymnasium.envs.box2d import lunar_lander
 
