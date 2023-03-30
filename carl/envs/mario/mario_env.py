@@ -6,11 +6,11 @@ import socket
 from collections import deque
 
 import cv2
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
-from gym.core import ObsType
-from gym.utils import seeding
+from gymnasium import spaces
+from gymnasium.core import ObsType
+from gymnasium.utils import seeding
 from PIL import Image
 from py4j.java_gateway import GatewayParameters, JavaGateway
 

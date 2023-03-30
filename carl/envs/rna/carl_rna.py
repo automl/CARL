@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring  # isort: skip_file
 from typing import Optional, Dict, Union, List, Tuple, Any
 import numpy as np
-import gym
+import gymnasium as gym
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.parse_dot_brackets import parse_dot_brackets

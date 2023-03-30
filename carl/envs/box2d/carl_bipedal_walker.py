@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
-from gym.envs.box2d import bipedal_walker
-from gym.envs.box2d import bipedal_walker as bpw
+from gymnasium.envs.box2d import bipedal_walker
+from gymnasium.envs.box2d import bipedal_walker as bpw
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv

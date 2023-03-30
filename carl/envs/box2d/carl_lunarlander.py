@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Tuple, TypeVar, Union
 
-from gym import Wrapper
-from gym.envs.box2d import lunar_lander
+from gymnasium import Wrapper
+from gymnasium.envs.box2d import lunar_lander
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
