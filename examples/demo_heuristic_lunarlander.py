@@ -1,5 +1,5 @@
 from typing import Union, Optional
-import gymnasium as gym
+
 from gymnasium.envs.box2d.lunar_lander import heuristic
 import gymnasium.envs.box2d.lunar_lander as lunar_lander
 from carl.envs import CARLLunarLanderEnv
