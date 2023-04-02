@@ -26,7 +26,7 @@ def demo_heuristic_lander(
 
     while True:
         a = heuristic(env, s)
-        #print(env,'#################################################################')
+        
         s, r, done, trunched, info = env.step(a)
 
         total_reward += r
