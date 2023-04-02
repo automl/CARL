@@ -86,6 +86,7 @@ class CARLEnv(Wrapper):
 
     available_scale_methods = ["by_default", "by_mean", "no"]
     available_instance_modes = ["random", "rr", "roundrobin"]
+    metadata = {"render_modes": ["human", "rgb_array"]}
 
     def __init__(
         self,
@@ -111,6 +112,7 @@ class CARLEnv(Wrapper):
         # Gather args
         self._context: Context  # init for property
         self._contexts: Contexts  # init for property
+        
         self.default_context = default_context
         self.contexts = contexts
         self.context_mask = context_mask
@@ -254,6 +256,11 @@ class CARLEnv(Wrapper):
         self._contexts = {
             k: self.fill_context_with_default(context=v) for k, v in contexts.items()
         }
+    def render(self):
+        if self.render_mode == "rgb_array":
+
+            return self._render_frame()
+
 
     def reset(self, seed: int | None = None, options: dict[str, Any] | None = None, **kwargs: Dict) -> Union[ObsType, tuple[ObsType, dict]]:  # type: ignore [override]
         """
@@ -278,7 +285,7 @@ class CARLEnv(Wrapper):
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
-        _ret , _ = self.env.reset(seed=seed , options=options , **kwargs)  # type: ignore [arg-type]
+        _ret  = self.env.reset(seed=seed , options=options , **kwargs)  # type: ignore [arg-type]
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
@@ -288,7 +295,10 @@ class CARLEnv(Wrapper):
         ret = state
         if return_info:
             ret = state, info_dict
-        return ret
+
+        
+
+        return ret 
 
     def build_context_adaptive_state(
         self, state: List[float], context_feature_values: Optional[Vector] = None
@@ -369,7 +379,9 @@ class CARLEnv(Wrapper):
         self.total_timestep_counter += 1
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
-            trunched , terminated = True
+            trunched  = True
+
+        
         return state, reward, terminated, trunched, info
 
     def __getattr__(self, name: str) -> Any:

@@ -16,7 +16,7 @@ def demo_heuristic_lander(
     """
     Copied from LunarLander
     """
-    #env.set_seed(seed)
+    
 
     total_reward = 0
     steps = 0
