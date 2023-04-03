@@ -1,8 +1,9 @@
 # @package _global_
 defaults:
-  - ../environments/classic_control/cartpole
+  - ../environments/dmc/walker
   - ../context_visibility/hidden
-  - ../slurm/cpushort
+  - ../slurm/cpu
+  - optgap/walker
 
 experiment: optimality_gap
 
@@ -11,14 +12,14 @@ carl:
 
 eval_on_train_context: true
 
-context_sampler:
-  env_name: ${env}
-  context_feature_names: ["pole_length"]
-  seed: ${seed}
-  n_samples: 64
-  sigma_rel: 0.25  # 0.1, 0.25, 0.5
-  uniform_distribution: true
-  uniform_bounds_rel: [0.5, 1.5]
+# context_sampler:
+#   env_name: ${env}
+#   context_feature_names: ["pole_length"]
+#   seed: ${seed}
+#   n_samples: 64
+#   sigma_rel: 0.25  # 0.1, 0.25, 0.5
+#   uniform_distribution: true
+#   uniform_bounds_rel: [0.5, 1.5]
 
 consider_n_samples: true
 
