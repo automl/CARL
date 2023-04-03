@@ -65,6 +65,7 @@ if __name__ == "__main__":
         # printr(fullcommand[:260])
     
     main_run_fn = command_dir / "run_train_oracles.sh"
+    main_run_fn.parent.mkdir(exist_ok=True, parents=True)
     with open(main_run_fn, 'w') as file:
         file.writelines([f"bash {c}\n" for c in command_fns])
     printr(main_run_fn)
