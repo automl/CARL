@@ -4,7 +4,7 @@ defaults:
   - ../context_visibility/hidden
   - ../slurm/cpushort
 
-experiment: kirk_ep3
+experiment: kirk_ep4
 
 max_num_frames: 100_000
 
