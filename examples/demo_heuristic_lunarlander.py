@@ -16,24 +16,24 @@ def demo_heuristic_lander(
     """
     Copied from LunarLander
     """
-    
 
     total_reward = 0
     steps = 0
     if render:
         env.render()
-    s = env.reset(seed=seed,)
+    s = env.reset(
+        seed=seed,
+    )
 
     while True:
         a = heuristic(env, s)
-        
+
         s, r, done, trunched, info = env.step(a)
 
         total_reward += r
 
-        if render and steps % 20 == 0 :
+        if render and steps % 20 == 0:
             still_open = env.render()
-
 
         if done or trunched:  # or steps % 20 == 0:
             # print("observations:", " ".join(["{:+0.2f}".format(x) for x in s]))

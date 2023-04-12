@@ -94,11 +94,11 @@ class CARLRnaDesignEnv(CARLEnv):
         self.obs_low = obs_low
         self.obs_high = obs_high
 
-    def step(self, action: np.ndarray) -> Tuple[List[int], float, Any, Any]:
+    def step(self, action: np.ndarray) -> Tuple[List[int], float, Any, Any, Any]:
         # Step function has a different name in this env
-        state, reward, done = self.env.execute(action)  # type: ignore[has-type]
+        state, reward, terminated, trunched = self.env.execute(action)  # type: ignore[has-type]
         self.step_counter += 1
-        return state, reward, done, {}
+        return state, reward, terminated, trunched, {}
 
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
