@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Tuple, TypeVar, Union
-import gymnasium as gym
+
 from gymnasium import Wrapper
 from gymnasium.envs.box2d import lunar_lander
 
@@ -82,28 +82,25 @@ class LunarLanderEnv(Wrapper):
         super().__init__(env=env)
 
         self.high_gameover_penalty = high_gameover_penalty
-        #self.active_seed = None
-        
-
+        # self.active_seed = None
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
         self.env: lunar_lander.LunarLander
         state, reward, terminated, trunched, info = self.env.step(action)
 
-        #if terminated or trunched:
-        #    done= True 
-        #else:
+        # if terminated or trunched:
+        #    done= True
+        # else:
         #    done = False
-
 
         if self.env.game_over and self.high_gameover_penalty:
             reward = -10000
         return state, reward, terminated, trunched, info
 
-    '''def seed(self, seed: Optional[int] = None) -> Optional[int]:
+    """def seed(self, seed: Optional[int] = None) -> Optional[int]:
         seed_ = self.env.seed(seed)
         self.active_seed = seed_[0]
-        return seed_'''
+        return seed_"""
 
 
 class CARLLunarLanderEnv(CARLEnv):
