@@ -354,7 +354,7 @@ class CARLEnv(Wrapper):
 
         """
         # Step the environment
-        state, reward, terminated, trunched, info = self.env.step(action)
+        state, reward, terminated, truncated, info = self.env.step(action)
 
         if not self.hide_context:
             # Scale context features
@@ -378,9 +378,9 @@ class CARLEnv(Wrapper):
         self.total_timestep_counter += 1
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
-            trunched = True
+            truncated = True
 
-        return state, reward, terminated, trunched, info
+        return state, reward, terminated, truncated, info
 
     def __getattr__(self, name: str) -> Any:
         # TODO: does this work with activated noise? I think we need to update it

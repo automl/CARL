@@ -22,7 +22,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, terminated, trunched, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         self.assertEqual(3, len(state))
 
