@@ -28,14 +28,14 @@ def demo_heuristic_lander(
     while True:
         a = heuristic(env, s)
 
-        s, r, done, trunched, info = env.step(a)
+        s, r, done, truncated, info = env.step(a)
 
         total_reward += r
 
         if render and steps % 20 == 0:
             still_open = env.render()
 
-        if done or trunched:  # or steps % 20 == 0:
+        if done or truncated:  # or steps % 20 == 0:
             # print("observations:", " ".join(["{:+0.2f}".format(x) for x in s]))
             print("step {} total_reward {:+0.2f}".format(steps, total_reward))
         steps += 1
