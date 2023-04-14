@@ -4,25 +4,29 @@ import numpy as np
 
 from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
-from carl.envs.dmc.dmc_tasks.quadruped import STEP_LIMIT  # type: ignore
+from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
-    "gravity": -9.81,
-    "friction_tangential": 1.0,  # Scaling factor for tangential friction of all geoms (objects)
-    "friction_torsional": 1.0,  # Scaling factor for torsional friction of all geoms (objects)
-    "friction_rolling": 1.0,  # Scaling factor for rolling friction of all geoms (objects)
-    "timestep": 0.005,  # Seconds between updates
+    "gravity": -9.81,  # Gravity is disabled via flag
+    "friction_tangential": 1,  # Scaling factor for tangential friction of all geoms (objects)
+    "friction_torsional": 1,  # Scaling factor for torsional friction of all geoms (objects)
+    "friction_rolling": 1,  # Scaling factor for rolling friction of all geoms (objects)
+    "timestep": 0.004,  # Seconds between updates
     "joint_damping": 1.0,  # Scaling factor for all joints
     "joint_stiffness": 0.0,
     "actuator_strength": 1,  # Scaling factor for all actuators in the model
-    "density": 0.0,
+    "density": 5000.0,
     "viscosity": 0.0,
-    "geom_density": 1.0,  # Scaling factor for all geom (objects) densities
+    "geom_density": 1.0,  # No effect, because no gravity
     "wind_x": 0.0,
     "wind_y": 0.0,
     "wind_z": 0.0,
+    "limb_length_0": 0.17,
+    "limb_length_1": 0.16,
+    "spinner_radius": 0.04,
+    "spinner_length": 0.18,
 }
 
 CONTEXT_BOUNDS = {
@@ -44,20 +48,26 @@ CONTEXT_BOUNDS = {
     "wind_x": (-np.inf, np.inf, float),
     "wind_y": (-np.inf, np.inf, float),
     "wind_z": (-np.inf, np.inf, float),
+    "limb_length_0": (0.01, 0.2, float),
+    "limb_length_1": (0.01, 0.2, float),
+    "spinner_radius": (0.01, 0.05, float),
+    "spinner_length": (0.01, 0.4, float),
 }
 
 CONTEXT_MASK = [
+    "gravity",
+    "geom_density",
     "wind_x",
     "wind_y",
     "wind_z",
 ]
 
 
-class CARLDmcQuadrupedEnv(CARLDmcEnv):
+class CARLDmcFingerEnv(CARLDmcEnv):
     def __init__(
         self,
-        domain: str = "quadruped",
-        task: str = "walk_context",
+        domain: str = "finger",
+        task: str = "spin_context",
         contexts: Contexts = {},
         context_mask: Optional[List[str]] = [],
         hide_context: bool = True,

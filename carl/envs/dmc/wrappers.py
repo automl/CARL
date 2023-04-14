@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, TypeVar, Union
+from typing import Any, Optional, Tuple, TypeVar, Union
 
 import dm_env  # type: ignore
 import gym
@@ -8,6 +8,24 @@ from gym import spaces
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
+
+
+def get_shape(shape: tuple) -> tuple:
+    """
+    Get shape of array or scalar.
+
+    If scalar (shape = ()), return (1,).
+
+    Parameters
+    ----------
+    shape: tuple
+        Shape of array, can be empty tuple
+
+    Returns
+    -------
+    Shape: Same as before if not empty, else (1,)
+    """
+    return shape if shape else (1,)
 
 
 class MujocoToGymWrapper(gym.Env):
@@ -27,7 +45,7 @@ class MujocoToGymWrapper(gym.Env):
         # }
         # self.observation_space = spaces.Dict(spaces=obs_spaces)
         # TODO add support for Dict Spaces in CARLEnv (later)
-        shapes = [int(np.sum([v.shape for v in obs_spec.values()]))]
+        shapes = [int(np.sum([get_shape(v.shape) for v in obs_spec.values()]))]
         lows = np.array([-np.inf] * shapes[0])
         highs = np.array([np.inf] * shapes[0])
         dtype = np.unique([[v.dtype for v in obs_spec.values()]])[0]
@@ -78,7 +96,9 @@ class MujocoToGymWrapper(gym.Env):
             raise NotImplementedError
         return observation
 
-    def render(self, mode: str = "human", camera_id: int = 0) -> np.ndarray:
+    def render(
+        self, mode: str = "human", camera_id: int = 0, **kwargs: Any
+    ) -> np.ndarray:
         """Renders the environment.
 
         The set of supported modes varies per environment. (And some
@@ -101,6 +121,8 @@ class MujocoToGymWrapper(gym.Env):
 
         Args:
             mode (str): the mode to render with
+            camera_id
+            kwargs: Keyword arguments for dm_control.mujoco.engine.Physics.render
 
         Example:
 
@@ -120,6 +142,6 @@ class MujocoToGymWrapper(gym.Env):
         if mode == "human":
             raise NotImplementedError
         elif mode == "rgb_array":
-            return self.env.physics.render(camera_id=camera_id)
+            return self.env.physics.render(camera_id=camera_id, **kwargs)
         else:
             raise NotImplementedError
