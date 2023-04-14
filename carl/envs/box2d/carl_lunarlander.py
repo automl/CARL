@@ -86,16 +86,11 @@ class LunarLanderEnv(Wrapper):
 
     def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
         self.env: lunar_lander.LunarLander
-        state, reward, terminated, trunched, info = self.env.step(action)
-
-        # if terminated or trunched:
-        #    done= True
-        # else:
-        #    done = False
+        state, reward, terminated, truncated, info = self.env.step(action)
 
         if self.env.game_over and self.high_gameover_penalty:
             reward = -10000
-        return state, reward, terminated, trunched, info
+        return state, reward, terminated, truncated, info
 
     """def seed(self, seed: Optional[int] = None) -> Optional[int]:
         seed_ = self.env.seed(seed)
