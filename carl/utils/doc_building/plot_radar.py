@@ -295,6 +295,9 @@ if __name__ == "__main__":
         5,
         3,
         14,
+        14,
+        14,
+        18
     ]
     env_names = [
         "CARLMountainCarEnv",
@@ -320,11 +323,13 @@ if __name__ == "__main__":
     ]
     n_cfs_d = [11, 5, 8, 6, 10, 16, 1, 20, 7, 6, 5, 9, 9, 9, 4, 3, 14, 14, 14, 18]
     n_cfs_r = [0, 0, 0, 0, 0, 4, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-    n_cfs = 131
-    n_dynami_changing = 129
+    
+    n_cfs = np.sum(n_context_features)
+    n_dynami_changing = np.sum(n_cfs_d)  # 129
     n_reward_changing = 7
-    n_float_cfs = 114
+    n_float_cfs = 114 + 14 + 14 + 14 + 18
     percentage_float_cfs = n_float_cfs / n_cfs
+    print("percentage float", percentage_float_cfs)
 
     env_types = {
         "classic_control": [
@@ -375,6 +380,14 @@ if __name__ == "__main__":
         )
     data = pd.concat(data)
 
+    asvals = list(data["action_space_size"].unique())
+    asvals.sort()
+    print("unique action sizes", asvals)
+    print("number of context features", np.sum(n_context_features))
+    print("perc changing dynamic", n_dynami_changing / n_cfs, n_dynami_changing, n_cfs)
+    print(len(n_cfs_d), len(n_context_features))
+    print("reward changing", len(n_cfs_r), np.sum(n_cfs_r), np.sum(n_cfs_r)/n_cfs)
+
     # normalize values
     cols = [c for c in data.columns if c not in ["env_type", "env_name"]]  # type: ignore [attr-defined]
     max_values_per_col = []
@@ -384,6 +397,8 @@ if __name__ == "__main__":
         max_val = data[col].max()
         max_values_per_col.append(max_val)
         data[col] /= max_val
+
+
 
     cols_plot = [
         "state_space_size",
