@@ -379,6 +379,15 @@ python experiments/evaluation/run_evaluation.py 'contexts_path=/home/benjamin/Do
  g, l, m, [1, 2.2]
  ```bash
   python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=glob(*)' 'experiment=benchmarking_u_wider' '+context_sampling=uniform_10' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[],[g],[l],[m]' 'context_sampler.uniform_bounds_rel=[1, 2.2]' -m
+
+  # rebuttal
+    python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' 'experiment=benchmarking_u_wider_long' '+context_sampling=uniform_10' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=720' 'hydra.launcher.partition=wimi' 'context_sampler.context_feature_names=[l]' 'context_sampler.uniform_bounds_rel=[1, 2.2]' 'max_num_frames=1000000' -m
+ ```
+
+ Eval Pendulum
+ ```bash
+ python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-02-16/18-30-33_benchmark_train' -m
+ python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-04-05/08-10-53_benchmark_train' -m
  ```
 
 Acrobot

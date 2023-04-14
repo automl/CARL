@@ -1,4 +1,7 @@
 import os
+# os.environ['DISABLE_MUJOCO_RENDERING'] = '1'
+# os.environ['MUJOCO_GL'] = 'osmesa'                                                                                                                    
+# os.environ['PYOPENGL_PLATFORM'] = 'osmesa'            
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
@@ -92,10 +95,10 @@ def evaluate_policy(cfg: DictConfig):
 
     traincfg = OmegaConf.load(str(Path(cfg.results_path) / ".hydra" / "config.yaml"))
 
-    if cfg.experiment == "hidden_on_variations":
-        if traincfg.wandb.group != cfg.visibility and traincfg.context_sampler.context_feature_names != []:
-            print(f"Abort. Is not {cfg.visibility} and trained on variations.", traincfg.wandb.group, traincfg.context_sampler.context_feature_names)
-            return None
+    # if cfg.experiment == "hidden_on_variations":
+    #     if traincfg.wandb.group != cfg.visibility and traincfg.context_sampler.context_feature_names != []:
+    #         print(f"Abort. Is not {cfg.visibility} and trained on variations.", traincfg.wandb.group, traincfg.context_sampler.context_feature_names)
+    #         return None
 
     wandbdir = Path(cfg.results_path) / "wandb"
 

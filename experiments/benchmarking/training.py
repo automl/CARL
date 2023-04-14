@@ -1,8 +1,8 @@
 import os
 
-os.environ['DISABLE_MUJOCO_RENDERING'] = '1'                                                                                                          
-os.environ['MUJOCO_GL'] = 'osmesa'                                                                                                                    
-os.environ['PYOPENGL_PLATFORM'] = 'osmesa' 
+# os.environ['DISABLE_MUJOCO_RENDERING'] = '1'                                                                                                          
+# os.environ['MUJOCO_GL'] = 'osmesa'                                                                                                                    
+# os.environ['PYOPENGL_PLATFORM'] = 'osmesa' 
 
 import sys
 import warnings
