@@ -96,9 +96,9 @@ class CARLRnaDesignEnv(CARLEnv):
 
     def step(self, action: np.ndarray) -> Tuple[List[int], float, Any, Any, Any]:
         # Step function has a different name in this env
-        state, reward, terminated, trunched = self.env.execute(action)  # type: ignore[has-type]
+        state, reward, terminated, truncated = self.env.execute(action)  # type: ignore[has-type]
         self.step_counter += 1
-        return state, reward, terminated, trunched, {}
+        return state, reward, terminated, truncated, {}
 
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
