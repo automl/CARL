@@ -1,8 +1,8 @@
 from typing import Union, Optional
 
-from gym.envs.box2d.lunar_lander import heuristic
-import gym.envs.box2d.lunar_lander as lunar_lander
-
+from gymnasium.envs.box2d.lunar_lander import heuristic
+import gymnasium.envs.box2d.lunar_lander as lunar_lander
+from gymnasium.utils.step_api_compatibility import step_api_compatibility
 from carl.envs import CARLLunarLanderEnv
 
 
@@ -16,22 +16,26 @@ def demo_heuristic_lander(
     """
     Copied from LunarLander
     """
-    env.seed(seed)
+
     total_reward = 0
     steps = 0
-    env.render()
-    s = env.reset()
+    if render:
+        env.render()
+    s = env.reset(
+        seed=seed,
+    )
+
     while True:
         a = heuristic(env, s)
-        s, r, done, info = env.step(a)
+
+        s, r, done, truncated, info = env.step(a)
+
         total_reward += r
 
-        if render:
+        if render and steps % 20 == 0:
             still_open = env.render()
-            if not still_open:
-                break
 
-        if done:  # or steps % 20 == 0:
+        if done or truncated:  # or steps % 20 == 0:
             # print("observations:", " ".join(["{:+0.2f}".format(x) for x in s]))
             print("step {} total_reward {:+0.2f}".format(steps, total_reward))
         steps += 1
