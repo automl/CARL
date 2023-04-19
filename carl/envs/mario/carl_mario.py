@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-import gym
+import gymnasium as gym
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv

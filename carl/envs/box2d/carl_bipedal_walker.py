@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
-from gym.envs.box2d import bipedal_walker
-from gym.envs.box2d import bipedal_walker as bpw
+from gymnasium.envs.box2d import bipedal_walker
+from gymnasium.envs.box2d import bipedal_walker as bpw
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -212,9 +212,9 @@ def demo_heuristic(
     SUPPORT_KNEE_ANGLE = +0.1
     supporting_knee_angle = SUPPORT_KNEE_ANGLE
     while True:
-        s, r, done, info = env.step(a)
+        s, r, terminated, truncated, info = env.step(a)
         total_reward += r
-        if steps % 20 == 0 or done:
+        if steps % 20 == 0 or terminated or truncated:
             print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
             print("step {} total_reward {:+0.2f}".format(steps, total_reward))
             print("hull " + str(["{:+0.2f}".format(x) for x in s[0:4]]))
@@ -278,7 +278,7 @@ def demo_heuristic(
         a = np.clip(0.5 * a, -1.0, 1.0)
 
         env.render()
-        if done:
+        if terminated or truncated:
             break
 
 
