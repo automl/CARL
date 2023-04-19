@@ -22,7 +22,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         self.assertEqual(3, len(state))
 
@@ -40,7 +40,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         self.assertEqual(10, len(state))
 
@@ -58,7 +58,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         # Because we don't change any context features the state length should be 3
         self.assertEqual(3, len(state))
@@ -77,7 +77,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         # state should be of length 5 because we add two context features
         self.assertEqual(5, len(state))
@@ -103,7 +103,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         # state should be of length 3 because all contexts are the same
         self.assertEqual(3, len(state))
@@ -129,7 +129,7 @@ class TestStateConstruction(unittest.TestCase):
         )
         env.reset()
         action = [0.01]  # torque
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         env.close()
         # state should be of length 5 because two features are changing (dt and l)
         self.assertEqual(5, len(state))
@@ -149,7 +149,7 @@ class TestStateConstruction(unittest.TestCase):
         self.assertTrue("state" in obs)
         self.assertTrue("context" in obs)
         action = [0.01]  # torque
-        next_obs, reward, done, info = env.step(action=action)
+        next_obs, reward, terminated, truncated, info = env.step(action=action)
         env.close()
 
     def test_state_context_feature_population(self):
@@ -185,9 +185,12 @@ class TestEpisodeTermination(unittest.TestCase):
         done = False
         counter = 0
         while not done:
-            state, reward, done, info = env.step(action=action)
+            state, reward, terminated, truncated, info = env.step(action=action)
             counter += 1
             self.assertTrue(counter <= ep_length)
+            if terminated or truncated:
+                done = True
+
             if counter > ep_length:
                 break
         env.close()
@@ -223,7 +226,7 @@ class TestContextFeatureScaling(unittest.TestCase):
         )
         env.reset()
         action = [0.0]
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         n_c = len(env.default_context)
         scaled_contexts = state[-n_c:]
         target = np.array(
@@ -258,7 +261,7 @@ class TestContextFeatureScaling(unittest.TestCase):
         )
         env.reset()
         action = [0.0]
-        state, reward, done, info = env.step(action=action)
+        state, reward, terminated, truncated, info = env.step(action=action)
         n_c = len(default_context)
         scaled_contexts = state[-n_c:]
         self.assertTrue(

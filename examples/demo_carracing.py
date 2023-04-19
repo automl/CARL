@@ -4,7 +4,7 @@ Code adapted from gym.envs.box2d.car_racing.py
 
 from typing import Any
 import numpy as np
-import gym
+import gymnasium as gym
 import time
 import pygame
 from carl.envs.box2d.carl_vehicle_racing import CARLVehicleRacingEnv, VEHICLE_NAMES
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     env.render()
     record_video = False
     if record_video:
-        from gym.wrappers.record_video import RecordVideo
+        from gymnasium.wrappers.record_video import RecordVideo
 
         env = RecordVideo(
             env=env, video_folder="/tmp/video-test", name_prefix="CARLVehicleRacing"

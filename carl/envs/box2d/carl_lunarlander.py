@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Tuple, TypeVar, Union
 
-from gym import Wrapper
-from gym.envs.box2d import lunar_lander
+from gymnasium import Wrapper
+from gymnasium.envs.box2d import lunar_lander
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -82,19 +82,20 @@ class LunarLanderEnv(Wrapper):
         super().__init__(env=env)
 
         self.high_gameover_penalty = high_gameover_penalty
-        self.active_seed = None
+        # self.active_seed = None
 
-    def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
+    def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
         self.env: lunar_lander.LunarLander
-        state, reward, done, info = self.env.step(action)
+        state, reward, terminated, truncated, info = self.env.step(action)
+
         if self.env.game_over and self.high_gameover_penalty:
             reward = -10000
-        return state, reward, done, info
+        return state, reward, terminated, truncated, info
 
-    def seed(self, seed: Optional[int] = None) -> Optional[int]:
+    """def seed(self, seed: Optional[int] = None) -> Optional[int]:
         seed_ = self.env.seed(seed)
         self.active_seed = seed_[0]
-        return seed_
+        return seed_"""
 
 
 class CARLLunarLanderEnv(CARLEnv):

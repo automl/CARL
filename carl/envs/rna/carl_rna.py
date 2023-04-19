@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring  # isort: skip_file
 from typing import Optional, Dict, Union, List, Tuple, Any
 import numpy as np
-import gym
+import gymnasium as gym
 
 from carl.envs.carl_env import CARLEnv
 from carl.envs.rna.parse_dot_brackets import parse_dot_brackets
@@ -94,11 +94,11 @@ class CARLRnaDesignEnv(CARLEnv):
         self.obs_low = obs_low
         self.obs_high = obs_high
 
-    def step(self, action: np.ndarray) -> Tuple[List[int], float, Any, Any]:
+    def step(self, action: np.ndarray) -> Tuple[List[int], float, Any, Any, Any]:
         # Step function has a different name in this env
-        state, reward, done = self.env.execute(action)  # type: ignore[has-type]
+        state, reward, terminated, truncated = self.env.execute(action)  # type: ignore[has-type]
         self.step_counter += 1
-        return state, reward, done, {}
+        return state, reward, terminated, truncated, {}
 
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
