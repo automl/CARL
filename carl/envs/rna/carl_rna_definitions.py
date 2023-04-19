@@ -1,5 +1,5 @@
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 DEFAULT_CONTEXT = {
     "mutation_threshold": 5,
