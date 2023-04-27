@@ -1,3 +1,7 @@
+# 0.2.2
+- Make sampling of contexts deterministic with seed
+- Update gym to gymnasium
+
 # 0.2.1
 - Add Finger (DMC) env
 - Readd RNA env (#78)

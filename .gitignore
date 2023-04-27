@@ -20,9 +20,12 @@ carl.egg-info
 exp_sweep
 multirun
 outputs
-experiments
 runs
-generated
-*egg*
-core
+*.tex
 *.png
+*.pdf
+*.csv
+*.json
+*.pickle
+*.egg-info
+*code-workspace

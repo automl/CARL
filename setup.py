@@ -31,6 +31,9 @@ extras_require = {
     "dm_control": [
         "dm_control>=1.0.3",
     ],
+    "gymnax": [
+        "gymnax>=0.0.6",
+    ],
     "mario": [
         "torch>=1.9.0",
         "Pillow>=8.3.1",
@@ -94,9 +97,6 @@ setuptools.setup(
     extras_require=extras_require,
     test_suite="pytest",
     platforms=["Linux"],
-    entry_points={
-        "console_scripts": ["smac = smac.smac_cli:cmd_line_call"],
-    },
     classifiers=[
      "Programming Language :: Python :: 3",
      "Natural Language :: English",
