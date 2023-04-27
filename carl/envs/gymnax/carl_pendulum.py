@@ -1,9 +1,7 @@
 from typing import Dict, List, Optional, Union 
 
 
-import jax
 import jax.numpy as jnp
-import chex
 import numpy as np
 
 from carl.context.selection import AbstractSelector
