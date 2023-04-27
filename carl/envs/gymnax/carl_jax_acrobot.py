@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Union
 
 import jax.numpy as jnp
 import numpy as np
-from gymnax.environments.classic_control.acrobot import AcrobotEnv 
+from gymnax.environments.classic_control.acrobot import Acrobot
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -62,7 +62,7 @@ CONTEXT_BOUNDS = {
 class CARLJaxAcrobotEnv(CARLEnv):
     def __init__(
         self,
-        env: AcrobotEnv =AcrobotEnv(),
+        env: Acrobot = Acrobot(),
         contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -102,7 +102,7 @@ class CARLJaxAcrobotEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        self.env: AcrobotEnv
+        self.env: Acrobot
         self.env.LINK_LENGTH_1 = self.context["link_length_1"]
         self.env.LINK_LENGTH_2 = self.context["link_length_2"]
         self.env.LINK_MASS_1 = self.context["link_mass_1"]
