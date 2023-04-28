@@ -29,7 +29,7 @@ CONTEXT_BOUNDS = {
 
 
 
-class CARLCartPoleEnv(CARLEnv):
+class CARLJaxCartPoleEnv(CARLEnv):
     def __init__(
         self,
         env: CartPole = CartPole(),

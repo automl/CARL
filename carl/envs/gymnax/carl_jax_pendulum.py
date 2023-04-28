@@ -1,15 +1,14 @@
-from typing import Dict, List, Optional, Union 
-
+from typing import Dict, List, Optional, Union
 
 import jax.numpy as jnp
 import numpy as np
+from gymnax.environments import spaces
+from gymnax.environments.classic_control.pendulum import EnvParams, Pendulum
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
-from gymnax.environments import spaces
-from gymnax.environments.classic_control.pendulum import Pendulum, EnvParams
 
 DEFAULT_CONTEXT = {
     "max_speed": 8.0,

@@ -1,8 +1,8 @@
 from typing import Dict, List, Optional, Tuple, Union
 
 import jax.numpy as jnp
-
 from gymnax.environments.classic_control.mountain_car import MountainCar
+
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger

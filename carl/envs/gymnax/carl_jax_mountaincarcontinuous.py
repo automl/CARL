@@ -1,7 +1,9 @@
 from typing import Dict, List, Optional, Union
 
-from gymnax.environments.classic_control.continuous_mountain_car import ContinuousMountainCar
 import numpy as jnp
+from gymnax.environments.classic_control.continuous_mountain_car import (
+    ContinuousMountainCar,
+)
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -9,15 +11,15 @@ from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
-    "min_action": float = -1.0,
-    "max_action": float = 1.0,
-    "min_position": float = -1.2,
-    "max_position": float = 0.6,
-    "max_speed": float = 0.07,
-    "goal_position": float = 0.45,
-    "goal_velocity": float = 0.0,
-    "power": float = 0.0015,
-    "gravity": float = 0.0025
+    "min_action": -1.0,
+    "max_action": 1.0,
+    "min_position": -1.2,
+    "max_position": 0.6,
+    "max_speed":  0.07,
+    "goal_position": 0.45,
+    "goal_velocity": 0.0,
+    "power":  0.0015,
+    "gravity":  0.0025
 }
 
 
@@ -33,7 +35,7 @@ CONTEXT_BOUNDS = {
     "gravity": (0, jnp.inf),
 }
 
-class CARLMountainCarContinuousEnv(CARLEnv):
+class CARLJaxMountainCarContinuousEnv(CARLEnv):
     def __init__(
         self,
         env: ContinuousMountainCar = ContinuousMountainCar(),
