@@ -1,2 +1,0 @@
-class Particle:
-    pass

@@ -1,7 +1,6 @@
 from typing import Dict, List, Optional, Union
 
 import jax.numpy as jnp
-import numpy as np
 from gymnax.environments.classic_control.cartpole import CartPole
 
 from carl.context.selection import AbstractSelector
@@ -26,7 +25,6 @@ CONTEXT_BOUNDS = {
     "force_mag": (5.0, 15.0, float),
     "tau": (0.01, 0.05, float),
 }
-
 
 class CARLJaxCartPoleEnv(CARLEnv):
     def __init__(
