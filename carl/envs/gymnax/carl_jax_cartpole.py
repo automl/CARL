@@ -28,7 +28,6 @@ CONTEXT_BOUNDS = {
 }
 
 
-
 class CARLJaxCartPoleEnv(CARLEnv):
     def __init__(
         self,
@@ -79,7 +78,7 @@ class CARLJaxCartPoleEnv(CARLEnv):
         self.env.length = self.context["length"]
         self.env.force_mag = self.context["force_mag"]
         self.env.tau = self.context["tau"]
-        
+
         high = jnp.array(
             [
                 self.env.x_threshold * 2,

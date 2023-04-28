@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 import jax.numpy as jnp
 from gymnax.environments.classic_control.mountain_car import MountainCar
@@ -16,7 +16,6 @@ DEFAULT_CONTEXT = {
     "goal_velocity": 0,  # unit?
     "force": 0.001,  # unit?
     "gravity": 0.0025,  # unit?
-
 }
 
 CONTEXT_BOUNDS = {
@@ -27,7 +26,6 @@ CONTEXT_BOUNDS = {
     "goal_velocity": (-jnp.inf, jnp.inf, float),
     "force": (-jnp.inf, jnp.inf, float),
     "gravity": (0, jnp.inf, float),
-
 }
 
 

@@ -15,17 +15,17 @@ DEFAULT_CONTEXT = {
     "max_action": 1.0,
     "min_position": -1.2,
     "max_position": 0.6,
-    "max_speed":  0.07,
+    "max_speed": 0.07,
     "goal_position": 0.45,
     "goal_velocity": 0.0,
-    "power":  0.0015,
-    "gravity":  0.0025
+    "power": 0.0015,
+    "gravity": 0.0025,
 }
 
 
 CONTEXT_BOUNDS = {
     "min_action": (-jnp.inf, jnp.inf, float),
-    "max_action:":(-jnp.inf, jnp.inf, float),
+    "max_action:": (-jnp.inf, jnp.inf, float),
     "min_position": (-jnp.inf, jnp.inf, float),
     "max_position": (-jnp.inf, jnp.inf, float),
     "max_speed": (0, jnp.inf, float),
@@ -34,6 +34,7 @@ CONTEXT_BOUNDS = {
     "power": (-jnp.inf, jnp.inf, float),
     "gravity": (0, jnp.inf),
 }
+
 
 class CARLJaxMountainCarContinuousEnv(CARLEnv):
     def __init__(

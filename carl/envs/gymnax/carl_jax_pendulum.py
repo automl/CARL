@@ -2,7 +2,6 @@ from typing import Dict, List, Optional, Union
 
 import jax.numpy as jnp
 import numpy as np
-from gymnax.environments import spaces
 from gymnax.environments.classic_control.pendulum import EnvParams, Pendulum
 
 from carl.context.selection import AbstractSelector
@@ -31,7 +30,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLJaxPendulumEnv(CARLEnv): 
+class CARLJaxPendulumEnv(CARLEnv):
     def __init__(
         self,
         env: Pendulum = Pendulum(),
