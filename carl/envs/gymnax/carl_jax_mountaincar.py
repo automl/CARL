@@ -16,24 +16,18 @@ DEFAULT_CONTEXT = {
     "goal_velocity": 0,  # unit?
     "force": 0.001,  # unit?
     "gravity": 0.0025,  # unit?
-    "min_position_start": -0.6,
-    "max_position_start": -0.4,
-    "min_velocity_start": 0.0,
-    "max_velocity_start": 0.0,
+
 }
 
 CONTEXT_BOUNDS = {
-    "min_position": (-np.inf, np.inf, float),
-    "max_position": (-np.inf, np.inf, float),
-    "max_speed": (0, np.inf, float),
-    "goal_position": (-np.inf, np.inf, float),
-    "goal_velocity": (-np.inf, np.inf, float),
-    "force": (-np.inf, np.inf, float),
-    "gravity": (0, np.inf, float),
-    "min_position_start": (-np.inf, np.inf, float),
-    "max_position_start": (-np.inf, np.inf, float),
-    "min_velocity_start": (-np.inf, np.inf, float),
-    "max_velocity_start": (-np.inf, np.inf, float),
+    "min_position": (-jnp.inf, jnp.inf, float),
+    "max_position": (-jnp.inf, jnp.inf, float),
+    "max_speed": (0, jnp.inf, float),
+    "goal_position": (-jnp.inf, jnp.inf, float),
+    "goal_velocity": (-jnp.inf, jnp.inf, float),
+    "force": (-jnp.inf, jnp.inf, float),
+    "gravity": (0, jnp.inf, float),
+
 }
 
 
@@ -90,7 +84,7 @@ class CARLJaxMountainCarEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        self.env: CustomMountainCarEnv
+        self.env: CARLJaxMountainCarEnv
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]
@@ -103,11 +97,11 @@ class CARLJaxMountainCarEnv(CARLEnv):
         self.env.force = self.context["force"]
         self.env.gravity = self.context["gravity"]
 
-        self.low = np.array(
-            [self.env.min_position, -self.env.max_speed], dtype=np.float32
+        self.low = jnp.array(
+            [self.env.min_position, -self.env.max_speed], dtype=jnp.float32
         ).squeeze()
-        self.high = np.array(
-            [self.env.max_position, self.env.max_speed], dtype=np.float32
+        self.high = jnp.array(
+            [self.env.max_position, self.env.max_speed], dtype=jnp.float32
         ).squeeze()
 
         self.build_observation_space(self.low, self.high, CONTEXT_BOUNDS)
