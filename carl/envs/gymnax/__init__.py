@@ -1,4 +1,6 @@
-from carl.envs.gymnax.carl_jax_acrobot import CONTEXT_BOUNDS as CARLJaxAcrobotEnv_bounds  # noqa: F401
+from carl.envs.gymnax.carl_jax_acrobot import (  # noqa: F401
+    CONTEXT_BOUNDS as CARLJaxAcrobotEnv_bounds,
+)
 from carl.envs.gymnax.carl_jax_acrobot import (  # noqa: F401
     DEFAULT_CONTEXT as CARLJaxAcrobotEnv_defaults,
 )
