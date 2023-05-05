@@ -2,21 +2,21 @@
 defaults:
   - ../../algorithm/ppo
 
-env: CARLAnt
+env: CARLGrasp
 
-max_num_frames: 50_000_000
-replay_capacity: 5120
+max_num_frames: 600_000_000
+replay_capacity: 20480
 eval_episodes: 10
-eval_freq: 250_000
+eval_freq: 3_000_000
 
 learning_rate: 3e-4
 clip_lr: 1e-4
-gamma: 0.97
+gamma: 0.99
 pi_target_tau: 0.1
-entropy_regularizer_beta: 0.01
-batch_size: 2048
+entropy_regularizer_beta: 0.001
+batch_size: 256
 num_minibatches: 32
-num_updates: 4
+num_updates: 2
 
 network:
   width: 32

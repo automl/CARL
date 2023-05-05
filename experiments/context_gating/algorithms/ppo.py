@@ -11,12 +11,17 @@ from carl.envs.classic_control.carl_pendulum import CARLPendulumEnv
 from rich import print as printr
 
 from ..networks.ppo import pi_func, v_func
+from ..networks.car_racing_ppo import pixel_pi_func, pixel_v_func
 from ..utils import evaluate, log_wandb, dump_func_dict
 
 
 def ppo(cfg, env, eval_env):
-    func_pi = pi_func(cfg, env)
-    func_v = v_func(cfg, env)
+    if len(env.observation_space.low.shape) > 1:
+        func_pi = pixel_pi_func(cfg, env)
+        func_v = pixel_v_func(cfg, env)
+    else:
+        func_pi = pi_func(cfg, env)
+        func_v = v_func(cfg, env)
 
     # function approximators
     v = coax.V(func_v, env)
@@ -45,20 +50,24 @@ def ppo(cfg, env, eval_env):
                 raise ValueError("logp > 0", logp, a)
 
             s_next, r, done, info = env.step(a)
-
             # add transition to buffer
             tracer.add(s, a, r, done, logp)
             while tracer:
-                buffer.add(tracer.pop())
+                try:
+                    buffer.add(tracer.pop())
+                except:
+                    print(s, a, r, done, logp)
+                    stop
 
             # update
             if len(buffer) == buffer.capacity:
-                for _ in range(4 * buffer.capacity // cfg.batch_size):  # ~4 passes
+                for _ in range(cfg.num_minibatches * buffer.capacity // cfg.batch_size):  # ~4 passes
                     transition_batch = buffer.sample(batch_size=cfg.batch_size)
-                    metrics_v, td_error = simple_td.update(transition_batch, return_td_error=True)
-                    metrics_pi = ppo_clip.update(transition_batch, td_error)
-                    env.record_metrics(metrics_v)
-                    env.record_metrics(metrics_pi)
+                    for __ in range(cfg.num_updates):
+                        metrics_v, td_error = simple_td.update(transition_batch, return_td_error=True)
+                        metrics_pi = ppo_clip.update(transition_batch, td_error)
+                        env.record_metrics(metrics_v)
+                        env.record_metrics(metrics_pi)
 
                 buffer.clear()
                 pi_target.soft_update(pi, tau=cfg.pi_target_tau)

@@ -22,11 +22,14 @@ def dump_func_dict(locals_dict: Dict[str, Any]):
     return path
 
 
-def evaluate(pi, env, num_episodes):
+def evaluate(pi, env, num_episodes, context_id=None):
     returns = []
     for _ in tqdm(range(num_episodes)):
         ret = 0
-        s = env.reset()
+        if context_id is not None:
+            s = env.reset(context_id=context_id)
+        else:
+            s = env.reset()
 
         for t in range(env.cutoff):
             a = pi.mean(s)  # use mean for exploitation

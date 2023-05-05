@@ -274,7 +274,11 @@ class CARLEnv(Wrapper):
         """
         self.episode_counter += 1
         self.step_counter = 0
-        self._progress_instance()
+        if "context_id" in kwargs.keys():
+            print(kwargs["context_id"])
+            self.context = self.contexts[kwargs["context_id"]]
+        else:
+            self._progress_instance()
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)

@@ -2,24 +2,24 @@
 defaults:
   - ../../algorithm/ppo
 
-env: CARLAnt
+env: CARLVehicleRacingEnv
 
-max_num_frames: 50_000_000
-replay_capacity: 5120
+max_num_frames: 5_500_000
+replay_capacity: 1024
 eval_episodes: 10
 eval_freq: 250_000
 
 learning_rate: 3e-4
 clip_lr: 1e-4
-gamma: 0.97
+gamma: 0.99
 pi_target_tau: 0.1
-entropy_regularizer_beta: 0.01
-batch_size: 2048
-num_minibatches: 32
+entropy_regularizer_beta: 0.0
+batch_size: 256
+num_minibatches: 8
 num_updates: 4
 
 network:
-  width: 32
+  width: 256
 
 action_noise:
   type: null

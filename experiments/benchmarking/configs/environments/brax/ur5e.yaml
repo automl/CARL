@@ -2,19 +2,19 @@
 defaults:
   - ../../algorithm/ppo
 
-env: CARLAnt
+env: CARLUr5e
 
-max_num_frames: 50_000_000
+max_num_frames: 20_000_000
 replay_capacity: 5120
 eval_episodes: 10
-eval_freq: 250_000
+eval_freq: 100_000
 
-learning_rate: 3e-4
+learning_rate: 2e-4
 clip_lr: 1e-4
-gamma: 0.97
+gamma: 0.95
 pi_target_tau: 0.1
 entropy_regularizer_beta: 0.01
-batch_size: 2048
+batch_size: 1024
 num_minibatches: 32
 num_updates: 4
 
