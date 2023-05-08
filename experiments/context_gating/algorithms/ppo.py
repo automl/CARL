@@ -16,6 +16,14 @@ from ..utils import evaluate, log_wandb, dump_func_dict
 
 
 def ppo(cfg, env, eval_env):
+    # TODO: this condition should actually just be for car racing
+    display = None
+    if len(env.observation_space.low.shape) > 1:
+        print('Setting up virtual display')
+
+        import pyvirtualdisplay
+        display = pyvirtualdisplay.Display(visible=0, size=(1400, 900), color_depth=24)
+        display.start()
     if len(env.observation_space.low.shape) > 1:
         func_pi = pixel_pi_func(cfg, env)
         func_v = pixel_v_func(cfg, env)
@@ -53,11 +61,7 @@ def ppo(cfg, env, eval_env):
             # add transition to buffer
             tracer.add(s, a, r, done, logp)
             while tracer:
-                try:
-                    buffer.add(tracer.pop())
-                except:
-                    print(s, a, r, done, logp)
-                    stop
+                buffer.add(tracer.pop())
 
             # update
             if len(buffer) == buffer.capacity:
@@ -90,6 +94,8 @@ def ppo(cfg, env, eval_env):
         log_wandb(env)
     average_returns = evaluate(pi, eval_env, cfg.n_final_eval_episodes * cfg.context_sampler.n_samples)
     path = dump_func_dict(locals())
+    if display:
+        display.stop()
     return onp.mean(average_returns)
 
 # # pick environment
