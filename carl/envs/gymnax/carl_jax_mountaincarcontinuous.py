@@ -1,7 +1,9 @@
 from typing import Dict, List, Optional, Union
 
-import gymnasium.envs.classic_control as gccenvs
-import numpy as np
+import numpy as jnp
+from gymnax.environments.classic_control.continuous_mountain_car import (
+    ContinuousMountainCar,
+)
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -9,63 +11,35 @@ from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
+    "min_action": -1.0,
+    "max_action": 1.0,
     "min_position": -1.2,
     "max_position": 0.6,
     "max_speed": 0.07,
     "goal_position": 0.45,
     "goal_velocity": 0.0,
     "power": 0.0015,
-    # "gravity": 0.0025,  # currently hardcoded in step
-    "min_position_start": -0.6,
-    "max_position_start": -0.4,
-    "min_velocity_start": 0.0,
-    "max_velocity_start": 0.0,
+    "gravity": 0.0025,
 }
+
+
 CONTEXT_BOUNDS = {
-    "min_position": (-np.inf, np.inf, float),
-    "max_position": (-np.inf, np.inf, float),
-    "max_speed": (0, np.inf, float),
-    "goal_position": (-np.inf, np.inf, float),
-    "goal_velocity": (-np.inf, np.inf, float),
-    "power": (-np.inf, np.inf, float),
-    # "force": (-np.inf, np.inf),
-    # "gravity": (0, np.inf),
-    "min_position_start": (-np.inf, np.inf, float),  # TODO need to check these
-    "max_position_start": (-np.inf, np.inf, float),
-    "min_velocity_start": (-np.inf, np.inf, float),
-    "max_velocity_start": (-np.inf, np.inf, float),
+    "min_action": (-jnp.inf, jnp.inf, float),
+    "max_action:": (-jnp.inf, jnp.inf, float),
+    "min_position": (-jnp.inf, jnp.inf, float),
+    "max_position": (-jnp.inf, jnp.inf, float),
+    "max_speed": (0, jnp.inf, float),
+    "goal_position": (-jnp.inf, jnp.inf, float),
+    "goal_velocity": (-jnp.inf, jnp.inf, float),
+    "power": (-jnp.inf, jnp.inf, float),
+    "gravity": (0, jnp.inf, float),
 }
 
 
-class CustomMountainCarContinuousEnv(
-    gccenvs.continuous_mountain_car.Continuous_MountainCarEnv
-):
-    def __init__(self, goal_velocity: float = 0.0):
-        super(CustomMountainCarContinuousEnv, self).__init__(
-            goal_velocity=goal_velocity
-        )
-        self.min_position_start = -0.6
-        self.max_position_start = -0.4
-        self.min_velocity_start = 0.0
-        self.max_velocity_start = 0.0
-
-    def reset_state(self) -> np.ndarray:
-        return np.array(
-            [
-                self.np_random.uniform(
-                    low=self.min_position_start, high=self.max_position_start
-                ),  # sample start position
-                self.np_random.uniform(
-                    low=self.min_velocity_start, high=self.max_velocity_start
-                ),  # sample start velocity
-            ]
-        )
-
-
-class CARLMountainCarContinuousEnv(CARLEnv):
+class CARLJaxMountainCarContinuousEnv(CARLEnv):
     def __init__(
         self,
-        env: CustomMountainCarContinuousEnv = CustomMountainCarContinuousEnv(),
+        env: ContinuousMountainCar = ContinuousMountainCar(),
         contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = True,
@@ -115,7 +89,7 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        self.env: CustomMountainCarContinuousEnv
+        self.env: ContinuousMountainCar
         self.env.min_position = self.context["min_position"]
         self.env.max_position = self.context["max_position"]
         self.env.max_speed = self.context["max_speed"]
@@ -129,11 +103,11 @@ class CARLMountainCarContinuousEnv(CARLEnv):
         # self.env.force = self.context["force"]
         # self.env.gravity = self.context["gravity"]
 
-        self.low = np.array(
-            [self.env.min_position, -self.env.max_speed], dtype=np.float32
+        self.low = jnp.array(
+            [self.env.min_position, -self.env.max_speed], dtype=jnp.float32
         ).squeeze()
-        self.high = np.array(
-            [self.env.max_position, self.env.max_speed], dtype=np.float32
+        self.high = jnp.array(
+            [self.env.max_position, self.env.max_speed], dtype=jnp.float32
         ).squeeze()
 
         self.build_observation_space(self.low, self.high, CONTEXT_BOUNDS)
