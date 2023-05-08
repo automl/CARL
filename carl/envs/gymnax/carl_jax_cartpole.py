@@ -27,7 +27,6 @@ CONTEXT_BOUNDS = {
 }
 
 
-
 class CARLJaxCartPoleEnv(CARLEnv):
     def __init__(
         self,

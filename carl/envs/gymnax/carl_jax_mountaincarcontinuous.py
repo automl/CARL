@@ -32,7 +32,7 @@ CONTEXT_BOUNDS = {
     "goal_position": (-jnp.inf, jnp.inf, float),
     "goal_velocity": (-jnp.inf, jnp.inf, float),
     "power": (-jnp.inf, jnp.inf, float),
-    "gravity": (0, jnp.inf),
+    "gravity": (0, jnp.inf, float),
 }
 
 
