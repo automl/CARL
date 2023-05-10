@@ -42,8 +42,16 @@ def ppo(cfg, env, eval_env):
     policy_reg = coax.regularizers.EntropyRegularizer(pi, beta=cfg.entropy_regularizer_beta)
 
     # specify how to update policy and value function
-    ppo_clip = coax.policy_objectives.PPOClip(pi, regularizer=policy_reg, optimizer=optax.adam(cfg.clip_lr))
-    simple_td = coax.td_learning.SimpleTD(v, optimizer=optax.adam(cfg.learning_rate))
+    optimizer = optax.chain(
+        optax.clip(0.8),
+        optax.adam(cfg.clip_lr)
+        )
+    ppo_clip = coax.policy_objectives.PPOClip(pi, regularizer=policy_reg, optimizer=optimizer)
+    optimizer = optax.chain(
+        optax.clip(0.8),
+        optax.adam(cfg.learning_rate)
+        )
+    simple_td = coax.td_learning.SimpleTD(v, optimizer=optimizer)
 
     # specify how to trace the transitions
     tracer = coax.reward_tracing.NStep(n=cfg.n_step, gamma=cfg.gamma)

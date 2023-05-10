@@ -32,10 +32,17 @@ def pixel_pi_func(cfg, env):
                 #hk.Reshape((*env.action_space.shape, 2)),
             )
         )
-        x = pi_seq(x).reshape((*env.action_space.shape, 2))
+        x = pi_seq(x)
+        if len(x.shape) == 1:
+            x = x[onp.newaxis, ...]
+        x = x.reshape((x.shape[0],*env.action_space.shape, 2)).squeeze()
+
         # continuous action space
-        mu, logvar = x[...,0], x[...,1]
-        ret = {"mu": mu[onp.newaxis, :], "logvar": logvar[onp.newaxis, :]}
+        mu, logvar = x[...,0].squeeze(), x[...,1].squeeze(),
+        if len(mu.shape) == 1:
+            mu = mu[onp.newaxis, :]
+            logvar = logvar[onp.newaxis, :]
+        ret = {"mu": mu, "logvar": logvar}
 
         # discrete action space
         # ret = {'logits': seq(S)}  # logits shape: (batch_size, num_actions)
@@ -72,6 +79,8 @@ def pixel_v_func(cfg, env):
             )
         )
         x = v_seq(x)
+        if len(x.shape) > 1:
+            x = x.squeeze()
         return x
 
     return v

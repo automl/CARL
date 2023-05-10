@@ -9,14 +9,15 @@ replay_capacity: 5120
 eval_episodes: 10
 eval_freq: 100_000
 
-learning_rate: 2e-4
-clip_lr: 1e-4
+learning_rate: 5e-5
+clip_lr: 5e-5
 gamma: 0.95
 pi_target_tau: 0.1
 entropy_regularizer_beta: 0.01
 batch_size: 1024
 num_minibatches: 32
 num_updates: 4
+reward_scale: 100
 
 network:
   width: 32
