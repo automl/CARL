@@ -108,11 +108,11 @@ class CARLFetch(CARLEnv):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(
+        self.env._env.sys = brax.System(
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
-        self.env.target_idx = self.env.sys.body.index["Target"]
-        self.env.torso_idx = self.env.sys.body.index["Torso"]
+        self.env.target_idx = self.env._env.sys.body.index["Target"]
+        self.env.torso_idx = self.env._env.sys.body.index["Torso"]
         self.env.target_radius = self.context["target_radius"]
         self.env.target_distance = self.context["target_distance"]
 
