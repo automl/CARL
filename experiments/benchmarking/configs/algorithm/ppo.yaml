@@ -10,6 +10,8 @@ replay_capacity: 512
 pi_target_tau: 0.1
 entropy_regularizer_beta: 0.01
 batch_size: 32
+num_minibatches: 4
+num_updates: 1
 
 network:
   width: 8

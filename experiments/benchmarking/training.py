@@ -241,6 +241,10 @@ def train(cfg: DictConfig):
     # ----------------------------------------------------------------------
     EnvCls = partial(getattr(envs, cfg.env), **cfg.carl)
     env = EnvCls(contexts=contexts)
+    if 'reward_scale' in cfg.keys():
+        def func(r):
+            return r*cfg.reward_scale
+        env = gym.wrappers.TransformReward(env, func)
     eval_env = EnvCls(contexts=eval_contexts)
     env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
     key = jax.random.PRNGKey(cfg.seed)

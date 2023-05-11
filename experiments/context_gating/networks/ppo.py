@@ -110,17 +110,18 @@ def v_func(cfg, env):
         else:
             X = S
             state_seq = hk.Sequential(
-                (
-                    hk.Linear(cfg.network.width),
-                    hk.LayerNorm(-1, create_scale=True, create_offset=True),
-                    jax.nn.tanh,
-                    hk.Linear(cfg.network.width),
-                    jax.nn.relu,
-                    hk.Linear(1),
-                    jnp.ravel,
+                    (
+                        hk.Linear(cfg.network.width),
+                        hk.LayerNorm(-1, create_scale=True, create_offset=True),
+                        jax.nn.tanh,
+                        hk.Linear(cfg.network.width),
+                        jax.nn.relu,
+                        hk.Linear(1),
+                        jnp.ravel,
+                    )
                 )
-            )
             x = state_seq(X)
         return x
 
     return v
+
