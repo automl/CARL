@@ -2,7 +2,7 @@ import numpy as np
 from torch import Tensor
 
 try:
-    from carl.envs.mario.toad_gan import generate_initial_noise
+    from carl.envs.mario.pcg_smb_env import generate_initial_noise
 except FileNotFoundError:
 
     def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
