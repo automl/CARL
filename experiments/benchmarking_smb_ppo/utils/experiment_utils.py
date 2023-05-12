@@ -1,15 +1,30 @@
 import random
 import subprocess
+from typing import Dict, Union
 
 import numpy as np
 import torch
 import torch.backends.cudnn
+
 
 def set_seed(seed: int, torch_deterministic: bool):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.backends.cudnn.deterministic = torch_deterministic
+
+
+def obs_to_tensor(obs: Union[Dict, torch.Tensor], device) -> Union[Dict, torch.Tensor]:
+    if isinstance(obs, dict):
+        return {k: obs_to_tensor(v, device) for k, v in obs.items()}
+    else:
+        return torch.tensor(obs, device=device)
+    
+def add_batch_dim(obs: Union[Dict, torch.Tensor]) -> Union[Dict, torch.Tensor]:
+    if isinstance(obs, dict):
+        return {k: add_batch_dim(v) for k, v in obs.items()}
+    else:
+        return obs.unsqueeze(0)
 
 
 def run_cmd(cmd):

@@ -7,6 +7,7 @@ import wandb
 from gym.wrappers.autoreset import AutoResetWrapper
 from gym.wrappers.record_episode_statistics import RecordEpisodeStatistics
 from gym.wrappers.record_video import RecordVideo
+from experiments.benchmarking_smb_ppo.utils.experiment_utils import add_batch_dim, obs_to_tensor
 from modules.ppo import PPOAgent
 from omegaconf import DictConfig
 from tqdm import tqdm
@@ -22,23 +23,23 @@ def evaluate(
     avg_reward = 0.0
     avg_completed = 0.0
     for i in tqdm(range(cfg.eval_env.episodes)):
-        obs = torch.tensor(
+        obs = obs_to_tensor(
             env.reset(
                 options=dict(current_level_idx=i)
                 if cfg.eval_env.capture_all_episodes
                 else None
-            )
-        ).to(cfg.device)
+            ), cfg.device
+        )
         recording = env.recording
         done = False
         info = None
         while not done:
             with torch.no_grad():
-                action, *_ = agent.get_action_and_value(obs[None])
+                action, *_ = agent.get_action_and_value(add_batch_dim(obs))
             next_obs, reward, done, info = env.step(
                 int(action.squeeze().cpu().numpy())
             )
-            obs = torch.tensor(next_obs).to(cfg.device)
+            obs = obs_to_tensor(next_obs, cfg.device)
             avg_reward += reward
         if recording:
             video_path = os.path.join(
