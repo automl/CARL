@@ -1,0 +1,15 @@
+# @package _global_
+defaults:
+  - override /hydra/launcher: submitit_slurm
+
+hydra:
+  launcher:
+    partition: gpu_normal
+    gres: gpu:1
+    mem_gb: 24
+    cpus_per_task: 6
+    timeout_min: 1440 # 24h
+  run:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}

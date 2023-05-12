@@ -172,7 +172,7 @@ def get_contexts(cfg: DictConfig) -> Contexts:
 @hydra.main("./configs", "base", version_base="1.1")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    if (
+    if not cfg.wandb.debug and (
         not check_config_valid(cfg)
         or check_wandb_exists(
             dict_cfg,
@@ -191,7 +191,7 @@ def train(cfg: DictConfig):
                 "algorithm",
             ],
         )
-    ) and not cfg.wandb.debug:
+    ):
         print(f"Skipping run with cfg {dict_cfg}")
         return
     print(cfg)

@@ -3,15 +3,30 @@ defaults:
   - ../../algorithm/sac
 
 env: CARLBipedalWalkerEnv
-max_num_frames: 500000
+max_num_frames: 150000
 
-gamma: 0.98
-q_targ_tau: 0.02
-pi_targ_tau: 0.02
-pi_update_freq: 2
+# SAC HPs
+# gamma: 0.98
+# q_targ_tau: 0.02
+# pi_targ_tau: 0.02
+# pi_update_freq: 2
 
-learning_rate: 7.3e-4
-batch_size: 256
+# learning_rate: 7.3e-4
+# batch_size: 256
+
+# network:
+#   width: 256
+
+# PPO HPs (from zoo)
+learning_rate: 1e-3
+clip_lr: 1e-4
+gamma: 0.9
+replay_capacity: 512
+pi_target_tau: 0.1
+entropy_regularizer_beta: 0.01
+batch_size: 32
+num_minibatches: 4
+num_updates: 1
 
 network:
-  width: 256
+  width: 8

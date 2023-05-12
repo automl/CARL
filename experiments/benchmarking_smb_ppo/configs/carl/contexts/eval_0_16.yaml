@@ -1,0 +1,86 @@
+# @package _global_
+
+eval_env:
+  episodes: 16
+
+eval_contexts:
+    0:
+        level_index: 0
+        noise: 0
+        mario_state: 0
+        mario_inertia: 0.89
+    1:
+        level_index: 0
+        noise: 1
+        mario_state: 0
+        mario_inertia: 0.89
+    2:
+        level_index: 0
+        noise: 2
+        mario_state: 0
+        mario_inertia: 0.89
+    3:
+        level_index: 0
+        noise: 3
+        mario_state: 0
+        mario_inertia: 0.89
+    4:
+        level_index: 0
+        noise: 4
+        mario_state: 0
+        mario_inertia: 0.89
+    5:
+        level_index: 0
+        noise: 5
+        mario_state: 0
+        mario_inertia: 0.89
+    6:
+        level_index: 0
+        noise: 6
+        mario_state: 0
+        mario_inertia: 0.89
+    7:
+        level_index: 0
+        noise: 7
+        mario_state: 0
+        mario_inertia: 0.89
+    8:
+        level_index: 0
+        noise: 8
+        mario_state: 0
+        mario_inertia: 0.89
+    9:
+        level_index: 0
+        noise: 9
+        mario_state: 0
+        mario_inertia: 0.89
+    10:
+        level_index: 0
+        noise: 10
+        mario_state: 0
+        mario_inertia: 0.89
+    11:
+        level_index: 0
+        noise: 11
+        mario_state: 0
+        mario_inertia: 0.89
+    12:
+        level_index: 0
+        noise: 12
+        mario_state: 0
+        mario_inertia: 0.89
+    13:
+        level_index: 0
+        noise: 13
+        mario_state: 0
+        mario_inertia: 0.89
+    14:
+        level_index: 0
+        noise: 14
+        mario_state: 0
+        mario_inertia: 0.89
+    15:
+        level_index: 0
+        noise: 15
+        mario_state: 0
+        mario_inertia: 0.89

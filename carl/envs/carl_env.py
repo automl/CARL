@@ -497,12 +497,12 @@ class CARLEnv(Wrapper):
             else self.env.observation_space.low  # type: ignore [attr-defined]
         )
         obs_shape = obs_space.shape
-        if len(obs_shape) == 3 and self.hide_context:
+        if len(obs_shape) == 3 or self.hide_context:
             # do not touch pixel state
             pass
         else:
             if env_lower_bounds is None and env_upper_bounds is None:
-                obs_dim = obs_shape[0]
+                obs_dim = obs_shape[0] if len(obs_shape) == 1 else obs_shape
                 env_lower_bounds = -np.inf * np.ones(obs_dim)
                 env_upper_bounds = np.inf * np.ones(obs_dim)
 

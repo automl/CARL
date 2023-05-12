@@ -3,3 +3,10 @@
 experiment: hidden_on_variations
 n_eval_episodes_per_context: 10
 visibility: hidden  # the visibility which is allowed to be evaluated
+
+
+hydra:
+  run:
+    dir: runs/hidden_on_variations/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: runs/hidden_on_variations/${now:%Y-%m-%d}/${now:%H-%M-%S}

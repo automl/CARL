@@ -8,6 +8,9 @@ pip install -e .[box2d,brax,dm_control,mario,dev,docs]
 pip install -r experiments/requirements_experiments.txt
 ```
 
+If you want to tune environments, please install the [hydra smac sweeper](https://github.com/automl/hydra-smac-sweeper).
+
+
 ## Running Experiments
 - Optimality Gap: `notes/optimality_gap.md`
 - Context Efficiency: `notes/context_efficiency.md`

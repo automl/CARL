@@ -396,3 +396,11 @@ Acrobot
  ```bash
   python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=glob(*)' 'experiment=benchmarking_u_wider' '+context_sampling=uniform_10' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[],[link_length_1],[link_mass_2]' 'context_sampler.uniform_bounds_rel=[1, 2.5]' -m
  ```
+
+
+ ## Finalization
+ MountainCar
+ hidden, vary nothing
+  ```bash
+  python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden' 'experiment=benchmarking_standard' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[]' -m
+ ```
