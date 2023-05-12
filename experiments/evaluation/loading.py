@@ -66,7 +66,17 @@ def load_policy(env, cfg: DictConfig, weights_path: Union[str, Path]):
                 ),
             )
             policy.params = func_dict["pi"]["params"]
-            policy.function_state = func_dict["pi"]["function_state"]    
+            policy.function_state = func_dict["pi"]["function_state"]  
+    elif cfg.algorithm == "ppo":
+        from experiments.context_gating.networks.ppo import pi_func, v_func
+        from experiments.context_gating.networks.car_racing_ppo import pixel_pi_func, pixel_v_func
+        if len(env.observation_space.low.shape) > 1:
+            func_pi = pixel_pi_func(cfg, env)
+        else:
+            func_pi = pi_func(cfg, env)
+        policy = coax.Policy(func_pi, env)
+        policy.params = func_dict["pi"]["params"]
+        policy.function_state = func_dict["pi"]["function_state"] 
     else:
         raise NotImplementedError(f"Adjust loading for {cfg.algorithm}.")
     
