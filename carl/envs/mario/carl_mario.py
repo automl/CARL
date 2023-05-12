@@ -111,7 +111,9 @@ class CARLMarioEnv(CARLEnv):
         self.env.levels = [load_level(level) for level in self.levels_per_context[self.context_key]]
 
     def build_context_adaptive_state(self, state: np.ndarray, **kwargs):
-        return dict(state=state, context=self.context["noise"])
+        if not self.hide_context:
+            return dict(state=state, context=self.context["noise"])
+        return state
     
     def step(self, action):
         state, reward, done, info = self.env.step(action)
