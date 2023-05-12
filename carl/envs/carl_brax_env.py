@@ -51,8 +51,7 @@ class CARLBraxWrapper(Wrapper):
             raise ValueError(
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
-            )
-        
+            )        
 
     @property
     def observation_size(self) -> int:
@@ -111,7 +110,7 @@ class CARLBraxWrapper(Wrapper):
                 }
                 state["obs"] = obs
             else:
-                state["obs"] = jp.concatenate([state["obs"]], [self.context[k] for k in self.state_context_features])
+                state.obs = jp.concatenate([state.obs, jp.array([self.context[k] for k in self.state_context_features])])
         return state
 
 
@@ -145,11 +144,12 @@ DEFAULT_CONTEXT = {
 #     "torso_mass": (0.1, np.inf, float),
 # }
 
-from brax.envs.ant import Ant
+from brax.envs.ant import Ant, _SYSTEM_CONFIG_SPRING
 import copy
 import brax
 from google.protobuf import json_format, text_format
 import json
+from google.protobuf.json_format import MessageToDict
 
 class CARLAnt(CARLBraxWrapper):
     def __init__(
@@ -170,6 +170,10 @@ class CARLAnt(CARLBraxWrapper):
             context_selector_kwargs=context_selector_kwargs
         )
 
+        self.base_config = MessageToDict(
+            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
+        )
+
     def _update_context(self) -> None:
         self.env: Ant
         config = copy.deepcopy(self.base_config)
@@ -185,7 +189,7 @@ class CARLAnt(CARLBraxWrapper):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env._env.sys = brax.System(
+        self.env.sys = brax.System(
             json_format.Parse(json.dumps(config), brax.Config())
         )
         
