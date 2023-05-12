@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Dict, List, Optional, Union
 
 import gym
@@ -9,10 +10,9 @@ from carl.envs.mario.carl_mario_definitions import (
     INITIAL_HEIGHT,
     INITIAL_WIDTH,
 )
-from carl.envs.mario.mario_env import MarioEnv
-from carl.envs.mario.toad_gan import generate_level
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
+from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
 
 
 class CARLMarioEnv(CARLEnv):
@@ -50,13 +50,13 @@ class CARLMarioEnv(CARLEnv):
             context_selector_kwargs=context_selector_kwargs,
             context_mask=context_mask,
         )
-        self.levels: List[str] = []
+        self.levels_per_context: Dict[str, List[str]] = defaultdict(list)
         self._update_context()
 
     def _update_context(self) -> None:
         self.env: MarioEnv
-        if not self.levels:
-            for context in self.contexts.values():
+        if not self.levels_per_context:
+            for context_key, context in self.contexts.items():
                 level = generate_level(
                     width=INITIAL_WIDTH,
                     height=INITIAL_HEIGHT,
@@ -64,10 +64,10 @@ class CARLMarioEnv(CARLEnv):
                     initial_noise=context["noise"],
                     filter_unplayable=True,
                 )
-                self.levels.append(level)
+                self.levels_per_context[context_key].append(level)
         self.env.mario_state = self.context["mario_state"]
         self.env.mario_inertia = self.context["mario_inertia"]
-        self.env.levels = [self.levels[self.context_index]]
+        self.env.levels = [self.levels_per_context[self.context_key]]
 
     def _log_context(self) -> None:
         if self.logger:

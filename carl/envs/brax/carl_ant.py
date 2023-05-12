@@ -105,7 +105,7 @@ class CARLAnt(CARLEnv):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(
+        self.env._env.sys = brax.System(
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
 

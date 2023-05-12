@@ -107,13 +107,13 @@ class CARLGrasp(CARLEnv):
         for a in range(len(config["actuators"])):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(
+        self.env._env.sys = brax.System(
             json_format.Parse(json.dumps(config, cls=NumpyEncoder), brax.Config())
         )
-        self.env.object_idx = self.env.sys.body.index["Object"]
-        self.env.target_idx = self.env.sys.body.index["Target"]
-        self.env.hand_idx = self.env.sys.body.index["HandThumbProximal"]
-        self.env.palm_idx = self.env.sys.body.index["HandPalm"]
+        self.env.object_idx = self.env._env.sys.body.index["Object"]
+        self.env.target_idx = self.env._env.sys.body.index["Target"]
+        self.env.hand_idx = self.env._env.sys.body.index["HandThumbProximal"]
+        self.env.palm_idx = self.env._env.sys.body.index["HandPalm"]
         self.env.target_radius = self.context["target_radius"]
         self.env.target_distance = self.context["target_distance"]
         self.env.target_height = self.context["target_height"]
