@@ -83,6 +83,7 @@ class MarioEnv(gym.Env):
         self._obs = np.zeros(shape=self.observation_space.shape, dtype=np.uint8)
         self.current_level_idx = 0
         self.frame_size = -1
+        self.gateway = None
         self.port = port
         self._episode_steps = 0
         self.game: Optional[MarioGame] = None
@@ -90,7 +91,7 @@ class MarioEnv(gym.Env):
         self.mario_inertia = 0.89
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None, **kwargs
     ):
         self._reset_obs()
         if self.game is None:
@@ -107,9 +108,12 @@ class MarioEnv(gym.Env):
         buffer = self._receive()
         frame = self._read_frame(buffer)
         self._update_obs(frame)
-        return self._obs.copy(), {"current_level_idx": self.current_level_idx}
+        return_info = kwargs.get("return_info", False)
+        if return_info:
+            return self._obs.copy(), {"current_level_idx": self.current_level_idx}
+        return self._obs.copy()
 
-    def step(self, action: int):
+    def step(self, action: int, **kwargs):
         assert self.game is not None
         if self.sticky_action_probability != 0.0:
             if (
@@ -149,8 +153,7 @@ class MarioEnv(gym.Env):
         return (
             self._obs.copy(),
             reward if not self.sparse_rewards else int(completionPercentage == 1.0),
-            terminated,
-            truncated,
+            terminated or truncated,
             info,
         )
 

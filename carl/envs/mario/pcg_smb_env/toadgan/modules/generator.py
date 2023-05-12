@@ -14,7 +14,6 @@ class Level_GeneratorConcatSkip2CleanAdd(nn.Module):
 
     def __init__(self, opt: Namespace):
         super().__init__()
-        self.is_cuda = torch.cuda.is_available()
         N = int(opt.nfc)
         self.head = ConvBlock(opt.nc_current, N, (3, 3), opt.padd_size, 1)
         self.body = nn.Sequential()

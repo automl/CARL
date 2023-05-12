@@ -1,7 +1,6 @@
 from collections import defaultdict
+import os
 from typing import Dict, List, Optional, Union
-
-import gym
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -9,7 +8,9 @@ from carl.envs.mario.carl_mario_definitions import (
     DEFAULT_CONTEXT,
     INITIAL_HEIGHT,
     INITIAL_WIDTH,
+    CONTEXT_BOUNDS  # noqa: F401
 )
+from carl.envs.mario.pcg_smb_env.utils import load_level
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
@@ -18,7 +19,7 @@ from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
 class CARLMarioEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = MarioEnv(levels=[]),
+        env=MarioEnv(levels=[]),
         contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
@@ -51,27 +52,35 @@ class CARLMarioEnv(CARLEnv):
             context_mask=context_mask,
         )
         self.levels_per_context: Dict[str, List[str]] = defaultdict(list)
+        os.makedirs("levels", exist_ok=True)
         self._update_context()
 
+    def _check_if_level_exists(self, context_hash: str):
+        """
+        Check if the level has already been generated in the levels directory.
+        """
+        return f"{context_hash}.txt" in os.listdir("levels")
+
     def _update_context(self) -> None:
-        self.env: MarioEnv
-        if not self.levels_per_context:
+        if len(self.levels_per_context) == 0:
             for context_key, context in self.contexts.items():
-                level = generate_level(
+                context_hash = f"{context_key}_" + "-".join([f"{k}={v}" for k, v in context.items()])
+                level_path = os.path.join("levels", f"{context_hash}.txt")
+                self.levels_per_context[context_key].append(
+                    level_path
+                )
+                if self._check_if_level_exists(context_hash):
+                    continue
+                level, initial_noise = generate_level(
                     width=INITIAL_WIDTH,
                     height=INITIAL_HEIGHT,
                     level_index=context["level_index"],
-                    initial_noise=context["noise"],
+                    seed=context["noise"],
                     filter_unplayable=True,
                 )
-                self.levels_per_context[context_key].append(level)
+                self.contexts[context_key]["noise"] = initial_noise
+                with open(level_path, "w") as f:
+                    f.write(level)
         self.env.mario_state = self.context["mario_state"]
         self.env.mario_inertia = self.context["mario_inertia"]
-        self.env.levels = [self.levels_per_context[self.context_key]]
-
-    def _log_context(self) -> None:
-        if self.logger:
-            loggable_context = {k: v for k, v in self.context.items() if k != "noise"}
-            self.logger.write_context(
-                self.episode_counter, self.total_timestep_counter, loggable_context
-            )
+        self.env.levels = [load_level(level) for level in self.levels_per_context[self.context_key]]

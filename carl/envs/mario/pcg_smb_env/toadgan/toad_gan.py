@@ -10,6 +10,7 @@ from torch import Tensor
 from .generate_sample import generate_sample, generate_spatial_noise
 from .reachabillity import reachability_map
 
+
 @dataclass
 class TOADGAN:
     def __init__(
@@ -54,21 +55,21 @@ def load_generator(level_index: int) -> TOADGAN:
     gen_path = os.path.join(GENERATOR_DIR, GENERATOR_PATHS[level_index])
     reals = torch.load(
         "%s/reals.pth" % gen_path,
-        map_location="cuda:0" if torch.cuda.is_available() else "cpu",
+        map_location="cpu",
     )
     Zs = torch.load(
         "%s/noise_maps.pth" % gen_path,
-        map_location="cuda:0" if torch.cuda.is_available() else "cpu",
+        map_location="cpu",
     )
     NoiseAmp = torch.load(
         "%s/noise_amplitudes.pth" % gen_path,
-        map_location="cuda:0" if torch.cuda.is_available() else "cpu",
+        map_location="cpu",
     )
     token_list = torch.load("%s/token_list.pth" % gen_path)
     num_layers = torch.load("%s/num_layer.pth" % gen_path)
     Gs = torch.load(
         "%s/generators.pth" % gen_path,
-        map_location="cuda:0" if torch.cuda.is_available() else "cpu",
+        map_location="cpu",
     )
     return TOADGAN(
         Gs=Gs,
@@ -84,15 +85,17 @@ def generate_level(
     width: int,
     height: int,
     level_index: int,
-    initial_noise: Optional[torch.Tensor] = None,
+    seed: int,
     filter_unplayable: bool = True,
-) -> str:
+):
     toad_gan = load_generator(level_index)
     playable = False
     level = None
+    initial_noise = None
     tries = 0
     while not playable:
         tries += 1
+        initial_noise = generate_initial_noise(width, height, level_index, seed)
         level = generate_sample(
             **vars(toad_gan),
             scale_h=width / toad_gan.original_width,
@@ -105,11 +108,11 @@ def generate_level(
             )
         else:
             playable = True
-    assert level
-    return "".join(level)
+    assert level and isinstance(initial_noise, Tensor)
+    return "".join(level), initial_noise.numpy()
 
 
-def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
+def generate_initial_noise(width: int, height: int, level_index: int, seed: int) -> Tensor:
     toad_gan = load_generator(level_index)
     base_noise_map = toad_gan.noise_maps[0]
     nzx = (
@@ -123,5 +126,5 @@ def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
         / toad_gan.original_width
     )
     noise_shape = (1, len(toad_gan.token_list), int(round(nzx)), int(round(nzy)))
-    noise = generate_spatial_noise(noise_shape)
+    noise = generate_spatial_noise(noise_shape, seed=seed)
     return noise

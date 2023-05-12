@@ -1,0 +1,8 @@
+# @package _global_
+
+context_sampler:
+  env_name: CARLMarioEnv
+  context_feature_names: []
+  seed: ${seed}
+  n_samples: 1
+  sigma_rel: 0.1

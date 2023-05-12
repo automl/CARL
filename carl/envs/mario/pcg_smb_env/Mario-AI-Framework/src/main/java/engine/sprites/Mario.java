@@ -26,8 +26,8 @@ public class Mario extends MarioSprite {
     // stats
     private float xJumpStart = -100;
 
-    private final float GROUND_INERTIA = 0.89f;
-    private final float AIR_INERTIA = 0.89f;
+    private float GROUND_INERTIA = 0.89f;
+    private float AIR_INERTIA = 0.89f;
     private final int POWERUP_TIME = 3;
 
     public Mario(boolean visuals, float x, float y) {
@@ -39,6 +39,12 @@ public class Mario extends MarioSprite {
         if (visuals) {
             graphics = new MarioImage(Assets.smallMario, 0);
         }
+    }
+
+    public Mario(boolean visuals, float x, float y, float inertia) {
+        this(visuals, x, y);
+        this.AIR_INERTIA = inertia;
+        this.GROUND_INERTIA = inertia;
     }
 
     @Override
