@@ -18,6 +18,7 @@ batch_size: 256
 num_minibatches: 32
 num_updates: 4
 reward_scale: 5
+clip_range: 0.8
 
 network:
   width: 32

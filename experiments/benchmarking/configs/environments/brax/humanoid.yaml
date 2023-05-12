@@ -17,6 +17,7 @@ entropy_regularizer_beta: 0.001
 batch_size: 1024
 num_minibatches: 32
 num_updates: 8
+clip_range: 0.8
 
 network:
   width: 32

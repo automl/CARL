@@ -43,12 +43,12 @@ def ppo(cfg, env, eval_env):
 
     # specify how to update policy and value function
     optimizer = optax.chain(
-        optax.clip(0.8),
+        optax.clip(cfg.clip_range),
         optax.adam(cfg.clip_lr)
         )
     ppo_clip = coax.policy_objectives.PPOClip(pi, regularizer=policy_reg, optimizer=optimizer)
     optimizer = optax.chain(
-        optax.clip(0.8),
+        optax.clip(cfg.clip_range),
         optax.adam(cfg.learning_rate)
         )
     simple_td = coax.td_learning.SimpleTD(v, optimizer=optimizer)
