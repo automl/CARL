@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from modules.common import layer_init
 from torch.distributions.categorical import Categorical
-
+from gym import spaces
 
 class ResidualBlock(nn.Module):
     def __init__(self, channels):
@@ -56,7 +56,12 @@ class PPOAgent(nn.Module):
     def __init__(self, envs):
         super().__init__()
         # TODO(frederik): handle dict observation space with context
-        shape = envs.single_observation_space.shape
+        if isinstance(envs.single_observation_space, spaces.Dict):
+            shape = envs.single_observation_space["state"].shape
+            self.context_shape = envs.single_observation_space["context"].shape
+        else:
+            shape = envs.single_observation_space.shape
+            self.context_shape = None
         conv_seqs = []
         for out_channels in [16, 32, 32]:
             conv_seq = ConvSequence(shape, out_channels)
@@ -68,19 +73,48 @@ class PPOAgent(nn.Module):
             nn.Linear(in_features=shape[0] * shape[1] * shape[2], out_features=256),
             nn.ReLU(),
         ]
+        if self.context_shape is not None:
+            shape = self.context_shape
+            context_conv_seqs = []
+            for out_channels in [16, 32, 32]:
+                conv_seq = ConvSequence(shape, out_channels)
+                shape = conv_seq.get_output_shape()
+                context_conv_seqs.append(conv_seq)
+            self.context_embedding = nn.Sequential(
+                *context_conv_seqs,
+                nn.Flatten(),
+                nn.ReLU(),
+                nn.Linear(in_features=shape[0] * shape[1] * shape[2], out_features=256)
+            )
         self.network = nn.Sequential(*conv_seqs)
         self.actor = layer_init(nn.Linear(256, envs.single_action_space.n), std=0.01)
         self.critic = layer_init(nn.Linear(256, 1), std=1)
 
     def forward(self, x):
-        # TODO(frederik): map context tensor to vector and concat to x
         return self.get_action_and_value(x)
 
     def get_value(self, x):
-        return self.critic(self.network(x / 255.0))
+        if isinstance(x, dict):
+            state = x["state"]
+            context = x["context"].float()
+        else:
+            state = x
+            context = None
+        hidden = self.network(state / 255.0)
+        if self.context_shape is not None:
+            hidden = hidden + self.context_embedding(context)
+        return self.critic(hidden)
 
     def get_action_and_value(self, x, action=None):
-        hidden = self.network(x / 255.0)
+        if isinstance(x, dict):
+            state = x["state"]
+            context = x["context"].float()
+        else:
+            state = x
+            context = None
+        hidden = self.network(state / 255.0)
+        if self.context_shape is not None:
+            hidden = hidden + self.context_embedding(context)
         logits = self.actor(hidden)
         probs = Categorical(logits=logits)
         if action is None:

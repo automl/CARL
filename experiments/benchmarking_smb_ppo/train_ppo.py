@@ -18,6 +18,7 @@ from utils.context_utils import get_contexts
 from utils.env_utils import make_env
 from utils.evaluate import evaluate
 from utils.experiment_utils import (
+    obs_to_tensor,
     set_seed,
 )
 from pyvirtualdisplay.display import Display
@@ -57,15 +58,19 @@ def main(cfg: DictConfig):
     logger.info(f"Train contexts: {train_contexts}")
     logger.info(f"Eval contexts: {eval_contexts}")
 
-    envs = make_env(**cfg.env, contexts=train_contexts)
+    envs = make_env(**cfg.env, contexts=train_contexts, carl_kwargs=cfg.carl)
     eval_env = make_env(
         id=cfg.eval_env.id,
         num_envs=1,
         capture_video=cfg.eval_env.capture_video,
         visual=True,
         sticky_action_probability=0.0,
-        contexts=eval_contexts
+        contexts=eval_contexts,
+        carl_kwargs=cfg.carl
     )
+    
+    logger.info(f"Observation space: {envs.single_observation_space}")
+    logger.info(f"Action space: {envs.single_action_space}")
 
     def close_all():
         envs.close()
@@ -74,9 +79,11 @@ def main(cfg: DictConfig):
     atexit.register(close_all)
 
     agent = PPOAgent(envs).to(device)
-    summary(
-        agent, (cfg.minibatch_size, *envs.single_observation_space.shape), device=device
-    )
+    if cfg.carl.hide_context:
+        summary(
+            agent, (cfg.minibatch_size, *envs.single_observation_space.shape), device=device
+        )
+    
     optimizer = optim.Adam(agent.parameters(), lr=cfg.optimizer.lr)
 
     if cfg.restore is not None:
@@ -99,9 +106,23 @@ def main(cfg: DictConfig):
         step=global_step,
     )
 
-    obs = torch.zeros(
-        (cfg.num_steps, cfg.env.num_envs) + envs.single_observation_space.shape
-    ).to(device)
+    if cfg.carl.hide_context:
+        obs = torch.zeros(
+            (cfg.num_steps, cfg.env.num_envs) + envs.single_observation_space.shape
+        ).to(device)
+    else:
+        obs = torch.zeros(
+            (
+                cfg.num_steps,
+                cfg.env.num_envs
+            ) + envs.single_observation_space.spaces["state"].shape
+        ).to(device)
+        contexts = torch.zeros(
+            (
+                cfg.num_steps,
+                cfg.env.num_envs
+            ) + envs.single_observation_space.spaces["context"].shape
+        ).to(device)
     actions = torch.zeros(
         (cfg.num_steps, cfg.env.num_envs) + envs.single_action_space.shape
     ).to(device)
@@ -113,13 +134,17 @@ def main(cfg: DictConfig):
     start_time = time.time()
     num_updates = cfg.total_timesteps // cfg.batch_size
 
-    next_obs = torch.Tensor(envs.reset(seed=cfg.seed)).to(device)
+    next_obs = obs_to_tensor(envs.reset(seed=cfg.seed), device)
     next_done = torch.zeros(cfg.env.num_envs).to(device)
 
     for update in range(1, num_updates + 1):
         for step in range(0, cfg.num_steps):
             global_step += 1 * cfg.env.num_envs
-            obs[step] = next_obs
+            if cfg.carl.hide_context:
+                obs[step] = next_obs
+            else:
+                obs[step] = next_obs["state"]
+                contexts[step] = next_obs["context"]
             dones[step] = next_done
 
             with torch.no_grad():
@@ -132,7 +157,7 @@ def main(cfg: DictConfig):
                 action.cpu().numpy()
             )
             rewards[step] = torch.tensor(reward).to(device).view(-1)
-            next_obs, next_done = torch.Tensor(next_obs).to(device), torch.Tensor(
+            next_obs, next_done = obs_to_tensor(next_obs, device), torch.Tensor(
                 done
             ).to(device)
             done = np.array(done)
@@ -178,7 +203,11 @@ def main(cfg: DictConfig):
                 )
             returns = advantages + values
 
-        b_obs = obs.reshape((-1,) + envs.single_observation_space.shape)
+        if cfg.carl.hide_context:
+            b_obs = obs.reshape((-1,) + envs.single_observation_space.shape)
+        else:
+            b_obs = obs.reshape((-1,) + envs.single_observation_space.spaces["state"].shape)
+            b_contexts = contexts.reshape((-1,) + envs.single_observation_space.spaces["context"].shape)
         b_logprobs = logprobs.reshape(-1)
         b_actions = actions.long().reshape((-1,) + envs.single_action_space.shape)
         b_advantages = advantages.reshape(-1)
@@ -193,9 +222,14 @@ def main(cfg: DictConfig):
                 end = start + cfg.minibatch_size
                 mb_inds = b_inds[start:end]
 
-                _, newlogprob, entropy, newvalue = agent.get_action_and_value(
-                    b_obs[mb_inds], b_actions[mb_inds]
-                )
+                if cfg.carl.hide_context:
+                    _, newlogprob, entropy, newvalue = agent.get_action_and_value(
+                        b_obs[mb_inds], b_actions[mb_inds]
+                    )
+                else: 
+                    _, newlogprob, entropy, newvalue = agent.get_action_and_value(
+                        dict(state=b_obs[mb_inds], context=b_contexts[mb_inds]), b_actions[mb_inds]
+                    )
                 logratio = newlogprob - b_logprobs[mb_inds]
                 ratio = logratio.exp()
 

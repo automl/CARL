@@ -21,10 +21,11 @@ def make_env(
     capture_video: bool = False,
     capture_all_episodes: bool = False,
     contexts: dict = {},
+    carl_kwargs: dict = {},
     **kwargs,
 ):
     def env_fn():
-        return AutoResetWrapper(CARLMarioEnv(env=MarioEnv(levels=[], **kwargs), contexts=contexts))
+        return AutoResetWrapper(CARLMarioEnv(env=MarioEnv(levels=[], **kwargs), contexts=contexts, **carl_kwargs))
     if num_envs > 1:
         envs = AsyncVectorEnv([env_fn for _ in range(num_envs)], shared_memory=False, copy=False)
     else:
