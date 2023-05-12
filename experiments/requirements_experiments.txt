@@ -5,7 +5,8 @@ matplotlib
 seaborn
 pandas
 wandb
-coax
+coax==0.1.11
 dm-haiku
-jax[cuda,cpu]
+jax[cuda,cpu]==0.3.25
 hydra-submitit-launcher
+pyvirtualdisplay
