@@ -14,13 +14,6 @@ from hydra.core.hydra_config import HydraConfig
 from modules.ppo import PPOAgent
 from omegaconf import DictConfig, OmegaConf
 from torchinfo import summary
-from utils.context_utils import get_contexts
-from utils.env_utils import make_env
-from utils.evaluate import evaluate
-from utils.experiment_utils import (
-    obs_to_tensor,
-    set_seed,
-)
 from pyvirtualdisplay.display import Display
 
 logger = logging.getLogger(__name__)
@@ -28,6 +21,13 @@ logger = logging.getLogger(__name__)
 
 @hydra.main(config_path="configs", config_name="ppo", version_base=None)
 def main(cfg: DictConfig):
+    from utils.context_utils import get_contexts
+    from utils.env_utils import make_env
+    from utils.evaluate import evaluate
+    from utils.experiment_utils import (
+        obs_to_tensor,
+        set_seed,
+    )
     logger.info("Training PPO agent")
     cfg.batch_size = int(cfg.env.num_envs * cfg.num_steps)
     cfg.minibatch_size = int(cfg.batch_size // cfg.num_minibatches)
@@ -71,6 +71,7 @@ def main(cfg: DictConfig):
     
     logger.info(f"Observation space: {envs.single_observation_space}")
     logger.info(f"Action space: {envs.single_action_space}")
+    wandb.save("levels")
 
     def close_all():
         envs.close()
