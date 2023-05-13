@@ -7,9 +7,8 @@ hydra:
     partition: gpu_normal
     gres: gpu:1
     mem_gb: 48
-    cpus_per_task: 16
+    cpus_per_task: 28
     timeout_min: 1440 # 24h
-    # array_parallelism: 1
   run:
     dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
