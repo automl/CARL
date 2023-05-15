@@ -1,0 +1,11 @@
+hydra:
+  launcher:
+    partition: gpu_long
+    gres: gpu:1
+    mem_gb: 24
+    cpus_per_task: 6
+    timeout_min: 8000 # 24h
+  run:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}

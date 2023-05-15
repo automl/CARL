@@ -7,13 +7,13 @@ env: CARLGrasp
 max_num_frames: 600_000_000
 replay_capacity: 20480
 eval_episodes: 10
-eval_freq: 3_000_000
+eval_freq: 30_000_000
 
 learning_rate: 3e-4
 clip_lr: 3e-4
 gamma: 0.99
 pi_target_tau: 0.1
-entropy_regularizer_beta: 0.01
+entropy_regularizer_beta: 0.0
 batch_size: 256
 num_minibatches: 32
 num_updates: 2

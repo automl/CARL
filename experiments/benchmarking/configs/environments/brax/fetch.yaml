@@ -7,7 +7,7 @@ env: CARLFetch
 max_num_frames: 100_000_000
 replay_capacity: 20480
 eval_episodes: 10
-eval_freq: 500_000
+eval_freq: 5_000_000
 
 learning_rate: 3e-4
 clip_lr: 3e-4
