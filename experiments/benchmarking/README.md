@@ -403,4 +403,26 @@ Acrobot
  hidden, vary nothing
   ```bash
   python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden' 'experiment=benchmarking_standard' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[]' -m
+
+  # hidden + concat (all) + concat (non-static), vary gravity
+  python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[gravity]' 'context_sampler.uniform_bounds_rel=[0.1,2]' -m
+
+  # Test
+  python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/08-55-40_benchmark_train' -m
+
  ```
+LunarLander
+```bash
+  # train on variation
+  python experiments/benchmarking/run_training.py '+environments/box2d=lunarlander' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[GRAVITY_Y]' 'context_sampler.uniform_bounds_rel=[0.1,2.2]' -m
+
+  # test
+  python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/09-53-46_benchmark_train' -m
+```
+Acrobot
+```bash
+  python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[link_mass_2]' 'context_sampler.uniform_bounds_rel=[0.1,2.2]' -m
+
+  # test
+  python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/19-15-37_benchmark_train' -m
+```
