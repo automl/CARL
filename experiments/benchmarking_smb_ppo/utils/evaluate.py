@@ -55,8 +55,8 @@ def evaluate(
                 },
                 commit=False,
             )
-        if info is not None and "final_info" in info:
-            avg_completed += info["final_info"]["completed"]
+        if info is not None and "terminal_info" in info:
+            avg_completed += info["terminal_info"]["completed"]
     avg_reward /= cfg.eval_env.episodes
     avg_completed /= cfg.eval_env.episodes
     return avg_reward, avg_completed

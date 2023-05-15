@@ -2,3 +2,11 @@
 
 contexts: null
 eval_contexts: null
+
+constant_features: 
+  level_index: 0
+  mario_state: 0
+  mario_inertia: 0.89
+
+eval_env:
+  episodes: 16

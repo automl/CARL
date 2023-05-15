@@ -3,7 +3,6 @@ import os
 from typing import Dict, List, Optional, Union
 
 import numpy as np
-import wandb
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -93,8 +92,6 @@ class CARLMarioEnv(CARLEnv):
                 with open(level_path, "w") as f:
                     f.write(level)
                 np.save(level_path.replace(".txt", ".npy"), initial_noise[0])
-                wandb.save(level_path)
-                wandb.save(level_path.replace(".txt", ".npy"))
             self.context_selector.contexts = self.contexts
 
         if not self.hide_context and not isinstance(self.observation_space, spaces.Dict):
@@ -111,7 +108,9 @@ class CARLMarioEnv(CARLEnv):
         self.env.levels = [load_level(level) for level in self.levels_per_context[self.context_key]]
 
     def build_context_adaptive_state(self, state: np.ndarray, **kwargs):
-        return dict(state=state, context=self.context["noise"])
+        if not self.hide_context:
+            return dict(state=state, context=self.context["noise"])
+        return state
     
     def step(self, action):
         state, reward, done, info = self.env.step(action)

@@ -6,8 +6,8 @@ hydra:
   launcher:
     partition: gpu_normal
     gres: gpu:1
-    mem_gb: 24
-    cpus_per_task: 6
+    mem_gb: 48
+    cpus_per_task: 28
     timeout_min: 1440 # 24h
   run:
     dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}

@@ -4,7 +4,7 @@ defaults:
   - slurm/gpu
   - env/mario_base
   - carl/context_sampling/base
-  - carl/context_visibility/visible_changing
+  - carl/context_visibility/hidden
   - carl/contexts/base
 
 restore: null
