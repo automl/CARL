@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import inspect
 
-from brax.envs import Wrapper, State
-from brax.envs.env import Env
+from brax.envs.env import State, Env
+from gym import Wrapper
 
 import jax
 from jax import numpy as jp
@@ -13,7 +13,7 @@ from carl.context.selection import AbstractSelector, RoundRobinSelector
 
 
 
-class CARLBraxWrapper(Wrapper):
+class CARLBraxEnv(Wrapper):
     def __init__(
             self, 
             env: Env,
@@ -52,14 +52,17 @@ class CARLBraxWrapper(Wrapper):
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
             )        
+        self._progress_instance()
+        self._update_context()
 
     @property
     def observation_size(self) -> int:
+        obs_size = self.env.observation_size
         if self.state_context_features:
             if self.dict_observation:
                 raise NotImplementedError
             else:
-                obs_size = self.env.observation_size + len(self.state_context_features)
+                obs_size += len(self.state_context_features)
 
         return obs_size
     
@@ -108,10 +111,11 @@ class CARLBraxWrapper(Wrapper):
                     "state": state["obs"],
                     "context": [self.context[k] for k in self.state_context_features],
                 }
-                state["obs"] = obs
+                return State(state.qp, obs, state.reward, state.done, state.metrics, state.info)
             else:
-                state.obs = jp.concatenate([state.obs, jp.array([self.context[k] for k in self.state_context_features])])
-        return state
+                return State(state.qp, [state.obs, jp.array([self.context[k] for k in self.state_context_features])], state.reward, state.done, state.metrics, state.info)
+        else:
+            return state
 
 
     def step(self, state: State, action: jp.ndarray) -> State:  # TODO
@@ -144,39 +148,42 @@ DEFAULT_CONTEXT = {
 #     "torso_mass": (0.1, np.inf, float),
 # }
 
-from brax.envs.ant import Ant, _SYSTEM_CONFIG_SPRING
+#from brax.envs.ant import Ant, _SYSTEM_CONFIG_SPRING
 import copy
 import brax
 from google.protobuf import json_format, text_format
 import json
 from google.protobuf.json_format import MessageToDict
+from functools import partial
+from brax.envs.ant import Ant
 
-class CARLAnt(CARLBraxWrapper):
+
+class CARLAnt(CARLBraxEnv):
     def __init__(
         self,
-        env: Ant = Ant(legacy_spring=True),  #AutoResetWrapper(EpisodeWrapper(Ant(legacy_spring=True), episode_length=1000, action_repeat=1)),
-        contexts: Contexts = {},
+        env: Ant = partial(Ant,legacy_spring=True),  #AutoResetWrapper(EpisodeWrapper(Ant(legacy_spring=True), episode_length=1000, action_repeat=1)),
+        contexts: Contexts = {0: DEFAULT_CONTEXT},
         state_context_features: list[str] | None = None,
         dict_observation: bool = False,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
     ):
+        self.make_env = env
+        self.base_config = MessageToDict(
+            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
+        )
         super().__init__(
-            env=env,
+            env=env(),
             contexts=contexts,
             state_context_features=state_context_features,
             dict_observation=dict_observation,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs
         )
-
-        self.base_config = MessageToDict(
-            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
-        )
+        
 
     def _update_context(self) -> None:
-        self.env: Ant
-        config = copy.deepcopy(self.base_config)
+        config = {}#copy.deepcopy(self.base_config)
         config["gravity"] = {"z": self.context["gravity"]}
         config["friction"] = self.context["friction"]
         config["angularDamping"] = self.context["angular_damping"]
@@ -189,10 +196,15 @@ class CARLAnt(CARLBraxWrapper):
             config["actuators"][a]["strength"] = self.context["actuator_strength"]
         config["bodies"][0]["mass"] = self.context["torso_mass"]
         # This converts the dict to a JSON String, then parses it into an empty brax config
-        self.env.sys = brax.System(
-            json_format.Parse(json.dumps(config), brax.Config())
-        )
-        
+        config = json_format.Parse(json.dumps(config), brax.Config())
+        self.env.sys.config = config
+        #self.env.sys.body = bodies.Body(config)
+        #self.env.sys.colliders = colliders.get(config, self.env.sys.body)
+        #self.env.sys.joints = joints.get(config, self.env.sys.body) + spring_joints.get(
+        #    config, self.env.sys.body)
+        #self.env.sys.actuators = actuators.get(config, self.env.sys.joints)
+        #self.env.sys.forces = forces.get(config, self.env.sys.body)
+        self.env.sys.integrator.gravity[2] = self.context["gravity"]
 
 if __name__ == "__main__":
     from brax.envs.wrappers import EpisodeWrapper
@@ -218,6 +230,7 @@ if __name__ == "__main__":
         contexts=contexts,
         state_context_features=state_context_features
     )
+    reset_fn = jax.jit(jax.vmap(env.reset))
 
     printr(env.env.sys)
     state = env.reset(rng=rng)

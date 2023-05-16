@@ -19,8 +19,8 @@ num_minibatches: 32
 num_updates: 8
 clip_range: 0.8
 
-network:
-  width: 32
-
-action_noise:
-  type: null
+episode_length: 1000
+unroll_length: 5
+reward_scaling: 1
+gae_lambda: 0.9
+vf_coef: 0.1

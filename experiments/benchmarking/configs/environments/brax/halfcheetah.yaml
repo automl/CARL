@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - ../../algorithm/sac
+  - ../../algorithm/ppo
 
 env: CARLHalfcheetah
 
@@ -18,8 +18,8 @@ learning_rate: 1.0e-4
 batch_size: 256
 alpha: 0.1
 
-network:
-  width: 1024
-
-action_noise:
-  type: null
+episode_length: 1000
+unroll_length: 5
+reward_scaling: 1
+gae_lambda: 0.9
+vf_coef: 0.1

@@ -1,17 +1,9 @@
 from typing import Any, Dict, List, Optional, Union
 
-import copy
-import json
-
-import brax
 import numpy as np
-from brax import jumpy as jp
-from brax.envs.humanoid import _SYSTEM_CONFIG_SPRING, Humanoid
-from brax.envs.wrappers import GymWrapper, VectorGymWrapper, VectorWrapper
-from brax.physics import bodies
-from google.protobuf import json_format, text_format
-from google.protobuf.json_format import MessageToDict
-from numpyencoder import NumpyEncoder
+import jax.numpy as jnp
+from brax.envs.humanoid import Humanoid
+from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
@@ -19,26 +11,30 @@ from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
-    "gravity": -9.8,
-    "friction": 0.6,
-    "angular_damping": -0.05,
-    "joint_angular_damping": 20,
-    "torso_mass": 8.907463,
+    "stiffness_factor": 1,
+    "gravity": -9.81,
+    "friction": 1.0,
+    "damping_factor": 1,
+    "actuator_strength_factor": 1,
+    "torso_mass": 8.9,
+    "dt": 0.003
 }
 
 CONTEXT_BOUNDS = {
+    "stiffness_factor": (0, np.inf, float),
     "gravity": (-np.inf, -0.1, float),
     "friction": (-np.inf, np.inf, float),
-    "angular_damping": (-np.inf, np.inf, float),
-    "joint_angular_damping": (0, np.inf, float),
+    "damping_factor": (-np.inf, np.inf, float),
+    "actuator_strength_factor": (1, np.inf, float),
     "torso_mass": (0.1, np.inf, float),
+    "dt": (0.0001, 0.03, float),
 }
 
 
 class CARLHumanoid(CARLEnv):
     def __init__(
         self,
-        env: Humanoid = Humanoid(legacy_spring=True),
+        env: Humanoid = Humanoid(),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -56,14 +52,12 @@ class CARLHumanoid(CARLEnv):
         context_selector_kwargs: Optional[Dict] = None,
         max_episode_length: int = 1000,
     ):
+        self.n_envs=n_envs
         if n_envs == 1:
             env = GymWrapper(env)
         else:
-            env = VectorGymWrapper(VectorWrapper(env, n_envs))
+            env = VectorGymWrapper(env, n_envs)
 
-        self.base_config = MessageToDict(
-            text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
-        )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(
@@ -89,24 +83,24 @@ class CARLHumanoid(CARLEnv):
 
     def _update_context(self) -> None:
         self.env: Humanoid
-        config = copy.deepcopy(self.base_config)
-        config["gravity"] = {"z": self.context["gravity"]}
-        config["friction"] = self.context["friction"]
-        config["angularDamping"] = self.context["angular_damping"]
-        for j in range(len(config["joints"])):
-            config["joints"][j]["angularDamping"] = self.context[
-                "joint_angular_damping"
-            ]
-        config["bodies"][0]["mass"] = self.context["torso_mass"]
-        # This converts the dict to a JSON String, then parses it into an empty brax config
-        protobuf_config = json_format.Parse(
-            json.dumps(config, cls=NumpyEncoder), brax.Config()
-        )
-        self.env._env.sys = brax.System(protobuf_config)
-        body = bodies.Body(config=self.env._env.sys.config)
-        body = jp.take(body, body.idx[:-1])  # skip the floor body
-        self.env.mass = body.mass.reshape(-1, 1)
-        self.env.inertia = body.inertia
+        config = {}
+        config["gravity"] = jnp.array([0, 0, self.context["gravity"]])
+        config["dt"] = jnp.array(self.context["dt"])
+        new_mass = self.env._env.sys.link.inertia.mass.at[0].set(self.context["torso_mass"])
+        # TODO: do we want to implement this?
+        #new_com = self.env.sys.link.inertia.transform
+        #new_inertia = self.env.sys.link.inertia.i
+        inertia = self.env._env.sys.link.inertia.replace(mass=new_mass)
+        config["link"] = self.env._env.sys.link.replace(inertia=inertia)
+        new_stiffness = self.context["stiffness_factor"]*self.env._env.sys.dof.stiffness
+        new_damping = self.context["damping_factor"]*self.env._env.sys.dof.damping
+        config["dof"] = self.env._env.sys.dof.replace(stiffness=new_stiffness, damping=new_damping)
+        new_gear = self.context["actuator_strength_factor"]*self.env._env.sys.actuator.gear
+        config["actuator"] = self.env._env.sys.actuator.replace(gear=new_gear)
+        geoms = self.env._env.sys.geoms
+        geoms[0] = geoms[0].replace(friction=jnp.array([self.context["friction"]]))
+        config["geoms"] = geoms
+        self.env._env.sys = self.env._env.sys.replace(**config)
 
     def __getattr__(self, name: str) -> Any:
         if name in ["sys", "body", "mass", "inertia"]:

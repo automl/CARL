@@ -19,7 +19,7 @@ else:
 brax_spec = iutil.find_spec("brax")
 found = brax_spec is not None
 if found:
-    from carl.envs.brax import *
+    from carl.envs.braxenvs import *
 
     pass
 else:

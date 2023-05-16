@@ -9,6 +9,12 @@ replay_capacity: 5120
 eval_episodes: 10
 eval_freq: 250_000
 
+episode_length: 1000
+unroll_length: 5
+reward_scaling: 1
+gae_lambda: 0.9
+vf_coef: 0.1
+
 learning_rate: 3e-4
 clip_lr: 3e-4
 gamma: 0.97

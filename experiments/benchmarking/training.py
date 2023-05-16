@@ -34,7 +34,8 @@ from carl.utils.types import Contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
-from experiments.context_gating.algorithms.ppo import ppo
+#from experiments.context_gating.algorithms.ppo import ppo
+from experiments.context_gating.algorithms.jitted_torch_ppo import ppo
 #from experiments.context_gating.algorithms.brax_ppo import ppo
 #from experiments.context_gating.algorithms.purejax_ppo import ppo
 #from experiments.context_gating.algorithms.sb3_ppo import ppo
@@ -249,7 +250,8 @@ def train(cfg: DictConfig):
             return r*cfg.reward_scale
         env = gym.wrappers.TransformReward(env, func)
     eval_env = EnvCls(contexts=eval_contexts)
-    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
+    if cfg.algorithm != "ppo":
+        env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
         key, subkey = jax.random.split(key)
@@ -275,7 +277,6 @@ def train(cfg: DictConfig):
     # Log experiment
     # ----------------------------------------------------------------------
     print(OmegaConf.to_yaml(cfg))
-    print(env)
     print(f"Observation Space: ", env.observation_space)
     print(f"Action Space: ", env.action_space)
     output_dir = os.getcwd()

@@ -2,41 +2,46 @@ from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import jax.numpy as jnp
-from brax.envs.ant import Ant
+from brax.envs.inverted_double_pendulum import InvertedDoublePendulum
 from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
-from carl.envs.carl_brax_env import CARLBraxEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
     "stiffness_factor": 1,
-    "gravity": -9.81,
-    "friction": 1,
+    "gravity_x": 1e-5,
+    "gravity_z": -9.81,
+    "friction": 0.8,
     "damping_factor": 1,
     "actuator_strength_factor": 1,
-    "torso_mass": 10,
+    "mass_cart": 10.5,
+    "mass_pole_0": 4.2,
+    "mass_pole_1": 4.2,
     "dt": 0.01
 }
 
 CONTEXT_BOUNDS = {
     "stiffness_factor": (0, np.inf, float),
-    "gravity": (-np.inf, -0.1, float),
+    "gravity_x": (-np.inf, np.inf, float),
+    "gravity_z": (-np.inf, -0.1, float),
     "friction": (-np.inf, np.inf, float),
     "damping_factor": (-np.inf, np.inf, float),
     "actuator_strength_factor": (1, np.inf, float),
-    "torso_mass": (0.1, np.inf, float),
+    "mass_cart": (0.1, np.inf, float),
+    "mass_pole_0": (0.1, np.inf, float),
+    "mass_pole_1": (0.1, np.inf, float),
     "dt": (0.0001, 0.03, float),
 }
 
 
 
-class CARLAnt(CARLEnv):
+class CARLInvertedDoublePendulum(CARLEnv):
     def __init__(
         self,
-        env: Ant = Ant(),  #AutoResetWrapper(EpisodeWrapper(Ant(legacy_spring=True), episode_length=1000, action_repeat=1)),
+        env: InvertedDoublePendulum = InvertedDoublePendulum(),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -84,11 +89,13 @@ class CARLAnt(CARLEnv):
         )  # allow to augment all values
 
     def _update_context(self) -> None:
-        self.env: Ant
+        self.env: InvertedDoublePendulum
         config = {}
-        config["gravity"] = jnp.array([0, 0, self.context["gravity"]])
+        config["gravity"] = jnp.array([self.context["gravity_x"], 0, self.context["gravity_z"]])
         config["dt"] = jnp.array(self.context["dt"])
-        new_mass = self.env._env.sys.link.inertia.mass.at[0].set(self.context["torso_mass"])
+        new_mass = self.env._env.sys.link.inertia.mass.at[0].set(self.context["mass_cart"])
+        new_mass = new_mass.at[1].set(self.context["mass_pole_0"])
+        new_mass = new_mass.at[2].set(self.context["mass_pole_1"])
         # TODO: do we want to implement this?
         #new_com = self.env.sys.link.inertia.transform
         #new_inertia = self.env.sys.link.inertia.i
@@ -109,48 +116,3 @@ class CARLAnt(CARLEnv):
             return getattr(self.env._environment, name)
         else:
             return getattr(self, name)
-
-
-# NOTE: this is not up to date!
-class CARLBraxAnt(CARLBraxEnv):
-    def __init__(
-        self,
-        env: Ant = Ant(),
-        contexts: Contexts = {},
-        state_context_features: list[str] | None = None,
-        dict_observation: bool = False,
-        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
-        context_selector_kwargs: dict = None,
-    ):
-        super().__init__(
-            env=env,
-            contexts=contexts,
-            state_context_features=state_context_features,
-            dict_observation=dict_observation,
-            context_selector=context_selector,
-            context_selector_kwargs=context_selector_kwargs
-        )
-
-        #self.base_config = MessageToDict(
-        #    text_format.Parse(_SYSTEM_CONFIG_SPRING, brax.Config())
-        #)
-
-    def _update_context(self) -> None:
-        #self.env: Ant
-        config = {}#copy.deepcopy(self.base_config)
-        config["gravity"] = jnp.array([0, 0, self.context["gravity"]])
-        #config["friction"] = self.context["friction"]
-        config["dt"] = self.context["dt"]
-        #for j in range(len(config["joints"])):
-        #    config["joints"][j]["angularDamping"] = self.context[
-        #        "joint_angular_damping"
-        #    ]
-        #    config["joints"][j]["stiffness"] = self.context["joint_stiffness"]
-        #for a in range(len(config["actuators"])):
-        #    config["actuators"][a]["strength"] = self.context["actuator_strength"]
-        #config["bodies"][0]["mass"] = self.context["torso_mass"]
-        # This converts the dict to a JSON String, then parses it into an empty brax config
-        #self.env.sys = brax.System(
-        #    json_format.Parse(json.dumps(config), brax.Config())
-        #)
-        self.env.sys = self.env.sys.replace(**config)
