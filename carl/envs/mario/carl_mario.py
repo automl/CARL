@@ -79,7 +79,14 @@ class CARLMarioEnv(CARLEnv):
                     level_path
                 )
                 if self._check_if_level_exists(context_hash):
-                    self.contexts[context_key]["noise"] = np.load(level_path.replace(".txt", ".npy")).astype(np.float32)
+                    # fix race condition 
+                    # TODO(frederik): maybe use lock file?
+                    level = None
+                    while level is None:
+                        level = np.load(level_path.replace(".txt", ".npy"), allow_pickle=True).astype(np.float32)
+                        if not isinstance(level, np.ndarray):
+                            level = None
+                    self.contexts[context_key]["noise"] = level
                     continue
                 level, initial_noise = generate_level(
                     width=INITIAL_WIDTH,
