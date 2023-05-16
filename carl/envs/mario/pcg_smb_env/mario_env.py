@@ -1,4 +1,5 @@
 import atexit
+import os
 import random
 import socket
 from collections import deque
@@ -11,6 +12,7 @@ from gym import spaces
 from gym.utils import seeding
 from PIL.Image import Image
 from py4j.java_gateway import GatewayParameters, JavaGateway
+from pyvirtualdisplay.display import Display
 
 from .level_image_gen import LevelImageGen
 from .mario_game import MarioGame
@@ -89,6 +91,7 @@ class MarioEnv(gym.Env):
         self.game: Optional[MarioGame] = None
         self.mario_state: Literal[0, 1, 2] = 0  # normal, large, fire
         self.mario_inertia = 0.89
+        self.display = Display(use_xauth=True)
 
     def reset(
         self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None, **kwargs
@@ -170,6 +173,9 @@ class MarioEnv(gym.Env):
         self.game = None
         self.socket.shutdown(1)
         self.socket.close()
+        if self.display is not None:
+            self.display.stop()
+        self.display = None
         return self.__dict__
 
     def _reset_obs(self):
@@ -214,9 +220,15 @@ class MarioEnv(gym.Env):
 
     def close(self):
         MarioEnv.port = None
+        if self.display is not None:
+            self.display.stop()
         return super().close()
 
     def _init_game(self):
+        if os.environ.get("DISPLAY") is None:
+            if self.display is None or not self.display.is_alive():
+                self.display = Display(use_xauth=True)
+                self.display.start()
         self.port = self._maybe_launch_gateway()
         assert self.port is not None
         self.gateway = JavaGateway(
