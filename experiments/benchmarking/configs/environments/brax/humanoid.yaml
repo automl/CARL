@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - ../../algorithm/ppo
+  - ../../algorithm/brax_ppo
 
 env: CARLHumanoid
 

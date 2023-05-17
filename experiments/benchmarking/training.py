@@ -34,8 +34,8 @@ from carl.utils.types import Contexts
 from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
-#from experiments.context_gating.algorithms.ppo import ppo
-from experiments.context_gating.algorithms.jitted_torch_ppo import ppo
+from experiments.context_gating.algorithms.ppo import ppo
+from experiments.context_gating.algorithms.jitted_torch_ppo import ppo as jitted_ppo
 #from experiments.context_gating.algorithms.brax_ppo import ppo
 #from experiments.context_gating.algorithms.purejax_ppo import ppo
 #from experiments.context_gating.algorithms.sb3_ppo import ppo
@@ -293,8 +293,8 @@ def train(cfg: DictConfig):
         algorithm = c51
     elif cfg.algorithm == "ppo":
         algorithm = ppo
-        #from stable_baselines3.common.vec_env import DummyVecEnv
-        #env = DummyVecEnv([partial(EnvCls, contexts=contexts) for _ in range(cfg.n_envs)])
+    elif cfg.algorithm == "brax_ppo":
+        algorithm = jitted_ppo
     elif cfg.algorithm == "ddpg":
         algorithm = ddpg
     else:
