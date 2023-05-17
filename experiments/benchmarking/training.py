@@ -250,7 +250,7 @@ def train(cfg: DictConfig):
             return r*cfg.reward_scale
         env = gym.wrappers.TransformReward(env, func)
     eval_env = EnvCls(contexts=eval_contexts)
-    if cfg.algorithm != "ppo":
+    if cfg.algorithm != "brax_ppo":
         env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
