@@ -7,7 +7,7 @@ env: CARLHalfcheetah
 max_num_frames: 1_000_000
 replay_capacity: 1_000_000
 eval_episodes: 10
-eval_freq: 50_000
+eval_freq: 20
 
 gamma: 0.99
 q_targ_tau: 0.005
@@ -23,3 +23,12 @@ unroll_length: 5
 reward_scaling: 1
 gae_lambda: 0.9
 vf_coef: 0.1
+
+carl:
+  n_envs: 1024
+
+network:
+  width: 32
+
+action_noise:
+  type: null

@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import jax.numpy as jnp
 from brax.envs.half_cheetah import Halfcheetah
+from brax.envs import create
 from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
 
 from carl.context.selection import AbstractSelector
@@ -35,7 +36,7 @@ CONTEXT_BOUNDS = {
 class CARLHalfcheetah(CARLEnv):
     def __init__(
         self,
-        env: Halfcheetah = Halfcheetah(),
+        env: Halfcheetah = None,
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
@@ -53,6 +54,9 @@ class CARLHalfcheetah(CARLEnv):
         context_selector_kwargs: Optional[Dict] = None,
         max_episode_length: int = 1000,
     ):
+        if env is None:
+            env = create("halfcheetah", batch_size=n_envs)
+
         self.n_envs=n_envs
         if n_envs == 1:
             env = GymWrapper(env)

@@ -177,7 +177,7 @@ class Agent(nn.Module):
         scale = F.softplus(scale) + 0.001
         return loc, scale
 
-    # @torch.jit.export
+    @torch.jit.export
     def dist_sample_no_postprocess(self, loc, scale):
         return torch.normal(loc, scale)
 
@@ -348,6 +348,7 @@ def train_unroll(agent, env, observation, num_unrolls, unroll_length):
 def train(
     env,
     eval_env,
+    eval_frequency: int = 20,
     episode_length: int = 1000,
     num_timesteps: int = 30_000_000,
     unroll_length: int = 5,
@@ -393,18 +394,40 @@ def train(
 
     sps = 0
     total_steps = 0
-    observation = env.reset()
-    num_steps = batch_size * num_minibatches * unroll_length
-    num_epochs = max(2, int(num_timesteps) // int(num_steps))
-    num_unrolls = max(1, int(batch_size) * int(num_minibatches) // env.n_envs)
-    t = time.time()
-    for _ in range(num_epochs):
-        observation, td = train_unroll(agent, env, observation, num_unrolls, unroll_length)
+    total_loss = 0
+    for eval_i in range(eval_frequency):
+        if progress_fn:
+            t = time.time()
+            with torch.no_grad():
+                episode_count, episode_reward = eval_unroll(agent, env, episode_length)
+            duration = time.time() - t
+            # TODO: only count stats from completed episodes
+            episode_avg_length = env.num_envs * episode_length / episode_count
+            eval_sps = env.num_envs * episode_length / duration
+            progress = {
+                'eval/episode_reward': episode_reward,
+                'eval/completed_episodes': episode_count,
+                'eval/avg_episode_length': episode_avg_length,
+                'speed/sps': sps,
+                'speed/eval_sps': eval_sps,
+                'losses/total_loss': total_loss,
+            }
+            progress_fn(total_steps, progress)
+
+        observation = env.reset()
+        num_steps = batch_size * num_minibatches * unroll_length
+        num_epochs = num_timesteps // (num_steps * eval_frequency)
+        num_unrolls = batch_size * num_minibatches // env.num_envs
+        total_loss = 0
+        t = time.time()
+        for _ in range(num_epochs):
+            observation, td = train_unroll(agent, env, observation, num_unrolls,
+                                        unroll_length)
+
         # make unroll first
         def unroll_first(data):
             data = data.swapaxes(0, 1)
             return data.reshape([data.shape[0], -1] + list(data.shape[3:]))
-
         td = sd_map(unroll_first, td)
 
         # update normalization statistics
@@ -414,12 +437,11 @@ def train(
             # shuffle and batch the data
             with torch.no_grad():
                 permutation = torch.randperm(td.observation.shape[1], device=device)
-
                 def shuffle_batch(data):
-                    data = data.to(device)[:, permutation]
-                    data = data.reshape([data.shape[0], num_minibatches, -1] + list(data.shape[2:]))
+                    data = data[:, permutation]
+                    data = data.reshape([data.shape[0], num_minibatches, -1] +
+                                        list(data.shape[2:]))
                     return data.swapaxes(0, 1)
-
                 epoch_td = sd_map(shuffle_batch, td)
 
             for minibatch_i in range(num_minibatches):
@@ -428,12 +450,12 @@ def train(
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                # total_loss += loss.detach()
+                total_loss += loss
 
-    duration = time.time() - t
-    total_steps += num_epochs * num_steps
-    # total_loss = total_loss / max(num_epochs * num_update_epochs * num_minibatches, 1)
-    sps = num_epochs * num_steps / duration
+        duration = time.time() - t
+        total_steps += num_epochs * num_steps
+        total_loss = total_loss / (num_epochs * num_update_epochs * num_minibatches)
+        sps = num_epochs * num_steps / duration
 
     logging.info("Finished training")
     if progress_fn:
@@ -479,6 +501,7 @@ def ppo(cfg, env, eval_env):
     final_eval_reward = train(
         env=env,
         eval_env=eval_env,
+        eval_frequency=cfg.eval_freq,
         episode_length=cfg.episode_length,
         num_timesteps=cfg.max_num_frames,
         unroll_length=cfg.unroll_length,

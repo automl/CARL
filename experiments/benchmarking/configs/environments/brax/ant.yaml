@@ -7,7 +7,7 @@ env: CARLAnt
 max_num_frames: 50_000_000
 replay_capacity: 5120
 eval_episodes: 10
-eval_freq: 250_000
+eval_freq: 20
 
 episode_length: 1000
 unroll_length: 5
@@ -30,3 +30,6 @@ network:
 
 action_noise:
   type: null
+
+carl:
+  n_envs: 1024
