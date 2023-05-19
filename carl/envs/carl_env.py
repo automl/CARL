@@ -299,7 +299,7 @@ class CARLEnv(Wrapper):
     ) -> Union[Vector, Dict]:
         tnp: ModuleType = np
         if brax_spec is not None:
-            if type(state) == jaxlib.xla_extension.DeviceArray:
+            if type(state) == jaxlib.xla_extension.ArrayImpl:
                 tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:

@@ -35,6 +35,10 @@ from experiments.context_gating.algorithms.td3 import td3
 from experiments.context_gating.algorithms.sac import sac
 from experiments.context_gating.algorithms.c51 import c51
 from experiments.context_gating.algorithms.ppo import ppo
+from experiments.context_gating.algorithms.jitted_torch_ppo import ppo as jitted_ppo
+#from experiments.context_gating.algorithms.brax_ppo import ppo
+#from experiments.context_gating.algorithms.purejax_ppo import ppo
+#from experiments.context_gating.algorithms.sb3_ppo import ppo
 from experiments.context_gating.algorithms.ddpg import ddpg
 from experiments.context_gating.utils import check_wandb_exists, set_seed_everywhere
 
@@ -171,28 +175,28 @@ def get_contexts(cfg: DictConfig) -> Contexts:
 @hydra.main("./configs", "base", version_base="1.1")
 def train(cfg: DictConfig):
     dict_cfg = OmegaConf.to_container(cfg, resolve=True, enum_to_str=True)
-    if not cfg.wandb.debug and (
-        not check_config_valid(cfg)
-        or check_wandb_exists(
-            dict_cfg,
-            unique_fields=[
-                "env",
-                "seed",
-                "experiment",
-                "wandb.tags",
-                # "group",
-                "context_sampler.context_feature_names",
-                "context_sampler.sigma_rel",
-                "carl.state_context_features",
-                "carl.hide_context",
-                "carl.dict_observation_space",
-                "carl.gating_type",
-                "algorithm",
-            ],
-        )
-    ):
-        print(f"Skipping run with cfg {dict_cfg}")
-        return
+    # if not cfg.wandb.debug and (
+    #     not check_config_valid(cfg)
+    #     or check_wandb_exists(
+    #         dict_cfg,
+    #         unique_fields=[
+    #             "env",
+    #             "seed",
+    #             "experiment",
+    #             "wandb.tags",
+    #             # "group",
+    #             "context_sampler.context_feature_names",
+    #             "context_sampler.sigma_rel",
+    #             "carl.state_context_features",
+    #             "carl.hide_context",
+    #             "carl.dict_observation_space",
+    #             "carl.gating_type",
+    #             "algorithm",
+    #         ],
+    #     )
+    # ):
+    #     print(f"Skipping run with cfg {dict_cfg}")
+    #     return
     print(cfg)
 
     hydra_job = (
@@ -246,7 +250,8 @@ def train(cfg: DictConfig):
             return r*cfg.reward_scale
         env = gym.wrappers.TransformReward(env, func)
     eval_env = EnvCls(contexts=eval_contexts)
-    env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
+    if cfg.algorithm != "brax_ppo":
+        env = coax.wrappers.TrainMonitor(env, name=cfg.algorithm, log_all_metrics=True)
     key = jax.random.PRNGKey(cfg.seed)
     if cfg.state_context and cfg.carl.dict_observation_space:
         key, subkey = jax.random.split(key)
@@ -272,7 +277,6 @@ def train(cfg: DictConfig):
     # Log experiment
     # ----------------------------------------------------------------------
     print(OmegaConf.to_yaml(cfg))
-    print(env)
     print(f"Observation Space: ", env.observation_space)
     print(f"Action Space: ", env.action_space)
     output_dir = os.getcwd()
@@ -289,6 +293,8 @@ def train(cfg: DictConfig):
         algorithm = c51
     elif cfg.algorithm == "ppo":
         algorithm = ppo
+    elif cfg.algorithm == "brax_ppo":
+        algorithm = jitted_ppo
     elif cfg.algorithm == "ddpg":
         algorithm = ddpg
     else:

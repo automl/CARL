@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, List, Union
 
 from omegaconf import DictConfig
 from .context_sampling import ContextSampler
@@ -8,10 +8,8 @@ def parse_values(val: Union[str, List[Any]]):
     if isinstance(val, str) and val.startswith("range"):
         _, start, stop = val.split("_")
         return list(range(int(start), int(stop)))
-    elif isinstance(val, list):
-        return val
     else:
-        return []
+        return val
 
 
 def parse_contexts(cfg: DictConfig):
@@ -20,7 +18,7 @@ def parse_contexts(cfg: DictConfig):
         context_values = parse_values(context_value_def)
         for context_value in context_values:
             contexts.append({**cfg.constant_features, **{context_feature: context_value}})
-    return contexts
+    return {i: c for i, c in enumerate(contexts)}
 
 
 def get_contexts(cfg, is_eval=False):
