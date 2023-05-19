@@ -408,7 +408,9 @@ Acrobot
   python experiments/benchmarking/run_training.py '+environments/classic_control=mountaincar' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[gravity]' 'context_sampler.uniform_bounds_rel=[0.1,2]' -m
 
   # Test
-  python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/08-55-40_benchmark_train' -m
+  python experiments/evaluation/run_evaluation.py sample_contexts=true sample_contexts_add_seed=10 --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/08-55-40_benchmark_train' -m
+
+  # res multirun/2023-05-17/10-24-03   # test contexts
 
  ```
 LunarLander
@@ -417,12 +419,36 @@ LunarLander
   python experiments/benchmarking/run_training.py '+environments/box2d=lunarlander' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[GRAVITY_Y]' 'context_sampler.uniform_bounds_rel=[0.1,2.2]' -m
 
   # test
-  python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/09-53-46_benchmark_train' -m
+  python experiments/evaluation/run_evaluation.py sample_contexts=true sample_contexts_add_seed=10 --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/09-53-46_benchmark_train' -m
+
+  # res multirun/2023-05-17/10-23-57  # test contexts
 ```
 Acrobot
 ```bash
   python experiments/benchmarking/run_training.py '+environments/classic_control=acrobot' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[link_mass_2]' 'context_sampler.uniform_bounds_rel=[0.1,2.2]' -m
 
   # test
-  python experiments/evaluation/run_evaluation.py sample_contexts=true --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/19-15-37_benchmark_train' -m
+  python experiments/evaluation/run_evaluation.py sample_contexts=true sample_contexts_add_seed=10 --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-15/19-15-37_benchmark_train' -m
+
+  # res multirun/2023-05-17/10-23-47  # test contexts
+```
+Pendulum
+```bash
+  python experiments/benchmarking/run_training.py '+environments/classic_control=pendulum' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[l]' 'context_sampler.uniform_bounds_rel=[0.5,2.2]' -m
+
+  # test
+  python experiments/evaluation/run_evaluation.py sample_contexts=true sample_contexts_add_seed=10 --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-16/08-50-27_benchmark_train' -m
+
+  # res multirun/2023-05-16/10-03-13  # train contexts
+  # res multirun/2023-05-17/10-23-42  # test contexts
+```
+Cartpole
+```bash
+  python experiments/benchmarking/run_training.py '+environments/classic_control=cartpole' 'seed=range(1,11)' '+context_visibility=hidden,visible_all,visible_changing' '+context_sampling=uniform_10' 'experiment=benchmarking_variation' '+slurm=cpushort' 'hydra.launcher.cpus_per_task=1' 'hydra.launcher.timeout_min=240' 'context_sampler.context_feature_names=[pole_length]' 'context_sampler.uniform_bounds_rel=[0.2,2.2]' -m
+
+  # test
+  python experiments/evaluation/run_evaluation.py sample_contexts=true sample_contexts_add_seed=10 --result_dir '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/exp_sweep/2023-05-16/10-13-41_benchmark_train' -m
+
+  # res multirun/2023-05-16/11-36-44   # train contexts
+  # multirun/2023-05-17/10-22-42    # test contexts
 ```
