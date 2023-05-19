@@ -21,6 +21,7 @@ n_eval_episodes_per_context: 5
 n_eval_episodes: null  # will be overwritten if n_eval_episodes_per_context is not None
 contexts_path: null
 sample_contexts: false
+sample_contexts_add_seed: null
 eval_on_train_contexts: false
 
 kirk_evaluation_protocol:

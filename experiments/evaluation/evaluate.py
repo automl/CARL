@@ -154,6 +154,8 @@ def evaluate_policy(cfg: DictConfig):
     contexts = None
     if not cfg.contexts_path:
         if cfg.sample_contexts:
+            if cfg.sample_contexts_add_seed is not None:
+                traincfg.context_sampler.seed += cfg.sample_contexts_add_seed
             contexts = ContextSampler(**traincfg.context_sampler).sample_contexts()
         elif cfg.kirk_evaluation_protocol.follow:
             # override train config for evaluation protocol with eval config
