@@ -1,0 +1,68 @@
+# @package _global_
+defaults:
+  - override /hydra/sweeper: SMAC
+
+cluster:
+  _target_: dask_jobqueue.SLURMCluster
+  queue: cpu_short  # partition
+  #  account: myaccount
+  cores: 1
+  memory: 4 GB
+  walltime: 00:30:00
+  processes: 1
+  log_directory: tmp/smac_dask_slurm
+
+budget_variable: max_num_frames
+
+experiment: SMAC
+
+hydra:
+  sweeper:
+    smac_class: smac.facade.multi_fidelity_facade.MultiFidelityFacade
+    smac_kwargs:
+      dask_client: #null
+        _target_: dask.distributed.Client
+        address: ${create_cluster:${cluster},${hydra.sweeper.scenario.n_workers}}
+      initial_design: smac.initial_design.default_design.DefaultInitialDesign
+      initial_design_kwargs:
+        n_configs: null  # set in environment
+
+    scenario:
+      seed: ${seed}
+      # n_trials: null  # set in environment
+      deterministic: true
+      n_workers: 4
+      # min_budget: 5  # set in environment
+      # max_budget: 50
+
+
+    # scenario:
+      n_trials: 50
+      min_budget: 10000
+      max_budget: 150000
+    # initial_design_kwargs:
+    #   n_configs: 9
+    search_space:
+      hyperparameters:
+        learning_rate:
+          type: uniform_float
+          lower: 1e-5
+          upper: 5e-3
+          default: ${learning_rate}
+          log: true
+        gamma:
+          type: uniform_float
+          lower: 0.89
+          upper: 0.9999
+          log: true
+          default_value: ${gamma}
+        clip_lr:
+          type: uniform_float
+          lower: 1e-5
+          upper: 5e-3
+          default: ${clip_lr}
+          log: true
+  run:
+    dir: ./runs/hpo/smac/${env}/${algorithm}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./runs/hpo/smac/${env}/${algorithm}/${now:%Y-%m-%d}/${now:%H-%M-%S}
