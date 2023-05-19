@@ -41,7 +41,7 @@ CONTEXT_BOUNDS = {
 class CARLAnt(CARLEnv):
     def __init__(
         self,
-        env: Ant = Ant(legacy_spring=True),  #AutoResetWrapper(EpisodeWrapper(Ant(legacy_spring=True), episode_length=1000, action_repeat=1)),
+        env: Ant = Ant(_SYSTEM_CONFIG_SPRING, legacy_spring=True),  #AutoResetWrapper(EpisodeWrapper(Ant(legacy_spring=True), episode_length=1000, action_repeat=1)),
         n_envs: int = 1,
         contexts: Contexts = {},
         hide_context: bool = False,
