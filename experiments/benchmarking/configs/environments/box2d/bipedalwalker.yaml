@@ -3,30 +3,80 @@ defaults:
   - ../../algorithm/sac
 
 env: CARLBipedalWalkerEnv
-max_num_frames: 150000
+max_num_frames: 500000
 
 # SAC HPs
-# gamma: 0.98
-# q_targ_tau: 0.02
-# pi_targ_tau: 0.02
-# pi_update_freq: 2
+gamma: 0.98
+q_targ_tau: 0.02
+pi_targ_tau: 0.02
+pi_update_freq: 64
 
-# learning_rate: 7.3e-4
-# batch_size: 256
-
-# network:
-#   width: 256
-
-# PPO HPs (from zoo)
-learning_rate: 1e-3
-clip_lr: 1e-4
-gamma: 0.9
-replay_capacity: 512
-pi_target_tau: 0.1
-entropy_regularizer_beta: 0.01
-batch_size: 32
-num_minibatches: 4
-num_updates: 1
+learning_rate: 7.3e-4
+batch_size: 256
 
 network:
-  width: 8
+  width: 256
+
+# # PPO HPs (from zoo)
+# learning_rate: 1e-3
+# clip_lr: 1e-4
+# gamma: 0.9
+# replay_capacity: 512
+# pi_target_tau: 0.1
+# entropy_regularizer_beta: 0.01
+# batch_size: 32
+# num_minibatches: 4
+# num_updates: 1
+
+# network:
+#   width: 8
+
+# hydra:
+#   sweeper:
+#   # Optuna
+#     params:
+#       learning_rate: tag(float(1e-5,5e-3), log)
+#       gamma: tag(float(0.89,0.9999), log)
+#       clip_lr: tag(float(1e-5,5e-3), log)
+#       entropy_regularizer_beta: tag(float(1e-4,1e-1), log)
+
+# hydra:
+#   sweeper:
+#     scenario:
+#       n_trials: 50
+#       min_budget: 10000
+#       max_budget: 150000
+#     # initial_design_kwargs:
+#     #   n_configs: 9
+#     search_space:
+#       hyperparameters:
+#         learning_rate:
+#           type: uniform_float
+#           lower: 1e-5
+#           upper: 5e-3
+#           default: ${learning_rate}
+#           log: true
+#         gamma:
+#           type: uniform_float
+#           lower: 0.89
+#           upper: 0.9999
+#           log: true
+#           default_value: ${gamma}
+#         clip_lr:
+#           type: uniform_float
+#           lower: 1e-5
+#           upper: 5e-3
+#           default: ${clip_lr}
+#           log: true
+        # pi_target_tau:
+        #   type: uniform_float
+        #   lower: 0
+        #   upper: 1
+        #   default: ${pi_target_tau}
+        # entropy_regularizer_beta:
+        #   type: uniform_float
+        #   lower: 1e-4
+        #   upper: 1e-1
+        #   log: true
+        #   default: ${entropy_regularizer_beta}
+
