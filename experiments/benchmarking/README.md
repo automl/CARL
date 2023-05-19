@@ -452,3 +452,14 @@ Cartpole
   # res multirun/2023-05-16/11-36-44   # train contexts
   # multirun/2023-05-17/10-22-42    # test contexts
 ```
+
+# HPO
+With optuna random sampler.
+
+```bash
+python experiments/benchmarking/training.py +environment/box2d=bipedalwalker max_num_frames=250000 hydra/sweeper=optuna hydra/sweeper/sampler=random +hpo=optuna +slurm=cpushort wandb.debug=true -m
+```
+
+Currently HPs are in `experiments/benchmarking/configs/hpo/optuna.yaml` defined, which are SAC's HPs.
+The order MUST be `hydra/sweeper=optuna hydra/sweeper/sampler=random +hpo=optuna +YOUR_PARAMS`, otherwise optuna will set unfitting defaults.
+Set as many jobs as trials for random search.
