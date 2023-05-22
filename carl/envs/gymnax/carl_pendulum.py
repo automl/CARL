@@ -29,7 +29,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLJaxPendulumEnv(CARLEnv): # TODO think of a good name
+class CARLJaxPendulumEnv(CARLEnv):
     def __init__(
         self,
         env: Pendulum = Pendulum(),
