@@ -28,6 +28,7 @@ from hydra.core.hydra_config import HydraConfig
 from rich import print
 from hydra.utils import instantiate
 from typing import Tuple
+from pathlib import Path
 
 from carl.context.sampling import sample_contexts
 from carl.utils.types import Contexts
@@ -199,12 +200,18 @@ def train(cfg: DictConfig):
     #     return
     print(cfg)
 
+    hydra_cfg = cfg.hydra
+
+    hydra_run_dir = dict_cfg["hydra"]["run"]["dir"]
+
     hydra_job = (
-        os.path.basename(os.path.abspath(os.path.join(HydraConfig.get().run.dir, "..")))
+        os.path.basename(os.path.abspath(os.path.join(hydra_run_dir, "..")))
         + "_"
-        + os.path.basename(HydraConfig.get().run.dir)
+        + os.path.basename(hydra_run_dir)
     )
     cfg.wandb.id = hydra_job + "_" + id_generator()
+
+    print(hydra_run_dir, os.getcwd())
 
     run = wandb.init(
         id=cfg.wandb.id,
@@ -214,7 +221,7 @@ def train(cfg: DictConfig):
         job_type=cfg.wandb.job_type,
         entity=cfg.wandb.entity,
         group=cfg.wandb.group,
-        dir=os.getcwd(),
+        dir=hydra_run_dir,
         config=OmegaConf.to_container(cfg, resolve=True, enum_to_str=True),
         sync_tensorboard=True,
         monitor_gym=True,
@@ -222,13 +229,13 @@ def train(cfg: DictConfig):
         tags=cfg.wandb.tags,
         notes=cfg.wandb.notes,
     )
-    hydra_cfg = HydraConfig.get()
+    # hydra_cfg = HydraConfig.get()  # does not work because HydraConfig does not get set
     command = f"{hydra_cfg.job.name}.py " + " ".join(hydra_cfg.overrides.task)
     if not OmegaConf.is_missing(hydra_cfg.job, "id"):
         slurm_id = hydra_cfg.job.id
     else:
         slurm_id = None
-    wandb.config.update({"command": command, "slurm_id": slurm_id, "rundir": HydraConfig.get().run.dir})
+    wandb.config.update({"command": command, "slurm_id": slurm_id, "rundir": hydra_run_dir})
     set_seed_everywhere(cfg.seed)
 
     # ----------------------------------------------------------------------
