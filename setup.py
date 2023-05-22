@@ -32,7 +32,7 @@ extras_require = {
         "dm_control>=1.0.3",
     ],
     "gymnax": [
-        "GYMNAX>=???",
+        "gymnax>=0.0.6",
     ],
     "mario": [
         "torch>=1.9.0",
