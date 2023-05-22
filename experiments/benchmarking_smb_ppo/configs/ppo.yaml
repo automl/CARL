@@ -9,7 +9,7 @@ defaults:
 
 restore: null
 
-total_timesteps: 200_000_000
+total_timesteps: 10_000_000
 num_steps: 400
 
 optimizer:
