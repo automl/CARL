@@ -200,9 +200,14 @@ def train(cfg: DictConfig):
     #     return
     print(cfg)
 
-    hydra_cfg = cfg.hydra
+    hydra_cfg = cfg.get("hydra")
+    if hydra_cfg is None:
+        hydra_cfg = HydraConfig.get()
 
-    hydra_run_dir = dict_cfg["hydra"]["run"]["dir"]
+    if "hydra" in dict_cfg:
+        hydra_run_dir = dict_cfg["hydra"]["run"]["dir"]
+    else:
+        hydra_run_dir = HydraConfig.get().run.dir
 
     hydra_job = (
         os.path.basename(os.path.abspath(os.path.join(hydra_run_dir, "..")))
