@@ -379,6 +379,7 @@ class CARLEnv(Wrapper):
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True
+        info["context_id"] = self.context_selector.context_id
         return state, reward, done, info
 
     def __getattr__(self, name: str) -> Any:
