@@ -37,7 +37,7 @@ hydra:
 
 
     # scenario:
-      n_trials: 50
+      n_trials: 20
       min_budget: 10000
       max_budget: 150000
     # initial_design_kwargs:
@@ -56,12 +56,18 @@ hydra:
           upper: 0.9999
           log: true
           default_value: ${gamma}
-        clip_lr:
+        # clip_lr:
+        #   type: uniform_float
+        #   lower: 1e-5
+        #   upper: 5e-3
+        #   default: ${clip_lr}
+        #   log: true
+        alpha: 
           type: uniform_float
-          lower: 1e-5
-          upper: 5e-3
-          default: ${clip_lr}
-          log: true
+          lower: 1e-4
+          upper: 0.25
+          default: ${alpha}
+          log: false
   run:
     dir: ./runs/hpo/smac/${env}/${algorithm}/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
