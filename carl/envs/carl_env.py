@@ -275,7 +275,6 @@ class CARLEnv(Wrapper):
         self.episode_counter += 1
         self.step_counter = 0
         if "context_id" in kwargs.keys():
-            print(kwargs["context_id"])
             self.context = self.contexts[kwargs["context_id"]]
         else:
             self._progress_instance()
@@ -286,6 +285,7 @@ class CARLEnv(Wrapper):
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
+            info_dict["context_key"] = self.context_key
         else:
             state = _ret
         state = self.build_context_adaptive_state(state=state)
@@ -379,7 +379,7 @@ class CARLEnv(Wrapper):
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True
-        info["context_id"] = self.context_selector.context_id
+        info["context_key"] = self.context_key
         return state, reward, done, info
 
     def __getattr__(self, name: str) -> Any:
