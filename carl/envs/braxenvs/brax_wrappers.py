@@ -13,11 +13,9 @@
 # limitations under the License.
 
 """Wrappers to convert brax envs to gym envs."""
-from __future__ import annotations
-
 from typing import ClassVar, Optional
 
-from brax.envs import Env, Wrapper
+from brax.envs import Env
 import gym
 from gym import spaces
 from gym.vector import utils
@@ -34,17 +32,13 @@ class GymWrapper(gym.Env):
   _gym_disable_underscore_compat: ClassVar[bool] = True
 
   def __init__(self,
-               env: Env | Wrapper,
+               env: Env,
                seed: int = 0,
                backend: Optional[str] = None):
     self._env = env
-    if hasattr(self._env, "unwrapped"):
-      dt = self._env.unwrapped.sys.config.dt
-    else:
-      dt = self._env.sys.config.dt
     self.metadata = {
         'render.modes': ['human', 'rgb_array'],
-        'video.frames_per_second': 1 / dt
+        'video.frames_per_second': 1 / self._env.dt
     }
     self.seed(seed)
     self.backend = backend
