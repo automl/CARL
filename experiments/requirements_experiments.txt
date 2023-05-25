@@ -1,3 +1,4 @@
+tqdm
 hydra-core
 hydra-colorlog
 rich
@@ -7,6 +8,7 @@ pandas
 wandb
 coax==0.1.11
 dm-haiku
-jax[cuda,cpu]==0.3.25
+jax[cuda]==0.3.25
 hydra-submitit-launcher
 pyvirtualdisplay
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
