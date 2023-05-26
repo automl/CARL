@@ -16,6 +16,7 @@ class TestInitEnvs(unittest.TestCase):
                     env = (  # noqa: F841 local variable is assigned to but never used
                         var()
                     )
+                    obs = env.reset()
                 except Exception as e:
                     print(f"Cannot instantiate {var} environment.")
                     raise e
