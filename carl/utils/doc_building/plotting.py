@@ -30,6 +30,7 @@ def radar_factory(num_vars: int, frame: str = "circle") -> np.ndarray:
     theta = np.linspace(0, 2 * np.pi, num_vars, endpoint=False)
 
     class RadarAxes(PolarAxes):
+
         name = "radar"
         # use 1 line segment to connect specified points
         RESOLUTION = 1

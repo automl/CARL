@@ -9,16 +9,9 @@ from torch.nn.functional import interpolate
 
 # Generates a noise tensor. Uses torch.randn.
 def generate_spatial_noise(
-    size: Union[Any, List[int], Tuple[int]],
-    device: Union[str, torch.device] = "cpu",
-    seed: int = 0,
+    size: Union[Any, List[int], Tuple[int]], device: Union[str, torch.device] = "cpu", seed: int = 0
 ) -> Tensor:
-    return torch.randn(
-        size,
-        device=device,
-        dtype=torch.float32,
-        generator=torch.Generator().manual_seed(seed),
-    )
+    return torch.randn(size, device=device, dtype=torch.float32, generator=torch.Generator().manual_seed(seed))
 
 
 # Generate a sample given a TOAD-GAN and additional parameters

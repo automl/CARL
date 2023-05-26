@@ -38,7 +38,7 @@ def launch_gateway():
             die_on_exit=True,
             port=free_port,
             java_path=str(JAVA),
-            javaopts=["-Djava.awt.headless=false"],
+            javaopts=["-Djava.awt.headless=false"]
         ),
         free_port,
     )

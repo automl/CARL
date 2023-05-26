@@ -12,6 +12,7 @@ def parse_dot_brackets(
     target_structure_ids: List[int] = None,
     target_structure_path: Path = None,
 ) -> List[str]:
+
     """Generate the targets for next epoch.
 
     The most common encoding for the RNA secondary structure is the dot-bracket

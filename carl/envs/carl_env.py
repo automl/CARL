@@ -350,7 +350,7 @@ class CARLEnv(Wrapper):
         """
         # Step the environment
         step_output = self.env.step(action)
-        if len(step_output) == 5:
+        if len(step_output) == 5: 
             state, reward, terminated, truncated, info = step_output
             done = terminated or truncated
         else:

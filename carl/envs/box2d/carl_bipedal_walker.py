@@ -1,8 +1,8 @@
 from typing import Dict, List, Optional, Union
 
-import gym
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
+import gym
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
 

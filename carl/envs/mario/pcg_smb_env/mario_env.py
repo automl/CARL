@@ -1,10 +1,9 @@
-from typing import Any, Dict, List, Literal, Optional, cast
-
 import atexit
 import os
 import random
 import socket
 from collections import deque
+from typing import Any, Dict, List, Literal, Optional, cast
 
 import cv2
 import gym
@@ -95,10 +94,7 @@ class MarioEnv(gym.Env):
         self.display = Display(use_xauth=True)
 
     def reset(
-        self,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
-        **kwargs,
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None, **kwargs
     ):
         self._reset_obs()
         if self.game is None:
@@ -252,7 +248,7 @@ class MarioEnv(gym.Env):
         while len(frameBuffer) != self.frame_size:
             frameBuffer += self.socket.recv(self.frame_size)
         return frameBuffer
-
+    
     def get_action_meanings(self) -> List[str]:
         return ACTION_MEANING
 
