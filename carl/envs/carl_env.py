@@ -43,7 +43,7 @@ class CARLEnv(Wrapper):
     contexts: Contexts
         Dict of contexts/instances. Key are context id, values are contexts as
         Dict[context feature id, context feature value].
-    hide_context: bool = False
+    hide_context: bool = True
         If False, the context will be appended to the original environment's state.
     add_gaussian_noise_to_context: bool = False
         Wether to add Gaussian noise to the context with the relative standard deviation

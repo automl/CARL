@@ -41,7 +41,7 @@ class CARLReacher(CARLEnv):
         env: Reacher = None,
         n_envs: int = 1,
         contexts: Contexts = {},
-        hide_context: bool = False,
+        hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
         gaussian_noise_std_percentage: float = 0.01,
         logger: Optional[TrialLogger] = None,
