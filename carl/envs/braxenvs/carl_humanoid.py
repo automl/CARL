@@ -54,7 +54,8 @@ class CARLHumanoid(CARLEnv):
         max_episode_length: int = 1000,
     ):
         if env is None:
-            env = create("humanoid", batch_size=n_envs)
+            batch_size = None if n_envs == 1 else n_envs
+            env = create("humanoid", batch_size=batch_size)
 
         self.n_envs=n_envs
         if n_envs == 1:

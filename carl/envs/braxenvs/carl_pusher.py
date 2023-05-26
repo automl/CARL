@@ -53,7 +53,8 @@ class CARLPusher(CARLEnv):
         max_episode_length = 1000,
     ):
         if env is None:
-            env = create("pusher", batch_size=n_envs)
+            batch_size = None if n_envs == 1 else n_envs
+            env = create("pusher", batch_size=batch_size)
 
         self.n_envs=n_envs
         if n_envs == 1:

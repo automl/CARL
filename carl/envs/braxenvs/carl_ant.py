@@ -58,7 +58,8 @@ class CARLAnt(CARLEnv):
         max_episode_length = 1000,
     ):
         if env is None:
-            env = create("ant", batch_size=n_envs)
+            batch_size = None if n_envs == 1 else n_envs  # TODO check if batched env works with concat state
+            env = create("ant", batch_size=batch_size)
             
         self.n_envs=n_envs
         if n_envs == 1:
