@@ -8,6 +8,7 @@ except FileNotFoundError:
     def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
         return Tensor()
 
+
 def gen_noise(*args, **kwargs):
     return generate_initial_noise(INITIAL_WIDTH, INITIAL_HEIGHT, INITIAL_LEVEL_INDEX)
 

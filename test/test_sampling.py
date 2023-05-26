@@ -1,6 +1,8 @@
 import unittest
-from carl.context.sampling import get_default_context_and_bounds
+
 from experiments.carlbench.context_sampling import ContextSampler
+
+from carl.context.sampling import get_default_context_and_bounds
 
 
 class TestSampling(unittest.TestCase):

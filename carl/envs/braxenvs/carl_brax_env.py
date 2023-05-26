@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Union
 
 from brax.envs import create
-from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
 
 from carl.context.selection import AbstractSelector
+from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
@@ -33,13 +33,15 @@ class CARLBraxEnv(CARLEnv):
             Union[AbstractSelector, type[AbstractSelector]]
         ] = None,
         context_selector_kwargs: Optional[Dict] = None,
-        max_episode_length = 1000,
+        max_episode_length=1000,
     ):
         if env is None:
-            batch_size = None if n_envs == 1 else n_envs  # TODO check if batched env works with concat state
+            batch_size = (
+                None if n_envs == 1 else n_envs
+            )  # TODO check if batched env works with concat state
             env = create(self.env_name, batch_size=batch_size)
-            
-        self.n_envs=n_envs
+
+        self.n_envs = n_envs
         if n_envs == 1:
             env = GymWrapper(env)
         else:
@@ -72,11 +74,9 @@ class CARLBraxEnv(CARLEnv):
 
     def _update_context(self) -> None:
         raise NotImplementedError
-       
+
     def __getattr__(self, name: str) -> Any:
         if name in ["sys", "__getstate__"]:
             return getattr(self.env._environment, name)
         else:
             return getattr(self, name)
-
-

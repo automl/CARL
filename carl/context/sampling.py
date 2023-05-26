@@ -1,5 +1,6 @@
 # flake8: noqa: W605
 from __future__ import annotations
+
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import importlib
@@ -61,7 +62,7 @@ def sample_contexts(
     fallback_sample_std: float = 0.1,
     seed: Optional[int] = None,
     uniform_distribution: bool = False,
-    uniform_bounds_rel: tuple(float, float) | None = None
+    uniform_bounds_rel: tuple(float, float) | None = None,
 ) -> Dict[int, Dict[str, Any]]:
     """
     Sample contexts.
@@ -167,7 +168,7 @@ def sample_contexts(
                 # bounds defined as [loc, loc+scale]
                 if sample_mean == 0:
                     # relative bounds are centered around 1 so subtract here for the percentages
-                    loc = uniform_bounds_rel[0] - 1  
+                    loc = uniform_bounds_rel[0] - 1
                     scale = uniform_bounds_rel[1] - uniform_bounds_rel[0]
                 elif sample_mean < 0:
                     loc = uniform_bounds_rel[1] * sample_mean
@@ -190,7 +191,9 @@ def sample_contexts(
                 random_variable = sample_dists[k][0]
                 context_feature_type = sample_dists[k][1]
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
-                assert lower_bound <= upper_bound, f"context variable {k}: lower bound [{lower_bound}] is higher than upper bound [{upper_bound}]!"
+                assert (
+                    lower_bound <= upper_bound
+                ), f"context variable {k}: lower bound [{lower_bound}] is higher than upper bound [{upper_bound}]!"
                 if context_feature_type == list:
                     length = np.random.randint(
                         500000

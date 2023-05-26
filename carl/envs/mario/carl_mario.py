@@ -1,23 +1,23 @@
-from collections import defaultdict
-import os
 from typing import Dict, List, Optional, Union
 
+import os
+from collections import defaultdict
+
 import numpy as np
+from gym import spaces
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
+from carl.envs.mario.carl_mario_definitions import CONTEXT_BOUNDS  # noqa: F401
 from carl.envs.mario.carl_mario_definitions import (
     DEFAULT_CONTEXT,
     INITIAL_HEIGHT,
     INITIAL_WIDTH,
-    CONTEXT_BOUNDS  # noqa: F401
 )
+from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
 from carl.envs.mario.pcg_smb_env.utils import load_level
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
-from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
-
-from gym import spaces
 
 
 class CARLMarioEnv(CARLEnv):
@@ -73,17 +73,19 @@ class CARLMarioEnv(CARLEnv):
     def _update_context(self) -> None:
         if len(self.levels_per_context) == 0:
             for context_key, context in self.contexts.items():
-                context_hash = f"{context_key}_" + "-".join([f"{k}={v}" for k, v in context.items()])
-                level_path = os.path.join("levels", f"{context_hash}.txt")
-                self.levels_per_context[context_key].append(
-                    level_path
+                context_hash = f"{context_key}_" + "-".join(
+                    [f"{k}={v}" for k, v in context.items()]
                 )
+                level_path = os.path.join("levels", f"{context_hash}.txt")
+                self.levels_per_context[context_key].append(level_path)
                 if self._check_if_level_exists(context_hash):
-                    # fix race condition 
+                    # fix race condition
                     # TODO(frederik): maybe use lock file?
                     level = None
                     while level is None:
-                        level = np.load(level_path.replace(".txt", ".npy"), allow_pickle=True).astype(np.float32)
+                        level = np.load(
+                            level_path.replace(".txt", ".npy"), allow_pickle=True
+                        ).astype(np.float32)
                         if not isinstance(level, np.ndarray):
                             level = None
                     self.contexts[context_key]["noise"] = level
@@ -101,32 +103,36 @@ class CARLMarioEnv(CARLEnv):
                 np.save(level_path.replace(".txt", ".npy"), initial_noise[0])
             self.context_selector.contexts = self.contexts
 
-        if not self.hide_context and not isinstance(self.observation_space, spaces.Dict):
-            self.observation_space = spaces.Dict(dict(
-                state=self.env.observation_space,
-                context=spaces.Box(
-                    low=-np.inf * np.ones_like(self.contexts[0]["noise"]),
-                    high=np.inf * np.ones_like(self.contexts[0]["noise"]),
-                    dtype=np.float32,
+        if not self.hide_context and not isinstance(
+            self.observation_space, spaces.Dict
+        ):
+            self.observation_space = spaces.Dict(
+                dict(
+                    state=self.env.observation_space,
+                    context=spaces.Box(
+                        low=-np.inf * np.ones_like(self.contexts[0]["noise"]),
+                        high=np.inf * np.ones_like(self.contexts[0]["noise"]),
+                        dtype=np.float32,
+                    ),
                 )
-            ))
+            )
         self.env.mario_state = self.context["mario_state"]
         self.env.mario_inertia = self.context["mario_inertia"]
-        self.env.levels = [load_level(level) for level in self.levels_per_context[self.context_key]]
+        self.env.levels = [
+            load_level(level) for level in self.levels_per_context[self.context_key]
+        ]
 
     def build_context_adaptive_state(self, state: np.ndarray, **kwargs):
         if not self.hide_context:
             return dict(state=state, context=self.context["noise"])
         return state
-    
+
     def step(self, action):
         state, reward, done, info = self.env.step(action)
 
         if not self.hide_context:
             # Add context features to state
-            state = self.build_context_adaptive_state(
-                state=state
-            )
+            state = self.build_context_adaptive_state(state=state)
 
         self.total_timestep_counter += 1
         self.step_counter += 1

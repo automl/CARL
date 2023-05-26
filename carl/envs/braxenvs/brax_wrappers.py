@@ -15,134 +15,129 @@
 """Wrappers to convert brax envs to gym envs."""
 from typing import ClassVar, Optional
 
-from brax.envs import Env
+from functools import partial
+
 import gym
-from gym import spaces
-from gym.vector import utils
 import jax
 import numpy as np
-from functools import partial
+from brax.envs import Env
+from gym import spaces
+from gym.vector import utils
 
 
 class GymWrapper(gym.Env):
-  """A wrapper that converts Brax Env to one that follows Gym API."""
+    """A wrapper that converts Brax Env to one that follows Gym API."""
 
-  # Flag that prevents `gym.register` from misinterpreting the `_step` and
-  # `_reset` as signs of a deprecated gym Env API.
-  _gym_disable_underscore_compat: ClassVar[bool] = True
+    # Flag that prevents `gym.register` from misinterpreting the `_step` and
+    # `_reset` as signs of a deprecated gym Env API.
+    _gym_disable_underscore_compat: ClassVar[bool] = True
 
-  def __init__(self,
-               env: Env,
-               seed: int = 0,
-               backend: Optional[str] = None):
-    self._env = env
-    self.metadata = {
-        'render.modes': ['human', 'rgb_array'],
-        'video.frames_per_second': 1 / self._env.dt
-    }
-    self.seed(seed)
-    self.backend = backend
-    self._state = None
+    def __init__(self, env: Env, seed: int = 0, backend: Optional[str] = None):
+        self._env = env
+        self.metadata = {
+            "render.modes": ["human", "rgb_array"],
+            "video.frames_per_second": 1 / self._env.dt,
+        }
+        self.seed(seed)
+        self.backend = backend
+        self._state = None
 
-    obs = np.inf * np.ones(self._env.observation_size, dtype='float32')
-    self.observation_space = spaces.Box(-obs, obs, dtype='float32')
+        obs = np.inf * np.ones(self._env.observation_size, dtype="float32")
+        self.observation_space = spaces.Box(-obs, obs, dtype="float32")
 
-    action = np.ones(self._env.action_size, dtype='float32')
-    self.action_space = spaces.Box(-action, action, dtype='float32')
+        action = np.ones(self._env.action_size, dtype="float32")
+        self.action_space = spaces.Box(-action, action, dtype="float32")
 
-    def reset(key):
-      key1, key2 = jax.random.split(key)
-      state = self._env.reset(key2)
-      return state, state.obs, key1
+        def reset(key):
+            key1, key2 = jax.random.split(key)
+            state = self._env.reset(key2)
+            return state, state.obs, key1
 
-    self._reset = partial(reset)
+        self._reset = partial(reset)
 
-    def step(state, action):
-      state = self._env.step(state, action)
-      info = {**state.metrics, **state.info}
-      return state, state.obs, state.reward, state.done, info
+        def step(state, action):
+            state = self._env.step(state, action)
+            info = {**state.metrics, **state.info}
+            return state, state.obs, state.reward, state.done, info
 
-    self._step = partial(step)
+        self._step = partial(step)
 
-  def reset(self):
-    self._state, obs, self._key = self._reset(self._key)
-    # We return device arrays for pytorch users.
-    return obs
+    def reset(self):
+        self._state, obs, self._key = self._reset(self._key)
+        # We return device arrays for pytorch users.
+        return obs
 
-  def step(self, action):
-    self._state, obs, reward, done, info = self._step(self._state, action)
-    # We return device arrays for pytorch users.
-    return obs, reward, done, info
+    def step(self, action):
+        self._state, obs, reward, done, info = self._step(self._state, action)
+        # We return device arrays for pytorch users.
+        return obs, reward, done, info
 
-  def seed(self, seed: int = 0):
-    self._key = jax.random.PRNGKey(seed)
+    def seed(self, seed: int = 0):
+        self._key = jax.random.PRNGKey(seed)
 
-  def render(self, mode='human'):
-    return super().render(mode=mode)  # just raise an exception
+    def render(self, mode="human"):
+        return super().render(mode=mode)  # just raise an exception
 
 
 class VectorGymWrapper(gym.vector.VectorEnv):
-  """A wrapper that converts batched Brax Env to one that follows Gym VectorEnv API."""
+    """A wrapper that converts batched Brax Env to one that follows Gym VectorEnv API."""
 
-  # Flag that prevents `gym.register` from misinterpreting the `_step` and
-  # `_reset` as signs of a deprecated gym Env API.
-  _gym_disable_underscore_compat: ClassVar[bool] = True
+    # Flag that prevents `gym.register` from misinterpreting the `_step` and
+    # `_reset` as signs of a deprecated gym Env API.
+    _gym_disable_underscore_compat: ClassVar[bool] = True
 
-  def __init__(self,
-               env: Env,
-               seed: int = 0,
-               backend: Optional[str] = None):
-    self._env = env
-    self.metadata = {
-        'render.modes': ['human', 'rgb_array'],
-        'video.frames_per_second': 1 / self._env.dt
-    }
-    if not hasattr(self._env, 'batch_size'):
-      raise ValueError('underlying env must be batched')
+    def __init__(self, env: Env, seed: int = 0, backend: Optional[str] = None):
+        self._env = env
+        self.metadata = {
+            "render.modes": ["human", "rgb_array"],
+            "video.frames_per_second": 1 / self._env.dt,
+        }
+        if not hasattr(self._env, "batch_size"):
+            raise ValueError("underlying env must be batched")
 
-    self.num_envs = self._env.batch_size
-    self.seed(seed)
-    self.backend = backend
-    self._state = None
+        self.num_envs = self._env.batch_size
+        self.seed(seed)
+        self.backend = backend
+        self._state = None
 
-    obs = np.inf * np.ones(self._env.observation_size, dtype='float32')
-    obs_space = spaces.Box(-obs, obs, dtype='float32')
-    self.observation_space = utils.batch_space(obs_space, self.num_envs)
+        obs = np.inf * np.ones(self._env.observation_size, dtype="float32")
+        obs_space = spaces.Box(-obs, obs, dtype="float32")
+        self.observation_space = utils.batch_space(obs_space, self.num_envs)
 
-    action = np.ones(self._env.action_size, dtype='float32')
-    action_space = spaces.Box(-action, action, dtype='float32')
-    self.action_space = utils.batch_space(action_space, self.num_envs)
+        action = np.ones(self._env.action_size, dtype="float32")
+        action_space = spaces.Box(-action, action, dtype="float32")
+        self.action_space = utils.batch_space(action_space, self.num_envs)
 
-    def reset(key):
-      key1, key2 = jax.random.split(key)
-      state = self._env.reset(key2)
-      return state, state.obs, key1
+        def reset(key):
+            key1, key2 = jax.random.split(key)
+            state = self._env.reset(key2)
+            return state, state.obs, key1
 
-    self._reset = partial(reset)
+        self._reset = partial(reset)
 
-    def step(state, action):
-      state = self._env.step(state, action)
-      info = {**state.metrics, **state.info}
-      return state, state.obs, state.reward, state.done, info
+        def step(state, action):
+            state = self._env.step(state, action)
+            info = {**state.metrics, **state.info}
+            return state, state.obs, state.reward, state.done, info
 
-    self._step = partial(step)
+        self._step = partial(step)
 
-  def reset(self):
-    self._state, obs, self._key = self._reset(self._key)
-    return obs
+    def reset(self):
+        self._state, obs, self._key = self._reset(self._key)
+        return obs
 
-  def step(self, action):
-    self._state, obs, reward, done, info = self._step(self._state, action)
-    return obs, reward, done, info
+    def step(self, action):
+        self._state, obs, reward, done, info = self._step(self._state, action)
+        return obs, reward, done, info
 
-  def seed(self, seed: int = 0):
-    self._key = jax.random.PRNGKey(seed)
+    def seed(self, seed: int = 0):
+        self._key = jax.random.PRNGKey(seed)
 
-  def render(self, mode='human'):
-    if mode == 'rgb_array':
-      sys, state = self._env.sys, self._state
-      if state is None:
-        raise RuntimeError('must call reset or step before rendering')
-      return image.render_array(sys, state.state.take(0), 256, 256)
-    else:
-      return super().render(mode=mode)  # just raise an exception
+    def render(self, mode="human"):
+        if mode == "rgb_array":
+            sys, state = self._env.sys, self._state
+            if state is None:
+                raise RuntimeError("must call reset or step before rendering")
+            return image.render_array(sys, state.state.take(0), 256, 256)
+        else:
+            return super().render(mode=mode)  # just raise an exception

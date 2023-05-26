@@ -26,7 +26,7 @@ extras_require = {
         "gym[box2d]==0.24.1",
     ],
     "brax": [
-        "brax>=0.0.10,<=0.0.16",
+        "brax>=0.9.0",
         "protobuf>=3.17.3",
     ],
     "dm_control": [
