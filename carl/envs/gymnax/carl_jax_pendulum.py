@@ -1,6 +1,8 @@
 from typing import Dict, List, Optional, Union
 
 from gymnax.environments.classic_control.pendulum import EnvParams, Pendulum
+from gymnax.wrappers.gym import GymnaxToGymWrapper
+from gymnax.environments.spaces import gymnax_space_to_gym_space
 import jax.numpy as jnp
 
 from carl.context.selection import AbstractSelector
@@ -28,11 +30,21 @@ CONTEXT_BOUNDS = {
     "max_steps_in_episode": (1, jnp.inf, int),
 }
 
+class CustomGymnaxToGymWrapper(GymnaxToGymWrapper):
+        @property
+        def observation_space(self):
+            return gymnax_space_to_gym_space(
+            self._env.observation_space(self.env_params)
+        )
+
+        @observation_space.setter
+        def observation_space(self, value):
+            self._observation_space = value
 
 class CARLJaxPendulumEnv(CARLEnv):
     def __init__(
         self,
-        env: Pendulum = Pendulum(),
+        env: Pendulum = CustomGymnaxToGymWrapper(Pendulum()),
         contexts: Contexts = {},
         hide_context: bool = True,
         add_gaussian_noise_to_context: bool = False,
