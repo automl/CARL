@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Union
 
 import jax.numpy as jnp
 from gymnax.environments.classic_control.cartpole import CartPole
-from gymnax.environments.spaces import gymnax_space_to_gym_space
+from gymnax.environments.spaces import Space, gymnax_space_to_gym_space
 from gymnax.wrappers.gym import GymnaxToGymWrapper
 
 from carl.context.selection import AbstractSelector
@@ -31,11 +31,11 @@ CONTEXT_BOUNDS = {
 
 class CustomGymnaxToGymWrapper(GymnaxToGymWrapper):
     @property
-    def observation_space(self):
+    def observation_space(self) -> Dict:
         return gymnax_space_to_gym_space(self._env.observation_space(self.env_params))
 
     @observation_space.setter
-    def observation_space(self, value):
+    def observation_space(self, value: Space) -> None:
         self._observation_space = value
 
 
