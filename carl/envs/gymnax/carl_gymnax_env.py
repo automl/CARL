@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from typing import Any, Dict, List, Optional, Union
 
 import gymnasium
 
+from CARL.carl.envs.gymnax.utils import make_gymnax_env
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
-from carl.envs.gymnax.wrappers import make_gymnax_env
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 

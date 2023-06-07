@@ -1,17 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
-
 import gymnax
 import jax.numpy as jnp
-from gymnax.environments.classic_control.mountain_car import MountainCar
 
-from carl.context.selection import AbstractSelector
-from carl.envs.carl_env import CARLEnv
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
-from carl.envs.gymnax.wrappers import CustomGymnaxToGymWrapper
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Context
 
 DEFAULT_CONTEXT = {
     "min_position": -1.2,
@@ -38,7 +31,7 @@ CONTEXT_BOUNDS = {
 
 class CARLJaxMountainCarEnv(CARLGymnaxEnv):
     env_name: str = "MountainCar-v0"
-    max_episode_steps: int = DEFAULT_CONTEXT["max_steps_in_episode"]
+    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
 
     def _update_context(self) -> None:

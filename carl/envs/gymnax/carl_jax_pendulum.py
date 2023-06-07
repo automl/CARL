@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
-
 import jax.numpy as jnp
-from gymnax.environments.classic_control.pendulum import EnvParams, Pendulum
+from gymnax.environments.classic_control.pendulum import EnvParams
 
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Context
 
 DEFAULT_CONTEXT = {
     "max_speed": 8.0,
@@ -31,7 +29,7 @@ CONTEXT_BOUNDS = {
 
 class CARLJaxPendulumEnv(CARLGymnaxEnv):
     env_name: str = "Pendulum-v1"
-    max_episode_steps: int = DEFAULT_CONTEXT["max_steps_in_episode"]
+    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
 
     def _update_context(self) -> None:

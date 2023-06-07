@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import gymnax
 import jax.numpy as jnp
-from gymnax.environments.classic_control.cartpole import CartPole
 
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Context
 
 DEFAULT_CONTEXT = {
     "gravity": 9.8,
@@ -34,7 +33,7 @@ CONTEXT_BOUNDS = {
 
 class CARLJaxCartPoleEnv(CARLGymnaxEnv):
     env_name: str = "CartPole-v1"
-    max_episode_steps: int = DEFAULT_CONTEXT["max_steps_in_episode"]
+    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])  # type: ignore[arg-type]
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
 
     def _update_context(self) -> None:

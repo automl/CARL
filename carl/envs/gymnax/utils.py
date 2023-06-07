@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import gym
 import gymnasium
 import gymnax
 from gymnasium.wrappers import EnvCompatibility

@@ -1,18 +1,11 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
-
-import gymnasium
 import gymnax
 import jax.numpy as jnp
 import numpy as np
-from gymnax.environments.classic_control.acrobot import Acrobot
 
-from carl.context.selection import AbstractSelector
-from carl.envs.carl_env import CARLEnv
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Context
 
 DEFAULT_CONTEXT = {
     "link_length_1": 1,
@@ -69,7 +62,7 @@ CONTEXT_BOUNDS = {
 
 class CARLJaxAcrobotEnv(CARLGymnaxEnv):
     env_name: str = "Acrobot-v1"
-    max_episode_steps: int = DEFAULT_CONTEXT["max_steps_in_episode"]
+    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
 
     def _update_context(self) -> None:
