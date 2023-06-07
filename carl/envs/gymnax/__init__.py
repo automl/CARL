@@ -13,19 +13,19 @@ from carl.envs.gymnax.carl_jax_cartpole import (  # noqa: F401
 )
 from carl.envs.gymnax.carl_jax_cartpole import CARLJaxCartPoleEnv  # noqa: F401
 from carl.envs.gymnax.carl_jax_mountaincar import (  # noqa: F401
+    CONTEXT_BOUNDS as CARLJaxMountainCarContinuousEnv_bounds,
+)
+from carl.envs.gymnax.carl_jax_mountaincar import (
     CONTEXT_BOUNDS as CARLJaxMountainCarEnv_bounds,
 )
 from carl.envs.gymnax.carl_jax_mountaincar import (  # noqa: F401
+    DEFAULT_CONTEXT as CARLJaxMountainCarContinuousEnv_defaults,
+)
+from carl.envs.gymnax.carl_jax_mountaincar import (
     DEFAULT_CONTEXT as CARLJaxMountainCarEnv_defaults,
 )
 from carl.envs.gymnax.carl_jax_mountaincar import CARLJaxMountainCarEnv  # noqa: F401
-from carl.envs.gymnax.carl_jax_mountaincarcontinuous import (  # noqa: F401
-    CONTEXT_BOUNDS as CARLJaxMountainCarContinuousEnv_bounds,
-)
-from carl.envs.gymnax.carl_jax_mountaincarcontinuous import (  # noqa: F401
-    DEFAULT_CONTEXT as CARLJaxMountainCarContinuousEnv_defaults,
-)
-from carl.envs.gymnax.carl_jax_mountaincarcontinuous import (  # noqa: F401
+from carl.envs.gymnax.carl_jax_mountaincar import (  # noqa: F401
     CARLJaxMountainCarContinuousEnv,
 )
 from carl.envs.gymnax.carl_jax_pendulum import (  # noqa: F401
