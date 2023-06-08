@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Union
+from typing import Any, List, Union
 
 import gymnasium.spaces as spaces
 import numpy as np
 from ConfigSpace.configuration_space import Configuration, ConfigurationSpace
 from ConfigSpace.hyperparameters import (
     Hyperparameter,
+    NormalFloatHyperparameter,
     NumericalHyperparameter,
     UniformFloatHyperparameter,
 )
@@ -179,6 +180,38 @@ class CartPoleContextSpace(ContextSpace):
             ),  # TODO: We can't have inf. How to handle/annotate when transforming to obs space?
         ]
 
+    def verify(self, configspace: ConfigurationSpace) -> bool:
+        # TODO Check whether HPs in of configspace in self.hyperparameters included
+        ...
+
+
+class ContextSampler(ConfigurationSpace):
+    def __init__(
+        self,
+        context_distributions: Union[
+            List[Hyperparameter], str, DictConfig, ConfigurationSpace
+        ],
+        seed: int,
+    ):
+        self.context_distributions = context_distributions
+        # TODO: pass seed
+        ...
+
+    def add_defaults(context_space: ContextSpace):
+        """Add defaults from env context space
+
+        Parameters
+        ----------
+        context_space : ContextSpace
+            _description_
+        """
+        ...
+
+    def sample_contexts(self, n_contexts: int) -> dict[int, dict[str, Any]]:
+        contexts = self.sample_configuration(size=n_contexts)
+        contexts = {i: C for i, C in enumerate(contexts)}
+        return contexts
+
 
 if __name__ == "__main__":
     print("hello world")
@@ -186,3 +219,12 @@ if __name__ == "__main__":
     print(context_space)
     context = context_space.sample_configuration()
     print(context)
+
+    context_sampler = ContextSampler(
+        [
+            NormalFloatHyperparameter("gravity", mu=9.8, sigma=1),
+        ],
+        seed=0,
+    )
+
+    contexts = context_sampler.sample_contexts(n_contexts=10)
