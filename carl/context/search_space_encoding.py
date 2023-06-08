@@ -133,7 +133,9 @@ def search_space_to_config_space(
     elif type(search_space) == ConfigurationSpace:
         cs = search_space
     else:
-        raise ValueError(f"search_space must be of type str or DictConfig. Got {type(search_space)}.")
+        raise ValueError(
+            f"search_space must be of type str or DictConfig. Got {type(search_space)}."
+        )
 
     if seed is not None:
         cs.seed(seed=seed)
