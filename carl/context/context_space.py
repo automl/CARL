@@ -14,6 +14,7 @@ from ConfigSpace.hyperparameters import (
 from omegaconf import DictConfig
 from carl.context.search_space_encoding import search_space_to_config_space
 from typing_extensions import TypeAlias
+from carl.utils.types import Context, Contexts
 
 ContextFeature: TypeAlias = Hyperparameter
 NumericalContextFeature: TypeAlias = NumericalHyperparameter
@@ -41,6 +42,10 @@ class ContextSpace(object):
             Context features names.
         """
         return list(self.context_space.keys())
+    
+    def get_default_context(self) -> Context:
+        context = {cf.name: cf.default_value for cf in self.context_space.values()}
+        return context
     
     def to_gymnasium_space(
         self, context_feature_names: List[str] | None = None, as_dict: bool = False
@@ -72,79 +77,57 @@ class ContextSpace(object):
             return spaces.Box(low=low, high=high, dtype=np.float32)
 
 
-
-
-
 class ContextSampler(ConfigurationSpace):
     def __init__(
         self,
-        context_distributions: Union[
-            List[Hyperparameter], str, DictConfig, ConfigurationSpace
-        ],
+        context_distributions: list[ContextFeature] | str | DictConfig,
+        context_space: ContextSpace,
         seed: int,
         name: str | None = None,
     ):
         self.context_distributions = context_distributions
-        # TODO: pass seed
         super().__init__(name=name, seed=seed)
 
         if isinstance(context_distributions, list):
             self.add_context_features(context_distributions)
-        else:
+        elif type(context_distributions) in [str, DictConfig]:
             cs = search_space_to_config_space(context_distributions)
             self.add_context_features(cs.get_hyperparameters())
+        else:
+            raise ValueError(f"Unknown type `{type(context_distributions)}` for `context_distributions`.")
+        
+        self.context_feature_names = [cf.name for cf in context_distributions]
+        self.context_space = context_space
 
-        self._context_features: list[str] = context_features if context_features else []
+        self.verify_distributions(context_distributions=context_distributions, context_space=context_space)
 
     def add_context_features(self, context_features: list[ContextFeature]) -> None:
         self.add_hyperparameters(context_features)
 
-    def add_defaults(context_space: ContextSpace):
-        """Add defaults from env context space
+    @staticmethod
+    def verify_distributions(context_distributions: list[ContextFeature], context_space: ContextSpace) -> bool:
+        # TODO verify distributions or context?
+        return True
 
-        Parameters
-        ----------
-        context_space : ContextSpace
-            _description_
-        """
-        ...
+    def sample_contexts(self, n_contexts: int) -> Contexts:
+        contexts = self._sample_contexts(size=n_contexts)
 
-    def sample_contexts(self, n_contexts: int) -> dict[int, dict[str, Any]]:
-        contexts = self.sample_configuration(size=n_contexts)
-        contexts = {i: C for i, C in enumerate(contexts)}
+        # Convert to dict
+        contexts = {i: self.insert_defaults(C) for i, C in enumerate(contexts)}
+        
         return contexts
     
-    def sample_configuration(
+    def insert_defaults(self, context: Context) -> Context:
+        context_with_defaults = self.context_space.get_default_context()
+        context_with_defaults.update(context)
+        return context_with_defaults
+    
+    def _sample_contexts(
         self, size: int = 1
-    ) -> Union[Configuration, List[Configuration]]:
-        """
-        Samples values for all active context features. For all other values default is used.
-
-        Parameters
-        ----------
-        size : int = 1
-            Number of contexts to sample.
-
-        Returns
-        -------
-        Union[Configuration, List[Configuration]]
-            Sampled contexts.
-        """
-
-        def insert_defaults(cfg: Configuration) -> Configuration:
-            values = cfg.get_dictionary()
-            for feature in values.keys():
-                if feature not in self._context_features:
-                    values[feature] = self.get_hyperparameter(feature).default_value
-
-            return Configuration(self, values=values)
-
-        configurations = super().sample_configuration(size=size)
-
+    ) -> list[Context]:
+        contexts = self.sample_configuration(size=size)
         if size == 1:
-            configurations = insert_defaults(configurations)
-        else:
-            for i, configuration in enumerate(configurations):
-                configurations[i] = insert_defaults(configuration)
-
-        return configurations
+            contexts = [contexts]
+        contexts = [C.get_dictionary() for C in contexts]
+        return contexts
+  

@@ -14,21 +14,27 @@ import abc
 
 from carl.utils.types import Contexts, Context
 from carl.context.selection import AbstractSelector, RoundRobinSelector
-from carl.context.context_space import ContextFeature, ContextSpace, UniformFloatContextFeature
-
+from carl.context.context_space import (
+    ContextFeature,
+    ContextSpace,
+    UniformFloatContextFeature,
+    ContextSampler,
+    NormalFloatContextFeature,
+)
 
 
 class CARLEnv(Wrapper, abc.ABC):
     def __init__(
-            self, 
-            env: Env,
-            contexts: Contexts | None = None,
-            state_context_features: list[str] | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
-            obs_context_as_dict: bool = True,  # TODO discuss default
-            context_selector: AbstractSelector | type[AbstractSelector] | None = None,
-            context_selector_kwargs: dict = None,
-            **kwargs
-        ):
+        self,
+        env: Env,
+        contexts: Contexts | None = None,
+        state_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
+        obs_context_as_dict: bool = True,  # TODO discuss default
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
+        **kwargs,
+    ):
         super().__init__(env)
 
         self.state_observation_space: gymnasium.spaces.Space = env.observation_space
@@ -39,7 +45,7 @@ class CARLEnv(Wrapper, abc.ABC):
             contexts = {0: self.get_default_context(self)}
         self.contexts = contexts
         self.state_context_features = state_context_features
-        
+
         # Context Selector
         self.context_selector: type[AbstractSelector]
         if context_selector is None:
@@ -58,12 +64,16 @@ class CARLEnv(Wrapper, abc.ABC):
             raise ValueError(
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
-            )        
+            )
         self._progress_instance()
         self._update_context()
-        self.observation_space = self.get_observation_space(obs_context_feature_names=self.state_context_features)
+        self.observation_space = self.get_observation_space(
+            obs_context_feature_names=self.state_context_features
+        )
 
-    def get_observation_space(self, obs_context_feature_names: list[str] | None = None) -> gymnasium.spaces.Dict:
+    def get_observation_space(
+        self, obs_context_feature_names: list[str] | None = None
+    ) -> gymnasium.spaces.Dict:
         context_space = self.get_context_space()
         obs_space_context = context_space.to_gymnasium_space(
             context_feature_names=obs_context_feature_names,
@@ -85,12 +95,12 @@ class CARLEnv(Wrapper, abc.ABC):
     @classmethod
     def get_context_space(cls) -> ContextSpace:
         return ContextSpace(cls.get_context_features())
-    
+
     @classmethod
     def get_default_context(cls) -> dict[str, Any]:
-        context = {cf.name: cf.default_value for cf in cls.get_context_features()}
-        return context
-    
+        default_context = cls.get_context_space().get_default_context()
+        return default_context
+
     def _progress_instance(self) -> None:
         """
         Progress instance.
@@ -109,25 +119,31 @@ class CARLEnv(Wrapper, abc.ABC):
         context = self.context_selector.select()  # type: ignore [call-arg]
         self.context = context
 
-    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
+    def reset(
+        self, *, seed: int | None = None, options: dict[str, Any] | None = None
+    ) -> tuple[Any, dict[str, Any]]:
         self._progress_instance()
         self._update_context()
-        state = super().reset(seed=seed, options=options)  
-        state = self._add_context_to_state(state) 
+        state = super().reset(seed=seed, options=options)
+        state = self._add_context_to_state(state)
         return state
-    
+
     def _add_context_to_state(self, state):
         context = self.context
         if not self.obs_context_as_dict:
             context = [self.context[k] for k in self.state_context_features]
         else:
-            context = {k: v for k, v in self.context.items() if k in self.state_context_features}
+            context = {
+                k: v
+                for k, v in self.context.items()
+                if k in self.state_context_features
+            }
         state_context_dict = {
             "state": state,
             "context": context,
         }
         return state_context_dict
-    
+
     @abc.abstractmethod
     def _update_context(self) -> None:
         """
@@ -139,26 +155,29 @@ class CARLEnv(Wrapper, abc.ABC):
 
         """
         ...
-    
-    def step(self, action: Any) -> tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]:
+
+    def step(
+        self, action: Any
+    ) -> tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]:
         state = super().step(action)
         state = self._add_context_to_state(state)
         return state
-    
+
 
 class CARLClassicControlEnv(CARLEnv):
     env_name: str
 
     def __init__(
-            self, 
-            env: Env | None = None,
-            contexts: Contexts | None = None,
-            state_context_features: list[str] | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
-            # context_mask: list[str] | None = None,
-            obs_context_as_dict: bool = True,
-            context_selector: AbstractSelector | type[AbstractSelector] | None = None,
-            context_selector_kwargs: dict = None,
-            **kwargs
+        self,
+        env: Env | None = None,
+        contexts: Contexts | None = None,
+        state_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
+        # context_mask: list[str] | None = None,
+        obs_context_as_dict: bool = True,
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
+        **kwargs,
     ):
         if env is None:
             env = gymnasium.make(id=self.env_name)
@@ -169,16 +188,15 @@ class CARLClassicControlEnv(CARLEnv):
             obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            **kwargs
+            **kwargs,
         )
- 
 
 
 class CARLCartPole(CARLClassicControlEnv):
     env_name: str = "CartPole-v1"
 
     # TODO do we want to modify the initial state distribution bounds like before?
-   
+
     def _update_context(self) -> None:
         for k, v in self.context.items():
             setattr(self.env, k, v)
@@ -207,24 +225,28 @@ class CARLCartPole(CARLClassicControlEnv):
 
 
 if __name__ == "__main__":
-    
     from rich import print as printr
 
-
     seed = 0
+    # Sampling demo
+    context_distributions = [NormalFloatContextFeature("gravity", mu=9.8, sigma=1)]
+    context_sampler = ContextSampler(
+        context_distributions=context_distributions,
+        context_space=CARLCartPole.get_context_space(),
+        seed=seed,
+    )
+    contexts = context_sampler.sample_contexts(n_contexts=5)
+
+    # Env demo
 
     printr(CARLCartPole.get_context_space())
 
-    contexts = {
-        0: CARLCartPole.get_default_context(),
-        1: CARLCartPole.get_default_context(),
-    }
+    printr(contexts)
+
+
     state_context_features = list(CARLCartPole.get_default_context().keys())[:2]
 
-    env = CARLCartPole(
-        contexts=contexts,
-        state_context_features=state_context_features
-    )
+    env = CARLCartPole(contexts=contexts, state_context_features=state_context_features)
 
     state = env.reset()
 
