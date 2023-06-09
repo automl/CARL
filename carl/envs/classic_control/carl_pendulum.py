@@ -40,17 +40,13 @@ class CustomPendulum(gccenvs.pendulum.PendulumEnv):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
         high = np.array([self.initial_angle_max, self.initial_velocity_max])
         self.state = self.np_random.uniform(low=-high, high=high)
         self.last_u = None
-        if not return_info:
-            return self._get_obs()
-        else:
-            return self._get_obs(), {}
+        return self._get_obs(), {}
 
 
 class CARLPendulumEnv(CARLEnv):

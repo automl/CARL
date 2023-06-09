@@ -45,7 +45,6 @@ class CustomCartPoleEnv(CartPoleEnv):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
@@ -53,10 +52,7 @@ class CustomCartPoleEnv(CartPoleEnv):
             low=self.initial_state_lower, high=self.initial_state_upper, size=(4,)
         )
         self.steps_beyond_done = None
-        if not return_info:
-            return np.array(self.state, dtype=np.float32)
-        else:
-            return np.array(self.state, dtype=np.float32), {}
+        return np.array(self.state, dtype=np.float32), {}
 
 
 class CARLCartPoleEnv(CARLEnv):

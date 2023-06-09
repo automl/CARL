@@ -144,7 +144,7 @@ class TestStateConstruction(unittest.TestCase):
             gaussian_noise_std_percentage=0.01,
             state_context_features=["changing_context_features"],
         )
-        obs = env.reset()
+        obs, _ = env.reset()
         self.assertEqual(type(obs), dict)
         self.assertTrue("state" in obs)
         self.assertTrue("context" in obs)
@@ -323,7 +323,7 @@ class TestContextFeatureScaling(unittest.TestCase):
                 scale_context_features="no",
             )
         )
-        s = env.reset()
+        s, _ = env.reset()
         s_c = s["context"]
         forbidden_in_context = [
             f for f in env.state_context_features if f in context_mask

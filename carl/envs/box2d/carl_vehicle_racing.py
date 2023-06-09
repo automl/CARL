@@ -96,7 +96,6 @@ class CustomCarRacingEnv(CarRacing):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._destroy()

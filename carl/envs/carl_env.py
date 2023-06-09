@@ -8,6 +8,9 @@ import json
 import os
 from types import ModuleType
 
+#TODO: this is only needed for brax,remove
+import gym as legacy_gym
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import Wrapper, spaces
@@ -295,9 +298,10 @@ class CARLEnv(Wrapper):
         self, state: List[float], context_feature_values: Optional[Vector] = None
     ) -> Union[Vector, Dict]:
         tnp: ModuleType = np
-        if brax_spec is not None:
-            if type(state) == jaxlib.xla_extension.DeviceArray:
-                tnp = jnp
+        #if brax_spec is not None:
+            #TODO: this is outdated, do we need this at all?
+            #if type(state) == jaxlib.xla_extension.DeviceArray:
+            #    tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
@@ -476,7 +480,7 @@ class CARLEnv(Wrapper):
         self.observation_space: gym.spaces.Space
         if (
             not self.dict_observation_space
-            and not isinstance(self.observation_space, spaces.Box)
+            and not (isinstance(self.observation_space, spaces.Box) or isinstance(self.observation_space, legacy_gym.spaces.Box))
             and not self.hide_context
         ):
             raise ValueError(
