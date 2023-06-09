@@ -88,7 +88,7 @@ build:
 	$(PYTHON) setup.py sdist
 
 doc:
-	$(MAKE) -C ${DOCDIR} all
+	$(MAKE) -C ${DOCDIR} docs
 	@echo
 	@echo "View docs at:"
 	@echo ${INDEX_HTML}
