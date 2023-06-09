@@ -42,4 +42,5 @@ Modules
    carl.envs.classic_control
    carl.envs.dmc
    carl.envs.mario
+   carl.envs.rna
 

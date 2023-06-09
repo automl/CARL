@@ -546,14 +546,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_context</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_context</span><span class="p">()</span>
         <span class="n">return_info</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;return_info&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">_ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore [arg-type]</span>
+        <span class="n">_ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore [arg-type]</span>
         <span class="n">info_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">return_info</span><span class="p">:</span>
-            <span class="n">state</span><span class="p">,</span> <span class="n">info_dict</span> <span class="o">=</span> <span class="n">_ret</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">state</span> <span class="o">=</span> <span class="n">_ret</span>
+        <span class="n">state</span><span class="p">,</span> <span class="n">info_dict</span> <span class="o">=</span> <span class="n">_ret</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_context_adaptive_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">state</span></div>
+        <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">info_dict</span></div>
 
     <span class="k">def</span> <span class="nf">build_context_adaptive_state</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">context_feature_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
