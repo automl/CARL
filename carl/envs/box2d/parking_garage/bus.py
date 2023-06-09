@@ -379,7 +379,8 @@ class Bus(Car):
         """control: brake
 
         Args:
-            b (0..1): Degree to which the brakes are applied. More than 0.9 blocks the wheels to zero rotation"""
+            b (0..1): Degree to which the brakes are applied. More than 0.9 blocks the wheels to zero rotation
+        """
         for w in self.wheels[:2]:
             w.brake = b * 0.4
         for w in self.wheels[2:4]:
@@ -395,7 +396,8 @@ class Bus(Car):
         """control: steer
 
         Args:
-            s (-1..1): target position, it takes time to rotate steering wheel from side-to-side"""
+            s (-1..1): target position, it takes time to rotate steering wheel from side-to-side
+        """
         self.wheels[0].steer = s
         self.wheels[1].steer = s
 

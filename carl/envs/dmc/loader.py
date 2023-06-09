@@ -29,7 +29,6 @@ def load_dmc_env(
     environment_kwargs: Dict[str, bool] = None,
     visualize_reward: bool = False,
 ) -> dm_env:
-
     if domain_name in _DOMAINS:
         domain = _DOMAINS[domain_name]
     elif domain_name in suite._DOMAINS:

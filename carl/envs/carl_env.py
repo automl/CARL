@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
-import importlib
 import inspect
 import json
 import os
 from types import ModuleType
 
-#TODO: this is only needed for brax,remove
+# TODO: this is only needed for brax,remove
 import gym as legacy_gym
 
 import gymnasium as gym
@@ -20,11 +19,6 @@ from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts, ObsType, Vector
-
-brax_spec = importlib.util.find_spec("brax")
-if brax_spec is not None:
-    import jax.numpy as jnp
-    import jaxlib
 
 
 class CARLEnv(Wrapper):
@@ -476,7 +470,10 @@ class CARLEnv(Wrapper):
         self.observation_space: gym.spaces.Space
         if (
             not self.dict_observation_space
-            and not (isinstance(self.observation_space, spaces.Box) or isinstance(self.observation_space, legacy_gym.spaces.Box))
+            and not (
+                isinstance(self.observation_space, spaces.Box)
+                or isinstance(self.observation_space, legacy_gym.spaces.Box)
+            )
             and not self.hide_context
         ):
             raise ValueError(
