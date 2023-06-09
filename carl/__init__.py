@@ -6,7 +6,7 @@ __author__ = "Carolin Benjamins, Theresa Eimer, Frederik Schubert, André Bieden
 import datetime
 
 name = "CARL"
-package_name = "CARL"
+package_name = "carl"
 author = __author__
 
 author_email = "benjamins@tnt.uni-hannover.de"

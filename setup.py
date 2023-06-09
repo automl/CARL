@@ -77,6 +77,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.9",
     install_requires=[
+        "gym",
         "gymnasium>=0.27.1",
         "pygame==2.1.0",
         "scipy>=1.7.0",
