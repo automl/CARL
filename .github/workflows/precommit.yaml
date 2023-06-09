@@ -12,12 +12,18 @@ on:
 
   # When a push occurs on a PR that targets these branches
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches:
       - main
       - development
 
 jobs:
   run-all-files:
+    if : ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
