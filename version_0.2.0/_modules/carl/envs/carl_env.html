@@ -1,0 +1,882 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>carl.envs.carl_env &#8212; CARL Documentation 0.2.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+  <a class="navbar-brand" href="../../../index.html">
+  <!-- <p class="title">CARL Documentation</p> -->
+  </a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/automl/automl_sphinx_theme" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/automl_org?lang=de" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown mt-1">
+    <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
+        data-toggle="dropdown">
+        v0.2.0
+        <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
+        <a class="list-group-item list-group-item-action" href="#">v0.2.0 (stable)</a>
+    </div>
+</div>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search align-items-center" action="../../../search.html" method="get" style="width: 100%;">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control btn btn-md" name="q" id="search-input"
+    placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../../../index.html">CARL Documentation</a></h4>
+<div class="mb-3">v0.2.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../source/getting_started/index.html">
+   Getting Started
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../source/getting_started/installation.html">
+     Installing CARL
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../source/getting_started/quickstart.html">
+     Quickstart
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../source/environments/index.html">
+   Environments
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../source/environments/carl_env.html">
+     The CARL Environment
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../source/environments/environment_families/index.html">
+     Environment Families
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../source/environments/environment_families/classic_control.html">
+       CARL Classic Control Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../source/environments/environment_families/box2d.html">
+       CARL Box 2D Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../source/environments/environment_families/brax.html">
+       CARL Brax Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../source/environments/environment_families/toad_gan.html">
+       CARL Mario Environment
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../source/environments/environment_families/rna.html">
+       CARL RNA Design Environment
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../source/environments/benchmark_properties.html">
+     Benchmark Properties
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../source/environments/carlify.html">
+     CARLify your Environment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../source/api/index.html">
+   API Reference
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../source/cite.html">
+   Citing CARL
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../source/license.html">
+   License
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../source/references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for carl.envs.carl_env</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+<span class="kn">import</span> <span class="nn">gymnasium</span> <span class="k">as</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gymnasium</span> <span class="kn">import</span> <span class="n">Wrapper</span><span class="p">,</span> <span class="n">spaces</span>
+
+<span class="kn">from</span> <span class="nn">carl.context.augmentation</span> <span class="kn">import</span> <span class="n">add_gaussian_noise</span>
+<span class="kn">from</span> <span class="nn">carl.context.selection</span> <span class="kn">import</span> <span class="n">AbstractSelector</span><span class="p">,</span> <span class="n">RoundRobinSelector</span>
+<span class="kn">from</span> <span class="nn">carl.context.utils</span> <span class="kn">import</span> <span class="n">get_context_bounds</span>
+<span class="kn">from</span> <span class="nn">carl.utils.trial_logger</span> <span class="kn">import</span> <span class="n">TrialLogger</span>
+<span class="kn">from</span> <span class="nn">carl.utils.types</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Contexts</span><span class="p">,</span> <span class="n">ObsType</span><span class="p">,</span> <span class="n">Vector</span>
+
+<span class="n">brax_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;brax&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">brax_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+    <span class="kn">import</span> <span class="nn">jaxlib</span>
+
+
+<div class="viewcode-block" id="CARLEnv"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv">[docs]</a><span class="k">class</span> <span class="nc">CARLEnv</span><span class="p">(</span><span class="n">Wrapper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Meta-environment formulating the original environments as cMDPs.</span>
+
+<span class="sd">    Here, a context feature can be anything defining the behavior of the</span>
+<span class="sd">    environment. An instance is the environment with a specific context.</span>
+
+<span class="sd">    Can change the context after each episode.</span>
+
+<span class="sd">    If not all keys are present in the provided context(s) the contexts will be filled</span>
+<span class="sd">    with the default context values in the init of the class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    env: gym.Env</span>
+<span class="sd">        Environment which context features are made visible / which is turned into a cMDP.</span>
+<span class="sd">    contexts: Contexts</span>
+<span class="sd">        Dict of contexts/instances. Key are context id, values are contexts as</span>
+<span class="sd">        Dict[context feature id, context feature value].</span>
+<span class="sd">    hide_context: bool = False</span>
+<span class="sd">        If False, the context will be appended to the original environment&#39;s state.</span>
+<span class="sd">    add_gaussian_noise_to_context: bool = False</span>
+<span class="sd">        Wether to add Gaussian noise to the context with the relative standard deviation</span>
+<span class="sd">        &#39;gaussian_noise_std_percentage&#39;.</span>
+<span class="sd">    gaussian_noise_std_percentage: float = 0.01</span>
+<span class="sd">        The relative standard deviation for the Gaussian noise. The actual standard deviation</span>
+<span class="sd">        is calculated by &#39;gaussian_noise_std_percentage&#39; * context feature value.</span>
+<span class="sd">    logger: TrialLogger, optional</span>
+<span class="sd">        Optional TrialLogger which takes care of setting up logging directories and handles</span>
+<span class="sd">        custom logging.</span>
+<span class="sd">    max_episode_length: int = 1e6</span>
+<span class="sd">        Maximum length of episode in (time)steps. Cutoff.</span>
+<span class="sd">    scale_context_features: str = &quot;no&quot;</span>
+<span class="sd">        Wether to scale context features. Available modes are &#39;no&#39;, &#39;by_mean&#39; and &#39;by_default&#39;.</span>
+<span class="sd">        &#39;by_mean&#39; scales the context features by their mean over all passed instances and</span>
+<span class="sd">        &#39;by_default&#39; scales the context features by their default values (&#39;default_context&#39;).</span>
+<span class="sd">    default_context: Context</span>
+<span class="sd">        The default context of the environment. Used for scaling the context features if applicable. Used for filling</span>
+<span class="sd">        incomplete contexts.</span>
+<span class="sd">    state_context_features: Optional[List[str]] = None</span>
+<span class="sd">        If the context is visible to the agent (hide_context=False), the context features are appended to the state.</span>
+<span class="sd">        state_context_features specifies which of the context features are appended to the state. The default is</span>
+<span class="sd">        appending all context features.</span>
+<span class="sd">    context_mask: Optional[List[str]]</span>
+<span class="sd">        Name of context features to be ignored when appending context features to the state.</span>
+<span class="sd">    context_selector: Optional[Union[AbstractSelector, type(AbstractSelector)]]</span>
+<span class="sd">        Context selector (object of) class, e.g., can be RoundRobinSelector (default) or RandomSelector.</span>
+<span class="sd">        Should subclass AbstractSelector.</span>
+<span class="sd">    context_selector_kwargs: Optional[Dict]</span>
+<span class="sd">        Optional kwargs for context selector class.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the choice of instance_mode is not available.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the choice of scale_context_features is not available.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">available_scale_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;by_default&quot;</span><span class="p">,</span> <span class="s2">&quot;by_mean&quot;</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span><span class="p">]</span>
+    <span class="n">available_instance_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="s2">&quot;rr&quot;</span><span class="p">,</span> <span class="s2">&quot;roundrobin&quot;</span><span class="p">]</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;render_modes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;human&quot;</span><span class="p">,</span> <span class="s2">&quot;rgb_array&quot;</span><span class="p">]}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">env</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">Env</span><span class="p">,</span>
+        <span class="n">n_envs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="n">Contexts</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">hide_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">add_gaussian_noise_to_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">gaussian_noise_std_percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">logger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TrialLogger</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_episode_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e6</span><span class="p">),</span>
+        <span class="n">scale_context_features</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+        <span class="n">default_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Context</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">state_context_features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">context_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dict_observation_space</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">context_selector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">AbstractSelector</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">AbstractSelector</span><span class="p">]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">context_selector_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+        <span class="c1"># Gather args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">:</span> <span class="n">Context</span>  <span class="c1"># init for property</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_contexts</span><span class="p">:</span> <span class="n">Contexts</span>  <span class="c1"># init for property</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_context</span> <span class="o">=</span> <span class="n">default_context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contexts</span> <span class="o">=</span> <span class="n">contexts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_mask</span> <span class="o">=</span> <span class="n">context_mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hide_context</span> <span class="o">=</span> <span class="n">hide_context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_observation_space</span> <span class="o">=</span> <span class="n">dict_observation_space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">max_episode_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_gaussian_noise_to_context</span> <span class="o">=</span> <span class="n">add_gaussian_noise_to_context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_noise_std_percentage</span> <span class="o">=</span> <span class="n">gaussian_noise_std_percentage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">AbstractSelector</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">context_selector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span> <span class="o">=</span> <span class="n">RoundRobinSelector</span><span class="p">(</span><span class="n">contexts</span><span class="o">=</span><span class="n">contexts</span><span class="p">)</span>  <span class="c1"># type: ignore [assignment]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context_selector</span><span class="p">,</span> <span class="n">AbstractSelector</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span> <span class="o">=</span> <span class="n">context_selector</span>  <span class="c1"># type: ignore [assignment]</span>
+        <span class="k">elif</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">context_selector</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span>
+            <span class="n">context_selector</span><span class="p">,</span> <span class="n">AbstractSelector</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">context_selector_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">context_selector_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">_context_selector_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;contexts&quot;</span><span class="p">:</span> <span class="n">contexts</span><span class="p">}</span>
+            <span class="n">context_selector_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_context_selector_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span> <span class="o">=</span> <span class="n">context_selector</span><span class="p">(</span><span class="o">**</span><span class="n">context_selector_kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore [assignment]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Context selector must be None or an AbstractSelector class or instance. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Got type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">context_selector</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">context_keys</span><span class="p">:</span> <span class="n">Vector</span>
+        <span class="k">if</span> <span class="n">state_context_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">state_context_features</span> <span class="o">==</span> <span class="s2">&quot;changing_context_features&quot;</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">state_context_features</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span>
+                <span class="ow">and</span> <span class="n">state_context_features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;changing_context_features&quot;</span>
+            <span class="p">):</span>
+                <span class="c1"># if we have only one context the context features do not change during training</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># detect which context feature changes</span>
+                    <span class="n">context_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+                    <span class="p">)</span>
+                    <span class="n">which_cf_changes</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                        <span class="n">context_array</span> <span class="o">==</span> <span class="n">context_array</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="p">)</span>
+                    <span class="n">context_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="p">)</span>
+                    <span class="n">state_context_features</span> <span class="o">=</span> <span class="n">context_keys</span><span class="p">[</span><span class="n">which_cf_changes</span><span class="p">]</span>
+                    <span class="c1"># TODO properly record which are appended to state</span>
+                    <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span> <span class="s2">&quot;env_info.json&quot;</span><span class="p">)</span>
+                        <span class="n">save_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+                        <span class="k">if</span> <span class="n">state_context_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">save_val</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state_context_features</span><span class="p">)</span>  <span class="c1"># please json</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">save_val</span> <span class="o">=</span> <span class="n">state_context_features</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;state_context_features&quot;</span><span class="p">:</span> <span class="n">save_val</span><span class="p">}</span>
+                            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">state_context_features</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state_context_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_context_features</span>  <span class="c1"># type: ignore [assignment]</span>
+        <span class="c1"># (Mypy thinks that state_context_features is of type Optional[List[str]] which it can&#39;t be anymore due to the</span>
+        <span class="c1">#  if-else clause)</span>
+
+        <span class="c1"># state_context_features contains the names of the context features that should be appended to the state</span>
+        <span class="c1"># However, if context_mask is set, we want to update state_context_feature_names so that the context features</span>
+        <span class="c1"># in context_mask are not appended to the state anymore.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_mask</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_mask</span>
+            <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int # increased in/after step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_timestep_counter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">episode_counter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># type: int # increased during reset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">whitelist_gaussian_noise</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span>
+        <span class="p">)</span>  <span class="c1"># type: Optional[List[str]] # holds names of context features</span>
+        <span class="c1"># where it is allowed to add gaussian noise</span>
+
+        <span class="c1"># Set initial context</span>
+        <span class="c1"># TODO only set context during reset?</span>
+        <span class="c1"># Don&#39;t use the context selector. This way after the first reset we actually</span>
+        <span class="c1"># start with the first context. We just need a default/initial context here</span>
+        <span class="c1"># so all the tests and the rest does not break.</span>
+        <span class="n">context_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="p">[</span><span class="n">context_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="c1"># Scale context features</span>
+        <span class="k">if</span> <span class="n">scale_context_features</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_scale_methods</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scale_context_features</span><span class="si">}</span><span class="s2"> not in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">available_scale_methods</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span> <span class="o">=</span> <span class="n">scale_context_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span> <span class="o">==</span> <span class="s2">&quot;by_mean&quot;</span><span class="p">:</span>
+            <span class="n">cfs_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">()))[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contexts</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+                <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cfs_vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># otherwise value / scale_factor = nan</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span> <span class="o">==</span> <span class="s2">&quot;by_default&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Please set default_context for scale_context_features=&#39;by_default&#39;.&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_context</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># otherwise value / scale_factor = nan</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectorized</span> <span class="o">=</span> <span class="n">n_envs</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_observation_space</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span>
+
+    <span class="nd">@context</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_context_with_default</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">context_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context_key</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contexts</span>
+
+    <span class="nd">@contexts</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contexts</span><span class="p">:</span> <span class="n">Contexts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_contexts</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_context_with_default</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">contexts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="CARLEnv.reset"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ObsType</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ObsType</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]:</span>  <span class="c1"># type: ignore [override]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset environment.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs: Dict</span>
+<span class="sd">            Any keyword arguments passed to env.reset().</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        state</span>
+<span class="sd">            State of environment after reset.</span>
+<span class="sd">        info_dict : dict</span>
+<span class="sd">            Return also if return_info=True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">episode_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress_instance</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_context</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_context</span><span class="p">()</span>
+        <span class="n">return_info</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;return_info&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">_ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore [arg-type]</span>
+        <span class="n">info_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">return_info</span><span class="p">:</span>
+            <span class="n">state</span><span class="p">,</span> <span class="n">info_dict</span> <span class="o">=</span> <span class="n">_ret</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">_ret</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_context_adaptive_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+
+    <span class="k">def</span> <span class="nf">build_context_adaptive_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">context_feature_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Vector</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+        <span class="n">tnp</span><span class="p">:</span> <span class="n">ModuleType</span> <span class="o">=</span> <span class="n">np</span>
+        <span class="k">if</span> <span class="n">brax_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">==</span> <span class="n">jaxlib</span><span class="o">.</span><span class="n">xla_extension</span><span class="o">.</span><span class="n">DeviceArray</span><span class="p">:</span>
+                <span class="n">tnp</span> <span class="o">=</span> <span class="n">jnp</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hide_context</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">context_feature_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># use current context</span>
+                <span class="n">context_values</span> <span class="o">=</span> <span class="n">tnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># use potentially modified context</span>
+                <span class="n">context_values</span> <span class="o">=</span> <span class="n">context_feature_values</span>
+            <span class="c1"># Append context to state</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># if self.state_context_features is an empty list, the context values will also be empty and we</span>
+                <span class="c1"># get the correct state</span>
+                <span class="n">context_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">context_values</span> <span class="o">=</span> <span class="n">tnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">context_values</span><span class="p">[</span><span class="n">context_keys</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_observation_space</span><span class="p">:</span>
+                <span class="n">state</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context_values</span><span class="p">)</span>  <span class="c1"># type: ignore [no-redef]</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorized</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">tnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">context_values</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">state</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">tnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">context_values</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">state</span>
+
+<div class="viewcode-block" id="CARLEnv.step"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Step the environment.</span>
+
+<span class="sd">        1. Step</span>
+<span class="sd">        2. Add (potentially scaled) context features to state if hide_context = False.</span>
+
+<span class="sd">        Emits done if the environment has taken more steps than cutoff (max_episode_length).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        action:</span>
+<span class="sd">            Action to pass to env.step.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        state, reward, done, info: Any, Any, bool, Dict</span>
+<span class="sd">            Standard signature.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Step the environment</span>
+        <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hide_context</span><span class="p">:</span>
+            <span class="c1"># Scale context features</span>
+            <span class="n">context_feature_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span> <span class="o">==</span> <span class="s2">&quot;by_default&quot;</span><span class="p">:</span>
+                <span class="n">context_feature_values</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span> <span class="o">==</span> <span class="s2">&quot;by_mean&quot;</span><span class="p">:</span>
+                <span class="n">context_feature_values</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_feature_scale_factors</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_context_features</span><span class="si">}</span><span class="s2"> not in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">available_scale_methods</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Add context features to state</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_context_adaptive_state</span><span class="p">(</span>
+                <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">context_feature_values</span><span class="o">=</span><span class="n">context_feature_values</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_timestep_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_counter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">:</span>
+            <span class="n">truncated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span></div>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="c1"># TODO: does this work with activated noise? I think we need to update it</span>
+        <span class="c1"># We need this because our CARLEnv has underscore class methods which would</span>
+        <span class="c1"># throw an error otherwise</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;_progress_instance&quot;</span><span class="p">,</span> <span class="s2">&quot;_update_context&quot;</span><span class="p">,</span> <span class="s2">&quot;_log_context&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;attempted to get missing private attribute &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CARLEnv.fill_context_with_default"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.fill_context_with_default">[docs]</a>    <span class="k">def</span> <span class="nf">fill_context_with_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fill the context with the default values if entries are missing</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        context</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_context</span><span class="p">:</span>
+            <span class="n">context_def</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">context_def</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">context_def</span>
+        <span class="k">return</span> <span class="n">context</span></div>
+
+    <span class="k">def</span> <span class="nf">_progress_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Progress instance.</span>
+
+<span class="sd">        In this case instance is a specific context.</span>
+<span class="sd">        1. Select instance with the instance_mode. If the instance_mode is random, randomly select</span>
+<span class="sd">        the next instance from the set of contexts. If instance_mode is rr or roundrobin, select</span>
+<span class="sd">        the next instance.</span>
+<span class="sd">        2. If Gaussian noise should be added to whitelisted context features, do so.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>  <span class="c1"># type: ignore [call-arg]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_gaussian_noise_to_context</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">whitelist_gaussian_noise</span><span class="p">:</span>
+            <span class="n">context_augmented</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">whitelist_gaussian_noise</span><span class="p">:</span>
+                    <span class="n">context_augmented</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">add_gaussian_noise</span><span class="p">(</span>
+                        <span class="n">default_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                        <span class="n">percentage_std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gaussian_noise_std_percentage</span><span class="p">,</span>
+                        <span class="n">random_generator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.np_random TODO discuss this</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">context_augmented</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">context_augmented</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+
+<div class="viewcode-block" id="CARLEnv.build_observation_space"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.build_observation_space">[docs]</a>    <span class="k">def</span> <span class="nf">build_observation_space</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">env_lower_bounds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">env_upper_bounds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">context_bounds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">type</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build observation space of environment.</span>
+
+<span class="sd">        If the hide_context = False, add correct bounds for the context features to the</span>
+<span class="sd">        observation space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        env_lower_bounds: Optional[Union[List, np.array]], default=None</span>
+<span class="sd">            Lower bounds for environment observation space. If env_lower_bounds and env_upper_bounds</span>
+<span class="sd">            both are None, (re-)create bounds (low=-inf, high=inf) with correct dimension.</span>
+<span class="sd">        env_upper_bounds: Optional[Union[List, np.array]], default=None</span>
+<span class="sd">            Upper bounds for environment observation space.</span>
+<span class="sd">        context_bounds: Optional[Dict[str, Tuple[float, float, float]]], default=None</span>
+<span class="sd">            Lower and upper bounds for context features.</span>
+<span class="sd">            The bounds are provided as a Dict containing the context feature names/ids as keys and the</span>
+<span class="sd">            bounds per feature as a tuple (low, high, dtype).</span>
+<span class="sd">            If None and the context should not be hidden,</span>
+<span class="sd">            creates default bounds with (low=-inf, high=inf) with correct dimension.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError:</span>
+<span class="sd">            If (env.)observation space is not gym.spaces.Box and the context should not be hidden</span>
+<span class="sd">            (hide_context = False).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Space</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_observation_space</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span><span class="p">,</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hide_context</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;This environment does not yet support non-hidden contexts. Only supports &quot;</span>
+                <span class="s2">&quot;Box observation spaces.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">obs_space</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">spaces</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">low</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="p">,</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">low</span>  <span class="c1"># type: ignore [attr-defined]</span>
+        <span class="p">)</span>
+        <span class="n">obs_shape</span> <span class="o">=</span> <span class="n">obs_space</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obs_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">hide_context</span><span class="p">:</span>
+            <span class="c1"># do not touch pixel state</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">env_lower_bounds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">env_upper_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">obs_dim</span> <span class="o">=</span> <span class="n">obs_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">env_lower_bounds</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">obs_dim</span><span class="p">)</span>
+                <span class="n">env_upper_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">obs_dim</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hide_context</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_lower_bounds</span><span class="p">),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_upper_bounds</span><span class="p">),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">context_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">context_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                    <span class="n">context_lower_bounds</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">context_dim</span><span class="p">)</span>
+                    <span class="n">context_upper_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">context_dim</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">context_lower_bounds</span><span class="p">,</span> <span class="n">context_upper_bounds</span> <span class="o">=</span> <span class="n">get_context_bounds</span><span class="p">(</span>
+                        <span class="n">context_keys</span><span class="p">,</span> <span class="n">context_bounds</span>  <span class="c1"># type: ignore [arg-type]</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">context_keys</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_context_features</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">context_lower_bounds</span> <span class="o">=</span> <span class="n">context_lower_bounds</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>
+                    <span class="n">context_upper_bounds</span> <span class="o">=</span> <span class="n">context_upper_bounds</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_observation_space</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
+                                <span class="n">low</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_lower_bounds</span><span class="p">),</span>
+                                <span class="n">high</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_upper_bounds</span><span class="p">),</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
+                                <span class="n">low</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">context_lower_bounds</span><span class="p">),</span>
+                                <span class="n">high</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">context_upper_bounds</span><span class="p">),</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">low</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_lower_bounds</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">context_lower_bounds</span><span class="p">))</span>
+                    <span class="p">)</span>
+                    <span class="n">high</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_upper_bounds</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">context_upper_bounds</span><span class="p">))</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
+                        <span class="n">low</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="n">high</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">high</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+                    <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span>
+            <span class="p">)</span>  <span class="c1"># make sure it is the same object</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the context feature values of the environment.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_log_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log context.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">write_context</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">episode_counter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_timestep_counter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.9ea38e314b9e6d9dab77.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 
+    Copyright 2023, AutoML.org Freiburg-Hannover
+.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+6.2.1. Template is modified version of <a
+href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
