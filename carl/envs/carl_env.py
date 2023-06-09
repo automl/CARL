@@ -9,7 +9,6 @@ from types import ModuleType
 
 # TODO: this is only needed for brax,remove
 import gym as legacy_gym
-
 import gymnasium as gym
 import numpy as np
 from gymnasium import Wrapper, spaces
