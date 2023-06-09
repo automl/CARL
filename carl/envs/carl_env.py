@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
-from types import ModuleType
 
 import importlib
 import inspect
@@ -286,7 +285,6 @@ class CARLEnv(Wrapper):
         self._progress_instance()
         self._update_context()
         self._log_context()
-        return_info = kwargs.get("return_info", False)
         _ret = self.env.reset(seed=seed, options=options, **kwargs)  # type: ignore [arg-type]
         info_dict = dict()
         state, info_dict = _ret
