@@ -298,10 +298,6 @@ class CARLEnv(Wrapper):
         self, state: List[float], context_feature_values: Optional[Vector] = None
     ) -> Union[Vector, Dict]:
         tnp: ModuleType = np
-        #if brax_spec is not None:
-            #TODO: this is outdated, do we need this at all?
-            #if type(state) == jaxlib.xla_extension.DeviceArray:
-            #    tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
