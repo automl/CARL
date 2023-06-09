@@ -67,6 +67,7 @@ class CARLAnt(CARLEnv):
         )
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
+
         super().__init__(
             env=env,
             n_envs=n_envs,

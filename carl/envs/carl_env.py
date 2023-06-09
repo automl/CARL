@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
-import importlib
 import inspect
 import json
 import os
 from types import ModuleType
 
+# TODO: this is only needed for brax,remove
+import gym as legacy_gym
 import gymnasium as gym
 import numpy as np
 from gymnasium import Wrapper, spaces
@@ -17,11 +18,6 @@ from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.utils import get_context_bounds
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts, ObsType, Vector
-
-brax_spec = importlib.util.find_spec("brax")
-if brax_spec is not None:
-    import jax.numpy as jnp
-    import jaxlib
 
 
 class CARLEnv(Wrapper):
@@ -285,27 +281,16 @@ class CARLEnv(Wrapper):
         self._progress_instance()
         self._update_context()
         self._log_context()
-        return_info = kwargs.get("return_info", False)
         _ret = self.env.reset(seed=seed, options=options, **kwargs)  # type: ignore [arg-type]
         info_dict = dict()
-        if return_info:
-            state, info_dict = _ret
-        else:
-            state = _ret
+        state, info_dict = _ret
         state = self.build_context_adaptive_state(state=state)
-        ret = state
-        if return_info:
-            ret = state, info_dict
-
-        return ret
+        return state, info_dict
 
     def build_context_adaptive_state(
         self, state: List[float], context_feature_values: Optional[Vector] = None
     ) -> Union[Vector, Dict]:
         tnp: ModuleType = np
-        if brax_spec is not None:
-            if type(state) == jaxlib.xla_extension.DeviceArray:
-                tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:
                 # use current context
@@ -484,7 +469,10 @@ class CARLEnv(Wrapper):
         self.observation_space: gym.spaces.Space
         if (
             not self.dict_observation_space
-            and not isinstance(self.observation_space, spaces.Box)
+            and not (
+                isinstance(self.observation_space, spaces.Box)
+                or isinstance(self.observation_space, legacy_gym.spaces.Box)
+            )
             and not self.hide_context
         ):
             raise ValueError(

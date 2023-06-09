@@ -378,7 +378,9 @@ def _get_local_toctree_for(
     return result
 
 
-def index_toctree(app, pagename: str, startdepth: int, collapse: bool = False, **kwargs):
+def index_toctree(
+    app, pagename: str, startdepth: int, collapse: bool = False, **kwargs
+):
     """
     Returns the "local" (starting at `startdepth`) TOC tree containing the
     current page, rendered as HTML bullet lists.
@@ -440,7 +442,6 @@ def soup_to_python(soup, only_pages=False):
     #       ...
 
     def extract_level_recursive(ul, navs_list):
-
         for li in ul.find_all("li", recursive=False):
             ref = li.a
             url = ref["href"]
@@ -598,6 +599,7 @@ class BootstrapHTML5Translator(HTML5Translator):
 
 
 # -----------------------------------------------------------------------------
+
 
 def get_html_theme_path():
     """Return list of HTML theme paths."""

@@ -29,7 +29,6 @@ def _download_dataset_from_http(url: str, download_path: str) -> None:
 
 
 def download_eterna(download_path: str) -> None:
-
     eterna_url = (
         "https://ars.els-cdn.com/content/image/1-s2.0-S0022283615006567-mmc5.txt"
     )

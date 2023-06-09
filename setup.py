@@ -51,7 +51,8 @@ extras_require = {
         "sphinx-gallery>=0.10.0",
         "image>=1.5.33",
         "sphinx-autoapi>=1.8.4",
-    ]
+        "automl-sphinx-theme>=0.1.9",
+    ],
 }
 
 setuptools.setup(
@@ -65,18 +66,15 @@ setuptools.setup(
     license_file="LICENSE",
     url=url,
     project_urls=project_urls,
-    keywords=[
-        "RL",
-        "Generalization",
-        "Context",
-        "Reinforcement Learning"
-    ],
+    keywords=["RL", "Generalization", "Context", "Reinforcement Learning"],
     version=version,
     packages=setuptools.find_packages(exclude=["tests"]),
     include_package_data=True,
     python_requires=">=3.9",
     install_requires=[
+        "gym",
         "gymnasium>=0.27.1",
+        "pygame==2.1.0",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
         "numpy>=1.19.5",
@@ -95,16 +93,16 @@ setuptools.setup(
     test_suite="pytest",
     platforms=["Linux"],
     classifiers=[
-     "Programming Language :: Python :: 3",
-     "Natural Language :: English",
-     "Environment :: Console",
-     "Intended Audience :: Developers",
-     "Intended Audience :: Education",
-     "Intended Audience :: Science/Research",
-     "License :: OSI Approved :: Apache Software License",
-     "Operating System :: POSIX :: Linux",
-     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-     "Topic :: Scientific/Engineering",
-     "Topic :: Software Development",
+        "Programming Language :: Python :: 3",
+        "Natural Language :: English",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX :: Linux",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Software Development",
     ],
 )

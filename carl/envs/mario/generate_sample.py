@@ -29,7 +29,6 @@ def generate_sample(
     gen_start_scale: int = 0,
     initial_noise: Optional[Tensor] = None,
 ) -> List[str]:
-
     in_s = None
     images_cur: List[Tensor] = []
     images: List[Tensor] = []

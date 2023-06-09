@@ -73,7 +73,6 @@ class CustomAcrobotEnv(AcrobotEnv):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[np.ndarray, tuple[np.ndarray, dict]]:
         super().reset(seed=seed)
@@ -90,10 +89,7 @@ class CustomAcrobotEnv(AcrobotEnv):
             self.INITIAL_VELOCITY_UPPER,
         )
         self.state = self.np_random.uniform(low=low, high=high).astype(np.float32)
-        if not return_info:
-            return self._get_ob()
-        else:
-            return self._get_ob(), {}
+        return self._get_ob(), {}
 
 
 class CARLAcrobotEnv(CARLEnv):
