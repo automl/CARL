@@ -12,76 +12,108 @@ from ConfigSpace.hyperparameters import (
     UniformFloatHyperparameter,
 )
 from omegaconf import DictConfig
-from search_space_encoding import search_space_to_config_space
+from carl.context.search_space_encoding import search_space_to_config_space
 from typing_extensions import TypeAlias
 
 ContextFeature: TypeAlias = Hyperparameter
+NumericalContextFeature: TypeAlias = NumericalHyperparameter
+NormalFloatContextFeature: TypeAlias = NormalFloatHyperparameter
+UniformFloatContextFeature: TypeAlias = UniformFloatHyperparameter
 
 
-class ContextSpace(ConfigurationSpace):
-    """
-    Baseclass for contexts of environments implemented in CARL. DO NOT USE DIRECTLY. USE SUBCLASSES!
-    """
-
+class ContextSpace(object):
     def __init__(
-        self,
-        context_space: Union[List[Hyperparameter], str, DictConfig, ConfigurationSpace]
-        | None = None,
-        context_features: List[str] | None = None,
-        name: str = "context_space",
-        seed: int = None,
-    ):
-        super().__init__(name=name, seed=seed)
-
-        if isinstance(context_space, list):
-            self.add_hyperparameters(context_space)
-        else:
-            cs = search_space_to_config_space(context_space)
-            self.add_hyperparameters(cs.get_hyperparameters())
-
-        self._context_features: list[str] = context_features if context_features else []
-
-    def to_gym_space(
-        self, context_features: List[str] = None, as_dict: bool = False
-    ) -> spaces.Space:
-        if context_features is None:
-            context_features = [hp.name for hp in self.get_hyperparameters()]
-
-        if as_dict:
-            context_space = {}
-
-            for context_feature in context_features:
-                hp = self.get_hyperparameter(context_feature)
-                if isinstance(hp, NumericalHyperparameter):
-                    context_space[hp.name] = spaces.Box(low=hp.lower, high=hp.upper)
-                else:
-                    raise ValueError(
-                        f"Context features must be of type NumericalHyperparameter."
-                        f"Got {type(hp)}."
-                    )
-            return spaces.Dict(context_space)
-        else:
-            low = np.array(
-                [self.get_hyperparameter(cf).lower for cf in context_features]
-            )
-            high = np.array(
-                [self.get_hyperparameter(cf).upper for cf in context_features]
-            )
-
-            return spaces.Box(low=low, high=high, dtype=np.float32)
+            self,
+            context_features: list[ContextFeature]
+        ) -> None:
+        self.context_space = {
+            context_feature.name: context_feature for context_feature in context_features
+        }
 
     @property
-    def context_features(self) -> List[str]:
+    def context_feature_names(self) -> List[str]:
         """
-        Context features that are sampled.
+        Context feature names.
 
         Returns
         -------
         List[str]
-            Context features.
+            Context features names.
         """
-        return self._context_features
+        return list(self.context_space.keys())
+    
+    def to_gymnasium_space(
+        self, context_feature_names: List[str] | None = None, as_dict: bool = False
+    ) -> spaces.Space:
+        if context_feature_names is None:
+            context_feature_names = self.context_feature_names
+        if as_dict:
+            context_space = {}
 
+            for cf_name in context_feature_names:
+                context_feature = self.context_space[cf_name]
+                if isinstance(context_feature, NumericalContextFeature):
+                    context_space[context_feature.name] = spaces.Box(low=context_feature.lower, high=context_feature.upper)
+                else:
+                    raise ValueError(
+                        f"Context features must be of type NumericalContextFeature."
+                        f"Got {type(context_feature)}."
+                    )
+            print(context_space)
+            return spaces.Dict(context_space)
+        else:
+            low = np.array(
+                [self.context_space[cf].lower for cf in context_feature_names]
+            )
+            high = np.array(
+                [self.context_space[cf].upper for cf in context_feature_names]
+            )
+
+            return spaces.Box(low=low, high=high, dtype=np.float32)
+
+
+
+
+
+class ContextSampler(ConfigurationSpace):
+    def __init__(
+        self,
+        context_distributions: Union[
+            List[Hyperparameter], str, DictConfig, ConfigurationSpace
+        ],
+        seed: int,
+        name: str | None = None,
+    ):
+        self.context_distributions = context_distributions
+        # TODO: pass seed
+        super().__init__(name=name, seed=seed)
+
+        if isinstance(context_distributions, list):
+            self.add_context_features(context_distributions)
+        else:
+            cs = search_space_to_config_space(context_distributions)
+            self.add_context_features(cs.get_hyperparameters())
+
+        self._context_features: list[str] = context_features if context_features else []
+
+    def add_context_features(self, context_features: list[ContextFeature]) -> None:
+        self.add_hyperparameters(context_features)
+
+    def add_defaults(context_space: ContextSpace):
+        """Add defaults from env context space
+
+        Parameters
+        ----------
+        context_space : ContextSpace
+            _description_
+        """
+        ...
+
+    def sample_contexts(self, n_contexts: int) -> dict[int, dict[str, Any]]:
+        contexts = self.sample_configuration(size=n_contexts)
+        contexts = {i: C for i, C in enumerate(contexts)}
+        return contexts
+    
     def sample_configuration(
         self, size: int = 1
     ) -> Union[Configuration, List[Configuration]]:
@@ -116,115 +148,3 @@ class ContextSpace(ConfigurationSpace):
                 configurations[i] = insert_defaults(configuration)
 
         return configurations
-
-
-class CartPoleContextSpace(ContextSpace):
-    """
-    Context space for CARLCartPoleEnv.
-
-    Parameters
-    ----------
-    context_features : List[str]
-        Context features to vary, i.e. sample.
-
-    seed : int = None
-        Seed for PRNG.
-    """
-
-    def __init__(
-        self,
-        context_space: Union[List[Hyperparameter], str, DictConfig, ConfigurationSpace]
-        | None = None,
-        context_features: List[str] | None = None,
-        seed: int = None,
-    ):
-        if context_space is None:
-            context_space = CartPoleContextSpace.get_default()
-        super().__init__(
-            context_space, context_features, name=self.__class__.__name__, seed=seed
-        )
-
-    @staticmethod
-    def get_default() -> list[ContextFeature]:
-        """Get context features with default values
-
-        Returns
-        -------
-        list[ContextFeature]
-            List of context features
-        """
-        return [
-            UniformFloatHyperparameter(
-                "gravity", lower=0.1, upper=np.inf, default_value=9.8
-            ),
-            UniformFloatHyperparameter(
-                "masscart", lower=0.1, upper=10, default_value=1.0
-            ),
-            UniformFloatHyperparameter(
-                "masspole", lower=0.01, upper=1, default_value=0.1
-            ),
-            UniformFloatHyperparameter(
-                "pole_length", lower=0.05, upper=5, default_value=0.5
-            ),
-            UniformFloatHyperparameter(
-                "force_magnifier", lower=1, upper=100, default_value=10.0
-            ),
-            UniformFloatHyperparameter(
-                "update_interval", lower=0.002, upper=0.2, default_value=0.02
-            ),
-            UniformFloatHyperparameter(
-                "initial_state_lower", lower=-10, upper=10, default_value=-0.1
-            ),
-            UniformFloatHyperparameter(
-                "initial_state_upper", lower=-10, upper=10, default_value=0.1
-            ),  # TODO: We can't have inf. How to handle/annotate when transforming to obs space?
-        ]
-
-    def verify(self, configspace: ConfigurationSpace) -> bool:
-        # TODO Check whether HPs in of configspace in self.hyperparameters included
-        ...
-
-
-class ContextSampler(ConfigurationSpace):
-    def __init__(
-        self,
-        context_distributions: Union[
-            List[Hyperparameter], str, DictConfig, ConfigurationSpace
-        ],
-        seed: int,
-    ):
-        self.context_distributions = context_distributions
-        # TODO: pass seed
-        ...
-
-    def add_defaults(context_space: ContextSpace):
-        """Add defaults from env context space
-
-        Parameters
-        ----------
-        context_space : ContextSpace
-            _description_
-        """
-        ...
-
-    def sample_contexts(self, n_contexts: int) -> dict[int, dict[str, Any]]:
-        contexts = self.sample_configuration(size=n_contexts)
-        contexts = {i: C for i, C in enumerate(contexts)}
-        return contexts
-
-
-if __name__ == "__main__":
-    print("hello world")
-    context_space = CartPoleContextSpace()
-    print(context_space)
-    context = context_space.sample_configuration()
-    print(context)
-
-    context_sampler = ContextSampler(
-        [
-            NormalFloatHyperparameter("gravity", mu=9.8, sigma=1),
-        ],
-        seed=0,
-    )
-
-    contexts = context_sampler.sample_contexts(n_contexts=10)
