@@ -6,6 +6,7 @@ This page gives an overview of all CARL environments.
 
 
 .. toctree::
+    autoapi_link
     ../../autoapi/src/envs/carl_env/index
     ../../autoapi/src/envs/classic_control/index
     ../../autoapi/src/envs/box2d/index
