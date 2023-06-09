@@ -1,0 +1,44 @@
+carl.envs.classic\_control
+==========================
+
+.. automodule:: carl.envs.classic_control
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   Interfaces
+   ^^^^^^^^^^
+   
+
+
+
+
+
+Modules
+^^^^^^^
+
+.. autosummary::
+   :template: module.rst
+   :toctree:
+   :recursive:
+
+   carl.envs.classic_control.carl_acrobot
+   carl.envs.classic_control.carl_cartpole
+   carl.envs.classic_control.carl_mountaincar
+   carl.envs.classic_control.carl_mountaincarcontinuous
+   carl.envs.classic_control.carl_pendulum
+

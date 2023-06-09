@@ -1,0 +1,38 @@
+carl.envs.classic\_control.carl\_pendulum
+=========================================
+
+.. automodule:: carl.envs.classic_control.carl_pendulum
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+   Classes
+   ^^^^^^^
+
+   .. autosummary::
+   
+      CARLPendulumEnv
+      CustomPendulum
+   
+   
+
+   
+   
+   
+
+   
+   Interfaces
+   ^^^^^^^^^^
+   
+
+
+
+
