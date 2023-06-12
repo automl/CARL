@@ -10,6 +10,8 @@ from ConfigSpace.hyperparameters import (
     NormalFloatHyperparameter,
     NumericalHyperparameter,
     UniformFloatHyperparameter,
+    UniformIntegerHyperparameter,
+    CategoricalHyperparameter,
 )
 from omegaconf import DictConfig
 from typing_extensions import TypeAlias
@@ -21,6 +23,9 @@ ContextFeature: TypeAlias = Hyperparameter
 NumericalContextFeature: TypeAlias = NumericalHyperparameter
 NormalFloatContextFeature: TypeAlias = NormalFloatHyperparameter
 UniformFloatContextFeature: TypeAlias = UniformFloatHyperparameter
+UniformIntegerContextFeature: TypeAlias = UniformIntegerHyperparameter
+CategoricalContextFeature: TypeAlias = CategoricalHyperparameter
+
 
 
 class ContextSpace(object):
