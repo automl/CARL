@@ -28,7 +28,7 @@ class CARLEnv(Wrapper, abc.ABC):
         self,
         env: Env,
         contexts: Contexts | None = None,
-        state_context_features: list[str]
+        obs_context_features: list[str]
         | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
         obs_context_as_dict: bool = True,  # TODO discuss default
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
@@ -43,7 +43,7 @@ class CARLEnv(Wrapper, abc.ABC):
         if contexts is None:
             contexts = {0: self.get_default_context(self)}
         self.contexts = contexts
-        self.state_context_features = state_context_features
+        self.obs_context_features = obs_context_features
 
         # Context Selector
         self.context_selector: type[AbstractSelector]
@@ -67,7 +67,7 @@ class CARLEnv(Wrapper, abc.ABC):
         self._progress_instance()
         self._update_context()
         self.observation_space = self.get_observation_space(
-            obs_context_feature_names=self.state_context_features
+            obs_context_feature_names=self.obs_context_features
         )
 
     @property
@@ -193,12 +193,12 @@ class CARLEnv(Wrapper, abc.ABC):
         """
         context = self.context
         if not self.obs_context_as_dict:
-            context = [self.context[k] for k in self.state_context_features]
+            context = [self.context[k] for k in self.obs_context_features]
         else:
             context = {
                 k: v
                 for k, v in self.context.items()
-                if k in self.state_context_features
+                if k in self.obs_context_features
             }
         state_context_dict = {
             "state": state,
@@ -233,7 +233,7 @@ class CARLClassicControlEnv(CARLEnv):
         self,
         env: Env | None = None,
         contexts: Contexts | None = None,
-        state_context_features: list[str]
+        obs_context_features: list[str]
         | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
         # context_mask: list[str] | None = None,
         obs_context_as_dict: bool = True,
@@ -246,7 +246,7 @@ class CARLClassicControlEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            state_context_features=state_context_features,
+            obs_context_features=obs_context_features,
             obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
@@ -312,9 +312,9 @@ if __name__ == "__main__":
     printr(contexts)
 
 
-    state_context_features = list(CARLCartPole.get_default_context().keys())[:2]
+    obs_context_features = list(CARLCartPole.get_default_context().keys())[:2]
 
-    env = CARLCartPole(contexts=contexts, state_context_features=state_context_features)
+    env = CARLCartPole(contexts=contexts, obs_context_features=obs_context_features)
 
     state = env.reset()
 
