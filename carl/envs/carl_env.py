@@ -320,3 +320,68 @@ class CARLEnv(Wrapper, abc.ABC):
         state, reward, terminated, truncated, info = super().step(action)
         state = self._add_context_to_state(state)
         return state, reward, terminated, truncated, info
+
+
+class CARLCartPole(CARLGymnasiumEnv):
+    env_name: str = "CartPole-v1"
+
+    def _update_context(self) -> None:
+        for k, v in self.context.items():
+            setattr(self.env, k, v)
+
+    def get_context_features() -> list[ContextFeature]:
+        return {
+            "gravity": 
+            UniformFloatContextFeature(
+                "gravity", lower=0.1, upper=np.inf, default_value=9.8
+            ),
+            "masscart": 
+            UniformFloatContextFeature(
+                "masscart", lower=0.1, upper=10, default_value=1.0
+            ),
+            "masspole":
+            UniformFloatContextFeature(
+                "masspole", lower=0.01, upper=1, default_value=0.1
+            ),
+            "length":
+            UniformFloatContextFeature(
+                "length", lower=0.05, upper=5, default_value=0.5
+            ),
+            "force_mag":
+            UniformFloatContextFeature(
+                "force_mag", lower=1, upper=100, default_value=10.0
+            ),
+            "tau":
+            UniformFloatContextFeature(
+                "tau", lower=0.002, upper=0.2, default_value=0.02
+            ),
+        }
+
+
+if __name__ == "__main__":
+    from rich import print as printr
+
+    seed = 0
+    # Sampling demo
+    context_distributions = [NormalFloatContextFeature("gravity", mu=9.8, sigma=1)]
+    context_sampler = ContextSampler(
+        context_distributions=context_distributions,
+        context_space=CARLCartPole.get_context_space(),
+        seed=seed,
+    )
+    contexts = context_sampler.sample_contexts(n_contexts=5)
+
+    # Env demo
+
+    printr(CARLCartPole.get_context_space())
+
+    printr(contexts)
+
+
+    obs_context_features = list(CARLCartPole.get_default_context().keys())[:2]
+
+    env = CARLCartPole(contexts=contexts, obs_context_features=obs_context_features)
+
+    state = env.reset()
+
+    printr(state)
