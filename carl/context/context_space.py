@@ -25,23 +25,26 @@ UniformFloatContextFeature: TypeAlias = UniformFloatHyperparameter
 class ContextSpace(object):
     def __init__(
             self,
-            context_features: list[ContextFeature]
+            context_space: dict[str, ContextFeature]
         ) -> None:
-        self.context_space = {
-            context_feature.name: context_feature for context_feature in context_features
-        }
+        self.context_space = context_space
 
     @property
-    def context_feature_names(self) -> List[str]:
+    def context_feature_names(self) -> list[str]:
         """
         Context feature names.
 
         Returns
         -------
-        List[str]
+        list[str]
             Context features names.
         """
         return list(self.context_space.keys())
+    
+    def insert_defaults(self, context: Context) -> Context:
+        context_with_defaults = self.get_default_context()
+        context_with_defaults.update(context)
+        return context_with_defaults
     
     def get_default_context(self) -> Context:
         context = {cf.name: cf.default_value for cf in self.context_space.values()}
@@ -113,15 +116,10 @@ class ContextSampler(ConfigurationSpace):
         contexts = self._sample_contexts(size=n_contexts)
 
         # Convert to dict
-        contexts = {i: self.insert_defaults(C) for i, C in enumerate(contexts)}
+        contexts = {i: C for i, C in enumerate(contexts)}
         
         return contexts
-    
-    def insert_defaults(self, context: Context) -> Context:
-        context_with_defaults = self.context_space.get_default_context()
-        context_with_defaults.update(context)
-        return context_with_defaults
-    
+        
     def _sample_contexts(
         self, size: int = 1
     ) -> list[Context]:
