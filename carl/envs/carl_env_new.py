@@ -226,7 +226,7 @@ class CARLEnv(Wrapper, abc.ABC):
         return state
 
 
-class CARLClassicControlEnv(CARLEnv):
+class CARLGymnasiumEnv(CARLEnv):
     env_name: str
 
     def __init__(
@@ -254,7 +254,7 @@ class CARLClassicControlEnv(CARLEnv):
         )
 
 
-class CARLCartPole(CARLClassicControlEnv):
+class CARLCartPole(CARLGymnasiumEnv):
     env_name: str = "CartPole-v1"
 
     # TODO do we want to modify the initial state distribution bounds like before?
