@@ -108,6 +108,7 @@ class CARLEnv(Wrapper, abc.ABC):
         return obs_space
 
     @staticmethod
+    @abc.abstractmethod
     def get_context_features() -> dict[str, ContextFeature]:
         """Get the context features
 
@@ -118,7 +119,7 @@ class CARLEnv(Wrapper, abc.ABC):
         dict[str, ContextFeature]
             Context feature definitions
         """
-        raise NotImplementedError
+        ...
 
     @classmethod
     def get_context_space(cls) -> ContextSpace:
@@ -167,9 +168,10 @@ class CARLEnv(Wrapper, abc.ABC):
     ) -> tuple[Any, dict[str, Any]]:
         self._progress_instance()
         self._update_context()
-        state = super().reset(seed=seed, options=options)
+        state, info = super().reset(seed=seed, options=options)
         state = self._add_context_to_state(state)
-        return state
+        # TODO: Add context id or sth similar to info?
+        return state, info
 
     def _add_context_to_state(self, state: Any) -> dict[str, Any]:
         """Add context observation to the state
