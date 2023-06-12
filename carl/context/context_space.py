@@ -12,6 +12,7 @@ from ConfigSpace.hyperparameters import (
     UniformFloatHyperparameter,
     UniformIntegerHyperparameter,
 )
+from omegaconf import DictConfig
 from typing_extensions import TypeAlias
 
 from carl.utils.types import Context, Contexts
