@@ -75,6 +75,19 @@ class TestContextSpace(unittest.TestCase):
         cspace = ContextSpace(context_space_dict_othertypes)
         space = cspace.to_gymnasium_space()
 
+    def test_verify_context(self):
+        # Unknown context feature name
+        context = {"hihi": 39, "gravity": 3}
+        is_valid = self.context_space.verify_context(context)
+        self.assertEqual(is_valid, False)
+
+        # Out of bounds
+        context = {"masscart": -10}
+        is_valid = self.context_space.verify_context(context)
+        self.assertEqual(is_valid, False)
+
+
+
         
 
 if __name__ == "__main__":

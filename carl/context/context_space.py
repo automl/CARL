@@ -49,6 +49,24 @@ class ContextSpace(object):
         context_with_defaults.update(context)
         return context_with_defaults
 
+    def verify_context(self, context: Context) -> bool:
+        is_valid = True
+        cfs = self.context_feature_names
+        for cfname, v in context.items():
+            # Check if context feature exists in space
+            # by checking name
+            if cfname not in cfs:
+                is_valid = False
+                break
+
+            # Check if context feature value is in bounds
+            cf = self.context_space[cfname]
+            if isinstance(cf, NumericalContextFeature):
+                if not (cf.lower <= v <= cf.upper):
+                    is_valid = False
+                    break
+        return is_valid
+
     def get_default_context(self) -> Context:
         context = {cf.name: cf.default_value for cf in self.context_space.values()}
         return context

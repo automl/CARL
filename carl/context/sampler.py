@@ -11,7 +11,7 @@ from carl.utils.types import Context, Contexts
 class ContextSampler(ConfigurationSpace):
     def __init__(
         self,
-        context_distributions: list[ContextFeature] | str | DictConfig,
+        context_distributions: list[ContextFeature] | dict[str, ContextFeature] | str | DictConfig,
         context_space: ContextSpace,
         seed: int,
         name: str | None = None,
@@ -21,6 +21,8 @@ class ContextSampler(ConfigurationSpace):
 
         if isinstance(context_distributions, list):
             self.add_context_features(context_distributions)
+        elif isinstance(context_distributions, dict):
+            self.add_context_features(context_distributions.values())
         elif type(context_distributions) in [str, DictConfig]:
             cs = search_space_to_config_space(context_distributions)
             self.add_context_features(cs.get_hyperparameters())
@@ -29,22 +31,14 @@ class ContextSampler(ConfigurationSpace):
                 f"Unknown type `{type(context_distributions)}` for `context_distributions`."
             )
 
-        self.context_feature_names = [cf.name for cf in context_distributions]
+        self.context_feature_names = [cf.name for cf in self.get_context_features()]
         self.context_space = context_space
-
-        self.verify_distributions(
-            context_distributions=context_distributions, context_space=context_space
-        )
 
     def add_context_features(self, context_features: list[ContextFeature]) -> None:
         self.add_hyperparameters(context_features)
-
-    @staticmethod
-    def verify_distributions(
-        context_distributions: list[ContextFeature], context_space: ContextSpace
-    ) -> bool:
-        # TODO verify distributions or context?
-        return True
+        
+    def get_context_features(self) -> list[ContextFeature]:
+        return self.get_hyperparameters()
 
     def sample_contexts(self, n_contexts: int) -> Contexts:
         contexts = self._sample_contexts(size=n_contexts)
