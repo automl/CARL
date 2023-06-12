@@ -40,7 +40,6 @@ class CARLEnv(Wrapper, abc.ABC):
         self.state_observation_space: gymnasium.spaces.Space = env.observation_space
         self.obs_context_as_dict = obs_context_as_dict
 
-        self.context = None
         if contexts is None:
             contexts = {0: self.get_default_context(self)}
         self.contexts = contexts
@@ -71,6 +70,27 @@ class CARLEnv(Wrapper, abc.ABC):
             obs_context_feature_names=self.state_context_features
         )
 
+    @property
+    def contexts(self) -> Contexts:
+        return self._contexts
+    
+    @contexts.setter
+    def contexts(self, contexts: Contexts) -> None:
+        """Set `contexts` property
+
+        For each context maybe fill with default context values.
+        This is only necessary whenever we update the contexts,
+        so here is the right place.
+
+        Parameters
+        ----------
+        contexts : Contexts
+            Contexts to set
+        """
+        context_space = self.get_context_space()
+        contexts = {k: context_space.insert_defaults(v) for k, v in contexts.items()}
+        self._contexts = contexts
+
     def get_observation_space(
         self, obs_context_feature_names: list[str] | None = None
     ) -> gymnasium.spaces.Dict:
@@ -89,15 +109,38 @@ class CARLEnv(Wrapper, abc.ABC):
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
-        # Child env specific
+        """Get the context features
+
+        Defined per environment.
+
+        Returns
+        -------
+        dict[str, ContextFeature]
+            Context feature definitions
+        """
         raise NotImplementedError
 
     @classmethod
     def get_context_space(cls) -> ContextSpace:
+        """Get context space
+
+        Returns
+        -------
+        ContextSpace
+            Context space with utility methods holding
+            information about defaults, types, bounds, etc.
+        """
         return ContextSpace(cls.get_context_features())
 
     @classmethod
-    def get_default_context(cls) -> dict[str, Any]:
+    def get_default_context(cls) -> Context:
+        """Get the default context
+
+        Returns
+        -------
+        Context
+            Default context.
+        """
         default_context = cls.get_context_space().get_default_context()
         return default_context
 
@@ -128,7 +171,24 @@ class CARLEnv(Wrapper, abc.ABC):
         state = self._add_context_to_state(state)
         return state
 
-    def _add_context_to_state(self, state):
+    def _add_context_to_state(self, state: Any) -> dict[str, Any]:
+        """Add context observation to the state
+
+        The state is the observation from the underlying environment
+        and we add the context information to it. We return a dictionary
+        of the state and context, and the context is maybe represented
+        as a dictionary itself (controlled via `self.obs_context_as_dict`).
+
+        Parameters
+        ----------
+        state : Any
+            State from the environment
+
+        Returns
+        -------
+        dict[str, Any]
+            State context observation dict
+        """
         context = self.context
         if not self.obs_context_as_dict:
             context = [self.context[k] for k in self.state_context_features]
