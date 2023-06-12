@@ -35,6 +35,56 @@ class CARLEnv(Wrapper, abc.ABC):
         context_selector_kwargs: dict = None,
         **kwargs,
     ):
+        """Base CARL wrapper.
+
+        Good to know:
+
+        - The observation always is a dictionary of {"state": ..., "context": ...}. Use
+            an observation flattening wrapper if you need a different format.
+        - After each env reset, a new context is selected by the context selector.
+        - The context set is always filled with defaults if missing.
+
+        Attributes
+        ----------
+        base_observation_space: gymnasium.spaces.Space
+            The observation space from the wrapped environment.
+        obs_context_as_dict: bool, optional
+            Whether to pass the context as a vector or a dict in the observations.
+            The default is True. 
+        observation_space: gymnasium.spaces.Dict
+            The observation space of the CARL environment which is a dictionary of
+            "state" and "context".
+        contexts: Contexts
+            The context set.
+        context_selector: ContextSelector.
+            The context selector selecting a new context after each env reset.
+        
+
+        Parameters
+        ----------
+        env : Env
+            Environment adhering to the gymnasium API.
+        contexts : Contexts | None, optional
+            Context set, by default None. If it is None, we build the
+            context set with the default context.
+        obs_context_features : list[str] | None, optional
+            Context features which should be included in the observation, by default None.
+            If they are None, add all context features.
+        obs_context_as_dict: bool, optional
+            Whether to pass the context as a vector or a dict in the observations.
+            The default is True.
+        context_selector: AbstractSelector | type[AbstractSelector] | None, optional
+            The context selector (class), after each reset selects a new context to use.
+             If None, use a round robin selector.
+        context_selector_kwargs : dict, optional
+            Optional keyword arguments for the context selector, by default None.
+            Only used when `context_selector` is not None.
+
+        Raises
+        ------
+        ValueError
+            If the type of `context_selector` is invalid.
+        """
         super().__init__(env)
 
         self.base_observation_space: gymnasium.spaces.Space = env.observation_space
@@ -66,7 +116,7 @@ class CARLEnv(Wrapper, abc.ABC):
             )
         self._progress_instance()
         self._update_context()
-        self.observation_space = self.get_observation_space(
+        self.observation_space: gymnasium.spaces.Dict = self.get_observation_space(
             obs_context_feature_names=self.obs_context_features
         )
 
@@ -94,6 +144,20 @@ class CARLEnv(Wrapper, abc.ABC):
     def get_observation_space(
         self, obs_context_feature_names: list[str] | None = None
     ) -> gymnasium.spaces.Dict:
+        """Get the observation space for the context.
+
+        Parameters
+        ----------
+        obs_context_feature_names : list[str] | None, optional
+            Name of the context features to be included in the observation, by default None.
+            If it is None, we add all context features.
+
+        Returns
+        -------
+        gymnasium.spaces.Dict
+            Gymnasium observation space which contains the observation space of the
+            underlying environment ("state") and for the context ("context").
+        """
         context_space = self.get_context_space()
         obs_space_context = context_space.to_gymnasium_space(
             context_feature_names=obs_context_feature_names,
@@ -101,6 +165,7 @@ class CARLEnv(Wrapper, abc.ABC):
         )
         obs_space = spaces.Dict(
             {
+                # TODO should we rename "state" to "obs"?
                 "state": self.base_observation_space,
                 "context": obs_space_context,
             }
@@ -166,6 +231,25 @@ class CARLEnv(Wrapper, abc.ABC):
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
     ) -> tuple[Any, dict[str, Any]]:
+        """Reset the environment.
+
+        First, we progress the instance, i.e. select a new context with the context
+        selector. Then we update the context in the wrapped environment.
+        Finally, we reset the underlying environment and add context information
+        to the observation.
+
+        Parameters
+        ----------
+        seed : int | None, optional
+            Seed, by default None
+        options : dict[str, Any] | None, optional
+            Options, by default None
+
+        Returns
+        -------
+        tuple[Any, dict[str, Any]]
+            Observation, info.
+        """
         self._progress_instance()
         self._update_context()
         state, info = super().reset(seed=seed, options=options)
@@ -221,6 +305,21 @@ class CARLEnv(Wrapper, abc.ABC):
     def step(
         self, action: Any
     ) -> tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]:
+        """Step the environment.
+        
+        The context is added to the observation returned by the 
+        wrapped environment.
+
+        Parameters
+        ----------
+        action : Any
+            Action
+
+        Returns
+        -------
+        tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]
+            Observation, rewar, terminated, truncated, info.
+        """
         state = super().step(action)
         state = self._add_context_to_state(state)
         return state
@@ -235,12 +334,39 @@ class CARLGymnasiumEnv(CARLEnv):
         contexts: Contexts | None = None,
         obs_context_features: list[str]
         | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
-        # context_mask: list[str] | None = None,
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
         **kwargs,
-    ):
+    ) -> None:
+        """
+        CARL Gymnasium Environment.
+
+        Parameters
+        ----------
+
+        env : Env | None
+            Gymnasium environment, the default is None.
+            If None, instantiate the env with gymnasium's make function and
+            `self.env_name` which is defined in each child class.
+        contexts : Contexts | None, optional
+            Context set, by default None. If it is None, we build the
+            context set with the default context.
+        obs_context_features : list[str] | None, optional
+            Context features which should be included in the observation, by default None.
+            If they are None, add all context features.
+        context_selector: AbstractSelector | type[AbstractSelector] | None, optional
+            The context selector (class), after each reset selects a new context to use.
+             If None, use a round robin selector.
+        context_selector_kwargs : dict, optional
+            Optional keyword arguments for the context selector, by default None.
+            Only used when `context_selector` is not None.
+
+        Attributes
+        ----------
+        env_name: str
+            The registered gymnasium environment name.
+        """
         if env is None:
             env = gymnasium.make(id=self.env_name)
         super().__init__(
@@ -256,8 +382,6 @@ class CARLGymnasiumEnv(CARLEnv):
 
 class CARLCartPole(CARLGymnasiumEnv):
     env_name: str = "CartPole-v1"
-
-    # TODO do we want to modify the initial state distribution bounds like before?
 
     def _update_context(self) -> None:
         for k, v in self.context.items():
