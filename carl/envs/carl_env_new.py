@@ -37,7 +37,7 @@ class CARLEnv(Wrapper, abc.ABC):
     ):
         super().__init__(env)
 
-        self.state_observation_space: gymnasium.spaces.Space = env.observation_space
+        self.base_observation_space: gymnasium.spaces.Space = env.observation_space
         self.obs_context_as_dict = obs_context_as_dict
 
         if contexts is None:
@@ -101,7 +101,7 @@ class CARLEnv(Wrapper, abc.ABC):
         )
         obs_space = spaces.Dict(
             {
-                "state": self.state_observation_space,
+                "state": self.base_observation_space,
                 "context": obs_space_context,
             }
         )
