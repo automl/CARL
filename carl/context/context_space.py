@@ -50,6 +50,11 @@ class ContextSpace(object):
         context = {cf.name: cf.default_value for cf in self.context_space.values()}
         return context
     
+    def get_lower_and_upper_bound(self, context_feature_name: str) -> tuple[float,float]:
+        cf = self.context_space[context_feature_name]
+        bounds = (cf.lower, cf.upper)
+        return bounds
+    
     def to_gymnasium_space(
         self, context_feature_names: List[str] | None = None, as_dict: bool = False
     ) -> spaces.Space:
