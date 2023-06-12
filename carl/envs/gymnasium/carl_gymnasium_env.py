@@ -3,9 +3,9 @@ from __future__ import annotations
 import gymnasium
 from gymnasium.core import Env
 
-from carl.utils.types import Contexts
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
+from carl.utils.types import Contexts
 
 
 class CARLGymnasiumEnv(CARLEnv):

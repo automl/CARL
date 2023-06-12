@@ -1,24 +1,21 @@
 from __future__ import annotations
 
-import inspect
+import abc
 from typing import Any, SupportsFloat
 
-from gymnasium import Wrapper, spaces
+import inspect
+
 import gymnasium
-from gymnasium.core import Env
-
 import jax
-from jax import numpy as jp
 import numpy as np
-import abc
+from gymnasium import Wrapper, spaces
+from gymnasium.core import Env
+from jax import numpy as jp
 
-from carl.utils.types import Contexts, Context
-from carl.context.selection import AbstractSelector, RoundRobinSelector
-from carl.context.context_space import (
-    ContextFeature,
-    ContextSpace,
-)
+from carl.context.context_space import ContextFeature, ContextSpace
 from carl.context.sampler import ContextSampler
+from carl.context.selection import AbstractSelector, RoundRobinSelector
+from carl.utils.types import Context, Contexts
 
 
 class CARLEnv(Wrapper, abc.ABC):
@@ -48,7 +45,7 @@ class CARLEnv(Wrapper, abc.ABC):
             The observation space from the wrapped environment.
         obs_context_as_dict: bool, optional
             Whether to pass the context as a vector or a dict in the observations.
-            The default is True. 
+            The default is True.
         observation_space: gymnasium.spaces.Dict
             The observation space of the CARL environment which is a dictionary of
             "state" and "context".
@@ -56,7 +53,7 @@ class CARLEnv(Wrapper, abc.ABC):
             The context set.
         context_selector: ContextSelector.
             The context selector selecting a new context after each env reset.
-        
+
 
         Parameters
         ----------
@@ -121,7 +118,7 @@ class CARLEnv(Wrapper, abc.ABC):
     @property
     def contexts(self) -> Contexts:
         return self._contexts
-    
+
     @contexts.setter
     def contexts(self, contexts: Contexts) -> None:
         """Set `contexts` property
@@ -278,9 +275,7 @@ class CARLEnv(Wrapper, abc.ABC):
             context = [self.context[k] for k in self.obs_context_features]
         else:
             context = {
-                k: v
-                for k, v in self.context.items()
-                if k in self.obs_context_features
+                k: v for k, v in self.context.items() if k in self.obs_context_features
             }
         state_context_dict = {
             "state": state,
@@ -304,8 +299,8 @@ class CARLEnv(Wrapper, abc.ABC):
         self, action: Any
     ) -> tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]:
         """Step the environment.
-        
-        The context is added to the observation returned by the 
+
+        The context is added to the observation returned by the
         wrapped environment.
 
         Parameters
@@ -321,4 +316,3 @@ class CARLEnv(Wrapper, abc.ABC):
         state = super().step(action)
         state = self._add_context_to_state(state)
         return state
-

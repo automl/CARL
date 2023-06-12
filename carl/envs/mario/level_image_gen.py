@@ -120,7 +120,8 @@ class LevelImageGen:
         self, ascii_level: List[str], sprite_key: str, curr_x: int, curr_y: int
     ) -> Tuple[Any, Tuple[int, int, int, int]]:
         """Helper to make correct sprites and sprite sizes to draw into the image.
-        Some sprites are bigger than one tile and the renderer needs to adjust for them."""
+        Some sprites are bigger than one tile and the renderer needs to adjust for them.
+        """
 
         # Init default size
         new_left = curr_x * 16
@@ -215,7 +216,6 @@ class LevelImageGen:
                 actual_sprite = self.sprite_dict["b2"]
 
         elif sprite_key in ["T", "t"]:  # Pipes
-
             # figure out what kind of pipe this is
             if curr_y > 0 and ascii_level[curr_y - 1][curr_x] == sprite_key:
                 is_top = False
