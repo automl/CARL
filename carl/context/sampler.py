@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ConfigSpace import ConfigurationSpace
 from carl.context.context_space import ContextFeature, ContextSpace
 from omegaconf import DictConfig

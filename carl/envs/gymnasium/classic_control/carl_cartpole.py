@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import numpy as np
+
 from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 

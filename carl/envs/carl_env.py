@@ -17,10 +17,8 @@ from carl.context.selection import AbstractSelector, RoundRobinSelector
 from carl.context.context_space import (
     ContextFeature,
     ContextSpace,
-    UniformFloatContextFeature,
-    ContextSampler,
-    NormalFloatContextFeature,
 )
+from carl.context.sampler import ContextSampler
 
 
 class CARLEnv(Wrapper, abc.ABC):
