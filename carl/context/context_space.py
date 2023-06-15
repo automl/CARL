@@ -27,7 +27,6 @@ UniformIntegerContextFeature: TypeAlias = UniformIntegerHyperparameter
 CategoricalContextFeature: TypeAlias = CategoricalHyperparameter
 
 
-
 class ContextSpace(object):
     def __init__(self, context_space: dict[str, ContextFeature]) -> None:
         self.context_space = context_space
@@ -44,8 +43,13 @@ class ContextSpace(object):
         """
         return list(self.context_space.keys())
 
-    def insert_defaults(self, context: Context) -> Context:
+    def insert_defaults(self, context: Context, context_keys: List[str] | None = None) -> Context:
         context_with_defaults = self.get_default_context()
+
+        # insert defaults only for certain keys
+        if context_keys:
+            context_with_defaults = {key: context_with_defaults[key] for key in context_keys}
+
         context_with_defaults.update(context)
         return context_with_defaults
 
@@ -108,3 +112,26 @@ class ContextSpace(object):
             )
 
             return spaces.Box(low=low, high=high, dtype=np.float32)
+
+    def sample_contexts(
+            self, context_keys: List[str] | None = None, size: int = 1
+    ) -> Context | List[Contexts]:
+        if context_keys is None:
+            context_keys = self.context_space.keys()
+        else:
+            for key in context_keys:
+                if key not in self.context_space.keys():
+                    raise ValueError(f"Invalid context feature name: {key}")
+
+        contexts = []
+        for _ in range(size):
+            context = {cf.name: cf.sample() for cf in self.context_space.values()}
+            context = self.insert_defaults(context, context_keys)
+            contexts += [context]
+
+        if size == 1:
+            return contexts[0]
+        else:
+            return contexts
+
+
