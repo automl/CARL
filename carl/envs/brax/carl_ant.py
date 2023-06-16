@@ -8,7 +8,7 @@ from brax.envs.ant import Ant
 from carl.context.selection import AbstractSelector
 # from carl.envs.carl_brax_env import CARLBraxEnv
 from carl.utils.types import Context, Contexts
-from carl.envs.braxenvs.carl_brax_env import CARLBraxEnv
+from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 DEFAULT_CONTEXT = {
     "stiffness_factor": 1,

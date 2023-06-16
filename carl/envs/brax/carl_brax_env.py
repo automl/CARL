@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Union
 
 from brax.envs import create
-from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
+from carl.envs.brax.brax_wrappers import GymWrapper, VectorGymWrapper
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv

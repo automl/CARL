@@ -4,13 +4,13 @@ import numpy as np
 import jax.numpy as jnp
 from brax.envs.half_cheetah import Halfcheetah
 from brax.envs import create
-from carl.envs.braxenvs.brax_wrappers import GymWrapper, VectorGymWrapper
+from carl.envs.brax.brax_wrappers import GymWrapper, VectorGymWrapper
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
-from carl.envs.braxenvs.carl_brax_env import CARLBraxEnv
+from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 DEFAULT_CONTEXT = {
     "stiffness_factor": 1,
