@@ -14,7 +14,7 @@ class CARLCartPole(CARLGymnasiumEnv):
             setattr(self.env, k, v)
 
     @staticmethod
-    def get_context_features() -> list[ContextFeature]:
+    def get_context_features() -> dict[str, ContextFeature]:
         return {
             "gravity": UniformFloatContextFeature(
                 "gravity", lower=0.1, upper=np.inf, default_value=9.8
