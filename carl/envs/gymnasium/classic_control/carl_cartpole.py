@@ -30,4 +30,10 @@ class CARLCartPole(CARLGymnasiumEnv):
             "tau": UniformFloatContextFeature(
                 "tau", lower=0.002, upper=0.2, default_value=0.02
             ),
+            "initial_state_lower": UniformFloatContextFeature(
+                "initial_state_lower", lower=-np.inf, upper=np.inf, default_value=-0.1
+            ),
+            "initial_state_upper": UniformFloatContextFeature(
+                "initial_state_upper", lower=-np.inf, upper=np.inf, default_value=0.1
+            ),
         }
