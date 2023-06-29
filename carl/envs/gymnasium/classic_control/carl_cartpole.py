@@ -9,10 +9,6 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 class CARLCartPole(CARLGymnasiumEnv):
     env_name: str = "CartPole-v1"
 
-    def _update_context(self) -> None:
-        for k, v in self.context.items():
-            setattr(self.env, k, v)
-
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {

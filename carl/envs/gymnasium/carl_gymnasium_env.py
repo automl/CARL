@@ -61,3 +61,7 @@ class CARLGymnasiumEnv(CARLEnv):
             context_selector_kwargs=context_selector_kwargs,
             **kwargs,
         )
+
+    def _update_context(self) -> None:
+        for k, v in self.context.items():
+            setattr(self.env, k, v)
