@@ -9,8 +9,13 @@ CARL Pendulum Environment
 -------------------------
 .. image:: ../data/screenshots/pendulum.jpeg
     :width: 25%
-    :align: center
+    :align: left
     :alt: Pendulum Environment
+
+.. image:: ../data/context_generalization_plots/plot_ecdf_CARLPendulumEnv.png
+    :width: 50%
+    :align: right
+    :alt: Influence of context settings on an agent trained on the default environment.
 
 In Pendulum, the agent's task is to swing up an inverted pendulum and
 balance it at the top from a random position. The action here is the
@@ -25,8 +30,13 @@ CARL CartPole Environment
 -------------------------
 .. image:: ../data/screenshots/cartpole.jpeg
     :width: 25%
-    :align: center
+    :align: left
     :alt: CartPole Environment
+
+.. image:: ../data/context_generalization_plots/plot_ecdf_CARLCartPoleEnv.png
+    :width: 50%
+    :align: right
+    :alt: Influence of context settings on an agent trained on the default environment.
 
 CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
 this time the agent doesn't directly apply force to the pole but moves a cart on which
@@ -41,8 +51,13 @@ CARL Acrobot Environment
 -------------------------
 .. image:: ../data/screenshots/acrobot.jpeg
     :width: 25%
-    :align: center
+    :align: left
     :alt: Acrobot Environment
+
+.. image:: ../data/context_generalization_plots/plot_ecdf_CARLAcrobotEnv.png
+    :width: 50%
+    :align: right
+    :alt: Influence of context settings on an agent trained on the default environment.
 
 Acrobot is another swing-up task with the goal being swinging the end of the lower
 of two links up to a given height. The agent accomplishes this by actuating
@@ -57,8 +72,13 @@ CARL MountainCar Environment
 ----------------------------
 .. image:: ../data/screenshots/mountaincar.jpeg
     :width: 25%
-    :align: center
+    :align: left
     :alt: MountainCar Environment
+
+.. image:: ../data/context_generalization_plots/plot_ecdf_CARLMountainCarEnv.png
+    :width: 50%
+    :align: right
+    :alt: Influence of context settings on an agent trained on the default environment.
 
 The MountainCar environment asks the agent to move a car up a steep slope. In order
 to succeed, the agent has to accelerate using the opposite slope. There are two
