@@ -46,6 +46,15 @@ like joint strength or torso mass
 
     brax
 
+DeepMind Control Suite
+----
+Selected environment from the `DeepMind Control Suite <https://github.com/deepmind/dm_control>`_ with controllable physics.
+
+.. toctree::
+    :maxdepth: 2
+
+    dmc
+
 Mario
 -----
 `Super Mario (TOAD-GAN) <https://github.com/Mawiszus/TOAD-GAN>`_, a procedurally generated jump'n'run game with control
