@@ -1,7 +1,7 @@
 Quickstart
 ==========
 
-All CARL environments use `OpenAI's gym interface <https://gym.openai.com/docs/>`_
+All CARL environments use `OpenAI's gym interface <https://gymnasium.farama.org/content/basic_usage/>`_
 for agent-environment interactions. 
 
 To get started using CARL with your own agents, first define

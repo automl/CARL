@@ -1,17 +1,12 @@
 The CARL Environment
 ====================
 
-CARL extends the standard `gym interface <https://gym.openai.com/docs/>`_  with context.
+CARL extends the standard `gymnasium interface <https://gymnasium.farama.org/content/basic_usage/>`_  with context.
 This context changes the environment's transition dynamics and reward
 function, creating a greater challenge for the agent.
 During training we therefore can encounter different contexts and train for generalization.
 We exemplarily show how Brax' Fetch is extended and embedded by CARL. Different
 instantiations can be achieved by setting the context features to different values.
-
-.. image:: ../figures/concept.png
-  :width: 75%
-  :align: center
-  :alt: CARL contextually extends Brax' Fetch.
 
 
 Here we give a brief overview of the available options on how to create

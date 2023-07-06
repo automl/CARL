@@ -1,5 +1,6 @@
 # 0.2.1
 - Add Finger (DMC) env
+- Readd RNA env (#78)
 
 # 0.2.0
 - Integrate dm control environments (#55)

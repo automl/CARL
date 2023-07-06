@@ -63,7 +63,7 @@ Apart from Grasp's pyhiscal properties the target radius, height and distance ar
 
 
 CARL Halfcheetah Environment
-**********************
+*****************************
 .. image:: ../data/screenshots/halfcheetah.png
     :width: 25%
     :align: center
@@ -81,7 +81,7 @@ The context features can vary physical properties.
 
 
 CARL Humanoid Environment
-**********************
+**************************
 .. image:: ../data/screenshots/humanoid.png
     :width: 25%
     :align: center
