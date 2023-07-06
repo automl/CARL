@@ -10,6 +10,7 @@ from carl.envs.dmc.dmc_tasks import (  # type: ignore [import]  # noqa: F401
     fish,
     quadruped,
     walker,
+    pointmass,
 )
 from carl.utils.types import Context
 

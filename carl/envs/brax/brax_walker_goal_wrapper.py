@@ -1,5 +1,6 @@
 import gym
 import numpy as np
+from carl.utils.types import Context, Contexts
 
 STATE_INDICES = {
     "CARLAnt": [13, 14],
@@ -7,6 +8,44 @@ STATE_INDICES = {
     "CARLHalfcheetah": [14, 15],
 }
 
+def sample_walker_language_goals(
+    num_contexts, low=5, high=2500, normal=False, mean=25000, std=0.1
+):
+    directions = [
+        1,  # north
+        3,  # south
+        2,  # east
+        4,  # west
+        12,
+        32,
+        14,
+        34,
+        112,
+        332,
+        114,
+        334,
+        212,
+        232,
+        414,
+        434,
+    ]
+
+    sampled_contexts: Contexts = {}
+
+    for i in range(num_contexts):
+        c: Context = {}
+        c["target_direction"] = np.random.choice(directions)
+        if normal:
+            c["target_distance"] = np.round(
+                min(max(np.random.normal(loc=mean, scale=std * mean), low), high),
+                decimals=2,
+            )
+        else:
+            c["target_distance"] = np.round(
+                np.random.uniform(low=low, high=high), decimals=2
+            )
+        sampled_contexts[i] = c
+    return sampled_contexts
 
 class BraxWalkerGoalWrapper(gym.Wrapper):
     """Adds a positional goal to brax walker envs"""
@@ -74,11 +113,11 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
             return state
 
     def step(self, action):
-        state, reward, done, info = self.env.step(action)
+        state, _, done, info = self.env.step(action)
         indices = STATE_INDICES[self.env.__class__.__name__]
         new_position = np.array(list(self.position)) + np.array(
             [state[indices[0]], state[indices[1]]]
-        )
+        )        
         current_distance_to_goal = np.linalg.norm(self.goal_position - new_position)
         previous_distance_to_goal = np.linalg.norm(self.goal_position - self.position)
         direction_reward = max(0, previous_distance_to_goal - current_distance_to_goal)
@@ -89,3 +128,35 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         else:
             info["success"] = 0
         return state, direction_reward, done, info
+
+
+class BraxLanguageWrapper(gym.Wrapper):
+    """Translates the context features target distance and target radius into language"""
+
+    def __init__(self, env) -> None:
+        super().__init__(env)
+
+    def reset(self, return_info=False):
+        state, info = self.env.reset(info=True)
+        goal_str = self.get_goal_desc(info["context"])
+        extended_state = {"env_state": state, "goal": goal_str}
+        if return_info:
+            return extended_state, info
+        else:
+            return extended_state
+
+    def step(self, action):
+        state, reward, done, info = self.env.step(action)
+        goal_str = self.get_goal_desc(info["context"])
+        extended_state = {"env_state": state, "goal": goal_str}
+        return extended_state, reward, done, info
+
+    def get_goal_desc(self, context):
+        if "target_radius" in context.keys():
+            target_distance = context["target_distance"]
+            target_radius = context["target_radius"]
+            return f"The distance to the goal is {target_distance} steps. Move within {target_radius} steps of the goal."
+        else:
+            target_distance = context["target_distance"]
+            target_direction = context["target_direction"]
+            return f"Move {target_distance} steps {target_direction}."
