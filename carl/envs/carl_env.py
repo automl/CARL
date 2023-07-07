@@ -6,11 +6,9 @@ from typing import Any, SupportsFloat
 import inspect
 
 import gymnasium
-import jax
 import numpy as np
 from gymnasium import Wrapper, spaces
 from gymnasium.core import Env
-from jax import numpy as jp
 
 from carl.context.context_space import ContextFeature, ContextSpace
 from carl.context.sampler import ContextSampler
