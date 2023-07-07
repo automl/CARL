@@ -1,131 +1,91 @@
-from typing import Dict, List, Optional, Union
+from __future__ import annotations
+
+import numpy as np
 
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
 from gymnasium.envs.box2d import bipedal_walker
 from gymnasium.envs.box2d import bipedal_walker as bpw
 
-from carl.context.selection import AbstractSelector
-from carl.envs.carl_env import CARLEnv
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
-
-DEFAULT_CONTEXT = {
-    "FPS": 50,
-    "SCALE": 30.0,  # affects how fast-paced the game is, forces should be adjusted as well
-    "GRAVITY_X": 0,
-    "GRAVITY_Y": -10,
-    # surroundings
-    "FRICTION": 2.5,
-    "TERRAIN_STEP": 14 / 30.0,
-    "TERRAIN_LENGTH": 200,  # in steps
-    "TERRAIN_HEIGHT": 600 / 30 / 4,  # VIEWPORT_H/SCALE/4
-    "TERRAIN_GRASS": 10,  # low long are grass spots, in steps
-    "TERRAIN_STARTPAD": 20,  # in steps
-    # walker
-    "MOTORS_TORQUE": 80,
-    "SPEED_HIP": 4,
-    "SPEED_KNEE": 6,
-    "LIDAR_RANGE": 160 / 30.0,
-    "LEG_DOWN": -8 / 30.0,
-    "LEG_W": 8 / 30.0,
-    "LEG_H": 34 / 30.0,
-    # absolute value of random force applied to walker at start of episode
-    "INITIAL_RANDOM": 5,
-    # Size of world
-    "VIEWPORT_W": 600,
-    "VIEWPORT_H": 400,
-}
-
-# TODO make bounds more generous for all Box2D envs?
-CONTEXT_BOUNDS = {
-    "FPS": (1, 500, float),
-    "SCALE": (
-        1,
-        100,
-        float,
-    ),  # affects how fast-paced the game is, forces should be adjusted as well
-    # surroundings
-    "FRICTION": (0, 10, float),
-    "TERRAIN_STEP": (0.25, 1, float),
-    "TERRAIN_LENGTH": (100, 500, int),  # in steps
-    "TERRAIN_HEIGHT": (3, 10, float),  # VIEWPORT_H/SCALE/4
-    "TERRAIN_GRASS": (5, 15, int),  # low long are grass spots, in steps
-    "TERRAIN_STARTPAD": (10, 30, int),  # in steps
-    # walker
-    "MOTORS_TORQUE": (0, 200, float),
-    "SPEED_HIP": (1e-6, 15, float),
-    "SPEED_KNEE": (1e-6, 15, float),
-    "LIDAR_RANGE": (0.5, 20, float),
-    "LEG_DOWN": (-2, -0.25, float),
-    "LEG_W": (0.25, 0.5, float),
-    "LEG_H": (0.25, 2, float),
-    # absolute value of random force applied to walker at start of episode
-    "INITIAL_RANDOM": (0, 50, float),
-    # Size of world
-    "VIEWPORT_W": (400, 1000, int),
-    "VIEWPORT_H": (200, 800, int),
-    "GRAVITY_X": (-20, 20, float),  # unit: m/s²
-    "GRAVITY_Y": (
-        -20,
-        -0.01,
-        float,
-    ),  # the y-component of gravity must be smaller than 0 because otherwise the
-    # body leaves the frame by going up
-}
+from carl.context.context_space import (
+    ContextFeature,
+    UniformFloatContextFeature,
+    UniformIntegerContextFeature,
+)
+from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 
-class CARLBipedalWalkerEnv(CARLEnv):
-    def __init__(
-        self,
-        env: Optional[bipedal_walker.BipedalWalker] = None,
-        contexts: Contexts = {},
-        hide_context: bool = True,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.05,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = DEFAULT_CONTEXT,
-        state_context_features: Optional[List[str]] = None,
-        context_mask: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
-    ):
-        """
+class CARLBipedalWalker(CARLGymnasiumEnv):
+    env_name: str = "BipedalWalker-v3"
 
-        Parameters
-        ----------
-        env: gym.Env, optional
-            Defaults to classic control environment mountain car from gym (MountainCarEnv).
-        contexts: List[Dict], optional
-            Different contexts / different environment parameter settings.
-        instance_mode: str, optional
-        """
-        if env is None:
-            env = bipedal_walker.BipedalWalker()
-        if not contexts:
-            contexts = {0: DEFAULT_CONTEXT}
-        super().__init__(
-            env=env,
-            contexts=contexts,
-            hide_context=hide_context,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features=scale_context_features,
-            default_context=default_context,
-            state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space,
-            context_selector=context_selector,
-            context_selector_kwargs=context_selector_kwargs,
-            context_mask=context_mask,
-        )
-        self.whitelist_gaussian_noise = list(
-            DEFAULT_CONTEXT.keys()
-        )  # allow to augment all values
+    @staticmethod
+    def get_context_features() -> dict[str, ContextFeature]:
+        return {
+            "FPS": UniformFloatContextFeature(
+                "FPS", lower=1, upper=500, default_value=50
+            ),
+            "SCALE": UniformFloatContextFeature(
+                "SCALE", lower=1, upper=100, default_value=30.0
+            ),  # affects how fast-paced the game is, forces should be adjusted as well
+            "GRAVITY_X": UniformFloatContextFeature(
+                "GRAVITY_X", lower=-20, upper=20, default_value=0
+            ),
+            "GRAVITY_Y": UniformFloatContextFeature(
+                "GRAVITY_Y", lower=-20, upper=-0.01, default_value=-10
+            ),
+            # surroundings
+            "FRICTION": UniformFloatContextFeature(
+                "FRICTION", lower=0, upper=10, default_value=2.5
+            ),
+            "TERRAIN_STEP": UniformFloatContextFeature(
+                "TERRAIN_STEP", lower=0.25, upper=1, default_value=14 / 30.0
+            ),
+            "TERRAIN_LENGTH": UniformIntegerContextFeature(
+                "TERRAIN_LENGTH", lower=100, upper=500, default_value=200
+            ),  # in steps
+            "TERRAIN_HEIGHT": UniformFloatContextFeature(
+                "TERRAIN_HEIGHT", lower=3, upper=10, default_value=600 / 30 / 4
+            ),  # VIEWPORT_H/SCALE/4
+            "TERRAIN_GRASS": UniformIntegerContextFeature(
+                "TERRAIN_GRASS", lower=5, upper=15, default_value=10
+            ),  # low long are grass spots, in step)s
+            "TERRAIN_STARTPAD": UniformFloatContextFeature(
+                "TERRAIN_STARTPAD", lower=10, upper=30, default_value=20
+            ),  # in steps
+            # walker
+            "MOTORS_TORQUE": UniformFloatContextFeature(
+                "MOTORS_TORQUE", lower=0.01, upper=200, default_value=80
+            ),
+            "SPEED_HIP": UniformFloatContextFeature(
+                "SPEED_HIP", lower=0.01, upper=15, default_value=4
+            ),
+            "SPEED_KNEE": UniformFloatContextFeature(
+                "SPEED_KNEE", lower=0.01, upper=15, default_value=6
+            ),
+            "LIDAR_RANGE": UniformFloatContextFeature(
+                "LIDAR_RANGE", lower=0.01, upper=20, default_value=160 / 30.0
+            ),
+            "LEG_DOWN": UniformFloatContextFeature(
+                "LEG_DOWN", lower=-2, upper=-0.25, default_value=-8 / 30.0
+            ),
+            "LEG_W": UniformFloatContextFeature(
+                "LEG_W", lower=0.25, upper=0.5, default_value=8 / 30.0
+            ),
+            "LEG_H": UniformFloatContextFeature(
+                "LEG_H", lower=0.25, upper=2, default_value=34 / 30.0
+            ),
+            # absolute value of random force applied to walker at start of episode
+            "INITIAL_RANDOM": UniformFloatContextFeature(
+                "INITIAL_RANDOM", lower=0, upper=50, default_value=5
+            ),
+            # Size of world
+            "VIEWPORT_W": UniformIntegerContextFeature(
+                "VIEWPORT_W", lower=400, upper=1000, default_value=600
+            ),
+            "VIEWPORT_H": UniformIntegerContextFeature(
+                "VIEWPORT_H", lower=200, upper=800, default_value=400
+            ),
+        }
 
     def _update_context(self) -> None:
         self.env: bipedal_walker.BipedalWalker
@@ -197,9 +157,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         self.env.world.gravity = gravity
 
 
-def demo_heuristic(
-    env: Union[CARLBipedalWalkerEnv, bipedal_walker.BipedalWalker]
-) -> None:
+def demo_heuristic(env: CARLBipedalWalker | bipedal_walker.BipedalWalker) -> None:
     env.reset()
     steps = 0
     total_reward = 0
@@ -213,6 +171,7 @@ def demo_heuristic(
     supporting_knee_angle = SUPPORT_KNEE_ANGLE
     while True:
         s, r, terminated, truncated, info = env.step(a)
+        s = s["state"]
         total_reward += r
         if steps % 20 == 0 or terminated or truncated:
             print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
@@ -284,7 +243,6 @@ def demo_heuristic(
 
 if __name__ == "__main__":
     # Heurisic: suboptimal, have no notion of balance.
-    env = CARLBipedalWalkerEnv(add_gaussian_noise_to_context=True)
-    for i in range(3):
-        demo_heuristic(env)
+    env = CARLBipedalWalker()
+    demo_heuristic(env)
     env.close()
