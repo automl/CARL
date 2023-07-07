@@ -86,6 +86,8 @@ class CARLEnv(Wrapper, abc.ABC):
         if contexts is None:
             contexts = {0: self.get_default_context()}   # was self.get_default_context(self) before
         self.contexts = contexts
+        if obs_context_features is None:
+            obs_context_features = list(list(self.contexts.values())[0].keys())
         self.obs_context_features = obs_context_features
 
         # Context Selector
