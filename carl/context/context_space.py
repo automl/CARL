@@ -6,12 +6,12 @@ import gymnasium.spaces as spaces
 import numpy as np
 from ConfigSpace.configuration_space import Configuration, ConfigurationSpace
 from ConfigSpace.hyperparameters import (
+    CategoricalHyperparameter,
     Hyperparameter,
     NormalFloatHyperparameter,
     NumericalHyperparameter,
     UniformFloatHyperparameter,
     UniformIntegerHyperparameter,
-    CategoricalHyperparameter,
 )
 from omegaconf import DictConfig
 from typing_extensions import TypeAlias
@@ -43,12 +43,16 @@ class ContextSpace(object):
         """
         return list(self.context_space.keys())
 
-    def insert_defaults(self, context: Context, context_keys: List[str] | None = None) -> Context:
+    def insert_defaults(
+        self, context: Context, context_keys: List[str] | None = None
+    ) -> Context:
         context_with_defaults = self.get_default_context()
 
         # insert defaults only for certain keys
         if context_keys:
-            context_with_defaults = {key: context_with_defaults[key] for key in context_keys}
+            context_with_defaults = {
+                key: context_with_defaults[key] for key in context_keys
+            }
 
         context_with_defaults.update(context)
         return context_with_defaults
@@ -114,7 +118,7 @@ class ContextSpace(object):
             return spaces.Box(low=low, high=high, dtype=np.float32)
 
     def sample_contexts(
-            self, context_keys: List[str] | None = None, size: int = 1
+        self, context_keys: List[str] | None = None, size: int = 1
     ) -> Context | List[Contexts]:
         if context_keys is None:
             context_keys = self.context_space.keys()
@@ -133,5 +137,3 @@ class ContextSpace(object):
             return contexts[0]
         else:
             return contexts
-
-

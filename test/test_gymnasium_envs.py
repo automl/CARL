@@ -1,6 +1,6 @@
+import inspect
 import unittest
 
-import inspect
 import carl.envs.gymnasium
 
 
@@ -13,9 +13,7 @@ class TestGymnasiumEnvs(unittest.TestCase):
                 try:
                     env_obj.get_context_features()
 
-                    env = (
-                        env_obj()
-                    )
+                    env = env_obj()
                     env._update_context()
                 except Exception as e:
                     print(f"Cannot instantiate {env_name} environment.")

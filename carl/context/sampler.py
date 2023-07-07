@@ -11,7 +11,10 @@ from carl.utils.types import Context, Contexts
 class ContextSampler(ConfigurationSpace):
     def __init__(
         self,
-        context_distributions: list[ContextFeature] | dict[str, ContextFeature] | str | DictConfig,
+        context_distributions: list[ContextFeature]
+        | dict[str, ContextFeature]
+        | str
+        | DictConfig,
         context_space: ContextSpace,
         seed: int,
         name: str | None = None,
@@ -36,7 +39,7 @@ class ContextSampler(ConfigurationSpace):
 
     def add_context_features(self, context_features: list[ContextFeature]) -> None:
         self.add_hyperparameters(context_features)
-        
+
     def get_context_features(self) -> list[ContextFeature]:
         return self.get_hyperparameters()
 

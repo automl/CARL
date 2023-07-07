@@ -34,10 +34,16 @@ class CARLAcrobot(CARLGymnasiumEnv):
                 "LINK_MOI", lower=0.1, upper=10, default_value=1
             ),
             "MAX_VEL_1": UniformFloatContextFeature(
-                "MAX_VEL_1", lower=0.4 * np.pi, upper=40 * np.pi, default_value=4 * np.pi
+                "MAX_VEL_1",
+                lower=0.4 * np.pi,
+                upper=40 * np.pi,
+                default_value=4 * np.pi,
             ),
             "MAX_VEL_2": UniformFloatContextFeature(
-                "MAX_VEL_2", lower=0.9 * np.pi, upper=90 * np.pi, default_value=9 * np.pi
+                "MAX_VEL_2",
+                lower=0.9 * np.pi,
+                upper=90 * np.pi,
+                default_value=9 * np.pi,
             ),
             "torque_noise_max": UniformFloatContextFeature(
                 "torque_noise_max", lower=-1, upper=1, default_value=0
@@ -49,7 +55,10 @@ class CARLAcrobot(CARLGymnasiumEnv):
                 "INITIAL_ANGLE_UPPER", lower=-np.inf, upper=np.inf, default_value=0.1
             ),
             "INITIAL_VELOCITY_LOWER": UniformFloatContextFeature(
-                "INITIAL_VELOCITY_LOWER", lower=-np.inf, upper=np.inf, default_value=-0.1
+                "INITIAL_VELOCITY_LOWER",
+                lower=-np.inf,
+                upper=np.inf,
+                default_value=-0.1,
             ),
             "INITIAL_VELOCITY_UPPER": UniformFloatContextFeature(
                 "INITIAL_VELOCITY_UPPER", lower=-np.inf, upper=np.inf, default_value=0.1

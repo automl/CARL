@@ -1,14 +1,23 @@
 import unittest
 
-from carl.context.context_space import UniformFloatContextFeature, NormalFloatContextFeature, ContextSpace
+from carl.context.context_space import (
+    ContextSpace,
+    NormalFloatContextFeature,
+    UniformFloatContextFeature,
+)
 from carl.context.sampler import ContextSampler
 
 context_space_dict = {
-    "gravity": UniformFloatContextFeature("gravity", lower=1, upper=10, default_value=9.8)
+    "gravity": UniformFloatContextFeature(
+        "gravity", lower=1, upper=10, default_value=9.8
+    )
 }
 sample_dist = {
-    "gravity": NormalFloatContextFeature("gravity", mu=9.8, sigma=0.0, default_value=9.8)
+    "gravity": NormalFloatContextFeature(
+        "gravity", mu=9.8, sigma=0.0, default_value=9.8
+    )
 }
+
 
 class TestContextSampler(unittest.TestCase):
     def setUp(self) -> None:
@@ -17,7 +26,7 @@ class TestContextSampler(unittest.TestCase):
             context_distributions=sample_dist,
             context_space=ContextSpace(context_space_dict),
             seed=0,
-            name="TestSampler"
+            name="TestSampler",
         )
         return super().setUp()
 
@@ -26,13 +35,13 @@ class TestContextSampler(unittest.TestCase):
             context_distributions=sample_dist,  # as dict
             context_space=self.cspace,
             seed=0,
-            name="TestSampler"
+            name="TestSampler",
         )
         sampler = ContextSampler(
             context_distributions=list(sample_dist.values()),  # as list/iterable
             context_space=self.cspace,
             seed=0,
-            name="TestSampler"
+            name="TestSampler",
         )
 
     def test_sample_contexts(self):

@@ -1,30 +1,35 @@
 import unittest
 
 import gymnasium
-
 import numpy as np
-from carl.context.context_space import ContextSpace, UniformFloatContextFeature, UniformIntegerContextFeature, CategoricalContextFeature
+
+from carl.context.context_space import (
+    CategoricalContextFeature,
+    ContextSpace,
+    UniformFloatContextFeature,
+    UniformIntegerContextFeature,
+)
 
 context_space_dict = {
-            "gravity": UniformFloatContextFeature(
-                "gravity", lower=0.1, upper=np.inf, default_value=9.8
-            ),
-            "masscart": UniformFloatContextFeature(
-                "masscart", lower=0.1, upper=10, default_value=1.0
-            ),
-            "masspole": UniformFloatContextFeature(
-                "masspole", lower=0.01, upper=1, default_value=0.1
-            ),
-            "length": UniformFloatContextFeature(
-                "length", lower=0.05, upper=5, default_value=0.5
-            ),
-            "force_mag": UniformFloatContextFeature(
-                "force_mag", lower=1, upper=100, default_value=10.0
-            ),
-            "tau": UniformFloatContextFeature(
-                "tau", lower=0.002, upper=0.2, default_value=0.02
-            ),
-        }
+    "gravity": UniformFloatContextFeature(
+        "gravity", lower=0.1, upper=np.inf, default_value=9.8
+    ),
+    "masscart": UniformFloatContextFeature(
+        "masscart", lower=0.1, upper=10, default_value=1.0
+    ),
+    "masspole": UniformFloatContextFeature(
+        "masspole", lower=0.01, upper=1, default_value=0.1
+    ),
+    "length": UniformFloatContextFeature(
+        "length", lower=0.05, upper=5, default_value=0.5
+    ),
+    "force_mag": UniformFloatContextFeature(
+        "force_mag", lower=1, upper=100, default_value=10.0
+    ),
+    "tau": UniformFloatContextFeature(
+        "tau", lower=0.002, upper=0.2, default_value=0.02
+    ),
+}
 
 context_space_dict_othertypes = {
     "gravity": UniformFloatContextFeature(
@@ -35,8 +40,9 @@ context_space_dict_othertypes = {
     ),
     # "masspole": CategoricalContextFeature(
     #     "masspole", choices=[0.1,0.2,0.5,1], default_value=1.0, weights=[1,2,3,4]
-    # ), # TODO Support categorical context features? 
+    # ), # TODO Support categorical context features?
 }
+
 
 class TestContextSpace(unittest.TestCase):
     def setUp(self) -> None:
@@ -46,7 +52,7 @@ class TestContextSpace(unittest.TestCase):
             "masspole": 0.1,
             "length": 0.5,
             "force_mag": 10,
-            "tau": 0.02
+            "tau": 0.02,
         }
         self.context_space = ContextSpace(context_space=context_space_dict)
         return super().setUp()
@@ -86,9 +92,6 @@ class TestContextSpace(unittest.TestCase):
         is_valid = self.context_space.verify_context(context)
         self.assertEqual(is_valid, False)
 
-
-
-        
 
 if __name__ == "__main__":
     unittest.main()

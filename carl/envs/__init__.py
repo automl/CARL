@@ -5,9 +5,7 @@ import warnings
 
 # Classic control is in gym and thus necessary for the base version to run
 from carl.envs.classic_control import *
-
 from carl.envs.gymnasium import *
-
 
 # Environment loading
 box2d_spec = iutil.find_spec("Box2D")
@@ -45,5 +43,3 @@ else:
     warnings.warn(
         "Module 'dm_control' not found. If you want to use these environments, please follow the installation guide."
     )
-
-

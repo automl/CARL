@@ -7,6 +7,7 @@ from gymnasium.envs.box2d.car_dynamics import Car
 from pyglet import gl
 
 from carl.context.selection import AbstractSelector
+from carl.envs.carl_env import CARLEnv
 from carl.envs.gymnasium.box2d.parking_garage.bus import AWDBus  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.bus import AWDBusSmallTrailer  # as Car
@@ -17,26 +18,29 @@ from carl.envs.gymnasium.box2d.parking_garage.bus import FWDBus  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.bus import FWDBusLargeTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.bus import FWDBusSmallTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.race_car import AWDRaceCar  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import AWDRaceCarLargeTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import AWDRaceCarSmallTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.race_car import FWDRaceCar  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import FWDRaceCarLargeTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import FWDRaceCarSmallTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import RaceCarLargeTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import RaceCarSmallTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.race_car import RaceCar
+from carl.envs.gymnasium.box2d.parking_garage.race_car import (  # as Car
+    AWDRaceCarLargeTrailer,
+    AWDRaceCarSmallTrailer,
+    FWDRaceCarLargeTrailer,
+    FWDRaceCarSmallTrailer,
+    RaceCar,
+    RaceCarLargeTrailer,
+    RaceCarSmallTrailer,
+)
 from carl.envs.gymnasium.box2d.parking_garage.street_car import AWDStreetCar  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.street_car import AWDStreetCarLargeTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.street_car import AWDStreetCarSmallTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.street_car import FWDStreetCar  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.street_car import FWDStreetCarLargeTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.street_car import FWDStreetCarSmallTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.street_car import StreetCar  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.street_car import StreetCarLargeTrailer  # as Car
-from carl.envs.gymnasium.box2d.parking_garage.street_car import StreetCarSmallTrailer  # as Car
+from carl.envs.gymnasium.box2d.parking_garage.street_car import (  # as Car
+    AWDStreetCarLargeTrailer,
+    AWDStreetCarSmallTrailer,
+    FWDStreetCarLargeTrailer,
+    FWDStreetCarSmallTrailer,
+    StreetCarLargeTrailer,
+    StreetCarSmallTrailer,
+)
 from carl.envs.gymnasium.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
-from carl.envs.carl_env import CARLEnv
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts, ObsType
 
