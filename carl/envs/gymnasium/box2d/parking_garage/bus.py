@@ -14,7 +14,7 @@ from Box2D.b2 import ropeJointDef  # noqa: F401
 from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gymnasium.envs.box2d.car_dynamics import Car
 
-from carl.envs.box2d.parking_garage.utils import Particle
+from carl.envs.gymnasium.box2d.parking_garage.utils import Particle
 
 __author__ = "André Biedenkapp"
 

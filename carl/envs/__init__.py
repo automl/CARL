@@ -13,7 +13,7 @@ from carl.envs.gymnasium import *
 box2d_spec = iutil.find_spec("Box2D")
 found = box2d_spec is not None
 if found:
-    from carl.envs.box2d import *
+    from carl.envs.gymnasium.box2d import *
 else:
     warnings.warn(
         "Module 'Box2D' not found. If you want to use these environments, please follow the installation guide."
