@@ -313,6 +313,6 @@ class CARLEnv(Wrapper, abc.ABC):
         tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]
             Observation, rewar, terminated, truncated, info.
         """
-        state = super().step(action)
+        state, reward, terminated, truncated, info = super().step(action)
         state = self._add_context_to_state(state)
-        return state
+        return state, reward, terminated, truncated, info
