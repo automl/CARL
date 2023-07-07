@@ -10,6 +10,8 @@ from carl.utils.types import Contexts
 
 class CARLGymnasiumEnv(CARLEnv):
     env_name: str
+    # TODO make render mode adjustable
+    render_mode: str = "rgb_array"
 
     def __init__(
         self,
@@ -51,7 +53,7 @@ class CARLGymnasiumEnv(CARLEnv):
             The registered gymnasium environment name.
         """
         if env is None:
-            env = gymnasium.make(id=self.env_name)
+            env = gymnasium.make(id=self.env_name, render_mode=self.render_mode)
         super().__init__(
             env=env,
             contexts=contexts,
