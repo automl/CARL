@@ -49,9 +49,6 @@ def demo_heuristic_lander(
 
 if __name__ == "__main__":
     env = CARLLunarLander()
-    # env.render()  # initialize viewer. otherwise weird bug.
-    # env = ll.LunarLander()
-    # env = CustomLunarLanderEnv()
     for i in range(5):
-        demo_heuristic_lander(env, seed=1, render=True)
+        demo_heuristic_lander(env, seed=i, render=True)
     env.close()
