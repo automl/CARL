@@ -3,18 +3,11 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 import numpy as np
-import pyglet
-from gymnasium.envs.box2d import CarRacing, lunar_lander
 from gymnasium.envs.box2d.car_dynamics import Car
-from gymnasium.envs.box2d.lunar_lander import LunarLander
+from gymnasium.envs.box2d.car_racing import CarRacing
 from gymnasium.envs.registration import register
-from pyglet import gl
 
-from carl.context.context_space import (
-    ContextFeature,
-    UniformFloatContextFeature,
-    UniformIntegerContextFeature,
-)
+from carl.context.context_space import ContextFeature, UniformIntegerContextFeature
 from carl.envs.gymnasium.box2d.parking_garage.bus import AWDBus  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.bus import AWDBusLargeTrailer  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.bus import AWDBusSmallTrailer  # as Car
@@ -49,8 +42,7 @@ from carl.envs.gymnasium.box2d.parking_garage.street_car import (  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.trike import TukTuk  # as Car
 from carl.envs.gymnasium.box2d.parking_garage.trike import TukTukSmallTrailer  # as Car
 from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts, ObsType
+from carl.utils.types import ObsType
 
 PARKING_GARAGE_DICT = {
     # Racing car
@@ -113,7 +105,7 @@ class CustomCarRacing(CarRacing):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
+        return_info: bool = True,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._destroy()
@@ -144,7 +136,8 @@ class CustomCarRacing(CarRacing):
         else:
             return self.step(None)[0], {}  # type: ignore [arg-type]
 
-    def _render_indicators(self, W: int, H: int) -> None:
+    def _render_indicators_BROKEN(self, W: int, H: int) -> None:
+        # TODO Fix CarRacing rendering
         # copied from meta car racing
         s = W / 40.0
         h = H / 40.0
@@ -152,41 +145,47 @@ class CustomCarRacing(CarRacing):
         polygons = [W, 0, 0, W, 5 * h, 0, 0, 5 * h, 0, 0, 0, 0]
 
         def vertical_ind(place: int, val: int, color: Tuple) -> None:
-            colors.extend([color[0], color[1], color[2], 1] * 4)
-            polygons.extend(
-                [
-                    place * s,
-                    h + h * val,
-                    0,
-                    (place + 1) * s,
-                    h + h * val,
-                    0,
-                    (place + 1) * s,
-                    h,
-                    0,
-                    (place + 0) * s,
-                    h,
-                    0,
-                ]
+            points = [
+                place * s,
+                h + h * val,
+                0,
+                (place + 1) * s,
+                h + h * val,
+                0,
+                (place + 1) * s,
+                h,
+                0,
+                (place + 0) * s,
+                h,
+                0,
+            ]
+            C = [color[0], color[1], color[2], 1]  # * 4
+            colors.extend(C)
+            polygons.extend(points)
+            self._draw_colored_polygon(
+                self.surf, points, C, zoom=1, translation=[0, 0], angle=0, clip=True
             )
 
         def horiz_ind(place: int, val: int, color: Tuple) -> None:
-            colors.extend([color[0], color[1], color[2], 1] * 4)
-            polygons.extend(
-                [
-                    (place + 0) * s,
-                    4 * h,
-                    0,
-                    (place + val) * s,
-                    4 * h,
-                    0,
-                    (place + val) * s,
-                    2 * h,
-                    0,
-                    (place + 0) * s,
-                    2 * h,
-                    0,
-                ]
+            points = [
+                (place + 0) * s,
+                4 * h,
+                0,
+                (place + val) * s,
+                4 * h,
+                0,
+                (place + val) * s,
+                2 * h,
+                0,
+                (place + 0) * s,
+                2 * h,
+                0,
+            ]
+            C = [color[0], color[1], color[2], 1]  # * 4
+            colors.extend(C)
+            polygons.extend(points)
+            self._draw_colored_polygon(
+                self.surf, points, C, zoom=1, translation=[0, 0], angle=0, clip=True
             )
 
         true_speed = np.sqrt(
@@ -202,10 +201,23 @@ class CustomCarRacing(CarRacing):
             vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))  # type: ignore [attr-defined]
         horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))  # type: ignore [attr-defined]
         horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))  # type: ignore [attr-defined]
-        vl = pyglet.graphics.vertex_list(
-            len(polygons) // 3, ("v3f", polygons), ("c4f", colors)  # gl.GL_QUADS,
-        )
-        vl.draw(gl.GL_QUADS)
+        # vl = pyglet.graphics.vertex_list(
+        #     len(polygons) // 3, ("v3f", polygons), ("c4f", colors)  # gl.GL_QUADS,
+        # )
+        # vl.draw(gl.GL_QUADS)
+
+        # shader_program = pyglet.graphics.get_default_shader()
+
+        # mode = gl.GL_POLYGON_MODE
+
+        # vertex_positions = polygons
+        # vl = shader_program.vertex_list(
+        #     count=len(polygons) // 3,
+        #     mode=mode,
+        #     position=('f', vertex_positions),
+        #     colors=('f', colors)
+        # )
+        # vl.draw(mode)
 
 
 register(
@@ -231,3 +243,4 @@ class CARLVehicleRacing(CARLGymnasiumEnv):
         self.env: CustomCarRacing
         vehicle_class_index = self.context["VEHICLE_ID"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
+        print(self.env.vehicle_class)
