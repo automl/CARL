@@ -28,6 +28,9 @@ if __name__ == "__main__":
                 if event.key == pygame.K_RETURN:
                     global restart
                     restart = True
+                if event.key == pygame.K_ESCAPE:
+                    global isopen
+                    isopen = False
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -59,14 +62,15 @@ if __name__ == "__main__":
         restart = False
         while True:
             register_input()
-            s, r, done, info = env.step(a)
+            s, r, terminated, truncated, info = env.step(a)            
+            done = terminated | truncated
             time.sleep(0.025)
             total_reward += r
             if steps % 200 == 0 or done:
                 print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
                 print("step {} total_reward {:+0.2f}".format(steps, total_reward))
             steps += 1
-            isopen = env.render()
+            env.render()
             if done or restart or not isopen:
                 break
     env.close()
