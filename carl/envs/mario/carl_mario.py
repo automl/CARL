@@ -27,6 +27,8 @@ except FileNotFoundError:
 INITIAL_HEIGHT = 16
 INITIAL_WIDTH = 100
 
+INITIAL_HEIGHT = 16
+INITIAL_WIDTH = 100
 
 class CARLMarioEnv(CARLEnv):
     def __init__(
