@@ -84,7 +84,6 @@ class MarioEnv(gym.Env):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._reset_obs()
@@ -97,10 +96,7 @@ class MarioEnv(gym.Env):
         buffer = self._receive()
         frame = self._read_frame(buffer)
         self._update_obs(frame)
-        if not return_info:
-            return self._obs.copy()
-        else:
-            return self._obs.copy(), {}
+        return self._obs.copy(), {}
 
     def step(self, action: Any) -> Any:
         if self.sticky_action_probability != 0.0:
@@ -138,6 +134,7 @@ class MarioEnv(gym.Env):
             self._obs.copy(),
             reward if not self.sparse_rewards else int(completionPercentage == 1.0),
             done,  # bool
+            False,
             info,  # Dict[str, Any]
         )
 
