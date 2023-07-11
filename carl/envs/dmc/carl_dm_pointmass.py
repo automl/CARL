@@ -8,6 +8,7 @@ from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
+
 DEFAULT_CONTEXT = {
     "gravity": -9.81,  # Gravity is disabled via flag
     "friction_tangential": 1,  # Scaling factor for tangential friction of all geoms (objects)
@@ -24,8 +25,8 @@ DEFAULT_CONTEXT = {
     "wind_y": 0.0,
     "wind_z": 0.0,
     "mass": 0.3,
-    "starting_x": 0.0,
-    "starting_y": 0.0,
+    "starting_x": 0.14,
+    "starting_y": 0.14,
     "target_x": 0.0,
     "target_y": 0.0,
     "area_size": 0.6,
@@ -105,3 +106,8 @@ class CARLDmcPointMassEnv(CARLDmcEnv):
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
         )
+
+    def _update_context(self) -> None:
+        super()._update_context()
+        self.env.env.task.starting_x = self.context["starting_x"]
+        self.env.env.task.starting_y = self.context["starting_y"]

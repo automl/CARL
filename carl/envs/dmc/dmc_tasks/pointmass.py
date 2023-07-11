@@ -30,6 +30,7 @@ from dm_control.suite.point_mass import (  # type: ignore
     PointMass,
     get_model_and_assets,
 )
+from dm_control.mujoco.wrapper import mjbindings
 
 from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
 from carl.utils.types import Context
@@ -43,14 +44,14 @@ def check_constraints(
     target_y,
     area_size,
 ) -> None:
-    if starting_x >= area_size/2 or starting_y >= area_size/2:
+    if starting_x >= area_size/4 or starting_y >= area_size/4 or starting_x <= -area_size/4 or starting_y <= -area_size/4:
         raise ValueError(
-            f"The starting points are located outside of the grid. Choose a value lower than {area_size/2}."
+            f"The starting points are located outside of the grid. Choose a value lower than {area_size/4}."
         )
 
-    if target_x >= area_size/2 or target_y >= area_size/2:
+    if target_x >= area_size/4 or target_y >= area_size/4 or target_x <= -area_size/4 or target_y <= -area_size/4:
         raise ValueError(
-            f"The target points are located outside of the grid. Choose a value lower than {area_size/2}."
+            f"The target points are located outside of the grid. Choose a value lower than {area_size/4}."
         )
 
 
@@ -126,10 +127,30 @@ def get_pointmass_xml_string(
     xml_string_bytes = xml_string.encode()
     return xml_string_bytes
 
+def random_limited_quaternion(random, limit):
+  """Generates a random quaternion limited to the specified rotations."""
+  axis = random.randn(3)
+  axis /= np.linalg.norm(axis)
+  angle = random.rand() * limit
+
+  quaternion = np.zeros(4)
+  mjbindings.mjlib.mju_axisAngle2Quat(quaternion, axis, angle)
+
+  return quaternion
 
 class ContextualPointMass(PointMass):
+    starting_x: float = 0.2
+    starting_y: float = 0.2
     def initialize_episode(self, physics):
-        """Don't randomize joint positions in contextual setting."""
+        """Sets the state of the environment at the start of each episode.
+
+        If _randomize_gains is True, the relationship between the controls and
+        the joints is randomized, so that each control actuates a random linear
+        combination of joints.
+
+        Args:
+        physics: An instance of `mujoco.Physics`.
+        """
         if self._randomize_gains:
             dir1 = self.random.randn(2)
             dir1 /= np.linalg.norm(dir1)
@@ -142,6 +163,51 @@ class ContextualPointMass(PointMass):
             physics.model.wrap_prm[[0, 1]] = dir1
             physics.model.wrap_prm[[2, 3]] = dir2
         super().initialize_episode(physics)
+        self.randomize_limited_and_rotational_joints(physics, self.random)
+
+    def randomize_limited_and_rotational_joints(self, physics, random=None):
+        random = random or np.random
+
+        hinge = mjbindings.enums.mjtJoint.mjJNT_HINGE
+        slide = mjbindings.enums.mjtJoint.mjJNT_SLIDE
+        ball = mjbindings.enums.mjtJoint.mjJNT_BALL
+        free = mjbindings.enums.mjtJoint.mjJNT_FREE
+
+        qpos = physics.named.data.qpos
+
+        for joint_id in range(physics.model.njnt):
+            joint_name = physics.model.id2name(joint_id, 'joint')
+            joint_type = physics.model.jnt_type[joint_id]
+            is_limited = physics.model.jnt_limited[joint_id]
+            range_min, range_max = physics.model.jnt_range[joint_id]
+
+            if is_limited:
+                if joint_type == hinge or joint_type == slide:
+                    if 'root_x' in joint_name:
+                        qpos[joint_name] = self.starting_x
+                    elif 'root_y' in joint_name:
+                        qpos[joint_name] = self.starting_y
+                    else:
+                        qpos[joint_name] = random.uniform(range_min, range_max)
+
+                elif joint_type == ball:
+                    qpos[joint_name] = random_limited_quaternion(random, range_max)
+
+            else:
+                if joint_type == hinge:
+                    qpos[joint_name] = random.uniform(-np.pi, np.pi)
+
+                elif joint_type == ball:
+                    quat = random.randn(4)
+                    quat /= np.linalg.norm(quat)
+                    qpos[joint_name] = quat
+
+                elif joint_type == free:
+                    # this should be random.randn, but changing it now could significantly
+                    # affect benchmark results.
+                    quat = random.rand(4)
+                    quat /= np.linalg.norm(quat)
+                    qpos[joint_name][3:] = quat
 
 
 @SUITE.add("benchmarking")  # type: ignore[misc]
