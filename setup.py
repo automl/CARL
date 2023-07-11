@@ -36,6 +36,7 @@ extras_require = {
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
     ],
+    "rna": ["distance>=0.1.3", "viennarna>=2.4.8"],
     "dev": [
         "pytest>=6.1.1",
         "pytest-cov",

@@ -43,3 +43,12 @@ else:
     warnings.warn(
         "Module 'dm_control' not found. If you want to use these environments, please follow the installation guide."
     )
+
+rna_spec = iutil.find_spec("distance")
+found = rna_spec is not None
+if found:
+    from carl.envs.rna import *
+else:
+    warnings.warn(
+        "Could not load RNA env. If you want to use this environment, please follow the installation guide."
+    )

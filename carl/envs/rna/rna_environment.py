@@ -299,7 +299,7 @@ class RnaDesignEnvironment(gym.Env):
         """
         self.target = next(self._target_gen)
         self.design = _Design(len(self.target))
-        return self._get_state()
+        return self._get_state(), {}
 
     def _apply_action(self, action):  # type: ignore[no-untyped-def]
         """
