@@ -11,7 +11,7 @@ from carl.utils.types import Contexts
 class CARLGymnasiumEnv(CARLEnv):
     env_name: str
     # TODO make render mode adjustable
-    render_mode: str = "rgb_array"
+    render_mode: str = "human"
 
     def __init__(
         self,
