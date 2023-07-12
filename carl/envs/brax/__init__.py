@@ -1,6 +1,5 @@
 # flake8: noqa: F401
 from carl.envs.brax.carl_ant import CARLBraxAnt
-from carl.envs.brax.carl_fast import CARLBraxFast
 from carl.envs.brax.carl_halfcheetah import CARLBraxHalfcheetah
 from carl.envs.brax.carl_hopper import CARLBraxHopper
 from carl.envs.brax.carl_humanoid import CARLBraxHumanoid

@@ -105,7 +105,6 @@ class ContextSpace(object):
                         f"Context features must be of type NumericalContextFeature."
                         f"Got {type(context_feature)}."
                     )
-            print(context_space)
             return spaces.Dict(context_space)
         else:
             low = np.array(
