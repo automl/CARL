@@ -52,9 +52,11 @@ conda install -c conda-forge gym-box2d
 In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
 Mario at this point, however, will not run on any operation system besides Linux
 
-To install the additional requirements for ToadGAN:
+To install ToadGAN:
 ```bash
-javac carl/envs/mario/Mario-AI-Framework/**/*.java
+cd carl/envs/mario
+git clone https://github.com/Mawiszus/TOAD-GAN.git
+cd ../../..
 ```
 
 ## CARL's Contextual Extension

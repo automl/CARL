@@ -1,103 +1,72 @@
-from typing import Dict, List, Optional, Union
-
 import numpy as np
 
-from carl.context.selection import AbstractSelector
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
-from carl.envs.dmc.dmc_tasks.fish import STEP_LIMIT  # type: ignore
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
-
-DEFAULT_CONTEXT = {
-    "gravity": -9.81,  # Gravity is disabled via flag
-    "friction_tangential": 1,  # Scaling factor for tangential friction of all geoms (objects)
-    "friction_torsional": 1,  # Scaling factor for torsional friction of all geoms (objects)
-    "friction_rolling": 1,  # Scaling factor for rolling friction of all geoms (objects)
-    "timestep": 0.004,  # Seconds between updates
-    "joint_damping": 1.0,  # Scaling factor for all joints
-    "joint_stiffness": 0.0,
-    "actuator_strength": 1,  # Scaling factor for all actuators in the model
-    "density": 5000.0,
-    "viscosity": 0.0,
-    "geom_density": 1.0,  # No effect, because no gravity
-    "wind_x": 0.0,
-    "wind_y": 0.0,
-    "wind_z": 0.0,
-    "limb_length_0": 0.17,
-    "limb_length_1": 0.16,
-    "spinner_radius": 0.04,
-    "spinner_length": 0.18,
-}
-
-CONTEXT_BOUNDS = {
-    "gravity": (-np.inf, -0.1, float),
-    "friction_tangential": (0, np.inf, float),
-    "friction_torsional": (0, np.inf, float),
-    "friction_rolling": (0, np.inf, float),
-    "timestep": (
-        0.001,
-        0.1,
-        float,
-    ),
-    "joint_damping": (0, np.inf, float),
-    "joint_stiffness": (0, np.inf, float),
-    "actuator_strength": (0, np.inf, float),
-    "density": (0, np.inf, float),
-    "viscosity": (0, np.inf, float),
-    "geom_density": (0, np.inf, float),
-    "wind_x": (-np.inf, np.inf, float),
-    "wind_y": (-np.inf, np.inf, float),
-    "wind_z": (-np.inf, np.inf, float),
-    "limb_length_0": (0.01, 0.2, float),
-    "limb_length_1": (0.01, 0.2, float),
-    "spinner_radius": (0.01, 0.05, float),
-    "spinner_length": (0.01, 0.4, float),
-}
-
-CONTEXT_MASK = [
-    "gravity",
-    "geom_density",
-    "wind_x",
-    "wind_y",
-    "wind_z",
-]
+from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 
 
 class CARLDmcFingerEnv(CARLDmcEnv):
-    def __init__(
-        self,
-        domain: str = "finger",
-        task: str = "spin_context",
-        contexts: Contexts = {},
-        context_mask: Optional[List[str]] = [],
-        hide_context: bool = True,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.01,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = DEFAULT_CONTEXT,
-        max_episode_length: int = STEP_LIMIT,
-        state_context_features: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
-    ):
-        super().__init__(
-            domain=domain,
-            task=task,
-            contexts=contexts,
-            context_mask=context_mask,
-            hide_context=hide_context,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features=scale_context_features,
-            default_context=default_context,
-            max_episode_length=max_episode_length,
-            state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space,
-            context_selector=context_selector,
-            context_selector_kwargs=context_selector_kwargs,
-        )
+    domain = "finger"
+    task = "spin_context"
+
+    @staticmethod
+    def get_context_features() -> dict[str, ContextFeature]:
+        return {
+            "gravity": UniformFloatContextFeature(
+                "gravity", lower=-np.inf, upper=-0.1, default_value=-9.81
+            ),
+            "friction_torsional": UniformFloatContextFeature(
+                "friction_torsional", lower=0, upper=np.inf, default_value=1.0
+            ),
+            "friction_rolling": UniformFloatContextFeature(
+                "friction_rolling", lower=0, upper=np.inf, default_value=1.0
+            ),
+            "friction_tangential": UniformFloatContextFeature(
+                "friction_tangential", lower=0, upper=np.inf, default_value=1.0
+            ),
+            "timestep": UniformFloatContextFeature(
+                "timestep", lower=0.001, upper=0.1, default_value=0.0025
+            ),
+            "joint_damping": UniformFloatContextFeature(
+                "joint_damping", lower=0.0, upper=np.inf, default_value=1.0
+            ),
+            "joint_stiffness": UniformFloatContextFeature(
+                "joint_stiffness", lower=0.0, upper=np.inf, default_value=0.0
+            ),
+            "actuator_strength": UniformFloatContextFeature(
+                "actuator_strength", lower=0.0, upper=np.inf, default_value=1.0
+            ),
+            "density": UniformFloatContextFeature(
+                "density", lower=0.0, upper=np.inf, default_value=0.0
+            ),
+            "viscosity": UniformFloatContextFeature(
+                "viscosity", lower=0.0, upper=np.inf, default_value=0.0
+            ),
+            "geom_density": UniformFloatContextFeature(
+                "geom_density", lower=0.0, upper=np.inf, default_value=1.0
+            ),
+            "wind_x": UniformFloatContextFeature(
+                "wind_x", lower=-np.inf, upper=np.inf, default_value=0.0
+            ),
+            "wind_y": UniformFloatContextFeature(
+                "wind_y", lower=-np.inf, upper=np.inf, default_value=0.0
+            ),
+            "wind_z": UniformFloatContextFeature(
+                "wind_z", lower=-np.inf, upper=np.inf, default_value=0.0
+            ),
+            "limb_length_0": UniformFloatContextFeature(
+                "limb_length_0", lower=0.01, upper=0.2, default_value=0.17
+            ),
+            "limb_length_1": UniformFloatContextFeature(
+                "limb_length_1", lower=0.01, upper=0.2, default_value=0.16
+            ),
+            "spinner_radius": UniformFloatContextFeature(
+                "spinner_radius", lower=0.01, upper=0.05, default_value=0.04
+            ),
+            "spinner_length": UniformFloatContextFeature(
+                "spinner_length", lower=0.01, upper=0.4, default_value=0.18
+            ),
+        }
+
+    @staticmethod
+    def get_context_mask() -> dict[str, ContextFeature]:
+        return ["gravity", "geom_density", "wind_x", "wind_y", "wind_z"]
