@@ -232,10 +232,6 @@ class CARLBraxEnv(CARLEnv):
                 updated_geoms.append(geom_new)
             sys = sys.replace(geoms=updated_geoms)
 
-        from rich import print as printr
-
-        printr(sys)
-
         self.env.sys = sys
 
     @staticmethod
