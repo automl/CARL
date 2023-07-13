@@ -98,9 +98,6 @@ def _set_masses(
                     f"Link {link_name} not in available link names {link_names}. Probably "
                     "something went wrong during context creation."
                 )
-            else:
-                raise RuntimeError(f"Link {link_name} not in available link names {link_names}. Probably "
-                                   "something went wrong during context creation.")
     inertia_new = Inertia(**inertia_data)
     return inertia_new
 

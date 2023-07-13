@@ -4,7 +4,6 @@ import numpy as np
 
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.envs.brax.carl_brax_env import CARLBraxEnv
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 
 
 class CARLBraxHumanoidStandup(CARLBraxEnv):
