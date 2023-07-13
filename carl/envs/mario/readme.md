@@ -6,5 +6,3 @@ Make sure the submodules TOAD-GUI and Mario-AI-Framework are cloned and up to da
 ```bash
 javac carl/envs/mario/Mario-AI-Framework/**/*.java
 ```
-
-TODO: this command produces and error with java 1.8 and 11, please specify java version if that's the issue (or jdk)
