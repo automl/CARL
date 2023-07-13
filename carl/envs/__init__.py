@@ -39,15 +39,10 @@ if found:
 found = check_spec("brax")
 if found:
     from carl.envs.brax import *
-else:
-    warnings.warn(
-        "Module 'Brax' not found. If you want to use these environments, please follow the installation guide."
-    )
 
-# TODO: This is currently out because of Java issues.
-# found = check_spec("py4j")
-# if found:
-#    from carl.envs.mario import *
+found = check_spec("py4j")
+if found:
+    from carl.envs.mario import *
 
 found = check_spec("dm_control")
 if found:
