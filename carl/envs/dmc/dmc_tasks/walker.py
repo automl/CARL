@@ -54,7 +54,6 @@ def get_model_and_assets() -> Tuple[bytes, Dict]:
 @SUITE.add("benchmarking")  # type: ignore
 def stand_context(
     context: Context = {},
-    context_mask: List = [],
     time_limit: int = _DEFAULT_TIME_LIMIT,
     random: Union[np.random.RandomState, int, None] = None,
     environment_kwargs: Optional[Dict] = None,
@@ -62,9 +61,7 @@ def stand_context(
     """Returns the Stand task with the adapted context."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = PlanarWalker(move_speed=0, random=random)
     environment_kwargs = environment_kwargs or {}
@@ -80,7 +77,6 @@ def stand_context(
 @SUITE.add("benchmarking")  # type: ignore
 def walk_context(
     context: Context = {},
-    context_mask: List = [],
     time_limit: int = _DEFAULT_TIME_LIMIT,
     random: Union[np.random.RandomState, int, None] = None,
     environment_kwargs: Optional[Dict] = None,
@@ -88,9 +84,7 @@ def walk_context(
     """Returns the Walk task with the adapted context."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = PlanarWalker(move_speed=_WALK_SPEED, random=random)
     environment_kwargs = environment_kwargs or {}
@@ -106,7 +100,6 @@ def walk_context(
 @SUITE.add("benchmarking")  # type: ignore
 def run_context(
     context: Context = {},
-    context_mask: List = [],
     time_limit: int = _DEFAULT_TIME_LIMIT,
     random: Union[np.random.RandomState, int, None] = None,
     environment_kwargs: Optional[Dict] = None,
@@ -114,9 +107,7 @@ def run_context(
     """Returns the Run task with the adapted context."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = PlanarWalker(move_speed=_RUN_SPEED, random=random)
     environment_kwargs = environment_kwargs or {}

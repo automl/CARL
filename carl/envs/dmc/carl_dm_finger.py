@@ -66,7 +66,3 @@ class CARLDmcFingerEnv(CARLDmcEnv):
                 "spinner_length", lower=0.01, upper=0.4, default_value=0.18
             ),
         }
-
-    @staticmethod
-    def get_context_mask() -> dict[str, ContextFeature]:
-        return ["gravity", "geom_density", "wind_x", "wind_y", "wind_z"]

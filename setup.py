@@ -34,6 +34,7 @@ extras_require = {
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
+        "opencv-python>=4.8"
     ],
     "rna": ["distance>=0.1.3", "viennarna>=2.4.8"],
     "dev": [

@@ -54,7 +54,3 @@ class CARLDmcFishEnv(CARLDmcEnv):
                 "wind_z", lower=-np.inf, upper=np.inf, default_value=0.0
             ),
         }
-
-    @staticmethod
-    def get_context_mask() -> dict[str, ContextFeature]:
-        return ["gravity", "geom_density", "wind_x", "wind_y", "wind_z"]

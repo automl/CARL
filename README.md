@@ -55,7 +55,7 @@ Mario at this point, however, will not run on any operation system besides Linux
 To install ToadGAN:
 ```bash
 cd carl/envs/mario
-git clone https://github.com/Mawiszus/TOAD-GAN.git
+git clone https://github.com/Mawiszus/TOAD-GUI.git
 cd ../../..
 ```
 

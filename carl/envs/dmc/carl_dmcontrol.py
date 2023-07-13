@@ -32,7 +32,6 @@ class CARLDmcEnv(CARLEnv):
     def __init__(
         self,
         contexts: Contexts | None = None,
-        context_mask: Optional[List[str]] = [],
         obs_context_features: list[str]
         | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
         obs_context_as_dict: bool = True,
@@ -41,12 +40,10 @@ class CARLDmcEnv(CARLEnv):
         **kwargs,
     ):
         # TODO can we have more than 1 env?
-        self.context_mask = context_mask
         env = load_dmc_env(
             domain_name=self.domain,
             task_name=self.task,
             context={},
-            context_mask=self.context_mask,
             environment_kwargs={"flat_observation": True},
         )
         env = MujocoToGymWrapper(env)
@@ -70,7 +67,6 @@ class CARLDmcEnv(CARLEnv):
             domain_name=self.domain,
             task_name=self.task,
             context=self.context,
-            context_mask=self.context_mask,
             environment_kwargs={"flat_observation": True},
         )
         self.env = MujocoToGymWrapper(env)

@@ -1,6 +1,5 @@
-from typing import Dict, List, Optional, Union
-
-import gymnasium as gym
+from __future__ import annotations
+from typing import List
 import numpy as np
 
 from carl.context.context_space import (
@@ -12,8 +11,7 @@ from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
 
 try:
     from carl.envs.mario.toad_gan import generate_initial_noise
@@ -31,35 +29,25 @@ INITIAL_WIDTH = 100
 class CARLMarioEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = MarioEnv(levels=[]),
-        contexts: Contexts = {},
-        hide_context: bool = True,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.05,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = DEFAULT_CONTEXT,
-        state_context_features: Optional[List[str]] = None,
-        context_mask: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
+        env: MarioEnv = None,
+        contexts: Contexts | None = None,
+        obs_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state
+        obs_context_as_dict: bool = True,  # TODO discuss default
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
+        **kwargs,
     ):
+        if env is None:
+            env = MarioEnv(levels=[])
         super().__init__(
             env=env,
             contexts=contexts,
-            hide_context=True,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features="no",
-            default_context=default_context,
-            dict_observation_space=dict_observation_space,
+            obs_context_features=obs_context_features,
+            obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_mask=context_mask,
+            **kwargs,
         )
         self.levels: List[str] = []
         self._update_context()

@@ -181,7 +181,6 @@ def get_finger_xml_string(
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def spin_context(
     context: Context = {},
-    context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
@@ -190,9 +189,7 @@ def spin_context(
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Spin(random=random)
     environment_kwargs = environment_kwargs or {}
@@ -208,7 +205,6 @@ def spin_context(
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def turn_easy_context(
     context: Context = {},
-    context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
@@ -217,9 +213,7 @@ def turn_easy_context(
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Turn(target_radius=_EASY_TARGET_SIZE, random=random)
     environment_kwargs = environment_kwargs or {}
@@ -235,7 +229,6 @@ def turn_easy_context(
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def turn_hard_context(
     context: Context = {},
-    context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
@@ -244,9 +237,7 @@ def turn_hard_context(
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Turn(target_radius=_HARD_TARGET_SIZE, random=random)
     environment_kwargs = environment_kwargs or {}

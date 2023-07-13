@@ -54,7 +54,3 @@ class CARLDmcWalkerEnv(CARLDmcEnv):
                 "wind_z", lower=-np.inf, upper=np.inf, default_value=0.0
             ),
         }
-
-    @staticmethod
-    def get_context_mask() -> dict[str, ContextFeature]:
-        return ["wind_x", "wind_y", "wind_z"]

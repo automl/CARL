@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring  # isort: skip_file
 from __future__ import annotations
-from typing import Optional, Dict, Union, List, Tuple, Any
+from typing import Optional, List, Tuple, Any
 import numpy as np
 import gymnasium as gym
 from itertools import chain, combinations
@@ -11,8 +11,7 @@ from carl.envs.rna.rna_environment import (
     RnaDesignEnvironment,
     RnaDesignEnvironmentConfig,
 )
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
 from carl.context.context_space import (
     ContextFeature,
     UniformFloatContextFeature,
@@ -27,25 +26,17 @@ OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.o
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = None,
-        data_location: str = "carl/envs/rna/learna/data",
-        contexts: Contexts = {},
-        hide_context: bool = False,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.01,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = None,
-        max_episode_length: int = 500,
-        state_context_features: Optional[List[str]] = None,
-        context_mask: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
+        env: RnaDesignEnvironment | None = None,
+        contexts: Contexts | None = None,
+        obs_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state
+        obs_context_as_dict: bool = True,  # TODO discuss default
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
         obs_low: Optional[int] = 11,
         obs_high: Optional[int] = 11,
+        data_location: str = "carl/envs/rna/learna/data",
+        **kwargs,
     ):
         """
         Parameters
@@ -80,18 +71,11 @@ class CARLRnaDesignEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            hide_context=hide_context,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features=scale_context_features,
-            default_context=default_context,
-            max_episode_length=max_episode_length,
-            state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space,
+            obs_context_features=obs_context_features,
+            obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_mask=context_mask,
+            **kwargs,
         )
         self.whitelist_gaussian_noise = list(self.get_context_features().keys())
         self.obs_low = obs_low
