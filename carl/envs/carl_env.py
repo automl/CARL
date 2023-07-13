@@ -120,6 +120,10 @@ class CARLEnv(Wrapper, abc.ABC):
     @property
     def contexts(self) -> Contexts:
         return self._contexts
+    
+    @property
+    def context_id(self):
+        return self.context_selector.context_id
 
     @contexts.setter
     def contexts(self, contexts: Contexts) -> None:
@@ -137,6 +141,24 @@ class CARLEnv(Wrapper, abc.ABC):
         context_space = self.get_context_space()
         contexts = {k: context_space.insert_defaults(v) for k, v in contexts.items()}
         self._contexts = contexts
+
+    @context_id.setter
+    def context_id(self, new_id) -> None:
+        """Set `context_id` property
+
+        This will switch the context ID of the context selector.
+        Realistically you'll want to only use this if your selector does not automaticall progress the instances.
+
+        Parameters
+        ----------
+        new_id : 
+            ID to set the context to
+        """
+        assert new_id in self.context_selector.context_ids, "Unknown ID, this context does not exist in the context set."
+        self.context_selector.context_id = new_id
+        self.context_selector.context = self.context_selector.contexts[new_id]
+        self.context = self.context_selector.context
+        self._update_context()
 
     def get_observation_space(
         self, obs_context_feature_names: list[str] | None = None

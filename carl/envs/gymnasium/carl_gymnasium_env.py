@@ -7,6 +7,12 @@ from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Contexts
 
+import pygame
+try:
+    pygame.display.init()
+except:
+    import os
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 class CARLGymnasiumEnv(CARLEnv):
     env_name: str

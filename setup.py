@@ -25,7 +25,7 @@ extras_require = {
         "gymnasium[box2d]>=0.27.1",
     ],
     "brax": [
-        "brax>0.9.1",
+        "brax>=0.9.1",
     ],
     "dm_control": [
         "dm_control>=1.0.3",
@@ -84,7 +84,6 @@ setuptools.setup(
         "pandas>=1.3.0",
         "xvfbwrapper>=0.2.9",
         "matplotlib>=3.4.2",
-        "dataclasses>=0.6",
         "numpyencoder>=0.3.0",
         "pyglet>=1.5.15",
         "pytablewriter>=0.62.0",
