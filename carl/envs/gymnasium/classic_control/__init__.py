@@ -7,4 +7,10 @@ from carl.envs.gymnasium.classic_control.carl_mountaincarcontinuous import (
 )
 from carl.envs.gymnasium.classic_control.carl_pendulum import CARLPendulum
 
-__all__ = ["CARLAcrobot", "CARLCartPole", "CARLMountainCar", "CARLMountainCarContinuous", "CARLPendulum"]
+__all__ = [
+    "CARLAcrobot",
+    "CARLCartPole",
+    "CARLMountainCar",
+    "CARLMountainCarContinuous",
+    "CARLPendulum",
+]

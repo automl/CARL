@@ -16,7 +16,7 @@ CARL.egg-info
 carl.egg-info
 .mypy_cache
 .pytest_cache
-.coverage
+.coverage*
 exp_sweep
 multirun
 outputs

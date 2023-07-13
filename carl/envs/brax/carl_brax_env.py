@@ -7,14 +7,13 @@ from dataclasses import asdict
 import brax
 import gymnasium
 import numpy as np
-from brax.base import Geometry, System, Link, Inertia
+from brax.base import Geometry, Inertia, Link, System
 from brax.envs.wrappers.gym import GymWrapper, VectorGymWrapper
 from brax.io import mjcf
 from etils import epath
 from gymnasium.wrappers.compatibility import EnvCompatibility
 from jax import numpy as jp
 
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Contexts
@@ -50,18 +49,20 @@ def set_geom_attr(
         data[key] = vec
     return data
 
+
 def set_masses2(sys: System, context: dict[str, Any]) -> System:
     for cfname, cfvalue in context.items():
         if cfname.startswith("mass"):
             link_name = cfname.split("_")[-1]
             if link_name in sys.link_names:
-                idx = sys.link_names.index(link_name) 
-                sys.link.inertia.mass.at[idx].set(
-                    cfvalue
-                )
+                idx = sys.link_names.index(link_name)
+                sys.link.inertia.mass.at[idx].set(cfvalue)
     return sys
 
-def _set_masses(context: dict[str, Any], inertia: Inertia, link_names: list[str]) -> Inertia:
+
+def _set_masses(
+    context: dict[str, Any], inertia: Inertia, link_names: list[str]
+) -> Inertia:
     """Actual/helper method to set masses
 
     The required syntax for masses is as follows:
@@ -76,6 +77,11 @@ def _set_masses(context: dict[str, Any], inertia: Inertia, link_names: list[str]
     link_names : list[str]
         Available link names.
 
+    Raises
+    ------
+    RuntimeError
+        When link name not in available names
+
     Returns
     -------
     Inertia
@@ -84,14 +90,18 @@ def _set_masses(context: dict[str, Any], inertia: Inertia, link_names: list[str]
     inertia_data = asdict(inertia)
     for cfname, cfvalue in context.items():
         if cfname.startswith("mass"):
-            link_name = cfname.split("_")[-1]
+            link_name = cfname.split("_", 1)[-1]
             if link_name in link_names:
-                idx = link_names.index(link_name) 
-                inertia_data["mass"] = inertia_data["mass"].at[idx].set(
-                    cfvalue
+                idx = link_names.index(link_name)
+                inertia_data["mass"] = inertia_data["mass"].at[idx].set(cfvalue)
+            else:
+                raise RuntimeError(
+                    f"Link {link_name} not in available link names {link_names}. Probably "
+                    "something went wrong during context creation."
                 )
     inertia_new = Inertia(**inertia_data)
     return inertia_new
+
 
 def set_masses(sys: System, context: dict[str, Any]) -> System:
     """Set masses
@@ -119,12 +129,16 @@ def set_masses(sys: System, context: dict[str, Any]) -> System:
     return sys
 
 
-def check_context(context: dict[str, Any], registered_context_features: list[str]) -> None:
+def check_context(
+    context: dict[str, Any], registered_context_features: list[str]
+) -> None:
     for cfname in context.keys():
         if cfname not in registered_context_features and not cfname.startswith("mass_"):
-            raise RuntimeError(f"Context feature {cfname} can not be updated in the brax system. Only "
-                               f"{registered_context_features} are possible.")
-        
+            raise RuntimeError(
+                f"Context feature {cfname} can not be updated in the brax system. Only "
+                f"{registered_context_features} are possible."
+            )
+
 
 class CARLBraxEnv(CARLEnv):
     env_name: str
@@ -205,11 +219,17 @@ class CARLBraxEnv(CARLEnv):
         context = self.context
 
         # Those context features can be updated + every feature starting with `mass_`
-        registered_cfs = ["friction", "ang_damping", "gravity", "viscosity", "elasticity"]
+        registered_cfs = [
+            "friction",
+            "ang_damping",
+            "gravity",
+            "viscosity",
+            "elasticity",
+        ]
         check_context(context, registered_cfs)
 
         path = epath.resource_path("brax") / self.asset_path
-        sys = mjcf.load(path)        
+        sys = mjcf.load(path)
 
         if "gravity" in context:
             sys = sys.replace(gravity=jp.array([0, 0, self.context["gravity"]]))
@@ -233,29 +253,3 @@ class CARLBraxEnv(CARLEnv):
             sys = sys.replace(geoms=updated_geoms)
 
         self.env.sys = sys
-
-    @staticmethod
-    def get_context_features() -> dict[str, ContextFeature]:
-        return {
-            # "stiffness": UniformFloatContextFeature("stiffness", lower=1, upper=100000, default_value=5000),
-            "gravity": UniformFloatContextFeature(
-                "gravity", lower=-1000, upper=-0.01, default_value=-9.8
-            ),
-            "friction": UniformFloatContextFeature(
-                "friction", lower=0, upper=100, default_value=1
-            ),
-            "elasticity": UniformFloatContextFeature(
-                "elasticity", lower=0, upper=100, default_value=0
-            ),
-            "ang_damping": UniformFloatContextFeature(
-                "ang_damping", lower=-np.inf, upper=np.inf, default_value=-0.05
-            ),
-            # "actuator_strength": UniformFloatContextFeature("actuator_strength", lower=1, upper=100000, default_value=300),
-            # "joint_angular_damping": UniformFloatContextFeature("joint_angular_damping", lower=0, upper=10000, default_value=35),
-            "mass_torso": UniformFloatContextFeature(
-                "mass_torso", lower=0.01, upper=np.inf, default_value=10
-            ),
-            "viscosity": UniformFloatContextFeature(
-                "viscosity", lower=0, upper=np.inf, default_value=0
-            ),
-        }
