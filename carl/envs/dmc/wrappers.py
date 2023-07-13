@@ -87,9 +87,7 @@ class MujocoToGymWrapper(gym.Env):
         return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
-        super(MujocoToGymWrapper, self).reset(
-            seed=seed, options=options
-        )
+        super(MujocoToGymWrapper, self).reset(seed=seed, options=options)
         timestep = self.env.reset()
         if isinstance(self.observation_space, spaces.Box):
             observation = timestep.observation["observations"]

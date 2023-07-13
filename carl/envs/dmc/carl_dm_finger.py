@@ -1,7 +1,7 @@
 import numpy as np
 
-from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
 class CARLDmcFingerEnv(CARLDmcEnv):
@@ -66,7 +66,3 @@ class CARLDmcFingerEnv(CARLDmcEnv):
                 "spinner_length", lower=0.01, upper=0.4, default_value=0.18
             ),
         }
-
-    @staticmethod
-    def get_context_mask() -> dict[str, ContextFeature]:
-        return ["gravity", "geom_density", "wind_x", "wind_y", "wind_z"]
