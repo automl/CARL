@@ -14,7 +14,6 @@ from etils import epath
 from gymnasium.wrappers.compatibility import EnvCompatibility
 from jax import numpy as jp
 
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Contexts
@@ -76,6 +75,11 @@ def _set_masses(context: dict[str, Any], inertia: Inertia, link_names: list[str]
     link_names : list[str]
         Available link names.
 
+    Raises
+    ------
+    RuntimeError
+        When link name not in available names
+
     Returns
     -------
     Inertia
@@ -84,12 +88,15 @@ def _set_masses(context: dict[str, Any], inertia: Inertia, link_names: list[str]
     inertia_data = asdict(inertia)
     for cfname, cfvalue in context.items():
         if cfname.startswith("mass"):
-            link_name = cfname.split("_")[-1]
+            link_name = cfname.split("_", 1)[-1]
             if link_name in link_names:
                 idx = link_names.index(link_name) 
                 inertia_data["mass"] = inertia_data["mass"].at[idx].set(
                     cfvalue
                 )
+            else:
+                raise RuntimeError(f"Link {link_name} not in available link names {link_names}. Probably "
+                                   "something went wrong during context creation.")
     inertia_new = Inertia(**inertia_data)
     return inertia_new
 
@@ -233,29 +240,3 @@ class CARLBraxEnv(CARLEnv):
             sys = sys.replace(geoms=updated_geoms)
 
         self.env.sys = sys
-
-    @staticmethod
-    def get_context_features() -> dict[str, ContextFeature]:
-        return {
-            # "stiffness": UniformFloatContextFeature("stiffness", lower=1, upper=100000, default_value=5000),
-            "gravity": UniformFloatContextFeature(
-                "gravity", lower=-1000, upper=-0.01, default_value=-9.8
-            ),
-            "friction": UniformFloatContextFeature(
-                "friction", lower=0, upper=100, default_value=1
-            ),
-            "elasticity": UniformFloatContextFeature(
-                "elasticity", lower=0, upper=100, default_value=0
-            ),
-            "ang_damping": UniformFloatContextFeature(
-                "ang_damping", lower=-np.inf, upper=np.inf, default_value=-0.05
-            ),
-            # "actuator_strength": UniformFloatContextFeature("actuator_strength", lower=1, upper=100000, default_value=300),
-            # "joint_angular_damping": UniformFloatContextFeature("joint_angular_damping", lower=0, upper=10000, default_value=35),
-            "mass_torso": UniformFloatContextFeature(
-                "mass_torso", lower=0.01, upper=np.inf, default_value=10
-            ),
-            "viscosity": UniformFloatContextFeature(
-                "viscosity", lower=0, upper=np.inf, default_value=0
-            ),
-        }
