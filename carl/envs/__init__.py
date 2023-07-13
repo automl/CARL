@@ -27,12 +27,13 @@ else:
         "Module 'Brax' not found. If you want to use these environments, please follow the installation guide."
     )
 
-try:
-    from carl.envs.mario import *
-except:
-    warnings.warn(
-        "Module 'Mario' not found. Please follow installation guide for ToadGAN environment."
-    )
+# TODO: This is currently out because of Java issues. 
+# try:
+#     from carl.envs.mario import *
+# except:
+#     warnings.warn(
+#         "Module 'Mario' not found. Please follow installation guide for ToadGAN environment."
+#     )
 
 dm_control_spec = iutil.find_spec("dm_control")
 found = dm_control_spec is not None

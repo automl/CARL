@@ -41,7 +41,7 @@ pip install .
 
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
-pip install -e .[box2d, brax, mario, dm_control]
+pip install -e .[box2d,brax,dm_control,rna]
 ```
 
 These may not be compatible with Windows systems. Box2D environment may need to be installed via conda on MacOS systems:
@@ -50,14 +50,6 @@ conda install -c conda-forge gym-box2d
 ```
 
 In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
-Mario at this point, however, will not run on any operation system besides Linux
-
-To install ToadGAN:
-```bash
-cd carl/envs/mario
-git clone https://github.com/Mawiszus/TOAD-GUI.git
-cd ../../..
-```
 
 ## CARL's Contextual Extension
 CARL contextually extends the environment by making the context visible and configurable.
