@@ -91,7 +91,8 @@ setuptools.setup(
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
         "ConfigSpace",
-        "omegaconf"
+        "omegaconf",
+        "seaborn>=0.12.2"
     ],
     extras_require=extras_require,
     test_suite="pytest",

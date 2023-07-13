@@ -1,17 +1,15 @@
 """
 Code adapted from gym.envs.box2d.car_racing.py
+
+Play Car Racing with the new CARL vehicles and test out our contexts yourself!
 """
 
-from typing import Any
 import numpy as np
-import gymnasium as gym
 import time
 import pygame
 from carl.envs.gymnasium.box2d.carl_vehicle_racing import CARLVehicleRacing, VEHICLE_NAMES
 
 if __name__ == "__main__":
-    from pyglet.window import key
-
     a = np.array([0.0, 0.0, 0.0])
 
     def register_input():

@@ -70,3 +70,6 @@ class CARLDmcEnv(CARLEnv):
             environment_kwargs={"flat_observation": True},
         )
         self.env = MujocoToGymWrapper(env)
+
+    def render(self):
+        self.env.render(mode='rgb_array')

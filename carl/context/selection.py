@@ -120,6 +120,20 @@ class RoundRobinSelector(AbstractSelector):
         self.context_id = (self.context_id + 1) % len(self.contexts)
         context = self.contexts[self.contexts_keys[self.context_id]]
         return context, self.context_id
+    
+
+class StaticSelector(AbstractSelector):
+    """
+    Static selector.
+
+    Does not change the context at all.
+    """
+
+    def _select(self) -> Tuple[Context, int]:
+        if self.context_id is None:
+            self.context_id = self.context_ids[0]
+        context = self.contexts[self.contexts_keys[self.context_id]]
+        return context, self.context_id
 
 
 class CustomSelector(AbstractSelector):
