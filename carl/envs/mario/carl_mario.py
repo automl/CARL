@@ -1,6 +1,5 @@
-from typing import Dict, List, Optional, Union
-
-import gymnasium as gym
+from __future__ import annotations
+from typing import List
 import numpy as np
 
 from carl.context.context_space import (
@@ -12,8 +11,7 @@ from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
 
 try:
     from carl.envs.mario.toad_gan import generate_initial_noise

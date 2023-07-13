@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring  # isort: skip_file
 from __future__ import annotations
-from typing import Optional, Dict, Union, List, Tuple, Any
+from typing import Optional, List, Tuple, Any
 import numpy as np
 import gymnasium as gym
 from itertools import chain, combinations
@@ -11,8 +11,7 @@ from carl.envs.rna.rna_environment import (
     RnaDesignEnvironment,
     RnaDesignEnvironmentConfig,
 )
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
 from carl.context.context_space import (
     ContextFeature,
     UniformFloatContextFeature,
