@@ -6,48 +6,46 @@ import warnings
 # Classic control is in gym and thus necessary for the base version to run
 from carl.envs.gymnasium import *
 
+def check_spec(spec_name: str) -> bool:
+    """Check if the spec is installed
+
+    Parameters
+    ----------
+    spec_name : str
+        Name of package that is necessary for the environment suite.
+
+    Returns
+    -------
+    bool
+        Whether the spec was found.
+    """
+    spec = iutil.find_spec(spec_name)
+    found = spec is not None
+    if not found:
+        with warnings.catch_warnings():
+            warnings.simplefilter("once")
+            warnings.warn(
+                f"Module {spec_name} not found. If you want to use these environments, please follow the installation guide."
+            )
+    return found
+
 # Environment loading
-box2d_spec = iutil.find_spec("Box2D")
-found = box2d_spec is not None
+found = check_spec("Box2D")
 if found:
     from carl.envs.gymnasium.box2d import *
-else:
-    warnings.warn(
-        "Module 'Box2D' not found. If you want to use these environments, please follow the installation guide."
-    )
 
-brax_spec = iutil.find_spec("brax")
-found = brax_spec is not None
+found = check_spec("brax")
 if found:
     from carl.envs.brax import *
 
-    pass
-else:
-    warnings.warn(
-        "Module 'Brax' not found. If you want to use these environments, please follow the installation guide."
-    )
-
-try:
+found = check_spec("py4j")
+if found:
     from carl.envs.mario import *
-except:
-    warnings.warn(
-        "Module 'Mario' not found. Please follow installation guide for ToadGAN environment."
-    )
 
-dm_control_spec = iutil.find_spec("dm_control")
-found = dm_control_spec is not None
+found = check_spec("dm_control")
 if found:
     from carl.envs.dmc import *
-else:
-    warnings.warn(
-        "Module 'dm_control' not found. If you want to use these environments, please follow the installation guide."
-    )
 
-rna_spec = iutil.find_spec("distance")
-found = rna_spec is not None
+found = check_spec("distance")
 if found:
     from carl.envs.rna import *
-else:
-    warnings.warn(
-        "Could not load RNA env. If you want to use this environment, please follow the installation guide."
-    )
