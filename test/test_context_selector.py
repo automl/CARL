@@ -5,12 +5,14 @@ import unittest
 from carl.envs.gymnasium.classic_control.carl_pendulum import CARLPendulum
 from carl.utils.types import Context
 
+CARLPendulum.render_mode = "rgb_array"
+
 
 class TestContextSelection(unittest.TestCase):
     @staticmethod
     def generate_contexts() -> Dict[Any, Context]:
         keys = "abc"
-        context = {"max_speed": 8.0, "dt": 0.03, "g": 10.0, "m": 1.0, "l": 1.8}
+        context = {"dt": 0.03, "gravity": 10.0, "m": 1.0, "l": 1.8}
         contexts = {k: context for k in keys}
         return contexts
 
@@ -25,7 +27,7 @@ class TestContextSelection(unittest.TestCase):
         self.assertEqual(env.context_selector.n_calls, 1)
 
         env.reset()
-        self.assertEqual(env.context_key, "b")
+        self.assertEqual(env.context_selector.n_calls, 2)
 
     def test_roundrobin_selector_init(self):
         from carl.context.selection import RoundRobinSelector
@@ -56,8 +58,3 @@ class TestContextSelection(unittest.TestCase):
         with self.assertRaises(ValueError):
             contexts = self.generate_contexts()
             _ = CARLPendulum(contexts=contexts, context_selector="bork")
-
-    def test_get_context_key(self):
-        contexts = self.generate_contexts()
-        env = CARLPendulum(contexts=contexts)
-        self.assertEqual(env.context_key, None)

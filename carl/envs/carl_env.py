@@ -111,8 +111,7 @@ class CARLEnv(Wrapper, abc.ABC):
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
             )
-        self._progress_instance()
-        self._update_context()
+
         self.observation_space: gymnasium.spaces.Dict = self.get_observation_space(
             obs_context_feature_names=self.obs_context_features
         )
