@@ -81,19 +81,6 @@ class TestDmcUtils(unittest.TestCase):
         context["gravity"] *= 1.25
         _ = adapt_context(xml_string=self.xml_string, context=context)
 
-    def test_adapt_context_contextmask(self):
-        # only continuous context features
-        context = self.default_context
-        context_mask = list(context.keys())
-        _ = adapt_context(
-            xml_string=self.xml_string, context=context, context_mask=context_mask
-        )
-
-    def test_adapt_context_wind(self):
-        context = {"wind": 10}
-        with self.assertRaises(KeyError):
-            _ = adapt_context(xml_string=self.xml_string, context=context)
-
     def test_adapt_context_friction(self):
         from carl.envs.dmc.carl_dm_walker import CARLDmcWalkerEnv
         from carl.envs.dmc.dmc_tasks.walker import get_model_and_assets

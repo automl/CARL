@@ -88,6 +88,7 @@ class CARLEnv(Wrapper, abc.ABC):
                 0: self.get_default_context()
             }  # was self.get_default_context(self) before
         self.contexts = contexts
+        self.context: Context | None = None  # Set by `_progress_instance`
         if obs_context_features is None:
             obs_context_features = list(list(self.contexts.values())[0].keys())
         self.obs_context_features = obs_context_features
@@ -111,8 +112,7 @@ class CARLEnv(Wrapper, abc.ABC):
                 f"Context selector must be None or an AbstractSelector class or instance. "
                 f"Got type {type(context_selector)}."
             )
-        self._progress_instance()
-        self._update_context()
+
         self.observation_space: gymnasium.spaces.Dict = self.get_observation_space(
             obs_context_feature_names=self.obs_context_features
         )
@@ -237,7 +237,6 @@ class CARLEnv(Wrapper, abc.ABC):
         1. Select instance with the instance_mode. If the instance_mode is random, randomly select
         the next instance from the set of contexts. If instance_mode is rr or roundrobin, select
         the next instance.
-        2. If Gaussian noise should be added to whitelisted context features, do so.
 
         Returns
         -------
@@ -311,6 +310,8 @@ class CARLEnv(Wrapper, abc.ABC):
     def _update_context(self) -> None:
         """
         Update the context feature values of the environment.
+
+        `self._progress_instance` must be called at least once to se(lec)t a valid context.
 
         Returns
         -------

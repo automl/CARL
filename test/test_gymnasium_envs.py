@@ -14,6 +14,7 @@ class TestGymnasiumEnvs(unittest.TestCase):
                     env_obj.get_context_features()
 
                     env = env_obj()
+                    env._progress_instance()
                     env._update_context()
                 except Exception as e:
                     print(f"Cannot instantiate {env_name} environment.")
