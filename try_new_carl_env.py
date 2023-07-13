@@ -40,3 +40,6 @@ if __name__ == "__main__":
 
     env.step(env.action_space.sample())
     print(env.render())
+
+    env.reset()
+    env.reset()

@@ -120,7 +120,7 @@ class CARLEnv(Wrapper, abc.ABC):
     @property
     def contexts(self) -> Contexts:
         return self._contexts
-    
+
     @property
     def context_id(self):
         return self.context_selector.context_id
@@ -151,10 +151,12 @@ class CARLEnv(Wrapper, abc.ABC):
 
         Parameters
         ----------
-        new_id : 
+        new_id :
             ID to set the context to
         """
-        assert new_id in self.context_selector.context_ids, "Unknown ID, this context does not exist in the context set."
+        assert (
+            new_id in self.context_selector.context_ids
+        ), "Unknown ID, this context does not exist in the context set."
         self.context_selector.context_id = new_id
         self.context_selector.context = self.context_selector.contexts[new_id]
         self.context = self.context_selector.context
@@ -268,8 +270,10 @@ class CARLEnv(Wrapper, abc.ABC):
         tuple[Any, dict[str, Any]]
             Observation, info.
         """
+        last_context_id = self.context_id
         self._progress_instance()
-        self._update_context()
+        if self.context_id != last_context_id:
+            self._update_context()
         state, info = super().reset(seed=seed, options=options)
         state = self._add_context_to_state(state)
         # TODO: Add context id or sth similar to info?

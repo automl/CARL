@@ -17,7 +17,9 @@ def adapt_context(xml_string: bytes, context: Context) -> bytes:
     if "joint_damping" in context:
         for joint_find in mjcf.findall(".//joint[@damping]"):
             joint_damping = joint_find.get("damping")
-            joint_find.set("damping", str(float(joint_damping) * context["joint_damping"]))
+            joint_find.set(
+                "damping", str(float(joint_damping) * context["joint_damping"])
+            )
 
     # adjust stiffness for all joints if stiffness is already an attribute
     if "joint_stiffness" in context:
@@ -34,14 +36,20 @@ def adapt_context(xml_string: bytes, context: Context) -> bytes:
         default.addnext(joint)
         if "joint_damping" in context:
             def_joint_damping = 0.1
-            default_joint_damping = str(float(def_joint_damping) * context["joint_damping"])
+            default_joint_damping = str(
+                float(def_joint_damping) * context["joint_damping"]
+            )
             joint.set("damping", default_joint_damping)
         if "joint_stiffness" in context:
             default_joint_stiffness = str(context["joint_stiffness"])
             joint.set("stiffness", default_joint_stiffness)
 
     # adjust friction for all geom elements with friction attribute
-    if "friction_tangential" in context and "friction_torsional" in context and "friction_rolling" in context:
+    if (
+        "friction_tangential" in context
+        and "friction_torsional" in context
+        and "friction_rolling" in context
+    ):
         for geom_find in mjcf.findall(".//geom[@friction]"):
             friction = geom_find.get("friction").split(" ")
             frict_str = ""
@@ -73,7 +81,11 @@ def adapt_context(xml_string: bytes, context: Context) -> bytes:
         default.addnext(geom)
 
     # set default friction
-    if "friction_tangential" in context and "friction_torsional" in context and "friction_rolling" in context:
+    if (
+        "friction_tangential" in context
+        and "friction_torsional" in context
+        and "friction_rolling" in context
+    ):
         if geom.get("friction") is None:
             default_friction_tangential = 1.0
             default_friction_torsional = 0.005
@@ -82,7 +94,9 @@ def adapt_context(xml_string: bytes, context: Context) -> bytes:
                 "friction",
                 " ".join(
                     [
-                        str(default_friction_tangential * context["friction_tangential"]),
+                        str(
+                            default_friction_tangential * context["friction_tangential"]
+                        ),
                         str(default_friction_torsional * context["friction_torsional"]),
                         str(default_friction_rolling * context["friction_rolling"]),
                     ]
