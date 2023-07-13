@@ -189,8 +189,9 @@ class CARLBraxEnv(CARLEnv):
 
         """
         if env is None:
+            bs = batch_size if batch_size != 1 else None
             env = brax.envs.create(
-                env_name=self.env_name, backend=self.backend, batch_size=batch_size
+                env_name=self.env_name, backend=self.backend, batch_size=bs
             )  # TODO arguments
             # Brax uses gym instead of gymnasium
             if batch_size == 1:
