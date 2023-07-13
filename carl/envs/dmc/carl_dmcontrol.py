@@ -72,4 +72,4 @@ class CARLDmcEnv(CARLEnv):
         self.env = MujocoToGymWrapper(env)
 
     def render(self):
-        self.env.render(mode='rgb_array')
+        return self.env.render(mode='rgb_array')
