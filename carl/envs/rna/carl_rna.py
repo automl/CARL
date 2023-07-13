@@ -13,34 +13,31 @@ from carl.envs.rna.rna_environment import (
 )
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature, CategoricalContextFeature
+from carl.context.context_space import (
+    ContextFeature,
+    UniformFloatContextFeature,
+    CategoricalContextFeature,
+)
 from carl.context.selection import AbstractSelector
 
 ACTION_SPACE = gym.spaces.Discrete(4)
 OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.ones(11))
 
+
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = None,
-        data_location: str = "carl/envs/rna/learna/data",
-        contexts: Contexts = {},
-        hide_context: bool = False,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.01,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = None,
-        max_episode_length: int = 500,
-        state_context_features: Optional[List[str]] = None,
-        context_mask: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
+        env: RnaDesignEnvironment | None = None,
+        contexts: Contexts | None = None,
+        obs_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state
+        obs_context_as_dict: bool = True,  # TODO discuss default
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
         obs_low: Optional[int] = 11,
         obs_high: Optional[int] = 11,
+        data_location: str = "carl/envs/rna/learna/data",
+        **kwargs,
     ):
         """
         Parameters
@@ -75,18 +72,11 @@ class CARLRnaDesignEnv(CARLEnv):
         super().__init__(
             env=env,
             contexts=contexts,
-            hide_context=hide_context,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features=scale_context_features,
-            default_context=default_context,
-            max_episode_length=max_episode_length,
-            state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space,
+            obs_context_features=obs_context_features,
+            obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_mask=context_mask,
+            **kwargs,
         )
         self.whitelist_gaussian_noise = list(self.get_context_features().keys())
         self.obs_low = obs_low
@@ -118,9 +108,11 @@ class CARLRnaDesignEnv(CARLEnv):
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
-        #TODO: these actually depend on the dataset, how to handle this?
+        # TODO: these actually depend on the dataset, how to handle this?
         base_ids = list(range(1, 11))
-        id_choices = chain(*map(lambda x: combinations(base_ids, x), range(0, len(base_ids)+1))) +[None]
+        id_choices = chain(
+            *map(lambda x: combinations(base_ids, x), range(0, len(base_ids) + 1))
+        ) + [None]
         return {
             "mutation_threshold": UniformFloatContextFeature(
                 "mutation_threshold", lower=0.1, upper=np.inf, default_value=5
@@ -132,7 +124,9 @@ class CARLRnaDesignEnv(CARLEnv):
                 "state_radius", lower=1, upper=np.inf, default_value=5
             ),
             "dataset": CategoricalContextFeature(
-                "dataset", choices=["eterna", "rfam_learn", "rfam_taneda"], default_value="eterna"
+                "dataset",
+                choices=["eterna", "rfam_learn", "rfam_taneda"],
+                default_value="eterna",
             ),
             "target_structure_ids": UniformFloatContextFeature(
                 "target_structure_ids", choices=id_choices, default_value=None
