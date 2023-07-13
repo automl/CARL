@@ -1,8 +1,0 @@
-# @package _global_
-defaults:
-  - /carl/context_sampling/base
-  - _self_
-
-context_sampler:
-  uniform_distribution: true
-  uniform_bounds_rel: [0.9, 1.1]

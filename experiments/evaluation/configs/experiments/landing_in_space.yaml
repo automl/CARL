@@ -1,8 +1,0 @@
-# @package _global_
-
-n_eval_episodes_per_context: 5
-experiment: landing_in_space
-contexts_path: '/home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/policy_transfer/landing_in_space/test_single_planets_solarsystem_withregintervals.json'
-landing_in_space:
-  follow: true
-  context_feature_key: GRAVITY_Y

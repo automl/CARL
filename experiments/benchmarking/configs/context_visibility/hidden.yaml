@@ -1,7 +1,0 @@
-# @package _global_
-wandb:
-  group: hidden
-
-carl:
-  hide_context: true
-  dict_observation_space: false

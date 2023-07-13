@@ -1,6 +1,0 @@
-# @package _global_
-group: concat_context
-
-carl:
-  hide_context: false
-  dict_observation_space: false
