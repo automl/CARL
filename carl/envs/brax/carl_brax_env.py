@@ -12,7 +12,6 @@ from brax.io import mjcf
 from etils import epath
 from jax import numpy as jp
 
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.context.selection import AbstractSelector
 from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
 from carl.envs.carl_env import CARLEnv
@@ -99,6 +98,9 @@ def _set_masses(
                     f"Link {link_name} not in available link names {link_names}. Probably "
                     "something went wrong during context creation."
                 )
+            else:
+                raise RuntimeError(f"Link {link_name} not in available link names {link_names}. Probably "
+                                   "something went wrong during context creation.")
     inertia_new = Inertia(**inertia_data)
     return inertia_new
 
