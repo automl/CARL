@@ -1,1 +1,0 @@
-This folder contains the sprite images from https://github.com/amidos2006/Mario-AI-Framework/tree/master/img we use in our level renderer.
