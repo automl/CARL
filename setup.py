@@ -35,6 +35,7 @@ extras_require = {
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
+        "opencv-python>=4.8"
     ],
     "dev": [
         "pytest>=6.1.1",
