@@ -61,11 +61,11 @@ class TestDmcEnvs(unittest.TestCase):
 
 class TestDmcUtils(unittest.TestCase):
     def setUp(self) -> None:
-        from carl.envs.dmc.carl_dm_finger import DEFAULT_CONTEXT
         from carl.envs.dmc.dmc_tasks.finger import get_model_and_assets
+        from carl.envs.dmc.carl_dm_finger import CARLDmcFingerEnv
 
         self.xml_string, _ = get_model_and_assets()
-        self.default_context = DEFAULT_CONTEXT
+        self.default_context = CARLDmcFingerEnv.get_default_context()
 
     def test_adapt_context_no_context(self):
         context = {}
@@ -95,11 +95,11 @@ class TestDmcUtils(unittest.TestCase):
             _ = adapt_context(xml_string=self.xml_string, context=context)
 
     def test_adapt_context_friction(self):
-        from carl.envs.dmc.carl_dm_walker import DEFAULT_CONTEXT
+        from carl.envs.dmc.carl_dm_walker import CARLDmcWalkerEnv
         from carl.envs.dmc.dmc_tasks.walker import get_model_and_assets
 
         xml_string, _ = get_model_and_assets()
-        context = DEFAULT_CONTEXT
+        context = CARLDmcWalkerEnv.get_default_context()
         context["friction_tangential"] *= 1.3
         _ = adapt_context(xml_string=xml_string, context=context)
 
