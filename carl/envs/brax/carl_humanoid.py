@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import numpy as np
-from carl.envs.brax.carl_brax_env import CARLBraxEnv
+
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 
 class CARLBraxHumanoid(CARLBraxEnv):
@@ -49,10 +50,16 @@ class CARLBraxHumanoid(CARLBraxEnv):
                 "mass_left_shin", lower=1e-6, upper=np.inf, default_value=4.522842
             ),
             "mass_right_upper_arm": UniformFloatContextFeature(
-                "mass_right_upper_arm", lower=1e-6, upper=np.inf, default_value=1.6610805
+                "mass_right_upper_arm",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=1.6610805,
             ),
             "mass_right_lower_arm": UniformFloatContextFeature(
-                "mass_right_lower_arm", lower=1e-6, upper=np.inf, default_value=1.2295402
+                "mass_right_lower_arm",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=1.2295402,
             ),
             "mass_left_upper_arm": UniformFloatContextFeature(
                 "mass_left_upper_arm", lower=1e-6, upper=np.inf, default_value=1.6610805

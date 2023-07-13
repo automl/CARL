@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from carl.envs.brax.carl_brax_env import CARLBraxEnv
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 
 class CARLBraxInvertedPendulum(CARLBraxEnv):
@@ -21,7 +21,7 @@ class CARLBraxInvertedPendulum(CARLBraxEnv):
             ),
             "elasticity": UniformFloatContextFeature(
                 "elasticity", lower=0, upper=100, default_value=0
-            ),  
+            ),
             "mass_cart": UniformFloatContextFeature(
                 "mass_cart", lower=1e-6, upper=np.inf, default_value=1
             ),

@@ -13,11 +13,16 @@ from carl.envs.rna.rna_environment import (
 )
 from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature, CategoricalContextFeature
+from carl.context.context_space import (
+    ContextFeature,
+    UniformFloatContextFeature,
+    CategoricalContextFeature,
+)
 from carl.context.selection import AbstractSelector
 
 ACTION_SPACE = gym.spaces.Discrete(4)
 OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.ones(11))
+
 
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
@@ -118,9 +123,11 @@ class CARLRnaDesignEnv(CARLEnv):
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
-        #TODO: these actually depend on the dataset, how to handle this?
+        # TODO: these actually depend on the dataset, how to handle this?
         base_ids = list(range(1, 11))
-        id_choices = chain(*map(lambda x: combinations(base_ids, x), range(0, len(base_ids)+1))) +[None]
+        id_choices = chain(
+            *map(lambda x: combinations(base_ids, x), range(0, len(base_ids) + 1))
+        ) + [None]
         return {
             "mutation_threshold": UniformFloatContextFeature(
                 "mutation_threshold", lower=0.1, upper=np.inf, default_value=5
@@ -132,7 +139,9 @@ class CARLRnaDesignEnv(CARLEnv):
                 "state_radius", lower=1, upper=np.inf, default_value=5
             ),
             "dataset": CategoricalContextFeature(
-                "dataset", choices=["eterna", "rfam_learn", "rfam_taneda"], default_value="eterna"
+                "dataset",
+                choices=["eterna", "rfam_learn", "rfam_taneda"],
+                default_value="eterna",
             ),
             "target_structure_ids": UniformFloatContextFeature(
                 "target_structure_ids", choices=id_choices, default_value=None

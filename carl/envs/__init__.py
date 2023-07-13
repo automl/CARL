@@ -6,6 +6,7 @@ import warnings
 # Classic control is in gym and thus necessary for the base version to run
 from carl.envs.gymnasium import *
 
+
 def check_spec(spec_name: str) -> bool:
     """Check if the spec is installed
 
@@ -28,6 +29,7 @@ def check_spec(spec_name: str) -> bool:
                 f"Module {spec_name} not found. If you want to use these environments, please follow the installation guide."
             )
     return found
+
 
 # Environment loading
 found = check_spec("Box2D")

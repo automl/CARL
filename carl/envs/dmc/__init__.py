@@ -5,4 +5,9 @@ from carl.envs.dmc.carl_dm_fish import CARLDmcFishEnv
 from carl.envs.dmc.carl_dm_quadruped import CARLDmcQuadrupedEnv
 from carl.envs.dmc.carl_dm_walker import CARLDmcWalkerEnv
 
-__all__ = ["CARLDmcFingerEnv", "CARLDmcFishEnv", "CARLDmcQuadrupedEnv", "CARLDmcWalkerEnv"]
+__all__ = [
+    "CARLDmcFingerEnv",
+    "CARLDmcFishEnv",
+    "CARLDmcQuadrupedEnv",
+    "CARLDmcWalkerEnv",
+]

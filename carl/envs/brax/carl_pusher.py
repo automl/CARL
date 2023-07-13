@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import numpy as np
-from carl.envs.brax.carl_brax_env import CARLBraxEnv
+
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 
 class CARLBraxPusher(CARLBraxEnv):
@@ -30,25 +31,46 @@ class CARLBraxPusher(CARLBraxEnv):
             ),
             # Masses of the pusher robot
             "mass_r_shoulder_pan_link": UniformFloatContextFeature(
-                "mass_r_shoulder_pan_link", lower=1e-6, upper=np.inf, default_value=7.2935214e+00
+                "mass_r_shoulder_pan_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=7.2935214e00,
             ),
             "mass_r_shoulder_lift_link": UniformFloatContextFeature(
-                "mass_r_shoulder_lift_link", lower=1e-6, upper=np.inf, default_value=np.pi
+                "mass_r_shoulder_lift_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=np.pi,
             ),
             "mass_r_upper_arm_roll_link": UniformFloatContextFeature(
-                "mass_r_upper_arm_roll_link", lower=1e-6, upper=np.inf, default_value=1.7140529
+                "mass_r_upper_arm_roll_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=1.7140529,
             ),
             "mass_r_elbow_flex_link": UniformFloatContextFeature(
-                "mass_r_elbow_flex_link", lower=1e-6, upper=np.inf, default_value=4.0715042e-01
+                "mass_r_elbow_flex_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=4.0715042e-01,
             ),
             "mass_r_forearm_roll_link": UniformFloatContextFeature(
-                "mass_r_forearm_roll_link", lower=1e-6, upper=np.inf, default_value=9.2818356e-01
+                "mass_r_forearm_roll_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=9.2818356e-01,
             ),
             "mass_r_wrist_flex_link": UniformFloatContextFeature(
-                "mass_r_wrist_flex_link", lower=1e-6, upper=np.inf, default_value=5.0265482e-03
+                "mass_r_wrist_flex_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=5.0265482e-03,
             ),
             "mass_r_wrist_roll_link": UniformFloatContextFeature(
-                "mass_r_wrist_roll_link", lower=1e-6, upper=np.inf, default_value=1.8346901e-01
+                "mass_r_wrist_roll_link",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=1.8346901e-01,
             ),
             # Mass of the object to be pushed
             "mass_object": UniformFloatContextFeature(
