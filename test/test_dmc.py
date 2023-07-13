@@ -61,8 +61,8 @@ class TestDmcEnvs(unittest.TestCase):
 
 class TestDmcUtils(unittest.TestCase):
     def setUp(self) -> None:
-        from carl.envs.dmc.dmc_tasks.finger import get_model_and_assets
         from carl.envs.dmc.carl_dm_finger import CARLDmcFingerEnv
+        from carl.envs.dmc.dmc_tasks.finger import get_model_and_assets
 
         self.xml_string, _ = get_model_and_assets()
         self.default_context = CARLDmcFingerEnv.get_default_context()
