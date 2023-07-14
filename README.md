@@ -25,7 +25,7 @@ Benchmarks include:
 
 ![Screenshot of each environment included in CARL.](./docs/source/figures/envs_overview.png)
 
-For more information, check out our [documentation](https://carl.readthedocs.io/en/latest/)!
+For more information, check out our [documentation](https://automl.github.io/CARL/)!
 
 
 ## Installation
