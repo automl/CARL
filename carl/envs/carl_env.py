@@ -43,7 +43,7 @@ class CARLEnv(Wrapper):
     contexts: Contexts
         Dict of contexts/instances. Key are context id, values are contexts as
         Dict[context feature id, context feature value].
-    hide_context: bool = False
+    hide_context: bool = True
         If False, the context will be appended to the original environment's state.
     add_gaussian_noise_to_context: bool = False
         Wether to add Gaussian noise to the context with the relative standard deviation
@@ -274,7 +274,10 @@ class CARLEnv(Wrapper):
         """
         self.episode_counter += 1
         self.step_counter = 0
-        self._progress_instance()
+        if "context_id" in kwargs.keys():
+            self.context = self.contexts[kwargs["context_id"]]
+        else:
+            self._progress_instance()
         self._update_context()
         self._log_context()
         return_info = kwargs.get("return_info", False)
@@ -282,6 +285,7 @@ class CARLEnv(Wrapper):
         info_dict = dict()
         if return_info:
             state, info_dict = _ret
+            info_dict["context_key"] = self.context_key
         else:
             state = _ret
         state = self.build_context_adaptive_state(state=state)
@@ -295,7 +299,7 @@ class CARLEnv(Wrapper):
     ) -> Union[Vector, Dict]:
         tnp: ModuleType = np
         if brax_spec is not None:
-            if type(state) == jaxlib.xla_extension.DeviceArray:
+            if type(state) == jaxlib.xla_extension.ArrayImpl:
                 tnp = jnp
         if not self.hide_context:
             if context_feature_values is None:
@@ -345,7 +349,12 @@ class CARLEnv(Wrapper):
 
         """
         # Step the environment
-        state, reward, done, info = self.env.step(action)
+        step_output = self.env.step(action)
+        if len(step_output) == 5: 
+            state, reward, terminated, truncated, info = step_output
+            done = terminated or truncated
+        else:
+            state, reward, done, info = step_output
 
         if not self.hide_context:
             # Scale context features
@@ -370,6 +379,7 @@ class CARLEnv(Wrapper):
         self.step_counter += 1
         if self.step_counter >= self.cutoff:
             done = True
+        info["context_key"] = self.context_key
         return state, reward, done, info
 
     def __getattr__(self, name: str) -> Any:
@@ -488,12 +498,12 @@ class CARLEnv(Wrapper):
             else self.env.observation_space.low  # type: ignore [attr-defined]
         )
         obs_shape = obs_space.shape
-        if len(obs_shape) == 3 and self.hide_context:
+        if len(obs_shape) == 3 or self.hide_context:
             # do not touch pixel state
             pass
         else:
             if env_lower_bounds is None and env_upper_bounds is None:
-                obs_dim = obs_shape[0]
+                obs_dim = obs_shape[0] if len(obs_shape) == 1 else obs_shape
                 env_lower_bounds = -np.inf * np.ones(obs_dim)
                 env_upper_bounds = np.inf * np.ones(obs_dim)
 

@@ -14,6 +14,7 @@ from carl.envs.dmc.carl_dm_quadruped import (
     DEFAULT_CONTEXT as CARLDmcQuadrupedEnv_defaults,
 )
 from carl.envs.dmc.carl_dm_quadruped import CARLDmcQuadrupedEnv
+from carl.envs.dmc.carl_dm_walker import CONTEXT_BOUNDS as CARLDmcWalkerEnv_bounds
 from carl.envs.dmc.carl_dm_walker import CONTEXT_MASK as CARLDmcWalkerEnv_mask
 from carl.envs.dmc.carl_dm_walker import DEFAULT_CONTEXT as CARLDmcWalkerEnv_defaults
 from carl.envs.dmc.carl_dm_walker import CARLDmcWalkerEnv

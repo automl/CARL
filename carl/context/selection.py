@@ -88,7 +88,7 @@ class AbstractSelector(object):
         Any | None
             The key of the current context or None
         """
-        if self.context_id:
+        if self.context_id is not None:
             key = self.contexts_keys[self.context_id]
         else:
             key = None
