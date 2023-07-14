@@ -77,8 +77,6 @@ If you use CARL in your research, please cite our paper on the benchmark:
 }
 ```
 
-You can find the code and experiments for this paper in the `neurips_ecorl_workshop_2021` branch.
-
 ## References
 [OpenAI gym, Brockman et al., 2016. arXiv preprint arXiv:1606.01540](https://arxiv.org/pdf/1606.01540.pdf)
 
