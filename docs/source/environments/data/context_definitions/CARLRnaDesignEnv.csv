@@ -1,0 +1,6 @@
+Context Feature,Default,Bounds
+mutation_threshold,5,"(0.1, inf, <class 'float'>)"
+reward_exponent,1,"(0.1, inf, <class 'float'>)"
+state_radius,5,"(1, inf, <class 'float'>)"
+dataset,eterna,"('eterna', 'rfam_taneda', None)"
+target_structure_ids,,"(0, inf, [<class 'list'>, <class 'int'>])"

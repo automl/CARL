@@ -2,7 +2,6 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
-import gym
 from gym.envs.box2d import bipedal_walker
 from gym.envs.box2d import bipedal_walker as bpw
 
@@ -106,8 +105,7 @@ class CARLBipedalWalkerEnv(CARLEnv):
         instance_mode: str, optional
         """
         if env is None:
-            # env = bipedal_walker.BipedalWalker()
-            env = gym.make(id="BipedalWalker-v3")
+            env = bipedal_walker.BipedalWalker()
         if not contexts:
             contexts = {0: DEFAULT_CONTEXT}
         super().__init__(

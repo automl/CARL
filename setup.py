@@ -22,7 +22,6 @@ def read_file(filepath: str) -> str:
 
 extras_require = {
     "box2d": [
-        "swig",
         "gym[box2d]==0.24.1",
     ],
     "brax": [
@@ -33,12 +32,9 @@ extras_require = {
         "dm_control>=1.0.3",
     ],
     "mario": [
-        "torch",
-        "py4j",
-        "Pillow",
-        "opencv-python",
-        "xvfbwrapper",
-        "jdk4py"
+        "torch>=1.9.0",
+        "Pillow>=8.3.1",
+        "py4j>=0.10.9.2",
     ],
     "dev": [
         "pytest>=6.1.1",
@@ -55,13 +51,6 @@ extras_require = {
         "sphinx-gallery>=0.10.0",
         "image>=1.5.33",
         "sphinx-autoapi>=1.8.4",
-        "gym[box2d]==0.24.1",
-        "brax>=0.0.10",
-        "protobuf>=3.17.3",
-        "dm_control>=1.0.3",
-        "torch>=1.9.0",
-        "Pillow>=8.3.1",
-        "py4j>=0.10.9.2"
     ]
 }
 
