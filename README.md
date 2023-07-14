@@ -68,12 +68,12 @@ Different instiations can be achieved by setting the context features to differe
 ## Cite Us
 If you use CARL in your research, please cite our paper on the benchmark:
 ```bibtex
-@inproceedings{BenEim2021a,
-    title     = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
-    author    = {Carolin Benjamins and Theresa Eimer and Frederik Schubert and André Biedenkapp and Bodo Rosenhahn and Frank Hutter and Marius Lindauer},
-    booktitle = {NeurIPS 2021 Workshop on Ecological Theory of Reinforcement Learning},
-    year      = {2021},
-    month     = dec
+@inproceedings{Benjamins2023,
+    title     = {Contextualize Me -- The Case for Context in Reinforcement Learning},
+    author    = {Carolin Benjamins and Theresa Eimer and Frederik Schubert and Aditya Mohan and Sebastian Döhler and André Biedenkapp and Bodo Rosenhan and Frank Hutter and Marius Lindauer},
+    booktitle = {Transactions on Machine Learning Research},
+    year      = {2023},
+    month     = Apr
 }
 ```
 
