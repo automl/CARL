@@ -120,7 +120,7 @@ class RoundRobinSelector(AbstractSelector):
         self.context_id = (self.context_id + 1) % len(self.contexts)
         context = self.contexts[self.contexts_keys[self.context_id]]
         return context, self.context_id
-    
+
 
 class StaticSelector(AbstractSelector):
     """

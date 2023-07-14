@@ -8,13 +8,13 @@ import brax
 import gymnasium
 import numpy as np
 from brax.base import Geometry, Inertia, Link, System
-from brax.envs.wrappers.gym import GymWrapper, VectorGymWrapper
 from brax.io import mjcf
 from etils import epath
 from gymnasium.wrappers.compatibility import EnvCompatibility
 from jax import numpy as jp
 
 from carl.context.selection import AbstractSelector
+from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Contexts
 
@@ -195,10 +195,12 @@ class CARLBraxEnv(CARLEnv):
             )  # TODO arguments
             # Brax uses gym instead of gymnasium
             if batch_size == 1:
-                env = GymWrapper(env)  # TODO do we need vector env?
+                env = GymWrapper(
+                    env
+                )  # TODO do we need vector env? - TE: I think if we have a batched env the space sizing will be wrong in non-vector
             else:
                 env = VectorGymWrapper(env)
-            env = EnvCompatibility(env)
+
             # The observation space also needs to from gymnasium
             env.observation_space = gymnasium.spaces.Box(
                 low=env.observation_space.low,

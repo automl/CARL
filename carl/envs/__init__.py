@@ -53,6 +53,6 @@ found = check_spec("dm_control")
 if found:
     from carl.envs.dmc import *
 
-found = check_spec("distance")
-if found:
-    from carl.envs.rna import *
+# found = check_spec("distance")
+# if found:
+#     from carl.envs.rna import *
