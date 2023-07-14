@@ -22,6 +22,7 @@ def read_file(filepath: str) -> str:
 
 extras_require = {
     "box2d": [
+        "swig",
         "gymnasium[box2d]>=0.27.1",
     ],
     "brax": [
