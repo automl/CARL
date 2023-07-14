@@ -9,7 +9,7 @@ from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 DEFAULT_CONTEXT = {
-    "gravity": -9.81,
+    "gravity": 9.81,
     "friction_tangential": 1.0,  # Scaling factor for tangential friction of all geoms (objects)
     "friction_torsional": 1.0,  # Scaling factor for torsional friction of all geoms (objects)
     "friction_rolling": 1.0,  # Scaling factor for rolling friction of all geoms (objects)
@@ -26,7 +26,7 @@ DEFAULT_CONTEXT = {
 }
 
 CONTEXT_BOUNDS = {
-    "gravity": (-np.inf, -0.1, float),
+    "gravity": (0.1, np.inf, float),
     "friction_tangential": (0, np.inf, float),
     "friction_torsional": (0, np.inf, float),
     "friction_rolling": (0, np.inf, float),
