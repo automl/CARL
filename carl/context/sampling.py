@@ -182,7 +182,7 @@ def sample_contexts(
     # Sample contexts
     contexts: Contexts = {}
     for i in range(0, num_contexts):
-        c: Context = {}
+        c = {}
         # k = name of context feature
         for k in env_defaults.keys():
             if k in sample_dists.keys():
@@ -192,8 +192,8 @@ def sample_contexts(
                 lower_bound, upper_bound = env_bounds[k][0], env_bounds[k][1]
                 assert lower_bound <= upper_bound, f"context variable {k}: lower bound [{lower_bound}] is higher than upper bound [{upper_bound}]!"
                 if context_feature_type == list:
-                    length = np.random.randint(
-                        500000
+                    length = rng.integers(
+                        5e5
                     )  # TODO should we allow lists to be this long? or should we parametrize this?
                     arg_class = sample_dists[k][1][1]  # type: ignore [index]
                     context_list = random_variable.rvs(size=length, random_state=rng)

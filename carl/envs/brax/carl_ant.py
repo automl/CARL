@@ -30,8 +30,6 @@ CONTEXT_BOUNDS = {
     "dt": (0.0001, 0.03, float),
 }
 
-
-
 class CARLAnt(CARLBraxEnv):
     env_name: str = "ant"
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT

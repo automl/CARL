@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-import gym.envs.classic_control as gccenvs
+import gymnasium.envs.classic_control as gccenvs
 import numpy as np
 
 from carl.context.selection import AbstractSelector

@@ -2,8 +2,8 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 import numpy as np
 import pyglet
-from gym.envs.box2d import CarRacing
-from gym.envs.box2d.car_dynamics import Car
+from gymnasium.envs.box2d import CarRacing
+from gymnasium.envs.box2d.car_dynamics import Car
 from pyglet import gl
 
 from carl.context.selection import AbstractSelector
@@ -96,7 +96,6 @@ class CustomCarRacingEnv(CarRacing):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         self._destroy()
@@ -121,11 +120,7 @@ class CustomCarRacingEnv(CarRacing):
             49
         ):  # this sets up the environment and resolves any initial violations of geometry
             self.step(None)  # type: ignore [arg-type]
-
-        if not return_info:
-            return self.step(None)[0]  # type: ignore [arg-type]
-        else:
-            return self.step(None)[0], {}  # type: ignore [arg-type]
+        return self.step(None)[0], {}
 
     def _render_indicators(self, W: int, H: int) -> None:
         # copied from meta car racing

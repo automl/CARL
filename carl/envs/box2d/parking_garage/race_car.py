@@ -12,7 +12,7 @@ from Box2D.b2 import prismaticJointDef  # noqa: F401
 from Box2D.b2 import revoluteJointDef  # noqa: F401
 from Box2D.b2 import ropeJointDef  # noqa: F401
 from Box2D.b2 import shape  # noqa: F401; noqa: F401
-from gym.envs.box2d.car_dynamics import Car
+from gymnasium.envs.box2d.car_dynamics import Car
 
 from carl.envs.box2d.parking_garage.utils import Particle
 
@@ -398,7 +398,8 @@ class RaceCar(Car):
         """control: brake
 
         Args:
-            b (0..1): Degree to which the brakes are applied. More than 0.9 blocks the wheels to zero rotation"""
+            b (0..1): Degree to which the brakes are applied. More than 0.9 blocks the wheels to zero rotation
+        """
         for w in self.wheels[:2]:
             w.brake = b * 0.4
         for w in self.wheels[2:4]:
@@ -414,7 +415,8 @@ class RaceCar(Car):
         """control: steer
 
         Args:
-            s (-1..1): target position, it takes time to rotate steering wheel from side-to-side"""
+            s (-1..1): target position, it takes time to rotate steering wheel from side-to-side
+        """
         self.wheels[0].steer = s
         self.wheels[1].steer = s
 

@@ -1,10 +1,10 @@
 from typing import Any, Optional, Tuple, TypeVar, Union
 
 import dm_env  # type: ignore
-import gym
+import gymnasium as gym
 import numpy as np
 from dm_env import StepType
-from gym import spaces
+from gymnasium import spaces
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")

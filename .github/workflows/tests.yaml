@@ -12,6 +12,11 @@ on:
 
   # When a push occurs on a PR that targets these branches
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches:
       - main
       - development
@@ -36,6 +41,7 @@ jobs:
   ubuntu:
 
     name: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.kind }}
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -98,12 +104,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python setup.py sdist
-        last_dist=$(ls -t dist/ContextuaRL-*.tar.gz | head -n 1)
+        last_dist=$(ls -t dist/carl-*.tar.gz | head -n 1)
         pip install $last_dist[dev,dm_control]
 
     - name: Tests
       timeout-minutes: 60
       run: |
+        echo "Running all tests..."
         if [[ ${{ matrix.kind }} == 'conda' ]]; then
           PYTHON=$CONDA/envs/testenv/bin/python3
           export PATH="$CONDA/envs/testenv/bin:$PATH"
