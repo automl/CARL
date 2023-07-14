@@ -2,7 +2,7 @@
 """
 Code adapted from https://github.com/automl/learna
 """
-
+from __future__ import annotations
 import time
 
 from itertools import product
@@ -291,7 +291,8 @@ class RnaDesignEnvironment(gym.Env):
     def seed(self, seed):  # type: ignore[no-untyped-def]
         return None
 
-    def reset(self):  # type: ignore[no-untyped-def]
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None
+    ) -> tuple[Any, dict[str, Any]]:  # type: ignore[no-untyped-def]
         """
         Reset the environment. First function called by runner. Returns first state.
         Returns:

@@ -99,19 +99,19 @@ class CARLRnaDesignEnv(CARLEnv):
             state_radius=self.context["state_radius"],
         )
         self.env = RnaDesignEnvironment(dot_brackets, env_config)
-        self.build_observation_space(
-            env_lower_bounds=-np.inf * np.ones(self.obs_low),
-            env_upper_bounds=np.inf * np.ones(self.obs_high),
-            context_bounds=CONTEXT_BOUNDS,  # type: ignore[arg-type]
-        )
+        # self.build_observation_space(
+        #     env_lower_bounds=-np.inf * np.ones(self.obs_low),
+        #     env_upper_bounds=np.inf * np.ones(self.obs_high),
+        #     context_bounds=CONTEXT_BOUNDS,  # type: ignore[arg-type]
+        # )
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         # TODO: these actually depend on the dataset, how to handle this?
         base_ids = list(range(1, 11))
-        id_choices = chain(
+        id_choices = list(chain(
             *map(lambda x: combinations(base_ids, x), range(0, len(base_ids) + 1))
-        ) + [None]
+        )) + [False]
         return {
             "mutation_threshold": UniformFloatContextFeature(
                 "mutation_threshold", lower=0.1, upper=np.inf, default_value=5
@@ -127,7 +127,7 @@ class CARLRnaDesignEnv(CARLEnv):
                 choices=["eterna", "rfam_learn", "rfam_taneda"],
                 default_value="eterna",
             ),
-            "target_structure_ids": UniformFloatContextFeature(
-                "target_structure_ids", choices=id_choices, default_value=None
+            "target_structure_ids": CategoricalContextFeature(
+                name="target_structure_ids", choices=id_choices, default_value=False
             ),
         }

@@ -101,10 +101,7 @@ class ContextSpace(object):
                         low=context_feature.lower, high=context_feature.upper
                     )
                 else:
-                    raise ValueError(
-                        f"Context features must be of type NumericalContextFeature."
-                        f"Got {type(context_feature)}."
-                    )
+                    context_space[context_feature.name] = spaces.Discrete(len(context_feature.choices))
             return spaces.Dict(context_space)
         else:
             low = np.array(

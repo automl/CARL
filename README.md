@@ -49,7 +49,7 @@ These may not be compatible with Windows systems. Box2D environment may need to 
 conda install -c conda-forge gym-box2d
 ```
 
-In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible.
+In general, we test on Linux systems, but aim to keep the benchmark compatible with MacOS as much as possible. At this time, Mario and RNA work exclusively on Linux due to downstream dependencies, however.
 For additional installation requirements of Mario and RNA, please the ReadMe files in their respective directories in carl/envs.
 
 ## CARL's Contextual Extension
