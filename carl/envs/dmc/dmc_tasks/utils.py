@@ -162,9 +162,9 @@ def adapt_context(
         gravity = option.get("gravity")
         if gravity is not None:
             g = gravity.split(" ")
-            gravity = " ".join([g[0], g[1], str(-context["gravity"])])
+            gravity = " ".join([g[0], g[1], str(context["gravity"])])
         else:
-            gravity = " ".join(["0", "0", str(-context["gravity"])])
+            gravity = " ".join(["0", "0", str(context["gravity"])])
         option.set("gravity", gravity)
 
     if check_okay_to_set("wind"):

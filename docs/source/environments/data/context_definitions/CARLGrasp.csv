@@ -1,0 +1,10 @@
+Context Feature,Default,Bounds
+joint_stiffness,5000.0,"(1, inf, <class 'float'>)"
+gravity,-9.8,"(-inf, -0.1, <class 'float'>)"
+friction,0.6,"(-inf, inf, <class 'float'>)"
+angular_damping,-0.05,"(-inf, inf, <class 'float'>)"
+actuator_strength,300.0,"(1, inf, <class 'float'>)"
+joint_angular_damping,50.0,"(0, inf, <class 'float'>)"
+target_radius,1.1,"(0.1, inf, <class 'float'>)"
+target_distance,10.0,"(0.1, inf, <class 'float'>)"
+target_height,8.0,"(0.1, inf, <class 'float'>)"

@@ -7,15 +7,13 @@ from carl.envs.classic_control.carl_acrobot import (
     DEFAULT_CONTEXT as CARLAcrobotEnv_defaults,
 )
 from carl.envs.classic_control.carl_acrobot import CARLAcrobotEnv
-
-from carl.envs.classic_control.carl_cartpole import (
-    DEFAULT_CONTEXT as CARLCartPoleEnv_defaults,
-)
 from carl.envs.classic_control.carl_cartpole import (
     CONTEXT_BOUNDS as CARLCartPoleEnv_bounds,
 )
+from carl.envs.classic_control.carl_cartpole import (
+    DEFAULT_CONTEXT as CARLCartPoleEnv_defaults,
+)
 from carl.envs.classic_control.carl_cartpole import CARLCartPoleEnv
-
 from carl.envs.classic_control.carl_mountaincar import (
     CONTEXT_BOUNDS as CARLMountainCarEnv_bounds,
 )
@@ -23,7 +21,6 @@ from carl.envs.classic_control.carl_mountaincar import (
     DEFAULT_CONTEXT as CARLMountainCarEnv_defaults,
 )
 from carl.envs.classic_control.carl_mountaincar import CARLMountainCarEnv
-
 from carl.envs.classic_control.carl_mountaincarcontinuous import (
     CONTEXT_BOUNDS as CARLMountainCarContinuousEnv_bounds,
 )
@@ -33,7 +30,6 @@ from carl.envs.classic_control.carl_mountaincarcontinuous import (
 from carl.envs.classic_control.carl_mountaincarcontinuous import (
     CARLMountainCarContinuousEnv,
 )
-
 from carl.envs.classic_control.carl_pendulum import (
     CONTEXT_BOUNDS as CARLPendulumEnv_bounds,
 )

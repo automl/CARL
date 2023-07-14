@@ -11,11 +11,6 @@ from carl.envs import CARLDmcQuadrupedEnv_mask as quadruped_mask
 from carl.envs import CARLDmcWalkerEnv
 from carl.envs import CARLDmcWalkerEnv_defaults as walker_default
 from carl.envs import CARLDmcWalkerEnv_mask as walker_mask
-from carl.envs import CARLDmcFingerEnv
-
-import os 
-os.environ["MUJOCO_GL"] = "glfw"
-# os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 if __name__ == "__main__":
     # Load one task:
@@ -37,30 +32,14 @@ if __name__ == "__main__":
         hide_context=False,
         dict_observation_space=True,
     )
-    carl_env = CARLDmcFingerEnv()
-    # carl_env = CARLDmcWalkerEnv()
-    # carl_env = CARLDmcQuadrupedEnv()
-    # carl_env = CARLDmcFishEnv()
     action = carl_env.action_space.sample()
-    s = carl_env.reset()
     state, reward, done, info = carl_env.step(action=action)
     print("state", state, type(state))
 
-    def render(env, **render_kwargs):
-        frame = carl_env.render(mode="rgb_array", **render_kwargs)
-        plt.imshow(frame)
-        plt.axis("off")
-        plt.tight_layout()
-        plt.savefig(f"dm_render_{type(env).__name__}.png", dpi=300, bbox_inches='tight',transparent=True, pad_inches=0)
-
+    render = lambda: plt.imshow(carl_env.render(mode="rgb_array"))
     s = carl_env.reset()
-    render(
-        carl_env, 
-        camera_id=1,
-        height=400,
-        width=400,
-    )
-    
+    render()
+    # plt.savefig("dm_render.png")
     action = carl_env.action_space.sample()
     state, reward, done, info = carl_env.step(action=action)
     print("state", state, type(state))
