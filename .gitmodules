@@ -1,6 +1,3 @@
-[submodule "src/envs/rna/learna"]
-	path = src/envs/rna/learna
-	url = https://github.com/automl/learna.git
 [submodule "src/envs/mario/TOAD-GUI"]
 	path = src/envs/mario/TOAD-GUI
 	url = https://github.com/Mawiszus/TOAD-GUI

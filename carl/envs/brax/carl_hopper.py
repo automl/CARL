@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import jax.numpy as jnp
-from brax.envs.half_cheetah import Halfcheetah
+from brax.envs.hopper import Hopper
 from brax.envs import create
 from carl.envs.brax.brax_wrappers import GymWrapper, VectorGymWrapper
 
@@ -15,11 +15,11 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 DEFAULT_CONTEXT = {
     "stiffness_factor": 1,
     "gravity": -9.81,
-    "friction": 0.4,
+    "friction": 1,
     "damping_factor": 1,
     "actuator_strength_factor": 1,
-    "torso_mass": 6.25,
-    "dt": 0.01
+    "torso_mass": 3.67,
+    "dt": 0.002
 }
 
 CONTEXT_BOUNDS = {
@@ -34,17 +34,17 @@ CONTEXT_BOUNDS = {
 
 
 
-class CARLHalfcheetah(CARLBraxEnv):
-    env_name: str = "halfcheetah"
+class CARLHopper(CARLBraxEnv):
+    env_name: str = "hopper"
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
 
     def _update_context(self) -> None:
-        self.env: Halfcheetah
+        self.env: Hopper
         config = {}
         config["gravity"] = jnp.array([0, 0, self.context["gravity"]])
         config["dt"] = jnp.array(self.context["dt"])
         new_mass = self.env._env.sys.link.inertia.mass.at[0].set(self.context["torso_mass"])
-        # TODO: do we want to implement this?
+        # TODO: do we wHopper to implement this?
         #new_com = self.env.sys.link.inertia.transform
         #new_inertia = self.env.sys.link.inertia.i
         inertia = self.env._env.sys.link.inertia.replace(mass=new_mass)
@@ -58,4 +58,3 @@ class CARLHalfcheetah(CARLBraxEnv):
         geoms[0] = geoms[0].replace(friction=jnp.array([self.context["friction"]]))
         config["geoms"] = geoms
         self.env._env.sys = self.env._env.sys.replace(**config)
-
