@@ -32,6 +32,7 @@ extras_require = {
         "dm_control>=1.0.3",
     ],
     "mario": [
+        "opencv-python",
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
