@@ -54,7 +54,18 @@ Mario at this point, however, will not run on any operation system besides Linux
 
 To install the additional requirements for ToadGAN:
 ```bash
-javac carl/envs/mario/Mario-AI-Framework/**/*.java
+git submodule update --init --recursive
+
+# if this does not work, clone manually
+git clone https://github.com/frederikschubert/Mario-AI-Framework carl/envs/mario/Mario-AI-Framework
+git clone https://github.com/Mawiszus/TOAD-GUI  carl/envs/mario/TOAD-GUI
+
+# System requirements
+sudo apt install libfreetype6-dev xvfb
+
+# Compile java source files
+cd carl/envs/mario/Mario-AI-Framework/src
+javac *.java
 ```
 
 ## CARL's Contextual Extension
