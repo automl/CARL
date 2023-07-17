@@ -47,7 +47,7 @@ def _string_difference_indices(s1, s2):  # type: ignore[no-untyped-def]
             The first sequence.
         s2:
             The second sequence.
-    
+
     Returns:
         List of indices where s1 and s2 differ.
     """
@@ -67,7 +67,7 @@ def _encode_dot_bracket(  # type: ignore[no-untyped-def]
             The target structure in dot_bracket notation.
         env_config:
             The configuration of the environment.
-    
+
     Returns:
         List of encoding for each site of the padded target structure.
     """
@@ -153,9 +153,9 @@ class _Design(object):
 
         Parameters
         ----------
-            length: 
+            length:
                 The length of the candidate solution.
-            primary: 
+            primary:
                 The sequence of the candidate solution.
         """
         if primary:
@@ -171,11 +171,11 @@ class _Design(object):
 
         Parameters
         ----------
-            mutations: 
+            mutations:
                 Possible mutations for the specified sites
-            sites: 
+            sites:
                 The sites to be mutated
-        
+
         Returns:
             A Design object with the mutated candidate solution.
         """
@@ -189,13 +189,14 @@ class _Design(object):
     ):  # type: ignore[no-untyped-def]
         """
         Assign nucleotides to sites for designing a candidate solution.
+
         Parameters
         ----------
-            action: 
+            action:
                 The agents action to assign a nucleotide.
-            site: 
+            site:
                 The site to which the nucleotide is assigned to.
-            paired_site: 
+            paired_site:
                 defines if the site is assigned with a base pair or not.
         """
         self._current_site += 1
@@ -392,7 +393,7 @@ class RnaDesignEnvironment(gym.Env):
         if self._env_config.use_conv and not self._env_config.use_embedding:
             return dict(type=type, shape=(1 + 2 * self._env_config.state_radius, 1))
         return dict(type=type, shape=(1 + 2 * self._env_config.state_radius,))
-    
+
     @property
     def actions(self):  # type: ignore[no-untyped-def]
         return dict(type="int", num_actions=4)

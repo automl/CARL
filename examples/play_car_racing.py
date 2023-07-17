@@ -7,7 +7,10 @@ Play Car Racing with the new CARL vehicles and test out our contexts yourself!
 import numpy as np
 import time
 import pygame
-from carl.envs.gymnasium.box2d.carl_vehicle_racing import CARLVehicleRacing, VEHICLE_NAMES
+from carl.envs.gymnasium.box2d.carl_vehicle_racing import (
+    CARLVehicleRacing,
+    VEHICLE_NAMES,
+)
 
 if __name__ == "__main__":
     a = np.array([0.0, 0.0, 0.0])
@@ -42,7 +45,7 @@ if __name__ == "__main__":
 
     contexts = {i: {"VEHICLE_ID": i} for i in range(len(VEHICLE_NAMES))}
     env = CARLVehicleRacing(contexts=contexts)
-    
+
     record_video = False
     if record_video:
         from gymnasium.wrappers.record_video import RecordVideo
@@ -60,7 +63,7 @@ if __name__ == "__main__":
         restart = False
         while True:
             register_input()
-            s, r, terminated, truncated, info = env.step(a)            
+            s, r, terminated, truncated, info = env.step(a)
             done = terminated | truncated
             time.sleep(0.025)
             total_reward += r

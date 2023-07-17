@@ -1,5 +1,7 @@
 import unittest
 
+import numpy as np
+
 from carl.envs.gymnasium.classic_control.carl_pendulum import CARLPendulum
 
 CARLPendulum.render_mode = "rgb_array"
@@ -29,8 +31,8 @@ class TestStateConstruction(unittest.TestCase):
 
     def test_get_context_key(self):
         contexts = self.generate_contexts()
-        env = CARLPendulumEnv(contexts=contexts)
-        self.assertEqual(env.context_key, None)
+        env = CARLPendulum(contexts=contexts)
+        self.assertEqual(env.context_id, None)
 
 
 class TestContextSampler(unittest.TestCase):

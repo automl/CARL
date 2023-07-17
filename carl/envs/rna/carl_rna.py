@@ -22,6 +22,7 @@ from carl.context.selection import AbstractSelector
 ACTION_SPACE = gym.spaces.Discrete(4)
 OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.ones(11))
 
+
 class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
@@ -85,7 +86,7 @@ class CARLRnaDesignEnv(CARLEnv):
         state, reward, terminated, truncated = self.env.execute(action)  # type: ignore[has-type]
         self.step_counter += 1
         return state, reward, terminated, truncated, {}
-    
+
     def _update_context(self) -> None:
         dot_brackets = parse_dot_brackets(
             dataset=self.context["dataset"],

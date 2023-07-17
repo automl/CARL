@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, SupportsFloat
+from typing import Any, SupportsFloat, TypeVar
 
 import inspect
 
