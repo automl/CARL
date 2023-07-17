@@ -4,8 +4,7 @@ from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.dmc.loader import load_dmc_env
 from carl.envs.dmc.wrappers import MujocoToGymWrapper
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
 
 
 class CARLDmcEnv(CARLEnv):
@@ -32,8 +31,7 @@ class CARLDmcEnv(CARLEnv):
     def __init__(
         self,
         contexts: Contexts | None = None,
-        obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
+        obs_context_features: list[str] | None = None,
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,

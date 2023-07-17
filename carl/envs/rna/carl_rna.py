@@ -108,9 +108,11 @@ class CARLRnaDesignEnv(CARLEnv):
     def get_context_features() -> dict[str, ContextFeature]:
         # TODO: these actually depend on the dataset, how to handle this?
         base_ids = list(range(1, 11))
-        id_choices = list(chain(
-            *map(lambda x: combinations(base_ids, x), range(0, len(base_ids) + 1))
-        )) + [False]
+        id_choices = list(
+            chain(
+                *map(lambda x: combinations(base_ids, x), range(0, len(base_ids) + 1))
+            )
+        ) + [False]
         return {
             "mutation_threshold": UniformFloatContextFeature(
                 "mutation_threshold", lower=0.1, upper=np.inf, default_value=5

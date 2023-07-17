@@ -19,8 +19,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from multiprocessing.sharedctypes import Value
-
 import numpy as np
 from dm_control.rl import control  # type: ignore
 from dm_control.suite.finger import (  # type: ignore

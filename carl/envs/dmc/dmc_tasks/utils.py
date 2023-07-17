@@ -152,7 +152,6 @@ def adapt_context(xml_string: bytes, context: Context) -> bytes:
     if "wind_x" in context and "wind_y" in context and "wind_z" in context:
         wind = option.get("wind")
         if wind is not None:
-            w = wind.split(" ")
             wind = " ".join(
                 [
                     str(context["wind_x"]),

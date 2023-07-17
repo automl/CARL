@@ -10,7 +10,6 @@ import numpy as np
 from brax.base import Geometry, Inertia, Link, System
 from brax.io import mjcf
 from etils import epath
-from gymnasium.wrappers.compatibility import EnvCompatibility
 from jax import numpy as jp
 
 from carl.context.selection import AbstractSelector
@@ -149,8 +148,7 @@ class CARLBraxEnv(CARLEnv):
         env: brax.envs.env.Env | None = None,
         batch_size: int = 1,
         contexts: Contexts | None = None,
-        obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
+        obs_context_features: list[str] | None = None,
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
@@ -195,9 +193,7 @@ class CARLBraxEnv(CARLEnv):
             )  # TODO arguments
             # Brax uses gym instead of gymnasium
             if batch_size == 1:
-                env = GymWrapper(
-                    env
-                )  # TODO do we need vector env? - TE: I think if we have a batched env the space sizing will be wrong in non-vector
+                env = GymWrapper(env)
             else:
                 env = VectorGymWrapper(env)
 

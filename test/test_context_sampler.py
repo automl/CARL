@@ -31,13 +31,13 @@ class TestContextSampler(unittest.TestCase):
         return super().setUp()
 
     def test_init(self):
-        sampler = ContextSampler(
+        ContextSampler(
             context_distributions=sample_dist,  # as dict
             context_space=self.cspace,
             seed=0,
             name="TestSampler",
         )
-        sampler = ContextSampler(
+        ContextSampler(
             context_distributions=list(sample_dist.values()),  # as list/iterable
             context_space=self.cspace,
             seed=0,

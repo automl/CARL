@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, List, Union
+from typing import List
 
 import gymnasium.spaces as spaces
 import numpy as np
-from ConfigSpace.configuration_space import Configuration, ConfigurationSpace
 from ConfigSpace.hyperparameters import (
     CategoricalHyperparameter,
     Hyperparameter,
@@ -13,10 +12,8 @@ from ConfigSpace.hyperparameters import (
     UniformFloatHyperparameter,
     UniformIntegerHyperparameter,
 )
-from omegaconf import DictConfig
 from typing_extensions import TypeAlias
 
-from carl.context.search_space_encoding import search_space_to_config_space
 from carl.utils.types import Context, Contexts
 
 ContextFeature: TypeAlias = Hyperparameter
@@ -101,7 +98,9 @@ class ContextSpace(object):
                         low=context_feature.lower, high=context_feature.upper
                     )
                 else:
-                    context_space[context_feature.name] = spaces.Discrete(len(context_feature.choices))
+                    context_space[context_feature.name] = spaces.Discrete(
+                        len(context_feature.choices)
+                    )
             return spaces.Dict(context_space)
         else:
             low = np.array(

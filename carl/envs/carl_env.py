@@ -6,7 +6,6 @@ from typing import Any, SupportsFloat
 import inspect
 
 import gymnasium
-import numpy as np
 from gymnasium import Wrapper, spaces
 from gymnasium.core import Env
 

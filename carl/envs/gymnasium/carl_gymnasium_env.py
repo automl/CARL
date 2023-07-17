@@ -26,7 +26,7 @@ class CARLGymnasiumEnv(CARLEnv):
         env: Env | None = None,
         contexts: Contexts | None = None,
         obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state # TODO rename to obs_context_features?
+        | None = None,  # list the context features which should be added to the state
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,

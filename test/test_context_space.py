@@ -4,7 +4,6 @@ import gymnasium
 import numpy as np
 
 from carl.context.context_space import (
-    CategoricalContextFeature,
     ContextSpace,
     UniformFloatContextFeature,
     UniformIntegerContextFeature,
@@ -79,7 +78,7 @@ class TestContextSpace(unittest.TestCase):
 
     def test_to_gynasium_space(self):
         cspace = ContextSpace(context_space_dict_othertypes)
-        space = cspace.to_gymnasium_space()
+        cspace.to_gymnasium_space()
 
     def test_verify_context(self):
         # Unknown context feature name
