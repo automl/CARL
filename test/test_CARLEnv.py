@@ -1,7 +1,5 @@
 import unittest
 
-import numpy as np
-
 from carl.envs.gymnasium.classic_control.carl_pendulum import CARLPendulum
 
 CARLPendulum.render_mode = "rgb_array"

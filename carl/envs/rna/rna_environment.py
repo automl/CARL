@@ -14,7 +14,6 @@ import numpy as np
 from RNA import fold
 import gymnasium as gym
 from typing import Any, List
-import pdb
 
 
 @dataclass

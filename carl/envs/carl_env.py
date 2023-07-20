@@ -23,7 +23,7 @@ class CARLEnv(Wrapper, abc.ABC):
         contexts: Contexts | None = None,
         obs_context_features: list[str]
         | None = None,  # list the context features which should be added to the state
-        obs_context_as_dict: bool = True,  # TODO discuss default
+        obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
         **kwargs,
@@ -159,10 +159,10 @@ class CARLEnv(Wrapper, abc.ABC):
             context_feature_names=obs_context_feature_names,
             as_dict=self.obs_context_as_dict,
         )
+
         obs_space = spaces.Dict(
             {
-                # TODO should we rename "state" to "obs"?
-                "state": self.base_observation_space,
+                "obs": self.base_observation_space,
                 "context": obs_space_context,
             }
         )
@@ -320,40 +320,3 @@ class CARLEnv(Wrapper, abc.ABC):
         state, reward, terminated, truncated, info = super().step(action)
         state = self._add_context_to_state(state)
         return state, reward, terminated, truncated, info
-
-
-class CARLCartPole(CARLGymnasiumEnv):
-    env_name: str = "CartPole-v1"
-
-    def _update_context(self) -> None:
-        for k, v in self.context.items():
-            setattr(self.env, k, v)
-
-    def get_context_features() -> list[ContextFeature]:
-        return {
-            "gravity": 
-            UniformFloatContextFeature(
-                "gravity", lower=0.1, upper=np.inf, default_value=9.8
-            ),
-            "masscart": 
-            UniformFloatContextFeature(
-                "masscart", lower=0.1, upper=10, default_value=1.0
-            ),
-            "masspole":
-            UniformFloatContextFeature(
-                "masspole", lower=0.01, upper=1, default_value=0.1
-            ),
-            "length":
-            UniformFloatContextFeature(
-                "length", lower=0.05, upper=5, default_value=0.5
-            ),
-            "force_mag":
-            UniformFloatContextFeature(
-                "force_mag", lower=1, upper=100, default_value=10.0
-            ),
-            "tau":
-            UniformFloatContextFeature(
-                "tau", lower=0.002, upper=0.2, default_value=0.02
-            ),
-        }
-

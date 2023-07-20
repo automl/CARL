@@ -7,7 +7,10 @@ import numpy as np
 import gymnasium as gym
 import time
 import pygame
-from carl.envs.gymnasium.box2d.carl_vehicle_racing import CARLVehicleRacing, VEHICLE_NAMES
+from carl.envs.gymnasium.box2d.carl_vehicle_racing import (
+    CARLVehicleRacing,
+    VEHICLE_NAMES,
+)
 
 if __name__ == "__main__":
     from pyglet.window import key
@@ -41,7 +44,7 @@ if __name__ == "__main__":
 
     contexts = {i: {"VEHICLE_ID": i} for i in range(len(VEHICLE_NAMES))}
     env = CARLVehicleRacing(contexts=contexts)
-    
+
     record_video = False
     if record_video:
         from gymnasium.wrappers.record_video import RecordVideo

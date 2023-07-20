@@ -1,9 +1,0 @@
-Notes
-inverted pendulum
-inverted double pendulum
-
-
-link_names=['r_shoulder_pan_link', 'r_shoulder_lift_link', 'r_upper_arm_roll_link', 'r_elbow_flex_link', 'r_forearm_roll_link', 'r_wrist_flex_link', 'r_wrist_roll_link', 'object', 'goal'],
- mass=Array([7.2935214e+00, 3.1415927e+00, 1.7140529e+00, 4.0715042e-01,
-       9.2818356e-01, 5.0265482e-03, 1.8346901e-01, 1.8325957e-03,
-       2.1848729e-08], 

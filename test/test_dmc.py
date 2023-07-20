@@ -43,12 +43,18 @@ class TestDmcEnvs(unittest.TestCase):
         # Finger can reach spinner?
         with self.assertRaises(ValueError):
             check_constraints(
-                limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.1
+                limb_length_0=0.17,
+                limb_length_1=0.16,
+                spinner_length=0.1,
+                raise_error=True,
             )
         # Spinner collides with finger hinge?
         with self.assertRaises(ValueError):
             check_constraints(
-                limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.81
+                limb_length_0=0.17,
+                limb_length_1=0.16,
+                spinner_length=0.81,
+                raise_error=True,
             )
 
     def test_finger_tasks(self):

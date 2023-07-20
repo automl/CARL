@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from gymnasium import spaces
+
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.dmc.loader import load_dmc_env
@@ -45,6 +47,11 @@ class CARLDmcEnv(CARLEnv):
             environment_kwargs={"flat_observation": True},
         )
         env = MujocoToGymWrapper(env)
+        env.observation_space = spaces.Box(
+            low=env.observation_space.low,
+            high=env.observation_space.high,
+            dtype=env.observation_space.dtype,
+        )
 
         super().__init__(
             env=env,

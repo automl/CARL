@@ -44,7 +44,7 @@ def check_constraints(
     x_spinner: float = 0.2,
     x_finger: float = -0.2,
     raise_error: bool = False,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> bool:
     is_okay = True
     spinner_half_length = spinner_length / 2
@@ -105,7 +105,7 @@ def get_finger_xml_string(
         x_spinner=x_spinner,
         x_finger=x_finger,
         spinner_length=spinner_length,
-        raise_error=True
+        raise_error=True,
     )
 
     proximal_to = -limb_length_0

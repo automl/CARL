@@ -1,16 +1,9 @@
-from typing import Any, Dict, List, Optional, Union
-
-import numpy as np
 import jax.numpy as jnp
-from brax.envs import create
+import numpy as np
 from brax.envs.inverted_double_pendulum import InvertedDoublePendulum
-from carl.envs.brax.brax_wrappers import GymWrapper, VectorGymWrapper
 
-from carl.context.selection import AbstractSelector
-from carl.envs.carl_env import CARLEnv
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
 from carl.envs.brax.carl_brax_env import CARLBraxEnv
+from carl.utils.types import Context
 
 DEFAULT_CONTEXT = {
     "stiffness_factor": 1,
@@ -22,7 +15,7 @@ DEFAULT_CONTEXT = {
     "mass_cart": 10.5,
     "mass_pole_0": 4.2,
     "mass_pole_1": 4.2,
-    "dt": 0.01
+    "dt": 0.01,
 }
 
 CONTEXT_BOUNDS = {
@@ -39,28 +32,37 @@ CONTEXT_BOUNDS = {
 }
 
 
-
 class CARLInvertedDoublePendulum(CARLBraxEnv):
     env_name: str = "inverted_double_pendulum"
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
-    
+
     def _update_context(self) -> None:
         self.env: InvertedDoublePendulum
         config = {}
-        config["gravity"] = jnp.array([self.context["gravity_x"], 0, self.context["gravity_z"]])
+        config["gravity"] = jnp.array(
+            [self.context["gravity_x"], 0, self.context["gravity_z"]]
+        )
         config["dt"] = jnp.array(self.context["dt"])
-        new_mass = self.env._env.sys.link.inertia.mass.at[0].set(self.context["mass_cart"])
+        new_mass = self.env._env.sys.link.inertia.mass.at[0].set(
+            self.context["mass_cart"]
+        )
         new_mass = new_mass.at[1].set(self.context["mass_pole_0"])
         new_mass = new_mass.at[2].set(self.context["mass_pole_1"])
         # TODO: do we want to implement this?
-        #new_com = self.env.sys.link.inertia.transform
-        #new_inertia = self.env.sys.link.inertia.i
+        # new_com = self.env.sys.link.inertia.transform
+        # new_inertia = self.env.sys.link.inertia.i
         inertia = self.env._env.sys.link.inertia.replace(mass=new_mass)
         config["link"] = self.env._env.sys.link.replace(inertia=inertia)
-        new_stiffness = self.context["stiffness_factor"]*self.env._env.sys.dof.stiffness
-        new_damping = self.context["damping_factor"]*self.env._env.sys.dof.damping
-        config["dof"] = self.env._env.sys.dof.replace(stiffness=new_stiffness, damping=new_damping)
-        new_gear = self.context["actuator_strength_factor"]*self.env._env.sys.actuator.gear
+        new_stiffness = (
+            self.context["stiffness_factor"] * self.env._env.sys.dof.stiffness
+        )
+        new_damping = self.context["damping_factor"] * self.env._env.sys.dof.damping
+        config["dof"] = self.env._env.sys.dof.replace(
+            stiffness=new_stiffness, damping=new_damping
+        )
+        new_gear = (
+            self.context["actuator_strength_factor"] * self.env._env.sys.actuator.gear
+        )
         config["actuator"] = self.env._env.sys.actuator.replace(gear=new_gear)
         geoms = self.env._env.sys.geoms
         geoms[0] = geoms[0].replace(friction=jnp.array([self.context["friction"]]))

@@ -22,8 +22,7 @@ ACTION_SPACE = gym.spaces.Discrete(4)
 OBSERVATION_SPACE = gym.spaces.Box(low=-np.inf * np.ones(11), high=np.inf * np.ones(11))
 
 
-
-class CARLRnaDesignEnv(CARLEnv): 
+class CARLRnaDesignEnv(CARLEnv):
     def __init__(
         self,
         env: RnaDesignEnvironment | None = None,
@@ -133,21 +132,3 @@ class CARLRnaDesignEnv(CARLEnv):
                 name="target_structure_ids", choices=id_choices, default_value=False
             ),
         }
-
-    def _update_context(self) -> None:
-        dot_brackets = parse_dot_brackets(
-            dataset=self.context["dataset"],
-            data_dir=self.env.data_location,  # type: ignore[has-type]
-            target_structure_ids=self.context["target_structure_ids"],
-        )
-        env_config = RnaDesignEnvironmentConfig(
-            mutation_threshold=self.context["mutation_threshold"],
-            reward_exponent=self.context["reward_exponent"],
-            state_radius=self.context["state_radius"],
-        )
-        self.env = RnaDesignEnvironment(dot_brackets, env_config)
-        self.build_observation_space(
-            env_lower_bounds=-np.inf * np.ones(self.obs_low),
-            env_upper_bounds=np.inf * np.ones(self.obs_high),
-            context_bounds=CONTEXT_BOUNDS,  # type: ignore[arg-type]
-        )
