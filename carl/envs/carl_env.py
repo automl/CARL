@@ -65,7 +65,6 @@ class CARLEnv(Wrapper, abc.ABC):
         self.context: Context | None = None  # Set by `_progress_instance`
         if obs_context_features is None:
             obs_context_features = list(list(self.contexts.values())[0].keys())
-            print(obs_context_features)
         self.obs_context_features = obs_context_features
 
         # Context Selector
