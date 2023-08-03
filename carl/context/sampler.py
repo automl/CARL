@@ -41,7 +41,7 @@ class ContextSampler(ConfigurationSpace):
         self.add_hyperparameters(context_features)
 
     def get_context_features(self) -> list[ContextFeature]:
-        return self.get_hyperparameters()
+        return list(self.values())
 
     def sample_contexts(self, n_contexts: int) -> Contexts:
         contexts = self._sample_contexts(size=n_contexts)
@@ -53,7 +53,11 @@ class ContextSampler(ConfigurationSpace):
 
     def _sample_contexts(self, size: int = 1) -> list[Context]:
         contexts = self.sample_configuration(size=size)
+        default_context = self.context_space.get_default_context()
+
         if size == 1:
             contexts = [contexts]
-        contexts = [C.get_dictionary() for C in contexts]
+        contexts = [dict(default_context | dict(C)) for C in contexts]
+
         return contexts
+    

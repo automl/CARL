@@ -65,6 +65,7 @@ class CARLEnv(Wrapper, abc.ABC):
         self.context: Context | None = None  # Set by `_progress_instance`
         if obs_context_features is None:
             obs_context_features = list(list(self.contexts.values())[0].keys())
+            print(obs_context_features)
         self.obs_context_features = obs_context_features
 
         # Context Selector
@@ -271,7 +272,7 @@ class CARLEnv(Wrapper, abc.ABC):
         dict[str, Any]
             State context observation dict
         """
-        context = self.context
+        
         if not self.obs_context_as_dict:
             context = [self.context[k] for k in self.obs_context_features]
         else:
@@ -279,7 +280,7 @@ class CARLEnv(Wrapper, abc.ABC):
                 k: v for k, v in self.context.items() if k in self.obs_context_features
             }
         state_context_dict = {
-            "state": state,
+            "obs": state,
             "context": context,
         }
         return state_context_dict

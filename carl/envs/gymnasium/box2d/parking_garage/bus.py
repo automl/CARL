@@ -74,7 +74,7 @@ class Bus(Car):
     Different body to the original OpenAI car. We also added a brake bias with 40% front and 60% rear break bias
     """
 
-    def _init_extra_params(self) -> None -> None:
+    def _init_extra_params(self) -> None:
         self.rwd = True  # Flag to determine which wheels are driven
         self.fwd = False  # Flag to determine which wheels are driven
         self.trailer_type = (
