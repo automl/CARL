@@ -57,6 +57,12 @@ def check_constraints(
                 f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, "
                 f"spinner can't spin. Decrease spinner_length ({spinner_length})."
             )
+        is_okay = False
+        if raise_error:
+            raise ValueError(
+                f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, "
+                f"spinner can't spin. Decrease spinner_length ({spinner_length})."
+            )
 
     # Check if finger can reach spinner (distance should be negative)
     distance_fingertip_to_spinner = (x_spinner - spinner_half_length) - (
@@ -69,6 +75,14 @@ def check_constraints(
                 f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
                 f"limb_length_0, limb_length_1 or spinner_length."
             )
+        is_okay = False
+        if raise_error:
+            raise ValueError(
+                f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
+                f"limb_length_0, limb_length_1 or spinner_length."
+            )
+
+    return is_okay
 
     return is_okay
 
