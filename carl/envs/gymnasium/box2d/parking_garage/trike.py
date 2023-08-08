@@ -383,4 +383,3 @@ class TukTukSmallTrailer(TukTuk):
         self.trailer_type = (
             1  # Determines which trailer to attach 0 -> none, 1 -> small
         )
-

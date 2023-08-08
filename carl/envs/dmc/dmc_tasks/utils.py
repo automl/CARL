@@ -8,20 +8,6 @@ from carl.utils.types import Context
 def adapt_context(xml_string: bytes, context: Context) -> bytes:
     """Adapts and returns the xml_string of the model with the given context."""
 
-    def check_okay_to_set(context_feature: str | list[str]) -> bool:
-        """Set context feature if present in context and not in context mask."""
-        is_okay: bool = True
-        context_features: list[str]
-        if type(context_feature) is str:
-            context_features = [context_feature]  # type: ignore[assignment]
-        else:
-            context_features = context_feature  # type: ignore[assignment]
-        for cf in context_features:
-            if not (cf in context and cf not in context_mask):
-                is_okay = False
-                break
-        return is_okay
-
     mjcf = etree.fromstring(xml_string)
     default = mjcf.find("./default/")
     if default is None:

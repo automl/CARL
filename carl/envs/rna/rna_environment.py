@@ -13,8 +13,7 @@ import numpy as np
 
 from RNA import fold
 import gymnasium as gym
-from typing import Any, List
-
+from typing import Any
 
 
 @dataclass
@@ -264,7 +263,7 @@ class RnaDesignEnvironment(gym.Env):
     """
     The environment for RNA design using deep reinforcement learning.
     """
-    
+
     def __init__(self, dot_brackets, env_config):
         """Initialize the environment
 
@@ -407,7 +406,7 @@ class RnaDesignEnvironment(gym.Env):
         if self._env_config.use_conv and not self._env_config.use_embedding:
             return dict(type=type, shape=(1 + 2 * self._env_config.state_radius, 1))
         return dict(type=type, shape=(1 + 2 * self._env_config.state_radius,))
-    
+
     @property
     def actions(self):  # type: ignore[no-untyped-def]
         return dict(type="int", num_actions=4)
