@@ -89,6 +89,7 @@ setuptools.setup(
         "PyYAML>=5.4.1",
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
+        "configspace>=0.7.1"
     ],
     extras_require=extras_require,
     test_suite="pytest",

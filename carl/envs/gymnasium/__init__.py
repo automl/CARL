@@ -1,8 +1,3 @@
-from carl.envs.gymnasium.box2d import (
-    CARLBipedalWalker,
-    CARLLunarLander,
-    CARLVehicleRacing,
-)
 from carl.envs.gymnasium.classic_control import (
     CARLAcrobot,
     CARLCartPole,
@@ -17,7 +12,4 @@ __all__ = [
     "CARLMountainCar",
     "CARLMountainCarContinuous",
     "CARLPendulum",
-    "CARLBipedalWalker",
-    "CARLLunarLander",
-    "CARLVehicleRacing",
 ]
