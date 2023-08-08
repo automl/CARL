@@ -19,8 +19,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from multiprocessing.sharedctypes import Value
-
 import numpy as np
 from dm_control.rl import control  # type: ignore
 from dm_control.suite.finger import (  # type: ignore
@@ -46,13 +44,19 @@ def check_constraints(
     x_spinner: float = 0.2,
     x_finger: float = -0.2,
     raise_error: bool = False,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> bool:
     is_okay = True
     spinner_half_length = spinner_length / 2
     # Check if spinner collides with finger hinge
     distance_spinner_to_fingerhinge = (x_spinner - x_finger) - spinner_half_length
     if distance_spinner_to_fingerhinge < 0:
+        is_okay = False
+        if raise_error:
+            raise ValueError(
+                f"Distance finger to spinner ({distance_spinner_to_fingerhinge}) not big enough, "
+                f"spinner can't spin. Decrease spinner_length ({spinner_length})."
+            )
         is_okay = False
         if raise_error:
             raise ValueError(
@@ -71,6 +75,14 @@ def check_constraints(
                 f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
                 f"limb_length_0, limb_length_1 or spinner_length."
             )
+        is_okay = False
+        if raise_error:
+            raise ValueError(
+                f"Finger cannot reach spinner ({distance_fingertip_to_spinner}). Increase either "
+                f"limb_length_0, limb_length_1 or spinner_length."
+            )
+
+    return is_okay
 
     return is_okay
 
@@ -107,7 +119,7 @@ def get_finger_xml_string(
         x_spinner=x_spinner,
         x_finger=x_finger,
         spinner_length=spinner_length,
-        raise_error=True
+        raise_error=True,
     )
 
     proximal_to = -limb_length_0
@@ -191,7 +203,6 @@ def get_finger_xml_string(
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def spin_context(
     context: Context = {},
-    context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
@@ -200,9 +211,7 @@ def spin_context(
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Spin(random=random)
     environment_kwargs = environment_kwargs or {}
@@ -218,7 +227,6 @@ def spin_context(
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def turn_easy_context(
     context: Context = {},
-    context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
@@ -227,9 +235,7 @@ def turn_easy_context(
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Turn(target_radius=_EASY_TARGET_SIZE, random=random)
     environment_kwargs = environment_kwargs or {}
@@ -245,7 +251,6 @@ def turn_easy_context(
 @SUITE.add("benchmarking")  # type: ignore[misc]
 def turn_hard_context(
     context: Context = {},
-    context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
@@ -254,9 +259,7 @@ def turn_hard_context(
     xml_string, assets = get_model_and_assets()
     xml_string = get_finger_xml_string(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Turn(target_radius=_HARD_TARGET_SIZE, random=random)
     environment_kwargs = environment_kwargs or {}

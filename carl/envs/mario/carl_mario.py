@@ -1,54 +1,55 @@
-from typing import Dict, List, Optional, Union
+from __future__ import annotations
 
-import gymnasium as gym
+from typing import List
 
+import numpy as np
+
+from carl.context.context_space import (
+    CategoricalContextFeature,
+    ContextFeature,
+    UniformFloatContextFeature,
+)
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
-from carl.envs.mario.carl_mario_definitions import (
-    DEFAULT_CONTEXT,
-    INITIAL_HEIGHT,
-    INITIAL_WIDTH,
-)
 from carl.envs.mario.mario_env import MarioEnv
 from carl.envs.mario.toad_gan import generate_level
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
+
+try:
+    from carl.envs.mario.toad_gan import generate_initial_noise
+except FileNotFoundError:
+    from torch import Tensor
+
+    def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
+        return Tensor()
+
+
+INITIAL_HEIGHT = 16
+INITIAL_WIDTH = 100
 
 
 class CARLMarioEnv(CARLEnv):
     def __init__(
         self,
-        env: gym.Env = MarioEnv(levels=[]),
-        contexts: Contexts = {},
-        hide_context: bool = True,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.05,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = DEFAULT_CONTEXT,
-        state_context_features: Optional[List[str]] = None,
-        context_mask: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
+        env: MarioEnv = None,
+        contexts: Contexts | None = None,
+        obs_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state
+        obs_context_as_dict: bool = True,  # TODO discuss default
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
+        **kwargs,
     ):
-        if not contexts:
-            contexts = {0: DEFAULT_CONTEXT}
+        if env is None:
+            env = MarioEnv(levels=[])
         super().__init__(
             env=env,
             contexts=contexts,
-            hide_context=True,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features="no",
-            default_context=default_context,
-            dict_observation_space=dict_observation_space,
+            obs_context_features=obs_context_features,
+            obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_mask=context_mask,
+            **kwargs,
         )
         self.levels: List[str] = []
         self._update_context()
@@ -75,3 +76,23 @@ class CARLMarioEnv(CARLEnv):
             self.logger.write_context(
                 self.episode_counter, self.total_timestep_counter, loggable_context
             )
+
+    @staticmethod
+    def get_context_features() -> dict[str, ContextFeature]:
+        return {
+            "level_index": CategoricalContextFeature(
+                "level_index", choices=np.arange(0, 14), default_value=0
+            ),
+            "noise": UniformFloatContextFeature(
+                "noise",
+                lower=-1.0,
+                upper=1.0,
+                default_value=generate_initial_noise(INITIAL_WIDTH, INITIAL_HEIGHT, 0),
+            ),
+            "mario_state": CategoricalContextFeature(
+                "mario_state", choices=[0, 1, 2], default_value=0
+            ),
+            "mario_inertia": UniformFloatContextFeature(
+                "mario_inertia", lower=0.5, upper=1.5, default_value=0.89
+            ),
+        }

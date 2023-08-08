@@ -1,59 +1,70 @@
-from typing import Any, Dict, List, Optional, Union
+from __future__ import annotations
 
 import numpy as np
-import jax.numpy as jnp
-from brax.envs.humanoid import Humanoid
-from brax.envs import create
-from carl.envs.brax.brax_wrappers import GymWrapper, VectorGymWrapper
 
-from carl.context.selection import AbstractSelector
-from carl.envs.carl_env import CARLEnv
-from carl.utils.trial_logger import TrialLogger
-from carl.utils.types import Context, Contexts
+from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
-DEFAULT_CONTEXT = {
-    "stiffness_factor": 1,
-    "gravity": -9.81,
-    "friction": 1.0,
-    "damping_factor": 1,
-    "actuator_strength_factor": 1,
-    "torso_mass": 8.9,
-    "dt": 0.003
-}
 
-CONTEXT_BOUNDS = {
-    "stiffness_factor": (0, np.inf, float),
-    "gravity": (-np.inf, -0.1, float),
-    "friction": (-np.inf, np.inf, float),
-    "damping_factor": (-np.inf, np.inf, float),
-    "actuator_strength_factor": (1, np.inf, float),
-    "torso_mass": (0.1, np.inf, float),
-    "dt": (0.0001, 0.03, float),
-}
-
-
-class CARLHumanoid(CARLBraxEnv):
+class CARLBraxHumanoid(CARLBraxEnv):
     env_name: str = "humanoid"
-    DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
+    asset_path: str = "envs/assets/humanoid.xml"
 
-    def _update_context(self) -> None:
-        self.env: Humanoid
-        config = {}
-        config["gravity"] = jnp.array([0, 0, self.context["gravity"]])
-        config["dt"] = jnp.array(self.context["dt"])
-        new_mass = self.env._env.sys.link.inertia.mass.at[0].set(self.context["torso_mass"])
-        # TODO: do we want to implement this?
-        #new_com = self.env.sys.link.inertia.transform
-        #new_inertia = self.env.sys.link.inertia.i
-        inertia = self.env._env.sys.link.inertia.replace(mass=new_mass)
-        config["link"] = self.env._env.sys.link.replace(inertia=inertia)
-        new_stiffness = self.context["stiffness_factor"]*self.env._env.sys.dof.stiffness
-        new_damping = self.context["damping_factor"]*self.env._env.sys.dof.damping
-        config["dof"] = self.env._env.sys.dof.replace(stiffness=new_stiffness, damping=new_damping)
-        new_gear = self.context["actuator_strength_factor"]*self.env._env.sys.actuator.gear
-        config["actuator"] = self.env._env.sys.actuator.replace(gear=new_gear)
-        geoms = self.env._env.sys.geoms
-        geoms[0] = geoms[0].replace(friction=jnp.array([self.context["friction"]]))
-        config["geoms"] = geoms
-        self.env._env.sys = self.env._env.sys.replace(**config)
+    @staticmethod
+    def get_context_features() -> dict[str, ContextFeature]:
+        return {
+            "gravity": UniformFloatContextFeature(
+                "gravity", lower=-1000, upper=-1e-6, default_value=-9.8
+            ),
+            "friction": UniformFloatContextFeature(
+                "friction", lower=0, upper=100, default_value=1
+            ),
+            "elasticity": UniformFloatContextFeature(
+                "elasticity", lower=0, upper=100, default_value=0
+            ),
+            "ang_damping": UniformFloatContextFeature(
+                "ang_damping", lower=-np.inf, upper=np.inf, default_value=-0.05
+            ),
+            "viscosity": UniformFloatContextFeature(
+                "viscosity", lower=0, upper=np.inf, default_value=0
+            ),
+            "mass_torso": UniformFloatContextFeature(
+                "mass_torso", lower=1e-6, upper=np.inf, default_value=10
+            ),
+            "mass_lwaist": UniformFloatContextFeature(
+                "mass_lwaist", lower=1e-6, upper=np.inf, default_value=2.2619467
+            ),
+            "mass_pelvis": UniformFloatContextFeature(
+                "mass_pelvis", lower=1e-6, upper=np.inf, default_value=6.6161942
+            ),
+            "mass_right_thigh": UniformFloatContextFeature(
+                "mass_right_thigh", lower=1e-6, upper=np.inf, default_value=4.751751
+            ),
+            "mass_right_shin": UniformFloatContextFeature(
+                "mass_right_shin", lower=1e-6, upper=np.inf, default_value=4.522842
+            ),
+            "mass_left_thigh": UniformFloatContextFeature(
+                "mass_left_thigh", lower=1e-6, upper=np.inf, default_value=4.751751
+            ),
+            "mass_left_shin": UniformFloatContextFeature(
+                "mass_left_shin", lower=1e-6, upper=np.inf, default_value=4.522842
+            ),
+            "mass_right_upper_arm": UniformFloatContextFeature(
+                "mass_right_upper_arm",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=1.6610805,
+            ),
+            "mass_right_lower_arm": UniformFloatContextFeature(
+                "mass_right_lower_arm",
+                lower=1e-6,
+                upper=np.inf,
+                default_value=1.2295402,
+            ),
+            "mass_left_upper_arm": UniformFloatContextFeature(
+                "mass_left_upper_arm", lower=1e-6, upper=np.inf, default_value=1.6610805
+            ),
+            "mass_left_lower_arm": UniformFloatContextFeature(
+                "mass_left_lower_arm", lower=1e-6, upper=np.inf, default_value=1.2295402
+            ),
+        }

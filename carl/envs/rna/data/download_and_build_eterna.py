@@ -1,6 +1,7 @@
 # flake8: noqa: F401
 # # isort: skip_file
 from urllib.request import Request
+
 from tqdm import tqdm
 import requests  # type: ignore[import]
 
@@ -45,6 +46,7 @@ def extract_secondarys(download_path: str, dump_path: str) -> None:
     dump_path : str
         path to dump secondary features
     """
+
     with open(download_path) as input:
         parsed = list(zip(*(line.strip().split("\t") for line in input)))
 
