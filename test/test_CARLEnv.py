@@ -11,7 +11,7 @@ class TestStateConstruction(unittest.TestCase):
         context = CARLPendulum.get_default_context()
         obs, info = env.reset()
         self.assertEqual(type(obs), dict)
-        self.assertTrue("state" in obs)
+        self.assertTrue("obs" in obs, msg=str(obs))
         self.assertTrue("context" in obs)
         self.assertEqual(len(obs["context"]), len(context))
 
