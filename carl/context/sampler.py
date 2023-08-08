@@ -60,4 +60,3 @@ class ContextSampler(ConfigurationSpace):
         contexts = [dict(default_context | dict(C)) for C in contexts]
 
         return contexts
-    

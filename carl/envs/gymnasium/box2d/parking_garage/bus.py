@@ -607,4 +607,3 @@ class AWDBusLargeTrailer(Bus):
         self.trailer_type = (
             2  # Determines which trailer to attach 0 -> none, 1 -> small, 2 -> large
         )
-    

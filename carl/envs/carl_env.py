@@ -15,6 +15,7 @@ from carl.utils.types import Context, Contexts
 
 ObsType = TypeVar("ObsType")
 
+
 class CARLEnv(Wrapper, abc.ABC):
     def __init__(
         self,
@@ -271,7 +272,7 @@ class CARLEnv(Wrapper, abc.ABC):
         dict[str, Any]
             State context observation dict
         """
-        
+
         if not self.obs_context_as_dict:
             context = [self.context[k] for k in self.obs_context_features]
         else:
