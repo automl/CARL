@@ -51,7 +51,7 @@ CARL DMC Quadruped Environment
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
 
-
+:raw-html:`<br />`
 The agent's goal is to walk efficiently with the quadruped robot.
 
 

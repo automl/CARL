@@ -33,6 +33,7 @@ CARL LunarLander Environment
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
 
+:raw-html:`<br />`
 Here, the lunar lander should be safely navigated to its landing pad.
 The lander's body, physics and simulation dynamics can be manipulated via the context features.
 
