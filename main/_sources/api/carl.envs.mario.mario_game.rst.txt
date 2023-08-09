@@ -1,0 +1,37 @@
+carl.envs.mario.mario\_game
+===========================
+
+.. automodule:: carl.envs.mario.mario_game
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+   Classes
+   ^^^^^^^
+
+   .. autosummary::
+   
+      MarioGame
+   
+   
+
+   
+   
+   
+
+   
+   Interfaces
+   ^^^^^^^^^^
+   
+
+
+
+

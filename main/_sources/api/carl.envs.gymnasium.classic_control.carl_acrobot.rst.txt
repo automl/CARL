@@ -1,0 +1,37 @@
+carl.envs.gymnasium.classic\_control.carl\_acrobot
+==================================================
+
+.. automodule:: carl.envs.gymnasium.classic_control.carl_acrobot
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+   Classes
+   ^^^^^^^
+
+   .. autosummary::
+   
+      CARLAcrobot
+   
+   
+
+   
+   
+   
+
+   
+   Interfaces
+   ^^^^^^^^^^
+   
+
+
+
+

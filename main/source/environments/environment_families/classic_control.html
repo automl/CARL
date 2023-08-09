@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>CARL Classic Control Environments &#8212; CARL Documentation 1.0.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=2eb4fb78" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="CARL Box 2D Environments" href="box2d.html" />
+    <link rel="prev" title="Environment Families" href="index.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+  <a class="navbar-brand" href="../../../index.html">
+  <!-- <p class="title">CARL Documentation</p> -->
+  </a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/automl/automl_sphinx_theme" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/automl_org?lang=de" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown mt-1">
+    <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
+        data-toggle="dropdown">
+        v1.0.0
+        <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
+        <a class="list-group-item list-group-item-action" href="#">v1.0.0 (stable)</a>
+    </div>
+</div>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search align-items-center" action="../../../search.html" method="get" style="width: 100%;">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control btn btn-md" name="q" id="search-input"
+    placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../../../index.html">CARL Documentation</a></h4>
+<div class="mb-3">v1.0.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../getting_started/index.html">
+   Getting Started
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../getting_started/installation.html">
+     Installing CARL
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../getting_started/quickstart.html">
+     Quickstart
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="../index.html">
+   Environments
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../carl_env.html">
+     The CARL Environment
+    </a>
+   </li>
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="index.html">
+     Environment Families
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       CARL Classic Control Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="box2d.html">
+       CARL Box 2D Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="brax.html">
+       CARL Brax Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="dmc.html">
+       CARL DMC Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="toad_gan.html">
+       CARL Mario Environment
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="rna.html">
+       CARL RNA Design Environment
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../benchmark_properties.html">
+     Benchmark Properties
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../carlify.html">
+     CARLify your Environment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../api/index.html">
+   API Reference
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../cite.html">
+   Citing CARL
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../license.html">
+   License
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#carl-pendulum-environment">
+   CARL Pendulum Environment
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#carl-cartpole-environment">
+   CARL CartPole Environment
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#carl-acrobot-environment">
+   CARL Acrobot Environment
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#carl-mountaincar-environment">
+   CARL MountainCar Environment
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="carl-classic-control-environments">
+<h1>CARL Classic Control Environments<a class="headerlink" href="#carl-classic-control-environments" title="Permalink to this heading">¶</a></h1>
+<p>Classic Control is a problem suite included in <a class="reference external" href="https://gymnasium.farama.org/environments/classic_control/">OpenAI’s gym</a> consisting
+of simply physics simulation tasks. Context features here are therefore
+also physics-based, e.g. friction, mass or gravity.</p>
+<section id="carl-pendulum-environment">
+<h2>CARL Pendulum Environment<a class="headerlink" href="#carl-pendulum-environment" title="Permalink to this heading">¶</a></h2>
+<a class="reference internal image-reference" href="../../../_images/pendulum.jpeg"><img alt="Pendulum Environment" class="align-left" src="../../../_images/pendulum.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="source/environments/data/context_generalization_plots/plot_ecdf_CARLPendulumEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-right" src="source/environments/data/context_generalization_plots/plot_ecdf_CARLPendulumEnv.png" style="width: 50%;" /></a>
+<p>In Pendulum, the agent’s task is to swing up an inverted pendulum and
+balance it at the top from a random position. The action here is the
+direction and amount of force the agent wants to apply to the pendulum.</p>
+<table class="table" id="id1">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Context Feature</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Bounds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>max_speed</p></td>
+<td><p>8.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>dt</p></td>
+<td><p>0.05</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>g</p></td>
+<td><p>10.0</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>m</p></td>
+<td><p>1.0</p></td>
+<td><p>(1e-06, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>l</p></td>
+<td><p>1.0</p></td>
+<td><p>(1e-06, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="carl-cartpole-environment">
+<h2>CARL CartPole Environment<a class="headerlink" href="#carl-cartpole-environment" title="Permalink to this heading">¶</a></h2>
+<a class="reference internal image-reference" href="../../../_images/cartpole.jpeg"><img alt="CartPole Environment" class="align-left" src="../../../_images/cartpole.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="source/environments/data/context_generalization_plots/plot_ecdf_CARLCartPoleEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-right" src="source/environments/data/context_generalization_plots/plot_ecdf_CARLCartPoleEnv.png" style="width: 50%;" /></a>
+<p>CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
+this time the agent doesn’t directly apply force to the pole but moves a cart on which
+the pole ist placed either to the left or the right.</p>
+<table class="table" id="id2">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Context Feature</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Bounds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gravity</p></td>
+<td><p>9.8</p></td>
+<td><p>(0.1, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>masscart</p></td>
+<td><p>1.0</p></td>
+<td><p>(0.1, 10, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>masspole</p></td>
+<td><p>0.1</p></td>
+<td><p>(0.01, 1, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>pole_length</p></td>
+<td><p>0.5</p></td>
+<td><p>(0.05, 5, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>force_magnifier</p></td>
+<td><p>10.0</p></td>
+<td><p>(1, 100, &lt;class ‘int’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_interval</p></td>
+<td><p>0.02</p></td>
+<td><p>(0.002, 0.2, &lt;class ‘float’&gt;)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="carl-acrobot-environment">
+<h2>CARL Acrobot Environment<a class="headerlink" href="#carl-acrobot-environment" title="Permalink to this heading">¶</a></h2>
+<a class="reference internal image-reference" href="../../../_images/acrobot.jpeg"><img alt="Acrobot Environment" class="align-left" src="../../../_images/acrobot.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="source/environments/data/context_generalization_plots/plot_ecdf_CARLAcrobotEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-right" src="source/environments/data/context_generalization_plots/plot_ecdf_CARLAcrobotEnv.png" style="width: 50%;" /></a>
+<p>Acrobot is another swing-up task with the goal being swinging the end of the lower
+of two links up to a given height. The agent accomplishes this by actuating
+the joint connecting both links.</p>
+<table class="table" id="id3">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Context Feature</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Bounds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>link_length_1</p></td>
+<td><p>1.0</p></td>
+<td><p>(0.1, 10, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>link_length_2</p></td>
+<td><p>1.0</p></td>
+<td><p>(0.1, 10, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>link_mass_1</p></td>
+<td><p>1.0</p></td>
+<td><p>(0.1, 10, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>link_mass_2</p></td>
+<td><p>1.0</p></td>
+<td><p>(0.1, 10, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>link_com_1</p></td>
+<td><p>0.5</p></td>
+<td><p>(0, 1, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>link_com_2</p></td>
+<td><p>0.5</p></td>
+<td><p>(0, 1, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>link_moi</p></td>
+<td><p>1.0</p></td>
+<td><p>(0.1, 10, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_velocity_1</p></td>
+<td><p>12.566370614359172</p></td>
+<td><p>(1.2566370614359172, 125.66370614359172, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>max_velocity_2</p></td>
+<td><p>28.274333882308138</p></td>
+<td><p>(2.827433388230814, 282.7433388230814, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>torque_noise_max</p></td>
+<td><p>0.0</p></td>
+<td><p>(-1.0, 1.0, &lt;class ‘float’&gt;)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="carl-mountaincar-environment">
+<h2>CARL MountainCar Environment<a class="headerlink" href="#carl-mountaincar-environment" title="Permalink to this heading">¶</a></h2>
+<a class="reference internal image-reference" href="../../../_images/mountaincar.jpeg"><img alt="MountainCar Environment" class="align-left" src="../../../_images/mountaincar.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="source/environments/data/context_generalization_plots/plot_ecdf_CARLMountainCarEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-right" src="source/environments/data/context_generalization_plots/plot_ecdf_CARLMountainCarEnv.png" style="width: 50%;" /></a>
+<p>The MountainCar environment asks the agent to move a car up a steep slope. In order
+to succeed, the agent has to accelerate using the opposite slope. There are two
+versions of the environment, a discrete one with only “left” and “right” as actions,
+as well as a continuous one.</p>
+<p>Defaults and bounds for the discrete MountainCar:</p>
+<table class="table" id="id4">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Context Feature</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Bounds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>min_position</p></td>
+<td><p>-1.2</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_position</p></td>
+<td><p>0.6</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>max_speed</p></td>
+<td><p>0.07</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>goal_position</p></td>
+<td><p>0.5</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>goal_velocity</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>force</p></td>
+<td><p>0.001</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>gravity</p></td>
+<td><p>0.0025</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>start_position</p></td>
+<td><p>-0.5</p></td>
+<td><p>(-1.5, 0.5, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>start_position_std</p></td>
+<td><p>0.1</p></td>
+<td><p>(0.1, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>start_velocity</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>start_velocity_std</p></td>
+<td><p>0.0</p></td>
+<td><p>(0.1, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+</tbody>
+</table>
+<p>And for the continuous case:</p>
+<table class="table" id="id5">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Context Feature</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Bounds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>min_position</p></td>
+<td><p>-1.2</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_position</p></td>
+<td><p>0.6</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>max_speed</p></td>
+<td><p>0.07</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>goal_position</p></td>
+<td><p>0.45</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>goal_velocity</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>power</p></td>
+<td><p>0.0015</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>min_position_start</p></td>
+<td><p>-0.6</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_position_start</p></td>
+<td><p>-0.4</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>min_velocity_start</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_velocity_start</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Environment Families</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="box2d.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">CARL Box 2D Environments</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.9ea38e314b9e6d9dab77.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 
+    Copyright 2023, AutoML.org Freiburg-Hannover
+.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+7.1.2. Template is modified version of <a
+href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

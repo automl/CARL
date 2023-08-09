@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>carl.envs.mario.reachabillity &#8212; CARL Documentation 1.0.0 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=2eb4fb78" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.9ea38e314b9e6d9dab77.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+  <a class="navbar-brand" href="../index.html">
+  <!-- <p class="title">CARL Documentation</p> -->
+  </a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/automl/automl_sphinx_theme" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/automl_org?lang=de" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown mt-1">
+    <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
+        data-toggle="dropdown">
+        v1.0.0
+        <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
+        <a class="list-group-item list-group-item-action" href="#">v1.0.0 (stable)</a>
+    </div>
+</div>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search align-items-center" action="../search.html" method="get" style="width: 100%;">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control btn btn-md" name="q" id="search-input"
+    placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../index.html">CARL Documentation</a></h4>
+<div class="mb-3">v1.0.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../source/getting_started/index.html">
+   Getting Started
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../source/getting_started/installation.html">
+     Installing CARL
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../source/getting_started/quickstart.html">
+     Quickstart
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../source/environments/index.html">
+   Environments
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../source/environments/carl_env.html">
+     The CARL Environment
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../source/environments/environment_families/index.html">
+     Environment Families
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../source/environments/environment_families/classic_control.html">
+       CARL Classic Control Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../source/environments/environment_families/box2d.html">
+       CARL Box 2D Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../source/environments/environment_families/brax.html">
+       CARL Brax Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../source/environments/environment_families/dmc.html">
+       CARL DMC Environments
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../source/environments/environment_families/toad_gan.html">
+       CARL Mario Environment
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../source/environments/environment_families/rna.html">
+       CARL RNA Design Environment
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../source/environments/benchmark_properties.html">
+     Benchmark Properties
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../source/environments/carlify.html">
+     CARLify your Environment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../source/api/index.html">
+   API Reference
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../source/cite.html">
+   Citing CARL
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../source/license.html">
+   License
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../source/references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#functions">
+   Functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#interfaces">
+   Interfaces
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.mario.reachabillity.check_blocked">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       check_blocked()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.mario.reachabillity.mark">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       mark()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.mario.reachabillity.reachability_map">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       reachability_map()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.mario.reachabillity.remove_ignored">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       remove_ignored()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-carl.envs.mario.reachabillity">
+<span id="carl-envs-mario-reachabillity"></span><h1>carl.envs.mario.reachabillity<a class="headerlink" href="#module-carl.envs.mario.reachabillity" title="Permalink to this heading">¶</a></h1>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#carl.envs.mario.reachabillity.check_blocked" title="carl.envs.mario.reachabillity.check_blocked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_blocked</span></code></a>(level, i, j, dh, dv, right)</p></td>
+<td><p>Checks for a given position, level and direction if a blockade exists in the range specified by dh and dv.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_down</span></code>(level, map, i, j, dh, ...)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#carl.envs.mario.reachabillity.mark" title="carl.envs.mario.reachabillity.mark"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark</span></code></a>(level, reachability_map, i, j[, ...])</p></td>
+<td><p>For a given position and a level this will mark all tiles reachable from the given position and collect all</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#carl.envs.mario.reachabillity.reachability_map" title="carl.envs.mario.reachabillity.reachability_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reachability_map</span></code></a>(level, shape[, has_mario, ...])</p></td>
+<td><p>This creates a numpy 2D array containing the reachability map for a given ASCII-Level. Every solid block will have a 1 if Mario can stand on it and can reach the tile and a 0 else. Currently ignoring sprint. Levels are generated without Mario and the flag and as such the algorithm is not including these. :type level: <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>] :param level: The level (slice) as a list containing the ASCII strings of each level row :type shape: <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>] :param shape: The level shape :type has_mario: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> :param has_mario: As levels are expected to be generated without Mario, this option has to be set to search for     Mario as a starting point :type has_flag: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> :param has_flag: As levels are expected to be generated without the flag, this option has to be set to determine     playability via reaching the flag :type check_outside: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> :param check_outside: If this option is set, playability will check if the player can reach the outside :rtype: <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>] :return: A numpy array where a 0 indicates an unreachable block and a 1 denotes a reachable block;     a boolean indicating if the level can be finished by the player.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#carl.envs.mario.reachabillity.remove_ignored" title="carl.envs.mario.reachabillity.remove_ignored"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_ignored</span></code></a>(level)</p></td>
+<td><p>Replaces all ignored tokens with the empty token in a level. In case of Mario and the flag the coordinates of the</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="interfaces">
+<h2>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="carl.envs.mario.reachabillity.check_blocked">
+<span class="sig-prename descclassname"><span class="pre">carl.envs.mario.reachabillity.</span></span><span class="sig-name descname"><span class="pre">check_blocked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/mario/reachabillity.html#check_blocked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.mario.reachabillity.check_blocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for a given position, level and direction if a blockade exists in the range specified by dh and dv.
+:type level: <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
+:param level: The level in ASCII form
+:type i: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>
+:param i: x coordinate of the starting position
+:type j: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>
+:param j: y coordinate of the starting position
+:type dh: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>
+:param dh: amount of blocks in the horizontal direction from the starting point the algorithm tries to jump
+:type dv: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>
+:param dv: amount of blocks in the vertical direction from the starting point the algorithm tries to jump
+:type right: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>
+:param right: direction of the jump
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>
+:return: the blockade y value if a blockade is found, default max value otherwise</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="carl.envs.mario.reachabillity.mark">
+<span class="sig-prename descclassname"><span class="pre">carl.envs.mario.reachabillity.</span></span><span class="sig-name descname"><span class="pre">mark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reachability_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_outside</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/mario/reachabillity.html#mark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.mario.reachabillity.mark" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>For a given position and a level this will mark all tiles reachable from the given position and collect all</dt><dd><p>these positions for further use.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The level (slice) as a list containing the ASCII strings of each level row</p></li>
+<li><p><strong>map</strong> – The current reachability map where the reachable tiles will be marked</p></li>
+<li><p><strong>i</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – x coordinate</p></li>
+<li><p><strong>j</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – y coordinate</p></li>
+<li><p><strong>check_outside</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the algorithm should indicate that the player can reach the right outside of the level</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A boolean indicating if any tile can be reached from this position, a list of all reachable positions and
+if the outside can be reached</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="carl.envs.mario.reachabillity.reachability_map">
+<span class="sig-prename descclassname"><span class="pre">carl.envs.mario.reachabillity.</span></span><span class="sig-name descname"><span class="pre">reachability_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_mario</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_outside</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/mario/reachabillity.html#reachability_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.mario.reachabillity.reachability_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>This creates a numpy 2D array containing the reachability map for a given ASCII-Level.
+Every solid block will have a 1 if Mario can stand on it and can reach the tile and a 0 else.
+Currently ignoring sprint.
+Levels are generated without Mario and the flag and as such the algorithm is not including these.
+:type level: <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
+:param level: The level (slice) as a list containing the ASCII strings of each level row
+:type shape: <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]
+:param shape: The level shape
+:type has_mario: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>
+:param has_mario: As levels are expected to be generated without Mario, this option has to be set to search for</p>
+<blockquote>
+<div><p>Mario as a starting point</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>has_flag</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – As levels are expected to be generated without the flag, this option has to be set to determine
+playability via reaching the flag</p></li>
+<li><p><strong>check_outside</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this option is set, playability will check if the player can reach the outside</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A numpy array where a 0 indicates an unreachable block and a 1 denotes a reachable block;
+a boolean indicating if the level can be finished by the player</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="carl.envs.mario.reachabillity.remove_ignored">
+<span class="sig-prename descclassname"><span class="pre">carl.envs.mario.reachabillity.</span></span><span class="sig-name descname"><span class="pre">remove_ignored</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/mario/reachabillity.html#remove_ignored"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.mario.reachabillity.remove_ignored" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Replaces all ignored tokens with the empty token in a level. In case of Mario and the flag the coordinates of the</dt><dd><p>blocks below are returned and they are also replaced.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>level</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a level in ASCII form</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the level in ASCII form with the ignored tokens replaced and the coordinates of the block below Mario and
+the flag if existing</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.9ea38e314b9e6d9dab77.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 
+    Copyright 2023, AutoML.org Freiburg-Hannover
+.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+7.1.2. Template is modified version of <a
+href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
