@@ -322,14 +322,81 @@ The context features control the MuJoCo physics engine, e.g. the floor friction.
 <a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLDmcQuadrupedEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-right" src="../../../_images/plot_ecdf_CARLDmcQuadrupedEnv.png" style="width: 50%;" /></a>
 <p><span class="raw-html"><br /></span>
 The agent’s goal is to walk efficiently with the quadruped robot.</p>
+<table class="table" id="id1">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Context Feature</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Bounds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gravity</p></td>
+<td><p>-9.81</p></td>
+<td><p>(-inf, -0.1, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>friction_tangential</p></td>
+<td><p>1</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>friction_torsional</p></td>
+<td><p>1</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>friction_rolling</p></td>
+<td><p>1</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>timestep</p></td>
+<td><p>0.005</p></td>
+<td><p>(0.001, 0.1, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>joint_damping</p></td>
+<td><p>1.0</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>joint_stiffness</p></td>
+<td><p>0.0</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>actuator_strength</p></td>
+<td><p>1</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>density</p></td>
+<td><p>0.0</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>viscosity</p></td>
+<td><p>0.0</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>geom_density</p></td>
+<td><p>1.0</p></td>
+<td><p>(0, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>wind_x</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-even"><td><p>wind_y</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p>wind_z</p></td>
+<td><p>0.0</p></td>
+<td><p>(-inf, inf, &lt;class ‘float’&gt;)</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="carl-dmc-walker-environment">
 <h2>CARL DMC Walker Environment<a class="headerlink" href="#carl-dmc-walker-environment" title="Permalink to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/walker.jpg"><img alt="Screenshot of CARLDmcWalker" class="align-left" src="../../../_images/walker.jpg" style="width: 25%;" /></a>
 <a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLDmcWalkerEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-right" src="../../../_images/plot_ecdf_CARLDmcWalkerEnv.png" style="width: 50%;" /></a>
 <p>The walker robot is supposed to move forward as fast as possible.</p>
-<table class="table" id="id1">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<table class="table" id="id2">
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
