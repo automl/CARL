@@ -17,9 +17,9 @@ CARL Pendulum Environment
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
 
-In Pendulum, the agent's task is to swing up an inverted pendulum and
-balance it at the top from a random position. The action here is the
-direction and amount of force the agent wants to apply to the pendulum.
+| In Pendulum, the agent's task is to swing up an inverted pendulum and
+| balance it at the top from a random position. The action here is the
+| direction and amount of force the agent wants to apply to the pendulum.
 
 .. csv-table:: Defaults and Bounds
    :file: ../data/context_definitions/CARLPendulumEnv.csv
@@ -37,6 +37,7 @@ CARL CartPole Environment
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
+
 
 CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
 this time the agent doesn't directly apply force to the pole but moves a cart on which
@@ -79,6 +80,7 @@ CARL MountainCar Environment
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
+
 
 The MountainCar environment asks the agent to move a car up a steep slope. In order
 to succeed, the agent has to accelerate using the opposite slope. There are two
