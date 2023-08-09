@@ -21,8 +21,7 @@ class CARLEnv(Wrapper, abc.ABC):
         self,
         env: Env,
         contexts: Contexts | None = None,
-        obs_context_features: list[str]
-        | None = None,
+        obs_context_features: list[str] | None = None,
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict | None = None,
