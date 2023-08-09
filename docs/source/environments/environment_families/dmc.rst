@@ -1,3 +1,6 @@
+.. role:: raw-html(raw)
+    :format: html
+
 CARL DMC Environments
 ######################
 CARL includes the Finger, Fish, Quadruped and Walker environments from the `DeepMind Control Suite <https://github.com/deepmind/dm_control>`_.
