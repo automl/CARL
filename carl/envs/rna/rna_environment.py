@@ -2,7 +2,7 @@
 """
 Code adapted from https://github.com/automl/learna
 """
-
+from __future__ import annotations
 import time
 
 from itertools import product
@@ -12,9 +12,8 @@ from distance import hamming
 import numpy as np
 
 from RNA import fold
-import gym
-
-from typing import Any, List
+import gymnasium as gym
+from typing import Any
 
 
 @dataclass
@@ -97,7 +96,6 @@ def _encode_dot_bracket(  # type: ignore[no-untyped-def]
 
 
 def _encode_pairing(secondary: str):  # type: ignore[no-untyped-def]
-
     pairing_encoding = [None] * len(secondary)
     stack = []
     for index, symbol in enumerate(secondary, 0):
@@ -266,9 +264,7 @@ class RnaDesignEnvironment(gym.Env):
     The environment for RNA design using deep reinforcement learning.
     """
 
-    def __init__(  # type: ignore[no-untyped-def]
-        self, dot_brackets: List[str], env_config
-    ):  # type: ignore[no-untyped-def]
+    def __init__(self, dot_brackets, env_config):
         """Initialize the environment
 
         Args
@@ -292,7 +288,9 @@ class RnaDesignEnvironment(gym.Env):
     def seed(self, seed):  # type: ignore[no-untyped-def]
         return None
 
-    def reset(self):  # type: ignore[no-untyped-def]
+    def reset(
+        self, seed: int | None = None, options: dict[str, Any] | None = None
+    ) -> tuple[Any, dict[str, Any]]:  # type: ignore[no-untyped-def]
         """
         Reset the environment. First function called by runner. Returns first state.
         Returns:
@@ -300,7 +298,7 @@ class RnaDesignEnvironment(gym.Env):
         """
         self.target = next(self._target_gen)
         self.design = _Design(len(self.target))
-        return self._get_state()
+        return self._get_state(), {}
 
     def _apply_action(self, action):  # type: ignore[no-untyped-def]
         """

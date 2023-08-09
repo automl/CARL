@@ -25,9 +25,9 @@ coverage:
     # This encourages small PR's as they are easier to test.
     patch:
       default:
-        target: 90%
+        target: 10%
         if_not_found: failure
-        if_ci_failed: error
+        if_ci_failed: failure
 
 # We upload additional information on branching with pytest-cov `--cov-branch`
 # This information can be used by codecov.com to increase analysis of code

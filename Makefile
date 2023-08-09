@@ -24,7 +24,7 @@ PYTEST ?= python -m pytest
 CTAGS ?= ctags
 PIP ?= python -m pip
 MAKE ?= make
-BLACK ?= black
+BLACK ?= python -m black
 ISORT ?= isort
 PYDOCSTYLE ?= pydocstyle
 MYPY ?= mypy
@@ -88,7 +88,7 @@ build:
 	$(PYTHON) setup.py sdist
 
 doc:
-	$(MAKE) -C ${DOCDIR} all
+	$(MAKE) -C ${DOCDIR} docs
 	@echo
 	@echo "View docs at:"
 	@echo ${INDEX_HTML}
