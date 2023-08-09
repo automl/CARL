@@ -48,15 +48,16 @@ CARL DMC Quadruped Environment
 
 The agent's goal is to walk efficiently with the quadruped robot.
 
-
-.. csv-table:: Defaults and Bounds
-   :file: ../data/context_definitions/CARLDmcQuadruped.csv
-   :header-rows: 1
-
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLDmcQuadrupedEnv.png
     :width: 50%
     :align: center
     :alt: Influence of context settings on an agent trained on the default environment.
+
+    Influence of context settings on an agent trained on the default environment.
+
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLDmcQuadruped.csv
+   :header-rows: 1
 
 CARL DMC Walker Environment
 *****************************
@@ -68,12 +69,13 @@ CARL DMC Walker Environment
 
 The walker robot is supposed to move forward as fast as possible.
 
-
-.. csv-table:: Defaults and Bounds
-   :file: ../data/context_definitions/CARLDmcWalker.csv
-   :header-rows: 1
-
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLDmcWalkerEnv.png
     :width: 50%
     :align: center
     :alt: Influence of context settings on an agent trained on the default environment.
+
+    Influence of context settings on an agent trained on the default environment.
+
+.. csv-table:: Defaults and Bounds
+   :file: ../data/context_definitions/CARLDmcWalker.csv
+   :header-rows: 1

@@ -1,6 +1,3 @@
-.. role:: raw-html(raw)
-    :format: html
-
 CARL Box 2D Environments
 ========================
 
@@ -31,14 +28,15 @@ CARL LunarLander Environment
     :align: left
     :alt: Screenshot of CARLLunarLanderEnv
 
+Here, the lunar lander should be safely navigated to its landing pad.
+The lander's body, physics and simulation dynamics can be manipulated via the context features.
+
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLLunarLanderEnv.png
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
 
-:raw-html:`<br />`
-Here, the lunar lander should be safely navigated to its landing pad.
-The lander's body, physics and simulation dynamics can be manipulated via the context features.
+    Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
    :file: ../data/context_definitions/CARLLunarLanderEnv.csv
