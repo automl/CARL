@@ -1,3 +1,6 @@
+.. role:: raw-html(raw)
+    :format: html
+
 CARL Classic Control Environments
 =================================
 
