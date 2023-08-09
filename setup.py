@@ -32,6 +32,7 @@ extras_require = {
         "dm_control>=1.0.3",
     ],
     "mario": [
+        "opencv-python",
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
@@ -74,7 +75,7 @@ setuptools.setup(
     install_requires=[
         "gym",
         "gymnasium>=0.27.1",
-        "pygame==2.1.0",
+        "pygame",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
         "numpy>=1.19.5",
@@ -88,6 +89,8 @@ setuptools.setup(
         "PyYAML>=5.4.1",
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
+        "configspace>=0.7.1",
+        "omegaconf>=2.3.0",
     ],
     extras_require=extras_require,
     test_suite="pytest",

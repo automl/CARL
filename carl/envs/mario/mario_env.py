@@ -134,6 +134,7 @@ class MarioEnv(gym.Env):
             self._obs.copy(),
             reward if not self.sparse_rewards else int(completionPercentage == 1.0),
             done,  # bool
+            False,
             info,  # Dict[str, Any]
         )
 

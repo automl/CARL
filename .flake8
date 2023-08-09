@@ -10,3 +10,6 @@ extend-ignore =
     E203
     # No lambdas — too strict
     E731
+    E722
+    F405
+    F403

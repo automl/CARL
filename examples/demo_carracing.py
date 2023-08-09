@@ -7,7 +7,10 @@ import numpy as np
 import gymnasium as gym
 import time
 import pygame
-from carl.envs.box2d.carl_vehicle_racing import CARLVehicleRacingEnv, VEHICLE_NAMES
+from carl.envs.gymnasium.box2d.carl_vehicle_racing import (
+    CARLVehicleRacing,
+    VEHICLE_NAMES,
+)
 
 if __name__ == "__main__":
     from pyglet.window import key
@@ -39,9 +42,9 @@ if __name__ == "__main__":
                 if event.key == pygame.K_DOWN:
                     a[2] = 0
 
-    contexts = {i: {"VEHICLE": i} for i in range(len(VEHICLE_NAMES))}
-    env = CARLVehicleRacingEnv(contexts=contexts)
-    env.render()
+    contexts = {i: {"VEHICLE_ID": i} for i in range(len(VEHICLE_NAMES))}
+    env = CARLVehicleRacing(contexts=contexts)
+
     record_video = False
     if record_video:
         from gymnasium.wrappers.record_video import RecordVideo
@@ -53,6 +56,7 @@ if __name__ == "__main__":
     isopen = True
     while isopen:
         env.reset()
+        env.render()
         total_reward = 0.0
         steps = 0
         restart = False

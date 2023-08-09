@@ -13,7 +13,7 @@ author_email = "benjamins@tnt.uni-hannover.de"
 description = "CARL- Contextually Adaptive Reinforcement Learning"
 url = "https://www.automl.org/"
 project_urls = {
-    "Documentation": "https://carl.readthedocs.io/en/latest/",
+    "Documentation": "https://automl.github.io/CARL",
     "Source Code": "https://github.com/https://github.com/automl/CARL",
 }
 copyright = f"""

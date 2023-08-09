@@ -15,7 +15,7 @@
 
 """Fish Domain."""
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Optional, Tuple, Union
 
 import collections
 
@@ -52,7 +52,6 @@ def get_model_and_assets() -> Tuple[bytes, Dict]:
 @SUITE.add("benchmarking")  # type: ignore
 def upright_context(
     context: Context = {},
-    context_mask: List = [],
     time_limit: int = _DEFAULT_TIME_LIMIT,
     random: Union[np.random.RandomState, int, None] = None,
     environment_kwargs: Optional[Dict] = None,
@@ -60,9 +59,7 @@ def upright_context(
     """Returns the Fish Upright task."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Upright(random=random)
     environment_kwargs = environment_kwargs or {}
@@ -78,7 +75,6 @@ def upright_context(
 @SUITE.add("benchmarking")  # type: ignore
 def swim_context(
     context: Context = {},
-    context_mask: List = [],
     time_limit: int = _DEFAULT_TIME_LIMIT,
     random: Union[np.random.RandomState, int, None] = None,
     environment_kwargs: Optional[Dict] = None,
@@ -86,9 +82,7 @@ def swim_context(
     """Returns the Fish Swim task."""
     xml_string, assets = get_model_and_assets()
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = Swim(random=random)
     environment_kwargs = environment_kwargs or {}

@@ -1,10 +1,10 @@
 from typing import Any, Optional, Tuple, TypeVar, Union
 
 import dm_env  # type: ignore
-import gymnasium as gym
+import gym
 import numpy as np
 from dm_env import StepType
-from gymnasium import spaces
+from gym import spaces
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -66,7 +66,8 @@ class MujocoToGymWrapper(gym.Env):
         Returns:
             observation (object): agent's observation of the current environment
             reward (float) : amount of reward returned after previous action
-            done (bool): whether the episode has ended, in which case further step() calls will return undefined results
+            terminated (bool): whether termination condition is reached
+            truncated (bool): whether the episode has ended due to time limit
             info (dict): contains auxiliary diagnostic information
                             (helpful for debugging, logging, and sometimes learning)
         """
@@ -77,7 +78,7 @@ class MujocoToGymWrapper(gym.Env):
         observation = timestep.observation["observations"]
         info = {"step_type": step_type, "discount": discount}
         done = step_type == StepType.LAST
-        return observation, reward, done, info
+        return observation, reward, False, done, info
 
     def reset(
         self,
@@ -86,15 +87,13 @@ class MujocoToGymWrapper(gym.Env):
         return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
-        super(MujocoToGymWrapper, self).reset(
-            seed=seed, return_info=return_info, options=options
-        )
+        super(MujocoToGymWrapper, self).reset(seed=seed, options=options)
         timestep = self.env.reset()
         if isinstance(self.observation_space, spaces.Box):
             observation = timestep.observation["observations"]
         else:
             raise NotImplementedError
-        return observation
+        return observation, {}
 
     def render(
         self, mode: str = "human", camera_id: int = 0, **kwargs: Any
