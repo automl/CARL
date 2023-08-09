@@ -9,7 +9,7 @@ CARL Pendulum Environment
 -------------------------
 .. image:: ../data/screenshots/pendulum.jpeg
     :width: 25%
-    :align: left
+    :align: center
     :alt: Pendulum Environment
 
 In Pendulum, the agent's task is to swing up an inverted pendulum and
@@ -19,7 +19,7 @@ Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLPendulumEnv.png
     :width: 50%
-    :align: right
+    :align: center
     :alt: Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
@@ -31,7 +31,7 @@ CARL CartPole Environment
 -------------------------
 .. image:: ../data/screenshots/cartpole.jpeg
     :width: 25%
-    :align: left
+    :align: center
     :alt: CartPole Environment
 
 CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
@@ -41,7 +41,7 @@ Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLCartPoleEnv.png
     :width: 50%
-    :align: right
+    :align: center
     :alt: Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
@@ -53,7 +53,7 @@ CARL Acrobot Environment
 -------------------------
 .. image:: ../data/screenshots/acrobot.jpeg
     :width: 25%
-    :align: left
+    :align: center
     :alt: Acrobot Environment
 
 Acrobot is another swing-up task with the goal being swinging the end of the lower
@@ -63,7 +63,7 @@ Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLAcrobotEnv.png
     :width: 50%
-    :align: right
+    :align: center
     :alt: Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
@@ -75,7 +75,7 @@ CARL MountainCar Environment
 ----------------------------
 .. image:: ../data/screenshots/mountaincar.jpeg
     :width: 25%
-    :align: left
+    :align: center
     :alt: MountainCar Environment
 
 The MountainCar environment asks the agent to move a car up a steep slope. In order
@@ -86,7 +86,7 @@ Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLMountainCarEnv.png
     :width: 50%
-    :align: right
+    :align: center
     :alt: Influence of context settings on an agent trained on the default environment.
 
 
