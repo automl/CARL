@@ -15,13 +15,12 @@ CARL Pendulum Environment
 In Pendulum, the agent's task is to swing up an inverted pendulum and
 balance it at the top from a random position. The action here is the
 direction and amount of force the agent wants to apply to the pendulum.
+Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLPendulumEnv.png
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
-
-    Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
    :file: ../data/context_definitions/CARLPendulumEnv.csv
@@ -38,13 +37,12 @@ CARL CartPole Environment
 CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
 this time the agent doesn't directly apply force to the pole but moves a cart on which
 the pole ist placed either to the left or the right.
+Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLCartPoleEnv.png
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
-
-    Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
    :file: ../data/context_definitions/CARLCartPoleEnv.csv
@@ -61,13 +59,12 @@ CARL Acrobot Environment
 Acrobot is another swing-up task with the goal being swinging the end of the lower
 of two links up to a given height. The agent accomplishes this by actuating
 the joint connecting both links.
+Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLAcrobotEnv.png
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
-
-    Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
    :file: ../data/context_definitions/CARLAcrobotEnv.csv
@@ -85,13 +82,13 @@ The MountainCar environment asks the agent to move a car up a steep slope. In or
 to succeed, the agent has to accelerate using the opposite slope. There are two
 versions of the environment, a discrete one with only "left" and "right" as actions,
 as well as a continuous one.
+Influence of context settings on an agent trained on the default environment:
 
 .. image:: ../data/context_generalization_plots/plot_ecdf_CARLMountainCarEnv.png
     :width: 50%
     :align: right
     :alt: Influence of context settings on an agent trained on the default environment.
 
-    Influence of context settings on an agent trained on the default environment.
 
 Defaults and bounds for the discrete MountainCar:
 
