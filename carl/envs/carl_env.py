@@ -22,10 +22,10 @@ class CARLEnv(Wrapper, abc.ABC):
         env: Env,
         contexts: Contexts | None = None,
         obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state
+        | None = None,
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
-        context_selector_kwargs: dict = None,
+        context_selector_kwargs: dict | None = None,
         **kwargs,
     ):
         """Base CARL wrapper.
@@ -39,7 +39,23 @@ class CARLEnv(Wrapper, abc.ABC):
 
         Parameters
         ----------
-        # TODO add docstring for carl env params
+        env : Env
+            Environment adhering to gymnasium API.
+        contexts : Contexts, optional
+            The context set, by default None.
+        obs_context_features : list[str], optional
+            The context features which should be added to the state, by default None. If None,
+            add all available context features.
+        obs_context_as_dict : bool, optional
+            Whether to pass the context as a vector or a dict in the observations.
+            The default is True.
+        context_selector : AbstractSelector | type[AbstractSelector] | None
+            The context selector selecting a new context after each env reset, by default None.
+            If None, use a round robin selector. Can be an object or class. For the latter,
+            you can pass kwargs.
+        context_selector_kwargs : dict, optional
+            Keyword arguments for the context selector if it is passed as a class.
+
 
         Attributes
         ----------
