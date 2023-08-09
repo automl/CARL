@@ -50,7 +50,7 @@ class ContextSpace(object):
     def insert_defaults(
         self, context: Context, context_keys: List[str] | None = None
     ) -> Context:
-        """Insert default context if keys missing. 
+        """Insert default context if keys missing.
 
         Parameters
         ----------
@@ -76,9 +76,9 @@ class ContextSpace(object):
         return context_with_defaults
 
     def verify_context(self, context: Context) -> bool:
-        """Verify context. 
+        """Verify context.
 
-        Check if context feature names are correct and the 
+        Check if context feature names are correct and the
         values are in bounds.
 
         Parameters
