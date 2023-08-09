@@ -37,6 +37,10 @@ class CARLEnv(Wrapper, abc.ABC):
         - After each env reset, a new context is selected by the context selector.
         - The context set is always filled with defaults if missing.
 
+        Parameters
+        ----------
+        # TODO add docstring for carl env params
+
         Attributes
         ----------
         base_observation_space: gymnasium.spaces.Space
@@ -251,7 +255,7 @@ class CARLEnv(Wrapper, abc.ABC):
             self._update_context()
         state, info = super().reset(seed=seed, options=options)
         state = self._add_context_to_state(state)
-        # TODO: Add context id or sth similar to info?
+        info["context_id"] = self.context_id
         return state, info
 
     def _add_context_to_state(self, state: Any) -> dict[str, Any]:
@@ -319,4 +323,5 @@ class CARLEnv(Wrapper, abc.ABC):
         """
         state, reward, terminated, truncated, info = super().step(action)
         state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
         return state, reward, terminated, truncated, info

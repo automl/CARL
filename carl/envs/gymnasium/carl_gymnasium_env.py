@@ -18,8 +18,7 @@ except:
 
 class CARLGymnasiumEnv(CARLEnv):
     env_name: str
-    # TODO make render mode adjustable
-    render_mode: str = "human"
+    render_mode: str = "rgb_array"
 
     def __init__(
         self,

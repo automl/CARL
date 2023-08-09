@@ -35,7 +35,7 @@ class CARLMarioEnv(CARLEnv):
         contexts: Contexts | None = None,
         obs_context_features: list[str]
         | None = None,  # list the context features which should be added to the state
-        obs_context_as_dict: bool = True,  # TODO discuss default
+        obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
         **kwargs,

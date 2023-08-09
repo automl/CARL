@@ -37,9 +37,6 @@ context_space_dict_othertypes = {
     "masscart": UniformIntegerContextFeature(
         "masscart", lower=1, upper=10, default_value=1
     ),
-    # "masspole": CategoricalContextFeature(
-    #     "masspole", choices=[0.1,0.2,0.5,1], default_value=1.0, weights=[1,2,3,4]
-    # ), # TODO Support categorical context features?
 }
 
 
