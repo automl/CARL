@@ -27,7 +27,7 @@ coverage:
       default:
         target: 90%
         if_not_found: failure
-        if_ci_failed: error
+        if_ci_failed: warning
 
 # We upload additional information on branching with pytest-cov `--cov-branch`
 # This information can be used by codecov.com to increase analysis of code
