@@ -92,7 +92,7 @@ if __name__ == "__main__":
     CARLBipedalWalker.render_mode = "human"
     env = CARLBipedalWalker(
         # Play with leg height :)
-        contexts = {0: {"LEG_H": 4}}
+        contexts={0: {"LEG_H": 4}}
     )
     demo_heuristic(env)
     env.close()

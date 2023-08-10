@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import Box2D
 from Box2D.b2 import vec2
 from gymnasium.envs.box2d import lunar_lander
 from gymnasium.envs.box2d.lunar_lander import LunarLander

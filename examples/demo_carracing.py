@@ -43,6 +43,7 @@ if __name__ == "__main__":
                     a[2] = 0
 
     contexts = {i: {"VEHICLE_ID": i} for i in range(len(VEHICLE_NAMES))}
+    CARLVehicleRacing.render_mode = "human"
     env = CARLVehicleRacing(contexts=contexts)
 
     record_video = False
@@ -62,14 +63,14 @@ if __name__ == "__main__":
         restart = False
         while True:
             register_input()
-            s, r, done, info = env.step(a)
+            s, r, truncated, terminated, info = env.step(a)
             time.sleep(0.025)
             total_reward += r
-            if steps % 200 == 0 or done:
+            if steps % 200 == 0 or truncated or terminated:
                 print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
                 print("step {} total_reward {:+0.2f}".format(steps, total_reward))
             steps += 1
-            isopen = env.render()
-            if done or restart or not isopen:
+            env.render()
+            if truncated or terminated or restart or not isopen:
                 break
     env.close()

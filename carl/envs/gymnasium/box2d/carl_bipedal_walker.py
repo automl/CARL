@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
 from Box2D.b2 import edgeShape, fixtureDef, polygonShape
 from gymnasium.envs.box2d import bipedal_walker
 from gymnasium.envs.box2d import bipedal_walker as bpw

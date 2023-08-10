@@ -222,4 +222,3 @@ class CARLVehicleRacing(CARLGymnasiumEnv):
         self.env: CustomCarRacing
         vehicle_class_index = self.context["VEHICLE_ID"]
         self.env.vehicle_class = PARKING_GARAGE[vehicle_class_index]
-        print(self.env.vehicle_class)
