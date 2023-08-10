@@ -86,16 +86,16 @@ class CARLAcrobot(CARLGymnasiumEnv):
         )
         self.env.unwrapped.state = np.concatenate([angles, velocities])
         state = np.array(
-                [
-                    np.cos(self.env.unwrapped.state[0]),
-                    np.sin(self.env.unwrapped.state[0]),
-                    np.cos(self.env.unwrapped.state[1]),
-                    np.sin(self.env.unwrapped.state[1]),
-                    self.env.unwrapped.state[2],
-                    self.env.unwrapped.state[3],
-                ],
-                dtype=np.float32,
-            )
+            [
+                np.cos(self.env.unwrapped.state[0]),
+                np.sin(self.env.unwrapped.state[0]),
+                np.cos(self.env.unwrapped.state[1]),
+                np.sin(self.env.unwrapped.state[1]),
+                self.env.unwrapped.state[2],
+                self.env.unwrapped.state[3],
+            ],
+            dtype=np.float32,
+        )
         info = {}
         state = self._add_context_to_state(state)
         info["context_id"] = self.context_id
