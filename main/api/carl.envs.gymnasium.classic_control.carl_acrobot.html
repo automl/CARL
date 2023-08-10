@@ -287,6 +287,15 @@
        </code>
       </a>
      </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.gymnasium.classic_control.carl_acrobot.CARLAcrobot.reset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLAcrobot.reset()
+        </span>
+       </code>
+      </a>
+     </li>
     </ul>
    </li>
   </ul>
@@ -341,6 +350,30 @@
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>dict[str, ContextFeature]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.gymnasium.classic_control.carl_acrobot.CARLAcrobot.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_acrobot.html#CARLAcrobot.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.gymnasium.classic_control.carl_acrobot.CARLAcrobot.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the environment.</p>
+<p>First, we progress the instance, i.e. select a new context with the context
+selector. Then we update the context in the wrapped environment.
+Finally, we reset the underlying environment and add context information
+to the observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Seed, by default None</p></li>
+<li><p><strong>options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Options, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation, info.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Any, dict[str, Any]]</p>
 </dd>
 </dl>
 </dd></dl>
