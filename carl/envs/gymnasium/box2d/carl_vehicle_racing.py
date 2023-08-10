@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Tuple, Type, Union
+from typing import Optional, Type, Union
 
 import numpy as np
 import pygame
@@ -144,7 +144,7 @@ class CustomCarRacing(CarRacing):
         if self.render_mode == "human":
             self.render()
         return self.step(None)[0], {}
-    
+
     def _render_indicators(self, W, H):
         s = W / 40.0
         h = H / 40.0
@@ -182,7 +182,11 @@ class CustomCarRacing(CarRacing):
         render_if_min(true_speed, vertical_ind(5, 0.02 * true_speed), (255, 255, 255))
         # Custom render to handle different amounts of wheels
         for i in range(len(self.car.wheels)):  # type: ignore [attr-defined]
-            render_if_min(self.car.wheels[i].omega, vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega), (0 + i * 10, 0, 255))  # type: ignore [attr-defined]
+            render_if_min(
+                self.car.wheels[i].omega,
+                vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega),
+                (0 + i * 10, 0, 255),
+            )  # type: ignore [attr-defined]
         render_if_min(
             self.car.wheels[0].joint.angle,
             horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle),
