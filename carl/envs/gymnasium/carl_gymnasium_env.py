@@ -73,4 +73,4 @@ class CARLGymnasiumEnv(CARLEnv):
 
     def _update_context(self) -> None:
         for k, v in self.context.items():
-            setattr(self.env, k, v)
+            setattr(self.env.unwrapped, k, v)
