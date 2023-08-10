@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-import numpy as np
 from typing import Optional
+
+import numpy as np
+
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
@@ -46,7 +48,7 @@ class CARLMountainCar(CARLGymnasiumEnv):
                 "max_velocity_start", lower=-np.inf, upper=np.inf, default_value=0
             ),
         }
-    
+
     def reset(
         self,
         *,
@@ -54,7 +56,13 @@ class CARLMountainCar(CARLGymnasiumEnv):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed, options=options)
-        position = self.env.np_random.uniform(low=self.context["min_position_start"], high=self.context["max_position_start"])
-        velocity = self.env.np_random.uniform(low=self.context["min_velocity_start"], high=self.context["max_velocity_start"])
+        position = self.env.np_random.uniform(
+            low=self.context["min_position_start"],
+            high=self.context["max_position_start"],
+        )
+        velocity = self.env.np_random.uniform(
+            low=self.context["min_velocity_start"],
+            high=self.context["max_velocity_start"],
+        )
         self.env.unwrapped.state = np.array([position, velocity])
         return np.array(self.env.unwrapped.state, dtype=np.float32), {}

@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 from typing import Optional
 
 import numpy as np
+
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
@@ -64,7 +66,7 @@ class CARLAcrobot(CARLGymnasiumEnv):
                 "INITIAL_VELOCITY_UPPER", lower=-np.inf, upper=np.inf, default_value=0.1
             ),
         }
-    
+
     def reset(
         self,
         *,
@@ -72,7 +74,28 @@ class CARLAcrobot(CARLGymnasiumEnv):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed, options=options)
-        angles = self.env.np_random.uniform(low=self.context["INITIAL_ANGLE_LOWER"], high=self.context["INITIAL_ANGLE_UPPER"], size=(2,))
-        velocities = self.env.np_random.uniform(low=self.context["INITIAL_VELOCITY_LOWER"], high=self.context["INITIAL_VELOCITY_UPPER"], size=(2,))
+        angles = self.env.np_random.uniform(
+            low=self.context["INITIAL_ANGLE_LOWER"],
+            high=self.context["INITIAL_ANGLE_UPPER"],
+            size=(2,),
+        )
+        velocities = self.env.np_random.uniform(
+            low=self.context["INITIAL_VELOCITY_LOWER"],
+            high=self.context["INITIAL_VELOCITY_UPPER"],
+            size=(2,),
+        )
         self.env.unwrapped.state = np.concatenate([angles, velocities])
-        return np.array([np.cos(self.env.unwrapped.state[0]), np.sin(self.env.unwrapped.state[0]), np.cos(self.env.unwrapped.state[1]), np.sin(self.env.unwrapped.state[1]), self.env.unwrapped.state[2], self.env.unwrapped.state[3]], dtype=np.float32), {}
+        return (
+            np.array(
+                [
+                    np.cos(self.env.unwrapped.state[0]),
+                    np.sin(self.env.unwrapped.state[0]),
+                    np.cos(self.env.unwrapped.state[1]),
+                    np.sin(self.env.unwrapped.state[1]),
+                    self.env.unwrapped.state[2],
+                    self.env.unwrapped.state[3],
+                ],
+                dtype=np.float32,
+            ),
+            {},
+        )

@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 from typing import Optional
 
 import numpy as np
+
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
-from gymnasium.envs.classic_control import utils
 
 
 class CARLCartPole(CARLGymnasiumEnv):
@@ -38,7 +39,7 @@ class CARLCartPole(CARLGymnasiumEnv):
                 "initial_state_upper", lower=-np.inf, upper=np.inf, default_value=0.1
             ),
         }
-    
+
     def reset(
         self,
         *,
@@ -46,5 +47,9 @@ class CARLCartPole(CARLGymnasiumEnv):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed, options=options)
-        self.env.unwrapped.state = self.env.np_random.uniform(low=self.context["initial_state_lower"], high=self.context["initial_state_upper"], size=(4,))
+        self.env.unwrapped.state = self.env.np_random.uniform(
+            low=self.context["initial_state_lower"],
+            high=self.context["initial_state_upper"],
+            size=(4,),
+        )
         return np.array(self.env.unwrapped.state, dtype=np.float32), {}
