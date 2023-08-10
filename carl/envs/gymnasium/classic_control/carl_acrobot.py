@@ -85,8 +85,7 @@ class CARLAcrobot(CARLGymnasiumEnv):
             size=(2,),
         )
         self.env.unwrapped.state = np.concatenate([angles, velocities])
-        return (
-            np.array(
+        state = np.array(
                 [
                     np.cos(self.env.unwrapped.state[0]),
                     np.sin(self.env.unwrapped.state[0]),
@@ -96,6 +95,8 @@ class CARLAcrobot(CARLGymnasiumEnv):
                     self.env.unwrapped.state[3],
                 ],
                 dtype=np.float32,
-            ),
-            {},
-        )
+            )
+        info = {}
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info

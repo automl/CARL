@@ -52,4 +52,8 @@ class CARLCartPole(CARLGymnasiumEnv):
             high=self.context["initial_state_upper"],
             size=(4,),
         )
-        return np.array(self.env.unwrapped.state, dtype=np.float32), {}
+        state = np.array(self.env.unwrapped.state, dtype=np.float32)
+        info = {}
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info

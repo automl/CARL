@@ -47,4 +47,8 @@ class CARLPendulum(CARLGymnasiumEnv):
         theta = self.env.np_random.uniform(high=self.context["initial_angle_max"])
         thetadot = self.env.np_random.uniform(high=self.context["initial_velocity_max"])
         self.env.unwrapped.state = np.array([theta, thetadot], dtype=np.float32)
-        return np.array([np.cos(theta), np.sin(theta), thetadot], dtype=np.float32), {}
+        state = np.array([np.cos(theta), np.sin(theta), thetadot], dtype=np.float32)
+        info = {}
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info

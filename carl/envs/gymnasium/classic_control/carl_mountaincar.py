@@ -65,4 +65,8 @@ class CARLMountainCar(CARLGymnasiumEnv):
             high=self.context["max_velocity_start"],
         )
         self.env.unwrapped.state = np.array([position, velocity])
-        return np.array(self.env.unwrapped.state, dtype=np.float32), {}
+        state = np.array(self.env.unwrapped.state, dtype=np.float32)
+        info = {}
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info
