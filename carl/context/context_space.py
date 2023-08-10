@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import List
 
+import warnings
+
 import gymnasium.spaces as spaces
 import numpy as np
 from ConfigSpace.hyperparameters import (
@@ -16,7 +18,6 @@ from typing_extensions import TypeAlias
 
 from carl.utils.types import Context, Contexts
 
-import warnings
 warnings.filterwarnings("ignore", message="invalid value encountered in scalar divide")
 
 ContextFeature: TypeAlias = Hyperparameter
