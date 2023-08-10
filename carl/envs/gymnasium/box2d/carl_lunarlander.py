@@ -79,8 +79,12 @@ class CARLLunarLander(CARLGymnasiumEnv):
             if hasattr(lunar_lander, key):
                 setattr(lunar_lander, key, value)
 
-        gravity_x = self.context.get("GRAVITY_X", self.get_context_features()["GRAVITY_X"].default_value)
-        gravity_y = self.context.get("GRAVITY_Y", self.get_context_features()["GRAVITY_Y"].default_value)
+        gravity_x = self.context.get(
+            "GRAVITY_X", self.get_context_features()["GRAVITY_X"].default_value
+        )
+        gravity_y = self.context.get(
+            "GRAVITY_Y", self.get_context_features()["GRAVITY_Y"].default_value
+        )
 
         gravity = vec2(float(gravity_x), float(gravity_y))
         self.env.world.gravity = gravity

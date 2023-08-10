@@ -87,7 +87,9 @@ class CARLBipedalWalker(CARLGymnasiumEnv):
 
     def _update_context(self) -> None:
         self.env: bipedal_walker.BipedalWalker
-        self.context = CARLBipedalWalker.get_context_space().insert_defaults(self.context)
+        self.context = CARLBipedalWalker.get_context_space().insert_defaults(
+            self.context
+        )
         bpw.FPS = self.context["FPS"]
         bpw.SCALE = self.context["SCALE"]
         bpw.FRICTION = self.context["FRICTION"]
