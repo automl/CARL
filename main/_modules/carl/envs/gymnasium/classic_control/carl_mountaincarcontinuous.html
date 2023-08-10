@@ -317,12 +317,24 @@
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
         <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">np_random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
-            <span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;min_position_start&quot;</span><span class="p">],</span>
-            <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;max_position_start&quot;</span><span class="p">],</span>
+            <span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;min_position_start&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_context_features</span><span class="p">()[</span><span class="s2">&quot;min_position_start&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default_value</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;max_position_start&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_context_features</span><span class="p">()[</span><span class="s2">&quot;max_position_start&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default_value</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span>
         <span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">np_random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
-            <span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;min_velocity_start&quot;</span><span class="p">],</span>
-            <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;max_velocity_start&quot;</span><span class="p">],</span>
+            <span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;min_velocity_start&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_context_features</span><span class="p">()[</span><span class="s2">&quot;min_velocity_start&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default_value</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;max_velocity_start&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_context_features</span><span class="p">()[</span><span class="s2">&quot;max_velocity_start&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default_value</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">position</span><span class="p">,</span> <span class="n">velocity</span><span class="p">])</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
