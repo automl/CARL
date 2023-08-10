@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import Any, List, Optional, Tuple, Type, Union
 
 import numpy as np
+import pygame
 from gymnasium.envs.box2d.car_dynamics import Car
-from gymnasium.envs.box2d.car_racing import CarRacing
+from gymnasium.envs.box2d.car_racing import CarRacing, FrictionDetector
 from gymnasium.envs.registration import register
 
 from carl.context.context_space import ContextFeature, UniformIntegerContextFeature
@@ -108,113 +109,90 @@ class CustomCarRacing(CarRacing):
         return_info: bool = True,
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
+        super().reset(seed=seed)
         self._destroy()
+        self.world.contactListener_bug_workaround = FrictionDetector(
+            self, self.lap_complete_percent
+        )
+        self.world.contactListener = self.world.contactListener_bug_workaround
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
         self.t = 0.0
-        self.road_poly: List[Tuple[List[float], Tuple[Any]]] = []
+        self.new_lap = False
+        self.road_poly = []
+
+        if self.domain_randomize:
+            randomize = True
+            if isinstance(options, dict):
+                if "randomize" in options:
+                    randomize = options["randomize"]
+
+            self._reinit_colors(randomize)
 
         while True:
             success = self._create_track()
             if success:
                 break
-            if self.verbose == 1:
+            if self.verbose:
                 print(
                     "retry to generate track (normal if there are not many"
                     "instances of this message)"
                 )
-        self.car = self.vehicle_class(self.world, *self.track[0][1:4])  # type: ignore [assignment]
+        self.car = self.vehicle_class(self.world, *self.track[0][1:4])
 
-        for i in range(
-            49
-        ):  # this sets up the environment and resolves any initial violations of geometry
-            self.step(None)  # type: ignore [arg-type]
-
+        if self.render_mode == "human":
+            self.render()
         return self.step(None)[0], {}
-
-    def _render_indicators_BROKEN(self, W: int, H: int) -> None:
-        # TODO Fix CarRacing rendering
-        # copied from meta car racing
+    
+    def _render_indicators(self, W, H):
         s = W / 40.0
         h = H / 40.0
-        colors = [0, 0, 0, 1] * 4
-        polygons = [W, 0, 0, W, 5 * h, 0, 0, 5 * h, 0, 0, 0, 0]
+        color = (0, 0, 0)
+        polygon = [(W, H), (W, H - 5 * h), (0, H - 5 * h), (0, H)]
+        pygame.draw.polygon(self.surf, color=color, points=polygon)
 
-        def vertical_ind(place: int, val: int, color: Tuple) -> None:
-            points = [
-                place * s,
-                h + h * val,
-                0,
-                (place + 1) * s,
-                h + h * val,
-                0,
-                (place + 1) * s,
-                h,
-                0,
-                (place + 0) * s,
-                h,
-                0,
+        def vertical_ind(place, val):
+            return [
+                (place * s, H - (h + h * val)),
+                ((place + 1) * s, H - (h + h * val)),
+                ((place + 1) * s, H - h),
+                ((place + 0) * s, H - h),
             ]
-            C = [color[0], color[1], color[2], 1]  # * 4
-            colors.extend(C)
-            polygons.extend(points)
-            self._draw_colored_polygon(
-                self.surf, points, C, zoom=1, translation=[0, 0], angle=0, clip=True
-            )
 
-        def horiz_ind(place: int, val: int, color: Tuple) -> None:
-            points = [
-                (place + 0) * s,
-                4 * h,
-                0,
-                (place + val) * s,
-                4 * h,
-                0,
-                (place + val) * s,
-                2 * h,
-                0,
-                (place + 0) * s,
-                2 * h,
-                0,
+        def horiz_ind(place, val):
+            return [
+                ((place + 0) * s, H - 4 * h),
+                ((place + val) * s, H - 4 * h),
+                ((place + val) * s, H - 2 * h),
+                ((place + 0) * s, H - 2 * h),
             ]
-            C = [color[0], color[1], color[2], 1]  # * 4
-            colors.extend(C)
-            polygons.extend(points)
-            self._draw_colored_polygon(
-                self.surf, points, C, zoom=1, translation=[0, 0], angle=0, clip=True
-            )
 
+        assert self.car is not None
         true_speed = np.sqrt(
-            np.square(self.car.hull.linearVelocity[0])  # type: ignore [attr-defined]
-            + np.square(self.car.hull.linearVelocity[1])  # type: ignore [attr-defined]
+            np.square(self.car.hull.linearVelocity[0])
+            + np.square(self.car.hull.linearVelocity[1])
         )
 
-        vertical_ind(5, 0.02 * true_speed, (1, 1, 1))
+        # simple wrapper to render if the indicator value is above a threshold
+        def render_if_min(value, points, color):
+            if abs(value) > 1e-4:
+                pygame.draw.polygon(self.surf, points=points, color=color)
 
+        render_if_min(true_speed, vertical_ind(5, 0.02 * true_speed), (255, 255, 255))
         # Custom render to handle different amounts of wheels
-        vertical_ind(7, 0.01 * self.car.wheels[0].omega, (0.0, 0, 1))  # type: ignore [attr-defined]
         for i in range(len(self.car.wheels)):  # type: ignore [attr-defined]
-            vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega, (0.0 + i * 0.1, 0, 1))  # type: ignore [attr-defined]
-        horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle, (0, 1, 0))  # type: ignore [attr-defined]
-        horiz_ind(30, -0.8 * self.car.hull.angularVelocity, (1, 0, 0))  # type: ignore [attr-defined]
-        # vl = pyglet.graphics.vertex_list(
-        #     len(polygons) // 3, ("v3f", polygons), ("c4f", colors)  # gl.GL_QUADS,
-        # )
-        # vl.draw(gl.GL_QUADS)
-
-        # shader_program = pyglet.graphics.get_default_shader()
-
-        # mode = gl.GL_POLYGON_MODE
-
-        # vertex_positions = polygons
-        # vl = shader_program.vertex_list(
-        #     count=len(polygons) // 3,
-        #     mode=mode,
-        #     position=('f', vertex_positions),
-        #     colors=('f', colors)
-        # )
-        # vl.draw(mode)
+            render_if_min(self.car.wheels[i].omega, vertical_ind(7 + i, 0.01 * self.car.wheels[i].omega), (0 + i * 10, 0, 255))  # type: ignore [attr-defined]
+        render_if_min(
+            self.car.wheels[0].joint.angle,
+            horiz_ind(20, -10.0 * self.car.wheels[0].joint.angle),
+            (0, 255, 0),
+        )
+        render_if_min(
+            self.car.hull.angularVelocity,
+            horiz_ind(30, -0.8 * self.car.hull.angularVelocity),
+            (255, 0, 0),
+        )
 
 
 register(
