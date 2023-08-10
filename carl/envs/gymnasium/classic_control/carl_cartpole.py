@@ -48,8 +48,14 @@ class CARLCartPole(CARLGymnasiumEnv):
     ):
         super().reset(seed=seed, options=options)
         self.env.unwrapped.state = self.env.np_random.uniform(
-            low=self.context["initial_state_lower"],
-            high=self.context["initial_state_upper"],
+            low=self.context.get(
+                "initial_state_lower",
+                self.get_context_features()["initial_state_lower"].default_value,
+            ),
+            high=self.context.get(
+                "initial_state_upper",
+                self.get_context_features()["initial_state_upper"].default_value,
+            ),
             size=(4,),
         )
         state = np.array(self.env.unwrapped.state, dtype=np.float32)

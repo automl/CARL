@@ -54,12 +54,24 @@ class CARLMountainCarContinuous(CARLGymnasiumEnv):
     ):
         super().reset(seed=seed, options=options)
         position = self.env.np_random.uniform(
-            low=self.context["min_position_start"],
-            high=self.context["max_position_start"],
+            low=self.context.get(
+                "min_position_start",
+                self.get_context_features()["min_position_start"].default_value,
+            ),
+            high=self.context.get(
+                "max_position_start",
+                self.get_context_features()["max_position_start"].default_value,
+            ),
         )
         velocity = self.env.np_random.uniform(
-            low=self.context["min_velocity_start"],
-            high=self.context["max_velocity_start"],
+            low=self.context.get(
+                "min_velocity_start",
+                self.get_context_features()["min_velocity_start"].default_value,
+            ),
+            high=self.context.get(
+                "max_velocity_start",
+                self.get_context_features()["max_velocity_start"].default_value,
+            ),
         )
         self.env.unwrapped.state = np.array([position, velocity])
         state = np.array(self.env.unwrapped.state, dtype=np.float32)

@@ -44,8 +44,18 @@ class CARLPendulum(CARLGymnasiumEnv):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed, options=options)
-        theta = self.env.np_random.uniform(high=self.context["initial_angle_max"])
-        thetadot = self.env.np_random.uniform(high=self.context["initial_velocity_max"])
+        theta = self.env.np_random.uniform(
+            high=self.context.get(
+                "initial_angle_max",
+                self.get_context_features()["initial_angle_max"].default_value,
+            )
+        )
+        thetadot = self.env.np_random.uniform(
+            high=self.context.get(
+                "initial_velocity_max",
+                self.get_context_features()["initial_velocity_max"].default_value,
+            )
+        )
         self.env.unwrapped.state = np.array([theta, thetadot], dtype=np.float32)
         state = np.array([np.cos(theta), np.sin(theta), thetadot], dtype=np.float32)
         info = {}

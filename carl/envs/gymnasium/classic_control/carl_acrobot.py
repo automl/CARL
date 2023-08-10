@@ -75,13 +75,25 @@ class CARLAcrobot(CARLGymnasiumEnv):
     ):
         super().reset(seed=seed, options=options)
         angles = self.env.np_random.uniform(
-            low=self.context["INITIAL_ANGLE_LOWER"],
-            high=self.context["INITIAL_ANGLE_UPPER"],
+            low=self.context.get(
+                "INITIAL_ANGLE_LOWER",
+                self.get_context_features()["INITIAL_ANGLE_LOWER"].default_value,
+            ),
+            high=self.context.get(
+                "INITIAL_ANGLE_UPPER",
+                self.get_context_features()["INITIAL_ANGLE_UPPER"].default_value,
+            ),
             size=(2,),
         )
         velocities = self.env.np_random.uniform(
-            low=self.context["INITIAL_VELOCITY_LOWER"],
-            high=self.context["INITIAL_VELOCITY_UPPER"],
+            low=self.context.get(
+                "INITIAL_VELOCITY_LOWER",
+                self.get_context_features()["INITIAL_VELOCITY_LOWER"].default_value,
+            ),
+            high=self.context.get(
+                "INITIAL_VELOCITY_UPPER",
+                self.get_context_features()["INITIAL_VELOCITY_UPPER"].default_value,
+            ),
             size=(2,),
         )
         self.env.unwrapped.state = np.concatenate([angles, velocities])
