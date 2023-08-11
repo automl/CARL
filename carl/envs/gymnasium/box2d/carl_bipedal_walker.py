@@ -114,14 +114,14 @@ class CARLBipedalWalker(CARLGymnasiumEnv):
         gravity_y = self.context["GRAVITY_Y"]
 
         gravity = (gravity_x, gravity_y)
-        self.env.world.gravity = gravity
+        self.env.unwrapped.world.gravity = gravity
 
         # Important for building terrain
-        self.env.fd_polygon = fixtureDef(
+        self.env.unwrapped.fd_polygon = fixtureDef(
             shape=polygonShape(vertices=[(0, 0), (1, 0), (1, -1), (0, -1)]),
             friction=bipedal_walker.FRICTION,
         )
-        self.env.fd_edge = fixtureDef(
+        self.env.unwrapped.fd_edge = fixtureDef(
             shape=edgeShape(vertices=[(0, 0), (1, 1)]),
             friction=bipedal_walker.FRICTION,
             categoryBits=0x0001,
@@ -154,4 +154,4 @@ class CARLBipedalWalker(CARLGymnasiumEnv):
             maskBits=0x001,
         )
 
-        self.env.world.gravity = gravity
+        self.env.unwrapped.world.gravity = gravity

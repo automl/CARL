@@ -2,9 +2,7 @@
 Code adapted from gym.envs.box2d.car_racing.py
 """
 
-from typing import Any
 import numpy as np
-import gymnasium as gym
 import time
 import pygame
 from carl.envs.gymnasium.box2d.carl_vehicle_racing import (

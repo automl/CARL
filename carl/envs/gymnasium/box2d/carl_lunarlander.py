@@ -86,4 +86,4 @@ class CARLLunarLander(CARLGymnasiumEnv):
         )
 
         gravity = vec2(float(gravity_x), float(gravity_y))
-        self.env.world.gravity = gravity
+        self.env.unwrapped.world.gravity = gravity

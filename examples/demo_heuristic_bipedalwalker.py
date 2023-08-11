@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from carl.envs import CARLBipedalWalker
 from gymnasium.envs.box2d import bipedal_walker
 import numpy as np
