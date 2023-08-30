@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,9 +26,9 @@
     
   <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -279,7 +279,9 @@
 <span class="n">ObsType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;ObsType&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="CARLEnv"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv">[docs]</a><span class="k">class</span> <span class="nc">CARLEnv</span><span class="p">(</span><span class="n">Wrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="CARLEnv">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv">[docs]</a>
+<span class="k">class</span> <span class="nc">CARLEnv</span><span class="p">(</span><span class="n">Wrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env</span><span class="p">:</span> <span class="n">Env</span><span class="p">,</span>
@@ -419,7 +421,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_context</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CARLEnv.get_observation_space"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_observation_space">[docs]</a>    <span class="k">def</span> <span class="nf">get_observation_space</span><span class="p">(</span>
+<div class="viewcode-block" id="CARLEnv.get_observation_space">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_observation_space">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_observation_space</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">obs_context_feature_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the observation space for the context.</span>
@@ -450,7 +454,10 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">obs_space</span></div>
 
-<div class="viewcode-block" id="CARLEnv.get_context_features"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_context_features">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="CARLEnv.get_context_features">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_context_features">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_context_features</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ContextFeature</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the context features</span>
@@ -464,7 +471,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="CARLEnv.get_context_space"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_context_space">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="CARLEnv.get_context_space">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_context_space">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_context_space</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextSpace</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get context space</span>
 
@@ -476,7 +486,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContextSpace</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_context_features</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CARLEnv.get_default_context"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_default_context">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="CARLEnv.get_default_context">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_default_context">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_default_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Context</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the default context</span>
 
@@ -487,6 +500,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">default_context</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_context_space</span><span class="p">()</span><span class="o">.</span><span class="n">get_default_context</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">default_context</span></div>
+
 
     <span class="k">def</span> <span class="nf">_progress_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -505,7 +519,9 @@
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>  <span class="c1"># type: ignore [call-arg]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
 
-<div class="viewcode-block" id="CARLEnv.reset"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span>
+<div class="viewcode-block" id="CARLEnv.reset">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the environment.</span>
@@ -535,6 +551,7 @@
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_context_to_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
         <span class="n">info</span><span class="p">[</span><span class="s2">&quot;context_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_id</span>
         <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">info</span></div>
+
 
     <span class="k">def</span> <span class="nf">_add_context_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add context observation to the state</span>
@@ -581,7 +598,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>
 
-<div class="viewcode-block" id="CARLEnv.step"><a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span>
+<div class="viewcode-block" id="CARLEnv.step">
+<a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.step">[docs]</a>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">SupportsFloat</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Step the environment.</span>
@@ -602,7 +621,9 @@
         <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_context_to_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
         <span class="n">info</span><span class="p">[</span><span class="s2">&quot;context_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_id</span>
-        <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span></div></div>
+        <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span></div>
+</div>
+
 </pre></div>
 
               </div>
@@ -633,7 +654,7 @@
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.1.2. Template is modified version of <a
+7.2.4. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>

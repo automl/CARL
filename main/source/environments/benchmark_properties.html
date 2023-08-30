@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
@@ -27,9 +27,9 @@
     
   <link rel="preload" as="script" href="../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../../_static/documentation_options.js?v=4ebf8126"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="CARLify your Environment" href="carlify.html" />
@@ -303,23 +303,23 @@
               <div>
                 
   <section id="benchmark-properties">
-<h1>Benchmark Properties<a class="headerlink" href="#benchmark-properties" title="Permalink to this heading">¶</a></h1>
+<h1>Benchmark Properties<a class="headerlink" href="#benchmark-properties" title="Link to this heading">¶</a></h1>
 <p>Below we discuss the properties of the CARL benchmarks which are summarized in the following <a class="reference internal" href="#figure">Figure</a>.</p>
 <a class="reference internal image-reference" href="../../_images/radar_env_space.png" id="figure"><img alt="Radar Plots for Env. Spaces" class="align-center" id="figure" src="../../_images/radar_env_space.png" style="width: 90%;" /></a>
 <section id="state-space">
-<h2>State Space<a class="headerlink" href="#state-space" title="Permalink to this heading">¶</a></h2>
+<h2>State Space<a class="headerlink" href="#state-space" title="Link to this heading">¶</a></h2>
 <p>Most of our benchmarks have vector based state spaces that can either be extended to include the context information or
 not. The notable exceptions here are CARLVehicleRacing and CARLToadGAN, which exclusively use pixel-based observations.
 The size of the vector based spaces range from only two state variables in the CARLMountainCar environments to 299
 for the CARLHumanoid environment.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">¶</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>We provide both discrete and continuous environments, with six requiring discrete actions and the other ten continuous
 ones. The number of actions can range from a single action to 19 different actions.</p>
 </section>
 <section id="quality-of-reward">
-<h2>Quality of Reward<a class="headerlink" href="#quality-of-reward" title="Permalink to this heading">¶</a></h2>
+<h2>Quality of Reward<a class="headerlink" href="#quality-of-reward" title="Link to this heading">¶</a></h2>
 <p>We cover different kinds of reward signals with our benchmarks, ranging from relatively sparse step penalty style
 rewards where the agent only receives a reward of -1 each step to complex composite reward functions in e.g. the
 Brax-based environments. The latter version is also quite informative, providing updates on factors like movement
@@ -328,7 +328,7 @@ without looking at the whole episode. % this sentence could be dropped if space 
 Further examples for sparse rewards are the CARLCartPoleEnv and CARLVehicleRacingEnv.</p>
 </section>
 <section id="context-spaces">
-<h2>Context Spaces<a class="headerlink" href="#context-spaces" title="Permalink to this heading">¶</a></h2>
+<h2>Context Spaces<a class="headerlink" href="#context-spaces" title="Link to this heading">¶</a></h2>
 <p>While the full details of all possible context configurations can be seen in Environment Families. Here we
 only discuss the differences between context spaces and the configuration possibilities they provide.
 Depending on the environment the context features have different influence on the dynamics and the reward. Of all 131
@@ -385,7 +385,7 @@ in the realm of general RL agents.</p>
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.1.2. Template is modified version of <a
+7.2.4. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
@@ -27,9 +27,9 @@
     
   <link rel="preload" as="script" href="../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../_static/documentation_options.js?v=4ebf8126"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -358,9 +358,9 @@
               <div>
                 
   <section id="module-carl.envs.carl_env">
-<span id="carl-envs-carl-env"></span><h1>carl.envs.carl_env<a class="headerlink" href="#module-carl.envs.carl_env" title="Permalink to this heading">¶</a></h1>
+<span id="carl-envs-carl-env"></span><h1>carl.envs.carl_env<a class="headerlink" href="#module-carl.envs.carl_env" title="Link to this heading">¶</a></h1>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h2>
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#carl.envs.carl_env.CARLEnv" title="carl.envs.carl_env.CARLEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CARLEnv</span></code></a>(env[, contexts, ...])</p></td>
@@ -370,14 +370,14 @@
 </table>
 </section>
 <section id="interfaces">
-<h2>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this heading">¶</a></h2>
+<h2>Interfaces<a class="headerlink" href="#interfaces" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.carl_env.</span></span><span class="sig-name descname"><span class="pre">CARLEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.carl_env.</span></span><span class="sig-name descname"><span class="pre">CARLEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv.get_context_features">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_context_features" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_context_features" title="Link to this definition">¶</a></dt>
 <dd><p>Get the context features</p>
 <p>Defined per environment.</p>
 <dl class="field-list simple">
@@ -392,7 +392,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv.get_context_space">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_context_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_context_space" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_context_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_context_space" title="Link to this definition">¶</a></dt>
 <dd><p>Get context space</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -407,7 +407,7 @@ information about defaults, types, bounds, etc.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv.get_default_context">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_default_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_default_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_default_context" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_default_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_default_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_default_context" title="Link to this definition">¶</a></dt>
 <dd><p>Get the default context</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -421,7 +421,7 @@ information about defaults, types, bounds, etc.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv.get_observation_space">
-<span class="sig-name descname"><span class="pre">get_observation_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs_context_feature_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_observation_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_observation_space" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_observation_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs_context_feature_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.get_observation_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.get_observation_space" title="Link to this definition">¶</a></dt>
 <dd><p>Get the observation space for the context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -440,7 +440,7 @@ underlying environment (“state”) and for the context (“context”).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.reset" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.reset" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the environment.</p>
 <p>First, we progress the instance, i.e. select a new context with the context
 selector. Then we update the context in the wrapped environment.
@@ -464,7 +464,7 @@ to the observation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="carl.envs.carl_env.CARLEnv.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.step" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/carl_env.html#CARLEnv.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.carl_env.CARLEnv.step" title="Link to this definition">¶</a></dt>
 <dd><p>Step the environment.</p>
 <p>The context is added to the observation returned by the
 wrapped environment.</p>
@@ -515,7 +515,7 @@ wrapped environment.</p>
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.1.2. Template is modified version of <a
+7.2.4. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
@@ -27,9 +27,9 @@
     
   <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="CARL Brax Environments" href="brax.html" />
@@ -298,18 +298,18 @@
               <div>
                 
   <section id="carl-box-2d-environments">
-<h1>CARL Box 2D Environments<a class="headerlink" href="#carl-box-2d-environments" title="Permalink to this heading">¶</a></h1>
+<h1>CARL Box 2D Environments<a class="headerlink" href="#carl-box-2d-environments" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://gymnasium.farama.org/environments/box2d/">OpenAI’s gym Box2D</a> provides environments for continuous control tasks.
 In CARL BipedalWalker, LunarLander and CarRacing are included, each with their own modification possibilities like
 new vehicles to race.</p>
 <section id="carl-bipedalwalker-environment">
-<h2>CARL BipedalWalker Environment<a class="headerlink" href="#carl-bipedalwalker-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL BipedalWalker Environment<a class="headerlink" href="#carl-bipedalwalker-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/bipedalwalker.jpeg"><img alt="Screenshot of CARLBipedalWalkerEnv" class="align-center" src="../../../_images/bipedalwalker.jpeg" style="width: 25%;" /></a>
 <p>In BipedalWalker a bipedal robot is trained to walk.
 The properties of the walker’s body, surroundings and physics as well as the simulation dynamics
 can be varied via the context features.</p>
 <table class="table" id="id1">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -401,14 +401,14 @@ can be varied via the context features.</p>
 </table>
 </section>
 <section id="carl-lunarlander-environment">
-<h2>CARL LunarLander Environment<a class="headerlink" href="#carl-lunarlander-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL LunarLander Environment<a class="headerlink" href="#carl-lunarlander-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/lunarlander.jpeg"><img alt="Screenshot of CARLLunarLanderEnv" class="align-center" src="../../../_images/lunarlander.jpeg" style="width: 25%;" /></a>
 <p>Here, the lunar lander should be safely navigated to its landing pad.
 The lander’s body, physics and simulation dynamics can be manipulated via the context features.
 Influence of context settings on an agent trained on the default environment:</p>
 <a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLLunarLanderEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLLunarLanderEnv.png" style="width: 50%;" /></a>
 <table class="table" id="id2">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -484,13 +484,13 @@ Influence of context settings on an agent trained on the default environment:</p
 </table>
 </section>
 <section id="carl-vehicleracing-environment">
-<h2>CARL VehicleRacing Environment<a class="headerlink" href="#carl-vehicleracing-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL VehicleRacing Environment<a class="headerlink" href="#carl-vehicleracing-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/vehicleracing.png"><img alt="Screenshot of CARLVehicleRacingEnv" class="align-center" src="../../../_images/vehicleracing.png" style="width: 400px;" /></a>
 <p>In this environment a vehicle is raced around a track. The context here is the type of vehicle.
 There are different types of vehicles, race car, street car, bus and vehicle, and most of them can have a front-, back-
 or all-wheel drive as well as small or large trailers (29 variations in total).</p>
 <table class="table" id="id3">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -554,7 +554,7 @@ or all-wheel drive as well as small or large trailers (29 variations in total).<
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.1.2. Template is modified version of <a
+7.2.4. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>

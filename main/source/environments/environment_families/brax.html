@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
@@ -27,9 +27,9 @@
     
   <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=367f7090"></script>
+    <script src="../../../_static/documentation_options.js?v=4ebf8126"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="CARL DMC Environments" href="dmc.html" />
@@ -313,17 +313,17 @@
               <div>
                 
   <section id="carl-brax-environments">
-<h1>CARL Brax Environments<a class="headerlink" href="#carl-brax-environments" title="Permalink to this heading">¶</a></h1>
+<h1>CARL Brax Environments<a class="headerlink" href="#carl-brax-environments" title="Link to this heading">¶</a></h1>
 <p>In CARL all <a class="reference external" href="https://github.com/google/brax">Brax locomotion environments</a> are included.
 As context features there are external features like gravity or friction or internal features
 like joint strength or torso mass.</p>
 <section id="carl-ant-environment">
-<h2>CARL Ant Environment<a class="headerlink" href="#carl-ant-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL Ant Environment<a class="headerlink" href="#carl-ant-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/ant.png"><img alt="Screenshot of CARLAnt" class="align-center" src="../../../_images/ant.png" style="width: 25%;" /></a>
 <p>Here the agent needs to learn how to control a four-legged ant in order
 to run (quickly) into a given direction.</p>
 <table class="table" id="id1">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -363,12 +363,12 @@ to run (quickly) into a given direction.</p>
 </table>
 </section>
 <section id="carl-fetch-environment">
-<h2>CARL Fetch Environment<a class="headerlink" href="#carl-fetch-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL Fetch Environment<a class="headerlink" href="#carl-fetch-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/fetch.png"><img alt="Screenshot of CARLFetch" class="align-center" src="../../../_images/fetch.png" style="width: 25%; height: 100px;" /></a>
 <p>Fetch trains a robotic dog to run to a target location.
 The target radius and distance as well as physical properties can be varied via the context features.</p>
 <table class="table" id="id2">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -416,14 +416,14 @@ The target radius and distance as well as physical properties can be varied via 
 </table>
 </section>
 <section id="carl-grasp-environment">
-<h2>CARL Grasp Environment<a class="headerlink" href="#carl-grasp-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL Grasp Environment<a class="headerlink" href="#carl-grasp-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/grasp.png"><img alt="Screenshot of CARLGrasp" class="align-center" src="../../../_images/grasp.png" style="width: 25%;" /></a>
 <p>In CARL Grasp the agent is trained to pick up an object with a robot hand.
 Three bodies are observed by Grasp: ‘Hand’, ‘Object’, and ‘Target’.
 When Object reaches Target, the agent is rewarded.
 Apart from Grasp’s pyhiscal properties the target radius, height and distance are also varied.</p>
 <table class="table" id="id3">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -471,12 +471,12 @@ Apart from Grasp’s pyhiscal properties the target radius, height and distance 
 </table>
 </section>
 <section id="carl-halfcheetah-environment">
-<h2>CARL Halfcheetah Environment<a class="headerlink" href="#carl-halfcheetah-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL Halfcheetah Environment<a class="headerlink" href="#carl-halfcheetah-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/halfcheetah.png"><img alt="Screenshot of CARLHalfcheetah" class="align-center" src="../../../_images/halfcheetah.png" style="width: 25%;" /></a>
 <p>A Halfcheetah is trained to run in a given direction.
 The context features can vary physical properties.</p>
 <table class="table" id="id4">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -512,11 +512,11 @@ The context features can vary physical properties.</p>
 </table>
 </section>
 <section id="carl-humanoid-environment">
-<h2>CARL Humanoid Environment<a class="headerlink" href="#carl-humanoid-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL Humanoid Environment<a class="headerlink" href="#carl-humanoid-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/humanoid.png"><img alt="Screenshot of CARLHumanoid" class="align-center" src="../../../_images/humanoid.png" style="width: 25%;" /></a>
 <p>Here, a Humanoid needs to learn how to walk forward.</p>
 <table class="table" id="id5">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -548,12 +548,12 @@ The context features can vary physical properties.</p>
 </table>
 </section>
 <section id="carl-ur5e-environment">
-<h2>CARL UR5e Environment<a class="headerlink" href="#carl-ur5e-environment" title="Permalink to this heading">¶</a></h2>
+<h2>CARL UR5e Environment<a class="headerlink" href="#carl-ur5e-environment" title="Link to this heading">¶</a></h2>
 <a class="reference internal image-reference" href="../../../_images/ur5e.png"><img alt="Screenshot of CARLUr5e" class="align-center" src="../../../_images/ur5e.png" style="width: 25%;" /></a>
 <p>The agent needs to learn how to move a ur5e robot arm and its end effector to a sequence of targets.
 The robot arm has 6 joints.</p>
 <table class="table" id="id6">
-<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Context Feature</p></th>
 <th class="head"><p>Default</p></th>
@@ -645,7 +645,7 @@ The robot arm has 6 joints.</p>
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.1.2. Template is modified version of <a
+7.2.4. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>
