@@ -1,7 +1,8 @@
 from __future__ import annotations
-import sys
 
 from typing import List
+
+import sys
 
 import numpy as np
 
@@ -46,9 +47,7 @@ class CARLMarioEnv(CARLEnv):
 
     def _update_context(self) -> None:
         self.env: MarioEnv
-        self.context = CARLMarioEnv.get_context_space().insert_defaults(
-            self.context
-        )
+        self.context = CARLMarioEnv.get_context_space().insert_defaults(self.context)
         if not self.levels:
             for context in self.contexts.values():
                 level, _ = generate_level(
@@ -66,11 +65,15 @@ class CARLMarioEnv(CARLEnv):
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {
-            "level_width": UniformIntegerContextFeature("level_width", 16, 1000, default_value=100),
+            "level_width": UniformIntegerContextFeature(
+                "level_width", 16, 1000, default_value=100
+            ),
             "level_index": CategoricalContextFeature(
                 "level_index", choices=np.arange(0, 14), default_value=0
             ),
-            "noise_seed": UniformIntegerContextFeature("noise_seed", 0, sys.maxsize, default_value=0),
+            "noise_seed": UniformIntegerContextFeature(
+                "noise_seed", 0, sys.maxsize, default_value=0
+            ),
             "mario_state": CategoricalContextFeature(
                 "mario_state", choices=[0, 1, 2], default_value=0
             ),

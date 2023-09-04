@@ -1,9 +1,10 @@
+from typing import Any, Dict, List, Literal, Optional, cast
+
 import atexit
 import os
 import random
 import socket
 from collections import deque
-from typing import Any, Dict, List, Literal, Optional, cast
 
 import cv2
 import gymnasium
@@ -94,7 +95,10 @@ class MarioEnv(gymnasium.Env):
         self.display = Display(use_xauth=True)
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None, **kwargs
+        self,
+        seed: Optional[int] = None,
+        options: Optional[Dict[str, Any]] = None,
+        **kwargs,
     ):
         self._reset_obs()
         if self.game is None:

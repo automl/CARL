@@ -111,7 +111,9 @@ def generate_level(
     return "".join(level), initial_noise.numpy()
 
 
-def generate_initial_noise(width: int, height: int, level_index: int, seed: int) -> Tensor:
+def generate_initial_noise(
+    width: int, height: int, level_index: int, seed: int
+) -> Tensor:
     toad_gan = load_generator(level_index)
     base_noise_map = toad_gan.noise_maps[0]
     nzx = (
