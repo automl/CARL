@@ -37,12 +37,5 @@ Modules
    :recursive:
 
    carl.envs.mario.carl_mario
-   carl.envs.mario.generate_sample
-   carl.envs.mario.level_image_gen
-   carl.envs.mario.mario_env
-   carl.envs.mario.mario_game
-   carl.envs.mario.models
-   carl.envs.mario.reachabillity
-   carl.envs.mario.toad_gan
-   carl.envs.mario.utils
+   carl.envs.mario.pcg_smb_env
 
