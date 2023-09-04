@@ -1,9 +1,8 @@
 from functools import partial
 
-from gym.envs.registration import register, registry
+from gym.envs.registration import register
 
 from .mario_env import MarioEnv
-from .toadgan.toad_gan import generate_level
 
 for level in range(1, 16):
     level_file = f"lvl-{level}.txt"

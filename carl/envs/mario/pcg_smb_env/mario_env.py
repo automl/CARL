@@ -246,7 +246,7 @@ class MarioEnv(gymnasium.Env):
         while len(frameBuffer) != self.frame_size:
             frameBuffer += self.socket.recv(self.frame_size)
         return frameBuffer
-    
+
     def get_action_meanings(self) -> List[str]:
         return ACTION_MEANING
 

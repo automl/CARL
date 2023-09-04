@@ -2,7 +2,6 @@ import functools
 import os
 import sys
 from dataclasses import dataclass
-from typing import Optional
 
 import torch
 from torch import Tensor
