@@ -54,18 +54,8 @@ RNA and Mario at this point, however, will not run on any operation system besid
 
 To install ToadGAN for the Mario environment:
 ```bash
-git submodule update --init --recursive
-
-# if this does not work, clone manually
-git clone https://github.com/frederikschubert/Mario-AI-Framework carl/envs/mario/Mario-AI-Framework
-git clone https://github.com/Mawiszus/TOAD-GUI  carl/envs/mario/TOAD-GUI
-
 # System requirements
 sudo apt install libfreetype6-dev xvfb
-
-# Compile java source files
-cd carl/envs/mario/Mario-AI-Framework/src
-javac *.java
 ```
 
 If you want to use RNA, please take a look at the associated [ReadME](carl/envs/rna/readme.md).

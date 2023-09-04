@@ -1,4 +1,5 @@
 from __future__ import annotations
+import sys
 
 from typing import List
 
@@ -8,24 +9,14 @@ from carl.context.context_space import (
     CategoricalContextFeature,
     ContextFeature,
     UniformFloatContextFeature,
+    UniformIntegerContextFeature,
 )
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
-from carl.envs.mario.mario_env import MarioEnv
-from carl.envs.mario.toad_gan import generate_level
+from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
 from carl.utils.types import Contexts
 
-try:
-    from carl.envs.mario.toad_gan import generate_initial_noise
-except FileNotFoundError:
-    from torch import Tensor
-
-    def generate_initial_noise(width: int, height: int, level_index: int) -> Tensor:
-        return Tensor()
-
-
-INITIAL_HEIGHT = 16
-INITIAL_WIDTH = 100
+LEVEL_HEIGHT = 16
 
 
 class CARLMarioEnv(CARLEnv):
@@ -52,43 +43,34 @@ class CARLMarioEnv(CARLEnv):
             **kwargs,
         )
         self.levels: List[str] = []
-        self._update_context()
 
     def _update_context(self) -> None:
         self.env: MarioEnv
+        self.context = CARLMarioEnv.get_context_space().insert_defaults(
+            self.context
+        )
         if not self.levels:
             for context in self.contexts.values():
-                level = generate_level(
-                    width=INITIAL_WIDTH,
-                    height=INITIAL_HEIGHT,
+                level, _ = generate_level(
+                    width=context["level_width"],
+                    height=LEVEL_HEIGHT,
                     level_index=context["level_index"],
-                    initial_noise=context["noise"],
+                    seed=context["noise_seed"],
                     filter_unplayable=True,
                 )
                 self.levels.append(level)
         self.env.mario_state = self.context["mario_state"]
         self.env.mario_inertia = self.context["mario_inertia"]
-        self.env.levels = [self.levels[self.context_index]]
-
-    def _log_context(self) -> None:
-        if self.logger:
-            loggable_context = {k: v for k, v in self.context.items() if k != "noise"}
-            self.logger.write_context(
-                self.episode_counter, self.total_timestep_counter, loggable_context
-            )
+        self.env.levels = [self.levels[self.context_id]]
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {
+            "level_width": UniformIntegerContextFeature("level_width", 16, 1000, default_value=100),
             "level_index": CategoricalContextFeature(
                 "level_index", choices=np.arange(0, 14), default_value=0
             ),
-            "noise": UniformFloatContextFeature(
-                "noise",
-                lower=-1.0,
-                upper=1.0,
-                default_value=generate_initial_noise(INITIAL_WIDTH, INITIAL_HEIGHT, 0),
-            ),
+            "noise_seed": UniformIntegerContextFeature("noise_seed", 0, sys.maxsize, default_value=0),
             "mario_state": CategoricalContextFeature(
                 "mario_state", choices=[0, 1, 2], default_value=0
             ),
