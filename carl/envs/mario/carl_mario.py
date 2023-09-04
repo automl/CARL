@@ -14,7 +14,8 @@ from carl.context.context_space import (
 )
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
-from carl.envs.mario.pcg_smb_env import MarioEnv, generate_level
+from carl.envs.mario.pcg_smb_env import MarioEnv
+from carl.envs.mario.pcg_smb_env.toadgan.toad_gan import generate_level
 from carl.utils.types import Contexts
 
 LEVEL_HEIGHT = 16
