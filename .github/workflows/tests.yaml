@@ -91,13 +91,13 @@ jobs:
         # Miniconda is available in $CONDA env var
         $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
         $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
-        $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control]
+        $CONDA/envs/testenv/bin/pip3 install -e "[dev,box2d,brax,dm_control,mario]"
 
     - name: Source install
       if: matrix.kind == 'source'
       run: |
         python -m pip install --upgrade pip
-        pip install -e .[dev,dm_control]
+        pip install -e .[dev,box2d,brax,dm_control,mario]
 
     - name: Dist install
       if: matrix.kind == 'dist'
@@ -105,7 +105,7 @@ jobs:
         python -m pip install --upgrade pip
         python setup.py sdist
         last_dist=$(ls -t dist/carl-*.tar.gz | head -n 1)
-        pip install $last_dist[dev,dm_control]
+        pip install $last_dist[dev,box2d,brax,dm_control,mario]
 
     - name: Tests
       timeout-minutes: 60

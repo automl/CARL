@@ -25,19 +25,19 @@ extras_require = {
         "gymnasium[box2d]>=0.27.1",
     ],
     "brax": [
-        "brax>=0.0.10,<=0.0.16",
+        "brax>=0.9.1",
         "protobuf>=3.17.3",
     ],
     "dm_control": [
         "dm_control>=1.0.3",
     ],
     "mario": [
-        "opencv-python",
+        "opencv-python>=4.8.0",
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
-        "pyvirtualdisplay",
-        "jdk4py"
+        "pyvirtualdisplay>=3.0",
+        "jdk4py>=17.0.7.0"
     ],
     "dev": [
         "pytest>=6.1.1",
@@ -82,7 +82,6 @@ setuptools.setup(
         "ConfigArgParse>=1.5.1",
         "numpy>=1.19.5",
         "pandas>=1.3.0",
-        "xvfbwrapper>=0.2.9",
         "matplotlib>=3.4.2",
         "dataclasses>=0.6",
         "numpyencoder>=0.3.0",
