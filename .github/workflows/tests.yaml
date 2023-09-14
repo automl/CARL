@@ -109,6 +109,7 @@ jobs:
 
     - name: Tests
       timeout-minutes: 60
+      uses: coactions/setup-xvfb@v1
       run: |
         echo "Running all tests..."
         if [[ ${{ matrix.kind }} == 'conda' ]]; then
