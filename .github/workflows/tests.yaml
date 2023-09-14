@@ -91,13 +91,13 @@ jobs:
         # Miniconda is available in $CONDA env var
         $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
         $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
-        $CONDA/envs/testenv/bin/pip3 install -e "[dev,box2d,brax,dm_control,mario]"
+        $CONDA/envs/testenv/bin/pip3 install -e ".[dev,box2d,brax,dm_control,mario]"
 
     - name: Source install
       if: matrix.kind == 'source'
       run: |
         python -m pip install --upgrade pip
-        pip install -e .[dev,box2d,brax,dm_control,mario]
+        pip install -e ".[dev,box2d,brax,dm_control,mario]"
 
     - name: Dist install
       if: matrix.kind == 'dist'
