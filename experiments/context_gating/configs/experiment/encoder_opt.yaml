@@ -1,0 +1,6 @@
+# @package _global_
+group: encoder_opt
+
+encoder:
+  weights: '../../carl/context_encoders/saved_models/Pendulum/AE_4_2.zip'
+  model: ContextAE

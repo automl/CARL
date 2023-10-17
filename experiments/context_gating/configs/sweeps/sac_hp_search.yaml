@@ -1,0 +1,46 @@
+# @package _global_
+# see https://hydra.cc/docs/plugins/optuna_sweeper/#search-space-configuration
+defaults:
+  - override /hydra/sweeper: optuna
+  - override /hydra/sweeper/sampler: tpe
+
+group: sac_hp_search
+
+hydra:
+  sweeper:
+    sampler:
+      seed: 0
+    direction: maximize # average return from run_context_gating.main
+    study_name: sac_hp
+    storage: null # store results in memory
+    n_trials: 80 # number of trials in total
+    n_jobs: 4 # concurrent trials
+
+    search_space:
+      n_step:
+        type: int
+        low: 1
+        high: 10
+        step: 1
+      learning_rate:
+        type: float
+        low: 0.0001
+        high: 0.01
+        log: true
+      alpha:
+        type: float
+        low: 0.0
+        high: 0.5
+      gamma:
+        type: categorical
+        choices: [0.9, 0.99, 0.995]
+      replay_capacity:
+        type: categorical
+        choices: [25000, 50000, 100000, 200000]
+#      batch_size:
+#        type: categorical
+#        choices: [64, 128, 256, 512]
+      network.width:
+        type: categorical
+        choices: [32, 64, 128, 256]
+

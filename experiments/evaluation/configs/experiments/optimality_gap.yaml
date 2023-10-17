@@ -1,0 +1,16 @@
+# @package _global_
+
+n_eval_episodes_per_context: 10
+eval_on_train_contexts: true
+sample_contexts: false
+folder_id: eval
+
+hydra:
+  run:
+    dir: ./runs/optimality_gap/${folder_id}
+  sweep:
+    dir: ./runs/optimality_gap/${folder_id}
+  launcher:
+    setup:
+      - export XLA_PYTHON_CLIENT_PREALLOCATE=false
+      - export MUJOCO_GL=egl

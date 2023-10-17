@@ -1,0 +1,27 @@
+# @package hydra.sweeper
+
+sampler:
+  _target_: optuna.samplers.RandomSampler
+  # _target_: optuna.samplers.TPESampler
+  seed: ${seed}
+  # consider_prior: true
+  # prior_weight: 1.0
+  # consider_magic_clip: true
+  # consider_endpoints: false
+  # n_startup_trials: 10
+  # n_ei_candidates: 24
+  # multivariate: false
+  # warn_independent_sampling: true
+  
+_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+direction: maximize
+storage: null
+study_name: ${env}
+n_trials: 50
+n_jobs: 50
+# max_failure_rate: 0.0
+
+params:
+  learning_rate: tag(log,float(interval(1e-5,5e-3)))
+  gamma: tag(log,float(interval(0.89,0.9999)))
+  alpha: float(interval(1e-4, 0.25))

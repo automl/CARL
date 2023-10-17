@@ -1,0 +1,45 @@
+# @package hydra.sweeper
+_target_: hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper
+max_batch_size: null
+ax_config:
+  max_trials: 40
+  early_stop:
+    minimize: false
+    max_epochs_without_improvement: 10
+    epsilon: 1.0e-05
+  experiment:
+    name: ${env}
+    objective_name: objective
+    minimize: false
+    parameter_constraints: null
+    outcome_constraints: null
+    status_quo: null
+  client:
+    verbose_logging: true
+    random_seed: null
+  is_noisy: true
+  params:
+    learning_rate:
+      type: range
+      bounds: [1e-5, 5e-3]
+      log_scale: true
+    gamma:
+      type: range
+      bounds: [0.89, 0.9999]
+      log_scale: true
+
+    # SAC
+    alpha:
+      type: range
+      bounds: [1e-4, 0.25]
+      log_scale: false
+
+    # PPO
+    # clip_lr:
+    #   type: range
+    #   bounds: [1e-5, 5e-3]
+    #   log_scale: true
+    # entropy_regularizer_beta:
+    #   type: range
+    #   bounds: [1e-4,1e-1]
+    #   log_scale: true

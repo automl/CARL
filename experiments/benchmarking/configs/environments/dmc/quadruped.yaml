@@ -1,0 +1,5 @@
+# @package _global_
+
+defaults:
+  - /environments/dmc/base
+env: CARLDmcQuadrupedEnv

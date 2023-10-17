@@ -1,0 +1,56 @@
+defaults:
+  - slurm
+  - _self_
+
+encoder:
+  weights: null
+  model: ContextAE
+  
+
+carl:
+  hide_context: false
+  dict_observation_space: false
+  scale_context_features: "no" # by_mean, by_default
+  state_context_features: null
+  add_gaussian_noise_to_context: false
+  gaussian_noise_std_percentage: 0.15
+
+algorithm: sac
+debug: false
+seed: 0
+group: null
+
+env: CARLPendulumEnv
+max_num_frames: 500000
+n_step: 5
+gamma: 0.9
+alpha: 0.2
+batch_size: 128
+learning_rate: 0.001
+q_targ_tau: 0.001
+warmup_num_frames: 5000
+pi_warmup_num_frames: 7500
+pi_update_freq: 4
+
+
+replay_capacity: 100000
+render_freq: 10000
+eval_freq: 10000
+eval_episodes: ${contexts.num_contexts}
+eval_on_train_context: true
+
+zero_context: false # set context to zero
+state_context: false # set context to state feature subset
+pi_context: true
+q_context: true
+context_state_indices: null
+gating_type: 'Hadamard'
+
+context_branch:
+  width: 32
+
+contexts:
+  context_feature_args: []
+  num_contexts: 100
+  default_sample_std_percentage: 0.05
+  fallback_sample_std: 0.1

@@ -1,0 +1,9 @@
+# @package _global_
+
+landing_in_space:
+  sample_function:
+    _target_: experiments.policy_transfer.landing_in_space.definitions.sample_gravities_normal
+    mean: -9.81  # gravity of Earth
+    std: 1.45
+    seed: ${seed}
+    n_contexts: ${context_sampler.n_samples}
