@@ -1,0 +1,5 @@
+# @package _global_
+
+context_sampler:
+  uniform_distribution: true
+  uniform_bounds_rel: [1.0, 2.5]

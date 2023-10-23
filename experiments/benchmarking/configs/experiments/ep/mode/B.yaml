@@ -1,0 +1,3 @@
+# @package _global_
+
+contexts_train_path: /home/benjamin/Dokumente/code/tmp/tntcomp/CARL/experiments/evaluation/data/kirk_ep/${env}/contexts_B.json

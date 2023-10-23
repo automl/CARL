@@ -1,0 +1,7 @@
+# @package _global_
+
+
+experiment: benchmarking
+n_eval_episodes_per_context: 3
+carl:
+  context_mask: [initial_angle_max, initial_velocity_max]

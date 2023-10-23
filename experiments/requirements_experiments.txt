@@ -1,0 +1,16 @@
+tqdm
+hydra-core
+hydra-colorlog
+rich
+matplotlib
+seaborn
+pandas
+wandb
+coax==0.1.11
+dm-haiku
+jax[cuda]
+hydra-submitit-launcher
+pyvirtualdisplay
+torch --index-url https://download.pytorch.org/whl/cu118
+torchvision --index-url https://download.pytorch.org/whl/cu118
+torchaudio --index-url https://download.pytorch.org/whl/cu118

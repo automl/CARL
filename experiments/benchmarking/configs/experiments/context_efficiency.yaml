@@ -1,0 +1,38 @@
+# @package _global_
+defaults:
+  - ../environments/classic_control/pendulum
+  - ../context_visibility/hidden
+  - ../slurm/cpushort
+  - ../algorithm/sac
+
+experiment: context_efficiency3
+
+consider_n_samples: true
+
+carl:
+  context_mask: null
+
+wandb:
+  debug: true
+
+eval_on_train_context: true
+max_num_frames: 204_800
+
+context_sampler:
+  env_name: ${env}
+  context_feature_names: ["l"]
+  seed: ${seed}
+  n_samples: 10
+  sigma_rel: 0.25  # 0.1, 0.25, 0.5
+  uniform_distribution: true
+  uniform_bounds_rel: [0.5, 1.5]
+
+hydra:
+  run:
+    dir: ./runs/context_efficiency/${env}/train
+  sweep:
+    dir: ./runs/context_efficiency/${env}/train
+  launcher:
+    setup:
+      - export XLA_PYTHON_CLIENT_PREALLOCATE=false
+      - export MUJOCO_GL=egl

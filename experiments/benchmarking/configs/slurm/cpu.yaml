@@ -1,0 +1,13 @@
+# @package _global_
+
+hydra:
+  launcher:
+    partition: cpu_normal
+    cpus_per_task: 1
+    mem_gb: 4
+    gres: null
+    timeout_min: 1440
+    setup:
+      - unset WANDB_DIR
+      - unset WANDB_IGNORE_GLOBS
+      - export JAX_PLATFORM_NAME=cpu

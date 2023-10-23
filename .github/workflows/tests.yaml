@@ -1,0 +1,132 @@
+name: Tests
+
+on:
+  # Manually triggerable in github
+  workflow_dispatch:
+
+  # When a push occurs on either of these branches
+  push:
+    branches:
+      - main
+      - development
+
+  # When a push occurs on a PR that targets these branches
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    branches:
+      - main
+      - development
+
+  schedule:
+    # Every day at 7AM UTC
+    - cron: '0 07 * * *'
+
+env:
+
+  # Arguments used for pytest
+  pytest-args: >-
+    --durations=10
+
+  # Arguments used for code-cov which is later used to annotate PR's on github
+  code-cov-args: >-
+    --cov=carl
+    --cov-report=xml
+
+jobs:
+
+  ubuntu:
+
+    name: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.kind }}
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ['3.9', '3.10']
+        kind: ['conda', 'source', 'dist']
+
+        exclude:
+          # Exclude all configurations *-*-dist, but include one later in `include`
+          - kind: 'dist'
+
+          # Exclude windows as bash commands wont work in windows runner
+          - os: windows-latest
+
+          # Exclude macos as there are permission errors using conda as we do
+          - os: macos-latest
+
+        include:
+          # Add the tag code-cov to ubuntu-3.7-source
+          - os: ubuntu-latest
+            python-version: 3.9
+            kind: 'source'
+            code-cov: true
+
+           # Include one config with dist, ubuntu-3.7-dist
+          - os: ubuntu-latest
+            python-version: 3.9
+            kind: 'dist'
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: "recursive"
+
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Conda install
+      if: matrix.kind == 'conda'
+      run: |
+        # Miniconda is available in $CONDA env var
+        $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
+        $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
+        $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control]
+
+    - name: Source install
+      if: matrix.kind == 'source'
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .[dev,dm_control]
+
+    - name: Dist install
+      if: matrix.kind == 'dist'
+      run: |
+        python -m pip install --upgrade pip
+        python setup.py sdist
+        last_dist=$(ls -t dist/carl-*.tar.gz | head -n 1)
+        pip install $last_dist[dev,dm_control]
+
+    - name: Tests
+      timeout-minutes: 60
+      run: |
+        echo "Running all tests..."
+        if [[ ${{ matrix.kind }} == 'conda' ]]; then
+          PYTHON=$CONDA/envs/testenv/bin/python3
+          export PATH="$CONDA/envs/testenv/bin:$PATH"
+        else
+          PYTHON=$(which python3)
+        fi
+
+        if [ ${{ matrix.code-cov }} ]; then
+          $PYTHON -m pytest ${{ env.pytest-args }} ${{ env.code-cov-args }} --ignore=test/local_only test
+        else
+          $PYTHON -m pytest ${{ env.pytest-args }} --ignore=test/local_only test
+        fi
+
+    - name: Upload coverage
+      if: matrix.code-cov && always()
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true
+        verbose: true

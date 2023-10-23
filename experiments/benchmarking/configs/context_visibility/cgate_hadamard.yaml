@@ -1,0 +1,12 @@
+# @package _global_
+wandb:
+  group: cgate_hadamard
+
+carl:
+  hide_context: false
+  dict_observation_space: true
+
+context_branch:
+  width: ${network.width}
+
+gating_type: Hadamard

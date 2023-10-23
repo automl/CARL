@@ -1,20 +1,27 @@
-# Minimal makefile for Sphinx documentation
-#
+SPHINXBUILD = sphinx-build
+BUILDDIR = build
+SPHINXOPTS =
+ALLSPHINXOPTS = $(SPHINXOPTS) .
 
-# You can set these variables from the command line, and also
-# from the environment for the first two.
-SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = .
-BUILDDIR      = _build
+.PHONY: clean buildapi linkcheck html docs html-noexamples
 
-# Put it first so that "make" without argument is like "make help".
-help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+clean:
+		rm -rf $(BUILDDIR)/*
+		rm -rf api
+		rm -rf examples
 
-.PHONY: help Makefile
+linkcheck:
+		SPHINX_GALLERY_PLOT=False $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+		@echo
+		@echo "Link check complete; look for any errors in the above output or in $(BUILDDIR)/linkcheck/output.txt."
+html:
+		$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+		@echo
+		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+html-noexamples:
+		SPHINX_GALLERY_PLOT=False $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(SOURCEDIR) $(BUILDDIR)/html
+		@echo
+		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+docs: html linkcheck

@@ -1,0 +1,24 @@
+# @package _global_
+
+algorithm: td3
+
+
+action_noise:
+  type: ornsteinuhlenbeck
+  kwargs:
+    mu: 0.0
+    sigma: 0.2
+    theta: 0.15
+noise_decay: 0.99
+learning_rate: 0.001
+gamma: 0.98
+pi_targ_tau: 0.001
+pi_log_sigma: -10.0
+replay_capacity: 200000
+warmup_num_frames: 10000
+warmup_pi_num_frames: 15000
+
+tanh_policy: false
+
+context_branch:
+  width: 512

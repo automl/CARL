@@ -1,0 +1,35 @@
+# @package _global_
+defaults:
+  - ../../algorithm/brax_ppo
+
+env: CARLHumanoid
+
+max_num_frames: 50_000_000
+replay_capacity: 10240
+eval_episodes: 10
+eval_freq: 20
+
+learning_rate: 3e-4
+clip_lr: 3e-4
+gamma: 0.97
+pi_target_tau: 0.1
+entropy_regularizer_beta: 0.001
+batch_size: 1024
+num_minibatches: 32
+num_updates: 8
+clip_range: 0.8
+
+episode_length: 1000
+unroll_length: 5
+reward_scaling: 1
+gae_lambda: 0.9
+vf_coef: 0.1
+
+carl:
+  n_envs: 1024
+
+network:
+  width: 32
+
+action_noise:
+  type: null

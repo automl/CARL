@@ -1,0 +1,57 @@
+defaults:
+  - slurm
+  - _self_
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+
+seed: 0
+output_dir: ./tmp
+env: ???
+agent: ???
+
+wandb:
+  id: null
+  entity: tnt
+  debug: false
+  # group: ???  # set in experiment
+  job_type: train
+  tags: []
+  notes: null
+
+hydra:
+  run:
+    dir: ${output_dir}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ${output_dir}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+contexts:
+  context_feature_args: []
+  num_contexts: 100
+  default_sample_std_percentage: 0.05
+  fallback_sample_std: 0.1
+
+training:
+  eval_on_train_context: true
+  num_steps: 1000000
+  num_envs: 4
+  eval_callback:
+    use: false
+    kwargs:
+      eval_freq: 100
+      deterministic: True
+      render: False
+  checkpoint_callback:
+    use: true
+    kwargs:
+      save_freq: 1000
+
+carl:
+  env_kwargs:
+    hide_context: false
+    dict_observation_space: ${carl.use_cgate}
+    scale_context_features: "no" # by_mean, by_default
+    state_context_features: null
+    add_gaussian_noise_to_context: false
+    instance_mode: rr
+    gaussian_noise_std_percentage: 0.0
+  use_cgate: false

@@ -5,20 +5,21 @@
 Citing CARL
 =================
 
-If you use CARL your research, please cite us with the following Bibtex entry:
+If you use CARL in your research, please cite us with the following Bibtex entry:
 
-.. code:: bash
+.. code:: text
 
-    @misc{CARL,
-      author    = {C. Benjamins and
-                   T. Eimer and
-                   F. Schubert and
-                   A. Biedenkapp and
-                   B. Rosenhahn and
-                   F. Hutter and
-                   M. Lindauer},
-      title     = {CARL: A Benchmark for Contextual and Adaptive Reinforcement Learning},
-      howpublished = {https://github.com/automl/CARL},
-      year      = {2021},
-      month     = aug,
+    @inproceedings { BenEim2021a,
+      author       = {Carolin Benjamins and
+                  Theresa Eimer and
+                  Frederik Schubert and
+                  Aditya Mohan and
+                  Sebastian Döhler and
+                  André Biedenkapp and
+                  Bodo Rosenhahn and
+                  Frank Hutter and
+                  Marius Lindauer},
+      title        = {Contextualize Me - The Case for Context in Reinforcement Learning},
+      journal      = {Transactions on Machine Learning Research},
+      year         = {2023},
     }

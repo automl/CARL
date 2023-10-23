@@ -1,0 +1,25 @@
+# @package _global_
+wandb:
+  group: cgate_sb3
+
+carl:
+  env_kwargs:
+    hide_context: true
+
+agent:
+  kwargs:
+    action_noise:
+      _target_: stable_baselines3.common.noise.OrnsteinUhlenbeckActionNoise
+      mean: 0.0
+      sigma: 0.2
+      theta: 0.15
+    learning_rate: 0.001
+    gamma: 0.98
+    tau: 0.001
+    gradient_steps: -1
+    seed: ${seed}
+    train_freq:
+      - !!int 1
+      - "episode"
+    buffer_size: 200000
+    learning_starts: 10000

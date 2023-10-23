@@ -1,0 +1,70 @@
+{
+	"Jupiter": {
+		"GRAVITY_Y": -23.143693999999996
+	},
+	"Neptune": {
+		"GRAVITY_Y": -10.983448000000001
+	},
+	"Earth": {
+		"GRAVITY_Y": -9.80665
+	},
+	"Mars": {
+		"GRAVITY_Y": -3.6971070499999996
+	},
+	"Moon": {
+		"GRAVITY_Y": -1.6279039
+	},
+	"Pluto": {
+		"GRAVITY_Y": -0.6962721499999999
+	},
+	"0": {"GRAVITY_Y": -25.0},
+	"1": {"GRAVITY_Y": -24.5},
+	"2": {"GRAVITY_Y": -24.0},
+	"3": {"GRAVITY_Y": -23.5},
+	"4": {"GRAVITY_Y": -23.0},
+	"5": {"GRAVITY_Y": -22.5},
+	"6": {"GRAVITY_Y": -22.0},
+	"7": {"GRAVITY_Y": -21.5},
+	"8": {"GRAVITY_Y": -21.0},
+	"9": {"GRAVITY_Y": -20.5},
+	"10": {"GRAVITY_Y": -20.0},
+	"11": {"GRAVITY_Y": -19.5},
+	"12": {"GRAVITY_Y": -19.0},
+	"13": {"GRAVITY_Y": -18.5},
+	"14": {"GRAVITY_Y": -18.0},
+	"15": {"GRAVITY_Y": -17.5},
+	"16": {"GRAVITY_Y": -17.0},
+	"17": {"GRAVITY_Y": -16.5},
+	"18": {"GRAVITY_Y": -16.0},
+	"19": {"GRAVITY_Y": -15.5},
+	"20": {"GRAVITY_Y": -15.0},
+	"21": {"GRAVITY_Y": -14.5},
+	"22": {"GRAVITY_Y": -14.0},
+	"23": {"GRAVITY_Y": -13.5},
+	"24": {"GRAVITY_Y": -13.0},
+	"25": {"GRAVITY_Y": -12.5},
+	"26": {"GRAVITY_Y": -12.0},
+	"27": {"GRAVITY_Y": -11.5},
+	"28": {"GRAVITY_Y": -11.0},
+	"29": {"GRAVITY_Y": -10.5},
+	"30": {"GRAVITY_Y": -10.0},
+	"31": {"GRAVITY_Y": -9.5},
+	"32": {"GRAVITY_Y": -9.0},
+	"33": {"GRAVITY_Y": -8.5},
+	"34": {"GRAVITY_Y": -8.0},
+	"35": {"GRAVITY_Y": -7.5},
+	"36": {"GRAVITY_Y": -7.0},
+	"37": {"GRAVITY_Y": -6.5},
+	"38": {"GRAVITY_Y": -6.0},
+	"39": {"GRAVITY_Y": -5.5},
+	"40": {"GRAVITY_Y": -5.0},
+	"41": {"GRAVITY_Y": -4.5},
+	"42": {"GRAVITY_Y": -4.0},
+	"43": {"GRAVITY_Y": -3.5},
+	"44": {"GRAVITY_Y": -3.0},
+	"45": {"GRAVITY_Y": -2.5},
+	"46": {"GRAVITY_Y": -2.0},
+	"47": {"GRAVITY_Y": -1.5},
+	"48": {"GRAVITY_Y": -1.0},
+	"49": {"GRAVITY_Y": -0.5}	
+}
