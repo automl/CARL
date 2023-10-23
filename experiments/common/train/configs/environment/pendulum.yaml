@@ -1,6 +1,0 @@
-# @package _global_
-
-env: CARLPendulumEnv
-env_wrappers: []
-#  - _target_: gym.wrappers.TimeLimit
-#    max_episode_steps: 10

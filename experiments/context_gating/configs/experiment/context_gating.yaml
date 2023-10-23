@@ -1,7 +1,0 @@
-# @package _global_
-group: context_gating
-
-carl:
-  hide_context: false
-  dict_observation_space: true
-

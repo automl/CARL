@@ -1,8 +1,0 @@
-# @package _global_
-
-landing_in_space:
-  sample_function:
-    _target_: experiments.policy_transfer.landing_in_space.definitions.sample_gravities_uniform
-    intervals: [[-5.69710705, -1.69710705]]                    #  [[-20, -15], [-5, -1e-3]]
-    seed: ${seed}
-    n_contexts: ${context_sampler.n_samples}

@@ -1,8 +1,0 @@
-include LICENSE
-include carl/py.typed
-
-prune test*
-
-# Sprites for Mario
-include carl/envs/mario/sprites/*
-
