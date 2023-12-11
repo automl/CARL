@@ -23,7 +23,7 @@ Feel free to check out our `paper <https://arxiv.org/abs/2110.02102>`_ and our
 What is Context?
 ----------------
 
-.. image:: ../figures/concept.png
+.. image:: source/figures/concept.png
   :width: 75%
   :align: center
   :alt: CARL contextually extends Brax' Fetch.

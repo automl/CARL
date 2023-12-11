@@ -84,7 +84,6 @@ module = [
     "matplotlib.*",
     "pandas.*",
     "PIL.*",
-    "xvfbwrapper.*",
     "scipy.*",
 ]
 ignore_missing_imports = true

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import numpy as np
 
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
@@ -64,3 +66,49 @@ class CARLAcrobot(CARLGymnasiumEnv):
                 "INITIAL_VELOCITY_UPPER", lower=-np.inf, upper=np.inf, default_value=0.1
             ),
         }
+
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        options: Optional[dict] = None,
+    ):
+        super().reset(seed=seed, options=options)
+        angles = self.env.np_random.uniform(
+            low=self.context.get(
+                "INITIAL_ANGLE_LOWER",
+                self.get_context_features()["INITIAL_ANGLE_LOWER"].default_value,
+            ),
+            high=self.context.get(
+                "INITIAL_ANGLE_UPPER",
+                self.get_context_features()["INITIAL_ANGLE_UPPER"].default_value,
+            ),
+            size=(2,),
+        )
+        velocities = self.env.np_random.uniform(
+            low=self.context.get(
+                "INITIAL_VELOCITY_LOWER",
+                self.get_context_features()["INITIAL_VELOCITY_LOWER"].default_value,
+            ),
+            high=self.context.get(
+                "INITIAL_VELOCITY_UPPER",
+                self.get_context_features()["INITIAL_VELOCITY_UPPER"].default_value,
+            ),
+            size=(2,),
+        )
+        self.env.unwrapped.state = np.concatenate([angles, velocities])
+        state = np.array(
+            [
+                np.cos(self.env.unwrapped.state[0]),
+                np.sin(self.env.unwrapped.state[0]),
+                np.cos(self.env.unwrapped.state[1]),
+                np.sin(self.env.unwrapped.state[1]),
+                self.env.unwrapped.state[2],
+                self.env.unwrapped.state[3],
+            ],
+            dtype=np.float32,
+        )
+        info = {}
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from Box2D.b2 import vec2
 from gymnasium.envs.box2d import lunar_lander
 from gymnasium.envs.box2d.lunar_lander import LunarLander
 
@@ -77,8 +78,12 @@ class CARLLunarLander(CARLGymnasiumEnv):
             if hasattr(lunar_lander, key):
                 setattr(lunar_lander, key, value)
 
-        gravity_x = self.context["GRAVITY_X"]
-        gravity_y = self.context["GRAVITY_Y"]
+        gravity_x = self.context.get(
+            "GRAVITY_X", self.get_context_features()["GRAVITY_X"].default_value
+        )
+        gravity_y = self.context.get(
+            "GRAVITY_Y", self.get_context_features()["GRAVITY_Y"].default_value
+        )
 
-        gravity = (gravity_x, gravity_y)
-        self.env.world.gravity = gravity
+        gravity = vec2(float(gravity_x), float(gravity_y))
+        self.env.unwrapped.world.gravity = gravity

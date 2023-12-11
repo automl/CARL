@@ -2,9 +2,7 @@
 Code adapted from gym.envs.box2d.car_racing.py
 """
 
-from typing import Any
 import numpy as np
-import gymnasium as gym
 import time
 import pygame
 from carl.envs.gymnasium.box2d.carl_vehicle_racing import (
@@ -44,6 +42,7 @@ if __name__ == "__main__":
 
     contexts = {i: {"VEHICLE_ID": i} for i in range(len(VEHICLE_NAMES))}
     CARLVehicleRacing.render_mode = "human"
+    CARLVehicleRacing.render_mode = "human"
     env = CARLVehicleRacing(contexts=contexts)
 
     record_video = False
@@ -63,6 +62,7 @@ if __name__ == "__main__":
         restart = False
         while True:
             register_input()
+            s, r, truncated, terminated, info = env.step(a)
             s, r, truncated, terminated, info = env.step(a)
             time.sleep(0.025)
             total_reward += r
