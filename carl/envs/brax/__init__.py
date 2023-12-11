@@ -10,6 +10,7 @@ from carl.envs.brax.carl_pusher import CARLBraxPusher
 from carl.envs.brax.carl_reacher import CARLBraxReacher
 from carl.envs.brax.carl_walker2d import CARLBraxWalker2d
 
+
 __all__ = [
     "CARLBraxAnt",
     "CARLBraxHalfcheetah",

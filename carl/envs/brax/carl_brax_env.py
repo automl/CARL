@@ -14,6 +14,7 @@ from jax import numpy as jp
 
 from carl.context.selection import AbstractSelector
 from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
+from carl.envs.brax.brax_walker_goal_wrapper import BraxWalkerGoalWrapper, BraxLanguageWrapper
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Contexts
 
@@ -152,6 +153,7 @@ class CARLBraxEnv(CARLEnv):
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
+        use_language_goals: bool = False,
         **kwargs,
     ) -> None:
         """
@@ -203,6 +205,15 @@ class CARLBraxEnv(CARLEnv):
                 high=env.observation_space.high,
                 dtype=np.float32,
             )
+
+        if contexts is not None:
+            if "target_distance" in contexts[contexts.keys()[0]] or "target_direction" in contexts[contexts.keys()[0]]:
+                max_diff_dir = max([c["target_direction"]- contexts[contexts.keys()[0]]["target_direction"] for c in contexts.values()])
+                max_diff_dist = max([c["target_distance"]- contexts[contexts.keys()[0]]["target_distance"] for c in contexts.values()])
+                if max_diff_dir > 0.1 or max_diff_dist > 0.1:
+                    env = BraxWalkerGoalWrapper(env)
+                    if use_language_goals:
+                        env = BraxLanguageWrapper(env, contexts)
 
         super().__init__(
             env=env,

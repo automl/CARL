@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.context.context_space import ContextFeature, UniformFloatContextFeature, CategoricalContextFeature
 from carl.envs.brax.carl_brax_env import CARLBraxEnv
+from carl.envs.brax.brax_walker_goal_wrapper import directions
 
 
 class CARLBraxHalfcheetah(CARLBraxEnv):
@@ -48,5 +49,11 @@ class CARLBraxHalfcheetah(CARLBraxEnv):
             ),
             "mass_ffoot": UniformFloatContextFeature(
                 "mass_ffoot", lower=1e-6, upper=np.inf, default_value=0.8845188
+            ),
+            "target_distance": UniformFloatContextFeature(
+                "target_distance", lower=0, upper=np.inf, default_value=0
+            ),
+            "target_direction": CategoricalContextFeature(
+                "target_direction", choices=directions, default_value=0
             ),
         }

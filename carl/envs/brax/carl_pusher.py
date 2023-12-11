@@ -76,4 +76,11 @@ class CARLBraxPusher(CARLBraxEnv):
             "mass_object": UniformFloatContextFeature(
                 "mass_object", lower=1e-6, upper=np.inf, default_value=1.8325957e-03
             ),
+            "goal_position_x": UniformFloatContextFeature("goal_position_x", lower=0, upper=np.inf, default_value=0.45),
+            "goal_position_y": UniformFloatContextFeature("goal_position_y", lower=0, upper=np.inf, default_value=0.05),
+            "goal_position_z": UniformFloatContextFeature("goal_position_z", lower=0, upper=np.inf, default_value=0.05),
         }
+    
+    def _update_context(self) -> None:
+        super()._update_context()
+        self.env._goal_pos = np.array([self.context["goal_position_x"], self.context["goal_position_y"], self.context["goal_position_z"]])
