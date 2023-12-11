@@ -1,8 +1,9 @@
 import unittest
 
-from carl.context.search_space_encoding import search_space_to_config_space
 from ConfigSpace import ConfigurationSpace
 from omegaconf import DictConfig
+
+from carl.context.search_space_encoding import search_space_to_config_space
 
 
 class TestSearchSpacEncoding(unittest.TestCase):

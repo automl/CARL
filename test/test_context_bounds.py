@@ -1,7 +1,8 @@
 import unittest
 
-from carl.context.utils import get_context_bounds
 import numpy as np
+
+from carl.context.utils import get_context_bounds
 
 
 class TestContextBounds(unittest.TestCase):
