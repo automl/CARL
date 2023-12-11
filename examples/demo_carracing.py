@@ -2,9 +2,7 @@
 Code adapted from gym.envs.box2d.car_racing.py
 """
 
-from typing import Any
 import numpy as np
-import gymnasium as gym
 import time
 import pygame
 from carl.envs.gymnasium.box2d.carl_vehicle_racing import (
@@ -66,6 +64,7 @@ if __name__ == "__main__":
             s, r, truncated, terminated, info = env.step(a)
             time.sleep(0.025)
             total_reward += r
+
             if steps % 200 == 0 or terminated or truncated:
                 print("\naction " + str(["{:+0.2f}".format(x) for x in a]))
                 print("step {} total_reward {:+0.2f}".format(steps, total_reward))

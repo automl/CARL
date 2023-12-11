@@ -23,9 +23,7 @@ outputs
 testvenv
 *.egg-info
 runs
-*.png
 *.pdf
-*.csv
 *.pickle
 *.ipynb_checkpoints
 *optgap*

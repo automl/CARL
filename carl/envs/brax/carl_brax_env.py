@@ -274,4 +274,4 @@ class CARLBraxEnv(CARLEnv):
                 updated_geoms.append(geom_new)
             sys = sys.replace(geoms=updated_geoms)
 
-        self.env.sys = sys
+        self.env.unwrapped.sys = sys
