@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import inspect
 
@@ -25,12 +25,10 @@ def load_dmc_env(
     domain_name: str,
     task_name: str,
     context: Context = {},
-    context_mask: Optional[List[str]] = [],
     task_kwargs: Optional[Any] = None,
     environment_kwargs: Dict[str, bool] = None,
     visualize_reward: bool = False,
 ) -> dm_env:
-
     if domain_name in _DOMAINS:
         domain = _DOMAINS[domain_name]
     elif domain_name in suite._DOMAINS:
@@ -42,9 +40,7 @@ def load_dmc_env(
         task_kwargs = task_kwargs or {}
         if environment_kwargs is not None:
             task_kwargs = dict(task_kwargs, environment_kwargs=environment_kwargs)
-        env = domain.SUITE[task_name](
-            context=context, context_mask=context_mask, **task_kwargs
-        )
+        env = domain.SUITE[task_name](context=context, **task_kwargs)
         env.task.visualize_reward = visualize_reward
         return env
     elif (domain_name, task_name) in suite.ALL_TASKS:

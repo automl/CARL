@@ -10,14 +10,20 @@ on:
       - main
       - development
 
-  # When a push occurs on a PR that targets these branches
+  # Trigger on open/push to a PR targeting one of these branches
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches:
       - main
       - development
 
 jobs:
   dist:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +44,7 @@ jobs:
     - name: Twine check
       run: |
         pip install twine
-        last_dist=$(ls -t dist/ContextuaRL-*.tar.gz | head -n 1)
+        last_dist=$(ls -t dist/carl-*.tar.gz | head -n 1)
         twine_output=`twine check "$last_dist"`
         if [[ "$twine_output" != "Checking $last_dist: PASSED" ]]
         then
@@ -49,7 +55,7 @@ jobs:
 
     - name: Install dist
       run: |
-        last_dist=$(ls -t dist/ContextuaRL-*.tar.gz | head -n 1)
+        last_dist=$(ls -t dist/carl-*.tar.gz | head -n 1)
         pip install $last_dist
 
     - name: PEP 561 Compliance
