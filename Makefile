@@ -63,7 +63,7 @@ pre-commit:
 	$(PRECOMMIT) run --all-files
 
 format-black:
-	$(BLACK) carl test
+	$(BLACK) carl test examples
 
 format-isort:
 	$(ISORT) carl test
