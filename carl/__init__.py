@@ -71,7 +71,7 @@ try:
     if found:
         register(
             id="carl/CARLMarioEnv-v0",
-            entry_point="carl.envs.gymnasium:CARLMarioEnv",
+            entry_point="carl.envs.mario:CARLMarioEnv",
         )
 except:
     print(
