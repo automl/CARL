@@ -1,57 +1,55 @@
 from __future__ import annotations
 
 import gymnax
-import jax.numpy as jnp
+import jax.numpy as np
 
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
-from carl.utils.types import Context
-
-DEFAULT_CONTEXT = {
-    "min_position": -1.2,
-    "max_position": 0.6,
-    "max_speed": 0.07,
-    "goal_position": 0.5,
-    "goal_velocity": 0,
-    "force": 0.001,
-    "gravity": 0.0025,
-    "max_steps_in_episode": 200,
-}
-
-CONTEXT_BOUNDS = {
-    "min_position": (-jnp.inf, jnp.inf, float),
-    "max_position": (-jnp.inf, jnp.inf, float),
-    "max_speed": (0, jnp.inf, float),
-    "goal_position": (-jnp.inf, jnp.inf, float),
-    "goal_velocity": (-jnp.inf, jnp.inf, float),
-    "force": (-jnp.inf, jnp.inf, float),
-    "gravity": (0, jnp.inf, float),
-    "max_steps_in_episode": (1, jnp.inf, int),
-}
+from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 
 
 class CARLGymnaxMountainCar(CARLGymnaxEnv):
     env_name: str = "MountainCar-v0"
-    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
-    DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
+    module: str = "classic_control.mountain_car"
 
-    def _update_context(self) -> None:
-        self.env.env.env_params = (
-            gymnax.environments.classic_control.mountain_car.EnvParams(**self.context)
-        )
-
-        self.low = jnp.array(
-            [self.env.env.env_params.min_position, -self.env.env.env_params.max_speed],
-            dtype=jnp.float32,
-        ).squeeze()
-        self.high = jnp.array(
-            [self.env.env.env_params.max_position, self.env.env.env_params.max_speed],
-            dtype=jnp.float32,
-        ).squeeze()
-
-        self.build_observation_space(self.low, self.high, CONTEXT_BOUNDS)
-
+    @staticmethod
+    def get_context_features() -> dict[str, ContextFeature]:
+        return {
+            "min_position": UniformFloatContextFeature(
+                "min_position", lower=-np.inf, upper=np.inf, default_value=-1.2
+            ),
+            "max_position": UniformFloatContextFeature(
+                "max_position", lower=-np.inf, upper=np.inf, default_value=0.6
+            ),
+            "max_speed": UniformFloatContextFeature(
+                "max_speed", lower=0, upper=np.inf, default_value=0.07
+            ),
+            "goal_position": UniformFloatContextFeature(
+                "goal_position", lower=-np.inf, upper=np.inf, default_value=0.45
+            ),
+            "goal_velocity": UniformFloatContextFeature(
+                "goal_velocity", lower=-np.inf, upper=np.inf, default_value=0
+            ),
+            "force": UniformFloatContextFeature(
+                "force", lower=-np.inf, upper=np.inf, default_value=0.001
+            ),
+            "gravity": UniformFloatContextFeature(
+                "gravity", lower=0, upper=np.inf, default_value=0.0025
+            ),
+            "min_position_start": UniformFloatContextFeature(
+                "min_position_start", lower=-np.inf, upper=np.inf, default_value=-0.6
+            ),
+            "max_position_start": UniformFloatContextFeature(
+                "max_position_start", lower=-np.inf, upper=np.inf, default_value=-0.4
+            ),
+            "min_velocity_start": UniformFloatContextFeature(
+                "min_velocity_start", lower=-np.inf, upper=np.inf, default_value=0
+            ),
+            "max_velocity_start": UniformFloatContextFeature(
+                "max_velocity_start", lower=-np.inf, upper=np.inf, default_value=0
+            ),
+        }
+   
 
 class CARLGymnaxMountainCarContinuous(CARLGymnaxMountainCar):
     env_name: str = "MountainCarContinuous-v0"
-    max_episode_steps: int = 999
-    DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
+    module: str = "classic_control.continuous_mountain_car"
