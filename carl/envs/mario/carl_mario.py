@@ -22,6 +22,11 @@ LEVEL_HEIGHT = 16
 
 
 class CARLMarioEnv(CARLEnv):
+    metadata = {
+        "render_modes": ["rgb_array", "tiny_rgb_array"],
+        "render_fps": 24,
+    }
+
     def __init__(
         self,
         env: MarioEnv = None,

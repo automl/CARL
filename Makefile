@@ -63,7 +63,7 @@ pre-commit:
 	$(PRECOMMIT) run --all-files
 
 format-black:
-	$(BLACK) carl test
+	$(BLACK) carl test examples
 
 format-isort:
 	$(ISORT) carl test
@@ -72,6 +72,9 @@ format: format-black format-isort
 
 test:
 	$(PYTEST) test
+
+test-cov:
+	$(PYTEST) test --cov=carl --cov-report=html:test_coverage_carl
 
 clean-doc:
 	$(MAKE) -C ${DOCDIR} clean

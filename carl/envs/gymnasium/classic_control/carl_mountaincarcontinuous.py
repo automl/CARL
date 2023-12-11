@@ -10,6 +10,7 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 class CARLMountainCarContinuous(CARLGymnasiumEnv):
     env_name: str = "MountainCarContinuous-v0"
+    metadata = {"render.modes": ["human", "rgb_array"]}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

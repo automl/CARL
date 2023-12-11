@@ -59,6 +59,9 @@ extras_require = {
         "sphinx-autoapi>=1.8.4",
         "automl-sphinx-theme>=0.1.9",
     ],
+    "examples": [
+        "stable-baselines3",
+    ]
 }
 
 setuptools.setup(

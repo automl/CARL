@@ -14,6 +14,7 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 class CARLBipedalWalker(CARLGymnasiumEnv):
     env_name: str = "BipedalWalker-v3"
+    metadata = {"render.modes": ["human", "rgb_array"]}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

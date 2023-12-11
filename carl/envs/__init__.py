@@ -4,7 +4,10 @@ import importlib.util as iutil
 import warnings
 
 # Classic control is in gym and thus necessary for the base version to run
+from carl import envs
 from carl.envs.gymnasium import *
+
+__all__ = envs.gymnasium.__all__
 
 
 def check_spec(spec_name: str) -> bool:
@@ -36,13 +39,19 @@ found = check_spec("Box2D")
 if found:
     from carl.envs.gymnasium.box2d import *
 
+    __all__ += envs.gymnasium.box2d.__all__
+
 found = check_spec("brax")
 if found:
     from carl.envs.brax import *
 
+    __all__ += envs.brax.__all__
+
 found = check_spec("py4j")
 if found:
     from carl.envs.mario import *
+
+    __all__ += envs.mario.__all__
 
 found = check_spec("dm_control")
 if found:
@@ -51,13 +60,21 @@ else:
     warnings.warn(
         "Module 'dm_control' not found. If you want to use these environments, please follow the installation guide."
     )
+    __all__ += envs.dmc.__all__
 
+found = check_spec("distance")
+if found:
+    from carl.envs.rna import *
+
+    __all__ += envs.rna.__all__
 
 gymnax_spec = iutil.find_spec("gymnax")
 found = gymnax_spec is not None
 if found:
     from carl.envs.gymnax import *
+    __all__ += envs.gymnax.__all__
 else:
     warnings.warn(
         "Module 'gymnax' not found. If you want to use these environments, please follow the installation guide."
     )
+    
