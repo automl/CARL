@@ -15,7 +15,6 @@ class TestGymnasiumEnvs(unittest.TestCase):
             if inspect.isclass(env_obj) and "CARL" in env_name:
                 try:
                     env_obj.get_context_features()
-
                     env = env_obj()
                     env._progress_instance()
                     env._update_context()
@@ -35,7 +34,6 @@ class TestGymnasiumRegistration(unittest.TestCase):
     def test_make(self):
         for e in carl.envs.__all__:
             if "RNA" not in e and "Brax" not in e and "Dmc" not in e:
-                print(e)
                 env_name = f"carl/{e}-v0"
                 env = gym.make(env_name)
                 self.assertTrue(isinstance(env, gym.Env))

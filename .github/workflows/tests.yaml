@@ -72,7 +72,7 @@ jobs:
         # Miniconda is available in $CONDA env var
         $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
         $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
-        $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control,mario,brax]
+        $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control,mario,brax,box2d]
 
     - name: Tests
       timeout-minutes: 60

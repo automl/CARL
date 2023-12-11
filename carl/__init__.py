@@ -70,7 +70,7 @@ try:
     found = check_spec("py4j")
     if found:
         register(
-            id="carl/CARLMario-v0",
+            id="carl/CARLMarioEnv-v0",
             entry_point="carl.envs.gymnasium:CARLMarioEnv",
         )
 except:
