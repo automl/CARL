@@ -90,10 +90,3 @@ jobs:
         else
           $PYTHON -m pytest ${{ env.pytest-args }} --ignore=test/local_only test
         fi
-
-    - name: Upload coverage
-      if: matrix.code-cov && always()
-      uses: codecov/codecov-action@v2
-      with:
-        fail_ci_if_error: true
-        verbose: true
