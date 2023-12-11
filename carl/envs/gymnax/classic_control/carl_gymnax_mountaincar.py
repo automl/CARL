@@ -39,13 +39,13 @@ class CARLGymnaxMountainCarContinuous(CARLGymnaxMountainCar):
     def get_context_features() -> dict[str, ContextFeature]:
         return {
             "max_speed": UniformFloatContextFeature(
-                "max_speed", lower=0, upper=np.inf, default_value=0.07
+                "max_speed", lower=1e-3, upper=10, default_value=0.07
             ),
             "goal_position": UniformFloatContextFeature(
-                "goal_position", lower=-np.inf, upper=np.inf, default_value=0.45
+                "goal_position", lower=-2, upper=2, default_value=0.45
             ),
             "goal_velocity": UniformFloatContextFeature(
-                "goal_velocity", lower=-np.inf, upper=np.inf, default_value=0
+                "goal_velocity", lower=-10, upper=10, default_value=0
             ),
             "power": UniformFloatContextFeature(
                 "power", lower=1e-6, upper=10, default_value=0.001
