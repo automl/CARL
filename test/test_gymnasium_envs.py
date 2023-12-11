@@ -27,13 +27,13 @@ class TestGymnasiumRegistration(unittest.TestCase):
     def test_registration(self):
         registered_envs = gym.envs.registration.registry.keys()
         for e in carl.envs.__all__:
-            if "RNA" not in e and "Brax" not in e and "Dmc" not in e:
+            if "RNA" not in e and "Brax" not in e:
                 env_name = f"carl/{e}-v0"
                 self.assertTrue(env_name in registered_envs)
 
     def test_make(self):
         for e in carl.envs.__all__:
-            if "RNA" not in e and "Brax" not in e and "Dmc" not in e:
+            if "RNA" not in e and "Brax" not in e:
                 env_name = f"carl/{e}-v0"
                 env = gym.make(env_name)
                 self.assertTrue(isinstance(env, gym.Env))

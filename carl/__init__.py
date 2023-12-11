@@ -58,13 +58,20 @@ try:
                 )
         return found
 
-    # Environment loading
     found = check_spec("Box2D")
     if found:
         for e in envs.gymnasium.box2d.__all__:
             register(
                 id=f"carl/{e}-v0",
                 entry_point=f"carl.envs.gymnasium.box2d:{e}",
+            )
+
+    found = check_spec("dm_control")
+    if found:
+        for e in envs.dmc.__all__:
+            register(
+                id=f"carl/{e}-v0",
+                entry_point=f"carl.envs.dmc:{e}",
             )
 
     found = check_spec("py4j")
