@@ -2,9 +2,6 @@ from __future__ import annotations
 
 import importlib
 
-import gymnax
-import jax.numpy as np
-
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 

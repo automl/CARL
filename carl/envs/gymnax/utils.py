@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Sequence
+from typing import Any
 
 import gymnasium
 import gymnasium.spaces
 import gymnax
-from gymnasium.wrappers import EnvCompatibility
-from gymnasium.wrappers.compatibility import LegacyEnv
 from gymnax.environments.environment import Environment, EnvParams
 from gymnax.environments.spaces import Space, gymnax_space_to_gym_space
 from gymnax.wrappers.gym import GymnaxToGymWrapper
-from numpy._typing import DTypeLike
-from numpy.random._generator import Generator as Generator
 
 
 # Although this converts to gym, the step API already is for gymnasium

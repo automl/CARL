@@ -4,14 +4,12 @@ from typing import Any
 
 import importlib
 
-import gymnasium
-import gymnax.environments
 from gymnasium.core import Env
 
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
 from carl.envs.gymnax.utils import make_gymnax_env
-from carl.utils.types import Context, Contexts
+from carl.utils.types import Contexts
 
 
 class CARLGymnaxEnv(CARLEnv):
