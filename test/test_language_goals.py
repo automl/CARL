@@ -1,11 +1,11 @@
 import unittest
 
 from carl.envs.brax import (
-    CARLAnt,
-    CARLHalfcheetah,
-    CARLFetch,
-    BraxWalkerGoalWrapper,
     BraxLanguageWrapper,
+    BraxWalkerGoalWrapper,
+    CARLAnt,
+    CARLFetch,
+    CARLHalfcheetah,
     sample_walker_language_goals,
 )
 

@@ -2,9 +2,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature, CategoricalContextFeature
-from carl.envs.brax.carl_brax_env import CARLBraxEnv
+from carl.context.context_space import (
+    CategoricalContextFeature,
+    ContextFeature,
+    UniformFloatContextFeature,
+)
 from carl.envs.brax.brax_walker_goal_wrapper import directions
+from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 
 class CARLBraxWalker2d(CARLBraxEnv):

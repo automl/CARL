@@ -29,23 +29,24 @@ DIRECTION_NAMES = {
 }
 
 directions = [
-        1,  # north
-        3,  # south
-        2,  # east
-        4,  # west
-        12,
-        32,
-        14,
-        34,
-        112,
-        332,
-        114,
-        334,
-        212,
-        232,
-        414,
-        434,
-    ]
+    1,  # north
+    3,  # south
+    2,  # east
+    4,  # west
+    12,
+    32,
+    14,
+    34,
+    112,
+    332,
+    114,
+    334,
+    212,
+    232,
+    414,
+    434,
+]
+
 
 class BraxWalkerGoalWrapper(gym.Wrapper):
     """Adds a positional goal to brax walker envs"""
@@ -117,9 +118,11 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
     def step(self, action):
         state, _, done, info = self.env.step(action)
         indices = STATE_INDICES[self.env.__class__.__name__]
-        new_position = np.array(list(self.position)) + np.array(
-            [state[indices[0]], state[indices[1]]]
-        ) *  self.env.env.sys.config.dt
+        new_position = (
+            np.array(list(self.position))
+            + np.array([state[indices[0]], state[indices[1]]])
+            * self.env.env.sys.config.dt
+        )
         current_distance_to_goal = np.linalg.norm(self.goal_position - new_position)
         previous_distance_to_goal = np.linalg.norm(self.goal_position - self.position)
         direction_reward = max(0, previous_distance_to_goal - current_distance_to_goal)
@@ -130,6 +133,7 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         else:
             info["success"] = 0
         return state, direction_reward, done, info
+
 
 class BraxLanguageWrapper(gym.Wrapper):
     """Translates the context features target distance and target radius into language"""

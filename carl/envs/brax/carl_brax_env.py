@@ -13,8 +13,11 @@ from etils import epath
 from jax import numpy as jp
 
 from carl.context.selection import AbstractSelector
+from carl.envs.brax.brax_walker_goal_wrapper import (
+    BraxLanguageWrapper,
+    BraxWalkerGoalWrapper,
+)
 from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
-from carl.envs.brax.brax_walker_goal_wrapper import BraxWalkerGoalWrapper, BraxLanguageWrapper
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Contexts
 
@@ -207,9 +210,18 @@ class CARLBraxEnv(CARLEnv):
             )
 
         if contexts is not None:
-            if "target_distance" in contexts[contexts.keys()[0]] or "target_direction" in contexts[contexts.keys()[0]]:
-                max_diff_dir = max([c["target_direction"]- contexts[contexts.keys()[0]]["target_direction"] for c in contexts.values()])
-                max_diff_dist = max([c["target_distance"]- contexts[contexts.keys()[0]]["target_distance"] for c in contexts.values()])
+            if (
+                "target_distance" in contexts[contexts.keys()[0]]
+                or "target_direction" in contexts[contexts.keys()[0]]
+            ):
+                base_dir = contexts[contexts.keys()[0]]["target_direction"]
+                base_dist = contexts[contexts.keys()[0]]["target_distance"]
+                max_diff_dir = max(
+                    [c["target_direction"] - base_dir for c in contexts.values()]
+                )
+                max_diff_dist = max(
+                    [c["target_distance"] - base_dist for c in contexts.values()]
+                )
                 if max_diff_dir > 0.1 or max_diff_dist > 0.1:
                     env = BraxWalkerGoalWrapper(env)
                     if use_language_goals:

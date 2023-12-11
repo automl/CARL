@@ -22,6 +22,7 @@ from typing import Any
 from multiprocessing.sharedctypes import Value
 
 import numpy as np
+from dm_control.mujoco.wrapper import mjbindings
 from dm_control.rl import control  # type: ignore
 from dm_control.suite.point_mass import (  # type: ignore
     _DEFAULT_TIME_LIMIT,
@@ -30,7 +31,6 @@ from dm_control.suite.point_mass import (  # type: ignore
     PointMass,
     get_model_and_assets,
 )
-from dm_control.mujoco.wrapper import mjbindings
 
 from carl.envs.dmc.dmc_tasks.utils import adapt_context  # type: ignore
 from carl.utils.types import Context
@@ -44,12 +44,22 @@ def check_constraints(
     target_y,
     area_size,
 ) -> None:
-    if starting_x >= area_size/4 or starting_y >= area_size/4 or starting_x <= -area_size/4 or starting_y <= -area_size/4:
+    if (
+        starting_x >= area_size / 4
+        or starting_y >= area_size / 4
+        or starting_x <= -area_size / 4
+        or starting_y <= -area_size / 4
+    ):
         raise ValueError(
             f"The starting points are located outside of the grid. Choose a value lower than {area_size/4}."
         )
 
-    if target_x >= area_size/4 or target_y >= area_size/4 or target_x <= -area_size/4 or target_y <= -area_size/4:
+    if (
+        target_x >= area_size / 4
+        or target_y >= area_size / 4
+        or target_x <= -area_size / 4
+        or target_y <= -area_size / 4
+    ):
         raise ValueError(
             f"The target points are located outside of the grid. Choose a value lower than {area_size/4}."
         )
@@ -127,20 +137,23 @@ def get_pointmass_xml_string(
     xml_string_bytes = xml_string.encode()
     return xml_string_bytes
 
+
 def random_limited_quaternion(random, limit):
-  """Generates a random quaternion limited to the specified rotations."""
-  axis = random.randn(3)
-  axis /= np.linalg.norm(axis)
-  angle = random.rand() * limit
+    """Generates a random quaternion limited to the specified rotations."""
+    axis = random.randn(3)
+    axis /= np.linalg.norm(axis)
+    angle = random.rand() * limit
 
-  quaternion = np.zeros(4)
-  mjbindings.mjlib.mju_axisAngle2Quat(quaternion, axis, angle)
+    quaternion = np.zeros(4)
+    mjbindings.mjlib.mju_axisAngle2Quat(quaternion, axis, angle)
 
-  return quaternion
+    return quaternion
+
 
 class ContextualPointMass(PointMass):
     starting_x: float = 0.2
     starting_y: float = 0.2
+
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode.
 
@@ -176,16 +189,16 @@ class ContextualPointMass(PointMass):
         qpos = physics.named.data.qpos
 
         for joint_id in range(physics.model.njnt):
-            joint_name = physics.model.id2name(joint_id, 'joint')
+            joint_name = physics.model.id2name(joint_id, "joint")
             joint_type = physics.model.jnt_type[joint_id]
             is_limited = physics.model.jnt_limited[joint_id]
             range_min, range_max = physics.model.jnt_range[joint_id]
 
             if is_limited:
                 if joint_type == hinge or joint_type == slide:
-                    if 'root_x' in joint_name:
+                    if "root_x" in joint_name:
                         qpos[joint_name] = self.starting_x
-                    elif 'root_y' in joint_name:
+                    elif "root_y" in joint_name:
                         qpos[joint_name] = self.starting_y
                     else:
                         qpos[joint_name] = random.uniform(range_min, range_max)
