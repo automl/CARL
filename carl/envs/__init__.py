@@ -56,10 +56,7 @@ if found:
 found = check_spec("dm_control")
 if found:
     from carl.envs.dmc import *
-else:
-    warnings.warn(
-        "Module 'dm_control' not found. If you want to use these environments, please follow the installation guide."
-    )
+
     __all__ += envs.dmc.__all__
 
 found = check_spec("distance")
@@ -72,9 +69,5 @@ gymnax_spec = iutil.find_spec("gymnax")
 found = gymnax_spec is not None
 if found:
     from carl.envs.gymnax import *
+
     __all__ += envs.gymnax.__all__
-else:
-    warnings.warn(
-        "Module 'gymnax' not found. If you want to use these environments, please follow the installation guide."
-    )
-    
