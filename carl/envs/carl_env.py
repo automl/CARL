@@ -178,7 +178,6 @@ class CARLEnv(Wrapper, abc.ABC):
             context_feature_names=obs_context_feature_names,
             as_dict=self.obs_context_as_dict,
         )
-
         obs_space = spaces.Dict(
             {
                 "obs": self.base_observation_space,

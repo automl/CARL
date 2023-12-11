@@ -53,7 +53,7 @@ class CARLGymnaxAcrobot(CARLGymnaxEnv):
         }
 
     def _update_context(self) -> None:
-        content = self.env.env.env_params.__dict__
+        content = self.env.env_params.__dict__
         content.update(self.context)
         # We cannot directly set attributes of env_params because it is a frozen dataclass
         self.env.env.env_params = gymnax.environments.classic_control.acrobot.EnvParams(
