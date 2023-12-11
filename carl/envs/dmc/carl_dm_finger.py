@@ -7,6 +7,7 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 class CARLDmcFingerEnv(CARLDmcEnv):
     domain = "finger"
     task = "spin_context"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
