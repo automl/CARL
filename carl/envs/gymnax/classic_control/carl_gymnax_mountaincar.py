@@ -35,18 +35,6 @@ class CARLGymnaxMountainCar(CARLGymnaxEnv):
             "gravity": UniformFloatContextFeature(
                 "gravity", lower=0, upper=np.inf, default_value=0.0025
             ),
-            "min_position_start": UniformFloatContextFeature(
-                "min_position_start", lower=-np.inf, upper=np.inf, default_value=-0.6
-            ),
-            "max_position_start": UniformFloatContextFeature(
-                "max_position_start", lower=-np.inf, upper=np.inf, default_value=-0.4
-            ),
-            "min_velocity_start": UniformFloatContextFeature(
-                "min_velocity_start", lower=-np.inf, upper=np.inf, default_value=0
-            ),
-            "max_velocity_start": UniformFloatContextFeature(
-                "max_velocity_start", lower=-np.inf, upper=np.inf, default_value=0
-            ),
         }
 
 
