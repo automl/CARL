@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
+import importlib
+
 import gymnasium
+import gymnax.environments
 from gymnasium.core import Env
 
 from carl.context.selection import AbstractSelector
@@ -66,11 +69,18 @@ class CARLGymnaxEnv(CARLEnv):
             **kwargs,
         )
 
-    def _update_context(self) -> None:
-        raise NotImplementedError
-
     def __getattr__(self, name: str) -> Any:
         if name in ["sys", "__getstate__"]:
             return getattr(self.env._environment, name)
         else:
             return getattr(self, name)
+
+    def _update_context(self) -> None:
+        content = self.env.env_params.__dict__
+        content.update(self.context)
+        # We cannot directly set attributes of env_params because it is a frozen dataclass
+
+        # TODO Make this faster by preloading module?
+        self.env.env.env_params = getattr(
+            importlib.import_module(f"gymnax.environments.{self.module}"), "EnvParams"
+        )(**content)

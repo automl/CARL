@@ -33,27 +33,11 @@ CONTEXT_BOUNDS = {
 
 class CARLGymnaxCartPole(CARLGymnaxEnv):
     env_name: str = "CartPole-v1"
-    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])  # type: ignore[arg-type]
-    DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
 
     def _update_context(self) -> None:
-        self.context["polemass_length"] = (
-            self.context["masspole"] * self.context["length"]
-        )
-        self.context["total_mass"] = self.context["masscart"] + self.context["masspole"]
-
+        content = self.env.env_params.__dict__
+        content.update(self.context)
+        # We cannot directly set attributes of env_params because it is a frozen dataclass
         self.env.env.env_params = (
-            gymnax.environments.classic_control.cartpole.EnvParams(**self.context)
+            gymnax.environments.classic_control.cartpole.EnvParams(**content)
         )
-
-        high = jnp.array(
-            [
-                self.env.env.env_params.x_threshold * 2,
-                jnp.finfo(jnp.float32).max,
-                self.env.env.env_params.theta_threshold_radians * 2,
-                jnp.finfo(jnp.float32).max,
-            ],
-            dtype=jnp.float32,
-        )
-        low = -high
-        self.build_observation_space(low, high, CONTEXT_BOUNDS)

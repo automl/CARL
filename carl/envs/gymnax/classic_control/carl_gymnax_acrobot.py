@@ -10,6 +10,7 @@ from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 
 class CARLGymnaxAcrobot(CARLGymnaxEnv):
     env_name: str = "Acrobot-v1"
+    module: str = "classic_control.acrobot"
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
@@ -51,11 +52,3 @@ class CARLGymnaxAcrobot(CARLGymnaxEnv):
                 "torque_noise_max", lower=-1, upper=1, default_value=0
             ),  # torque is either {-1., 0., 1}. Applying noise of 1. would be quite extreme
         }
-
-    def _update_context(self) -> None:
-        content = self.env.env_params.__dict__
-        content.update(self.context)
-        # We cannot directly set attributes of env_params because it is a frozen dataclass
-        self.env.env.env_params = gymnax.environments.classic_control.acrobot.EnvParams(
-            **content
-        )
