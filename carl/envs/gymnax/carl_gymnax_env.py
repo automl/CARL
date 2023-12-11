@@ -1,79 +1,70 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import gymnasium
+from gymnasium.core import Env
 
-from CARL.carl.envs.gymnax.utils import make_gymnax_env
+from carl.envs.gymnax.utils import make_gymnax_env
 from carl.context.selection import AbstractSelector
 from carl.envs.carl_env import CARLEnv
-from carl.utils.trial_logger import TrialLogger
 from carl.utils.types import Context, Contexts
 
 
 class CARLGymnaxEnv(CARLEnv):
     env_name: str
-    DEFAULT_CONTEXT: Context
-    max_episode_steps: int
 
     def __init__(
         self,
-        env: gymnasium.Env | None = None,
-        contexts: Contexts = {},
-        hide_context: bool = True,
-        add_gaussian_noise_to_context: bool = False,
-        gaussian_noise_std_percentage: float = 0.01,
-        logger: Optional[TrialLogger] = None,
-        scale_context_features: str = "no",
-        default_context: Optional[Context] = None,
-        state_context_features: Optional[List[str]] = None,
-        context_mask: Optional[List[str]] = None,
-        dict_observation_space: bool = False,
-        context_selector: Optional[
-            Union[AbstractSelector, type[AbstractSelector]]
-        ] = None,
-        context_selector_kwargs: Optional[Dict] = None,
-    ):
+        env: Env | None = None,
+        contexts: Contexts | None = None,
+        obs_context_features: list[str]
+        | None = None,  # list the context features which should be added to the state
+        obs_context_as_dict: bool = True,
+        context_selector: AbstractSelector | type[AbstractSelector] | None = None,
+        context_selector_kwargs: dict = None,
+        **kwargs,
+    ) -> None:
         """
-        Max torque is not a context feature because it changes the action space.
+        CARL Gymnax Environment.
 
         Parameters
         ----------
-        env
-        contexts
-        instance_mode
-        hide_context
-        add_gaussian_noise_to_context
-        gaussian_noise_std_percentage
+
+        env : Env | None
+            Gymnasium environment, the default is None.
+            If None, instantiate the env with gymnasium's make function and
+            `self.env_name` which is defined in each child class.
+        contexts : Contexts | None, optional
+            Context set, by default None. If it is None, we build the
+            context set with the default context.
+        obs_context_features : list[str] | None, optional
+            Context features which should be included in the observation, by default None.
+            If they are None, add all context features.
+        context_selector: AbstractSelector | type[AbstractSelector] | None, optional
+            The context selector (class), after each reset selects a new context to use.
+             If None, use a round robin selector.
+        context_selector_kwargs : dict, optional
+            Optional keyword arguments for the context selector, by default None.
+            Only used when `context_selector` is not None.
+
+        Attributes
+        ----------
+        env_name: str
+            The registered gymnax environment name.
         """
         if env is None:
             env = make_gymnax_env(env_name=self.env_name)
 
-        if not contexts:
-            contexts = {0: self.DEFAULT_CONTEXT}
-
-        if not default_context:
-            default_context = self.DEFAULT_CONTEXT
-
         super().__init__(
             env=env,
             contexts=contexts,
-            hide_context=hide_context,
-            add_gaussian_noise_to_context=add_gaussian_noise_to_context,
-            gaussian_noise_std_percentage=gaussian_noise_std_percentage,
-            logger=logger,
-            scale_context_features=scale_context_features,
-            default_context=default_context,
-            max_episode_length=self.max_episode_steps,
-            state_context_features=state_context_features,
-            dict_observation_space=dict_observation_space,
+            obs_context_features=obs_context_features,
+            obs_context_as_dict=obs_context_as_dict,
             context_selector=context_selector,
             context_selector_kwargs=context_selector_kwargs,
-            context_mask=context_mask,
+            **kwargs,
         )
-        self.whitelist_gaussian_noise = list(
-            self.DEFAULT_CONTEXT.keys()
-        )  # allow to augment all values
 
     def _update_context(self) -> None:
         raise NotImplementedError
