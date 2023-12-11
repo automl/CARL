@@ -17,7 +17,7 @@ class CARLGymnaxCartPole(CARLGymnaxEnv):
     def get_context_features() -> dict[str, ContextFeature]:
         return {
             "gravity": UniformFloatContextFeature(
-                "gravity", lower=0.1, upper=np.inf, default_value=9.8
+                "gravity", lower=0.01, upper=100, default_value=9.8
             ),
             "masscart": UniformFloatContextFeature(
                 "masscart", lower=0.1, upper=10, default_value=1.0

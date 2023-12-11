@@ -27,7 +27,7 @@ class CARLGymnaxMountainCar(CARLGymnaxEnv):
                 "force", lower=-10, upper=10, default_value=0.001
             ),
             "gravity": UniformFloatContextFeature(
-                "gravity", lower=10, upper=-10, default_value=0.0025
+                "gravity", lower=-10, upper=10, default_value=0.0025
             ),
         }
 
