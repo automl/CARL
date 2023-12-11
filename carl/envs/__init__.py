@@ -64,3 +64,10 @@ if found:
     from carl.envs.rna import *
 
     __all__ += envs.rna.__all__
+
+gymnax_spec = iutil.find_spec("gymnax")
+found = gymnax_spec is not None
+if found:
+    from carl.envs.gymnax import *
+
+    __all__ += envs.gymnax.__all__

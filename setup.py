@@ -31,6 +31,9 @@ extras_require = {
     "dm_control": [
         "dm_control>=1.0.3",
     ],
+    "gymnax": [
+        "gymnax>=0.0.6",
+    ],
     "mario": [
         "opencv-python>=4.8.0",
         "torch>=1.9.0",

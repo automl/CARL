@@ -1,3 +1,6 @@
+# 1.1.0
+- Add gymnax classic control environments (#90)
+
 # 1.0.0
 Major overhaul of the CARL environment
 - Contexts are stored in each environment's class

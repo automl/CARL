@@ -12,7 +12,7 @@ class TestContextSelection(unittest.TestCase):
     @staticmethod
     def generate_contexts() -> Dict[Any, Context]:
         keys = "abc"
-        context = {"dt": 0.03, "gravity": 10.0, "m": 1.0, "l": 1.8}
+        context = {"dt": 0.03, "g": 10.0, "m": 1.0, "l": 1.8}
         contexts = {k: context for k in keys}
         return contexts
 
