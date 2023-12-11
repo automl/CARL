@@ -11,10 +11,10 @@ from carl.context.sampler import ContextSampler
 # Create environment
 context_distributions = [NormalFloatContextFeature("GRAVITY_X", mu=9.8, sigma=1)]
 context_sampler = ContextSampler(
-        context_distributions=context_distributions,
-        context_space=CARLLunarLander.get_context_space(),
-        seed=42,
-    )
+    context_distributions=context_distributions,
+    context_space=CARLLunarLander.get_context_space(),
+    seed=42,
+)
 contexts = context_sampler.sample_contexts(n_contexts=5)
 
 print("Training contexts are:")
