@@ -1,41 +1,32 @@
 from __future__ import annotations
 
-import jax.numpy as jnp
-from gymnax.environments.classic_control.pendulum import EnvParams
-
 from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
-from carl.utils.types import Context
-
-DEFAULT_CONTEXT = {
-    "max_speed": 8.0,
-    "max_torque": 2.0,
-    "dt": 0.05,
-    "g": 10.0,
-    "m": 1.0,
-    "l": 1.0,
-    "max_steps_in_episode": 200,
-}
-
-CONTEXT_BOUNDS = {
-    "max_speed": (-jnp.inf, jnp.inf, float),
-    "max_torque": (-jnp.inf, jnp.inf, float),
-    "dt": (0, jnp.inf, float),
-    "g": (0, jnp.inf, float),
-    "m": (1e-6, jnp.inf, float),
-    "l": (1e-6, jnp.inf, float),
-    "max_steps_in_episode": (1, jnp.inf, int),
-}
+from carl.context.context_space import ContextFeature, UniformFloatContextFeature
 
 
 class CARLGymnaxPendulum(CARLGymnaxEnv):
     env_name: str = "Pendulum-v1"
-    max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
-    DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
+    module: str = "classic_control.pendulum"
 
-    def _update_context(self) -> None:
-        self.env.env.env_params = EnvParams(**self.context)
-
-        high = jnp.array(
-            [1.0, 1.0, self.env.env.env_params.max_speed], dtype=jnp.float32
-        )
-        self.build_observation_space(-high, high, CONTEXT_BOUNDS)
+    @staticmethod
+    def get_context_features() -> dict[str, ContextFeature]:
+        return {
+            "dt": UniformFloatContextFeature(
+                "dt", lower=0.001, upper=10, default_value=0.05
+            ),
+            "g": UniformFloatContextFeature(
+                "g", lower=-100, upper=100, default_value=10
+            ),
+            "m": UniformFloatContextFeature(
+                "m", lower=1e-6, upper=100, default_value=1
+            ),
+            "l": UniformFloatContextFeature(
+                "l", lower=1e-6, upper=100, default_value=1
+            ),
+            "max_speed": UniformFloatContextFeature(
+                "max_speed", lower=0.08, upper=80, default_value=8
+            ),
+            "max_torque": UniformFloatContextFeature(
+                "max_torque", lower=0.02, upper=40, default_value=2
+            ),
+        }
