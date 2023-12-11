@@ -4,11 +4,18 @@
 [tool.pytest.ini_options]
 testpaths = ["test"]
 minversion = "3.9"
-addopts = "--cov=carl"
+addopts="--cov=carl"
 
 [tool.coverage.run]
 branch = true
-context = "carl"
+include = ["carl/*"]
+omit = [
+    "*/mario/pcg_smb_env/*",
+    "*/rna/*",
+    "*/utils/doc_building/*",
+    "*/mario/models/*",
+    "__init__.py"
+]
 
 [tool.coverage.report]
 show_missing = true
@@ -18,6 +25,13 @@ exclude_lines = [
     '\.\.\.',
     "raise NotImplementedError",
     "if TYPE_CHECKING"
+]
+omit = [
+    "*/mario/pcg_smb_env/*",
+    "*/rna/*",
+    "*/utils/doc_building/*",
+    "*/mario/models/*",
+    "__init__.py"
 ]
 
 [tool.black]

@@ -73,8 +73,8 @@ format: format-black format-isort
 test:
 	$(PYTEST) test
 
-test-cov:
-	$(PYTEST) test --cov=carl --cov-report=html:test_coverage_carl
+cov-report:
+	coverage html -d coverage_html
 
 clean-doc:
 	$(MAKE) -C ${DOCDIR} clean
