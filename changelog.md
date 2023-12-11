@@ -1,3 +1,14 @@
+# 1.0.0
+Major overhaul of the CARL environment
+- Contexts are stored in each environment's class
+- Removed deprecate code from CARL env
+- CARL env always returns a dict observation, with `obs` and `context`
+- Introduction of the context space from which we can conveniently define sampling distributions and sample
+
+Other
+- Update brax environments
+- Add docs for dmc environments
+
 # 0.2.2
 - Make sampling of contexts deterministic with seed
 - Update gym to gymnasium

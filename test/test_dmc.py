@@ -43,12 +43,18 @@ class TestDmcEnvs(unittest.TestCase):
         # Finger can reach spinner?
         with self.assertRaises(ValueError):
             check_constraints(
-                limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.1
+                limb_length_0=0.17,
+                limb_length_1=0.16,
+                spinner_length=0.1,
+                raise_error=True,
             )
         # Spinner collides with finger hinge?
         with self.assertRaises(ValueError):
             check_constraints(
-                limb_length_0=0.17, limb_length_1=0.16, spinner_length=0.81
+                limb_length_0=0.17,
+                limb_length_1=0.16,
+                spinner_length=0.81,
+                raise_error=True,
             )
 
     def test_finger_tasks(self):
@@ -61,11 +67,11 @@ class TestDmcEnvs(unittest.TestCase):
 
 class TestDmcUtils(unittest.TestCase):
     def setUp(self) -> None:
-        from carl.envs.dmc.carl_dm_finger import DEFAULT_CONTEXT
+        from carl.envs.dmc.carl_dm_finger import CARLDmcFingerEnv
         from carl.envs.dmc.dmc_tasks.finger import get_model_and_assets
 
         self.xml_string, _ = get_model_and_assets()
-        self.default_context = DEFAULT_CONTEXT
+        self.default_context = CARLDmcFingerEnv.get_default_context()
 
     def test_adapt_context_no_context(self):
         context = {}
@@ -81,25 +87,12 @@ class TestDmcUtils(unittest.TestCase):
         context["gravity"] *= 1.25
         _ = adapt_context(xml_string=self.xml_string, context=context)
 
-    def test_adapt_context_contextmask(self):
-        # only continuous context features
-        context = self.default_context
-        context_mask = list(context.keys())
-        _ = adapt_context(
-            xml_string=self.xml_string, context=context, context_mask=context_mask
-        )
-
-    def test_adapt_context_wind(self):
-        context = {"wind": 10}
-        with self.assertRaises(KeyError):
-            _ = adapt_context(xml_string=self.xml_string, context=context)
-
     def test_adapt_context_friction(self):
-        from carl.envs.dmc.carl_dm_walker import DEFAULT_CONTEXT
+        from carl.envs.dmc.carl_dm_walker import CARLDmcWalkerEnv
         from carl.envs.dmc.dmc_tasks.walker import get_model_and_assets
 
         xml_string, _ = get_model_and_assets()
-        context = DEFAULT_CONTEXT
+        context = CARLDmcWalkerEnv.get_default_context()
         context["friction_tangential"] *= 1.3
         _ = adapt_context(xml_string=xml_string, context=context)
 

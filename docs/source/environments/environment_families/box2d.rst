@@ -30,6 +30,12 @@ CARL LunarLander Environment
 
 Here, the lunar lander should be safely navigated to its landing pad.
 The lander's body, physics and simulation dynamics can be manipulated via the context features.
+Influence of context settings on an agent trained on the default environment:
+
+.. image:: ../data/context_generalization_plots/plot_ecdf_CARLLunarLanderEnv.png
+    :width: 50%
+    :align: center
+    :alt: Influence of context settings on an agent trained on the default environment.
 
 .. csv-table:: Defaults and Bounds
    :file: ../data/context_definitions/CARLLunarLanderEnv.csv

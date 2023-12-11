@@ -25,7 +25,7 @@ extras_require = {
         "gymnasium[box2d]>=0.27.1",
     ],
     "brax": [
-        "brax>=0.0.10,<=0.0.16",
+        "brax>=0.9.1",
         "protobuf>=3.17.3",
     ],
     "dm_control": [
@@ -35,9 +35,12 @@ extras_require = {
         "gymnax>=0.0.6",
     ],
     "mario": [
+        "opencv-python>=4.8.0",
         "torch>=1.9.0",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
+        "pyvirtualdisplay>=3.0",
+        "jdk4py>=17.0.7.0"
     ],
     "dev": [
         "pytest>=6.1.1",
@@ -54,7 +57,8 @@ extras_require = {
         "sphinx-gallery>=0.10.0",
         "image>=1.5.33",
         "sphinx-autoapi>=1.8.4",
-    ]
+        "automl-sphinx-theme>=0.1.9",
+    ],
 }
 
 setuptools.setup(
@@ -68,23 +72,19 @@ setuptools.setup(
     license_file="LICENSE",
     url=url,
     project_urls=project_urls,
-    keywords=[
-        "RL",
-        "Generalization",
-        "Context",
-        "Reinforcement Learning"
-    ],
+    keywords=["RL", "Generalization", "Context", "Reinforcement Learning"],
     version=version,
     packages=setuptools.find_packages(exclude=["tests"]),
     include_package_data=True,
     python_requires=">=3.9",
     install_requires=[
+        "gym",
         "gymnasium>=0.27.1",
+        "pygame",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
         "numpy>=1.19.5",
         "pandas>=1.3.0",
-        "xvfbwrapper>=0.2.9",
         "matplotlib>=3.4.2",
         "dataclasses>=0.6",
         "numpyencoder>=0.3.0",
@@ -93,21 +93,23 @@ setuptools.setup(
         "PyYAML>=5.4.1",
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
+        "configspace>=0.7.1",
+        "omegaconf>=2.3.0",
     ],
     extras_require=extras_require,
     test_suite="pytest",
     platforms=["Linux"],
     classifiers=[
-     "Programming Language :: Python :: 3",
-     "Natural Language :: English",
-     "Environment :: Console",
-     "Intended Audience :: Developers",
-     "Intended Audience :: Education",
-     "Intended Audience :: Science/Research",
-     "License :: OSI Approved :: Apache Software License",
-     "Operating System :: POSIX :: Linux",
-     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-     "Topic :: Scientific/Engineering",
-     "Topic :: Software Development",
+        "Programming Language :: Python :: 3",
+        "Natural Language :: English",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX :: Linux",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Software Development",
     ],
 )
