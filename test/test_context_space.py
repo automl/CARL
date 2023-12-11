@@ -108,5 +108,6 @@ class TestContextSpace(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.context_space.sample_contexts(["false_feature"], size=0)
 
+
 if __name__ == "__main__":
     unittest.main()
