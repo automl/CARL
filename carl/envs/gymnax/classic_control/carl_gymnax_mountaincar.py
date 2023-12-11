@@ -3,8 +3,8 @@ from __future__ import annotations
 import gymnax
 import jax.numpy as np
 
-from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 
 
 class CARLGymnaxMountainCar(CARLGymnaxEnv):
@@ -48,7 +48,7 @@ class CARLGymnaxMountainCar(CARLGymnaxEnv):
                 "max_velocity_start", lower=-np.inf, upper=np.inf, default_value=0
             ),
         }
-   
+
 
 class CARLGymnaxMountainCarContinuous(CARLGymnaxMountainCar):
     env_name: str = "MountainCarContinuous-v0"

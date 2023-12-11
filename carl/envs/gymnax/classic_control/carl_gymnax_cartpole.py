@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import gymnax
 import importlib
+
+import gymnax
 import jax.numpy as np
 
-from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 
 
 class CARLGymnaxCartPole(CARLGymnaxEnv):

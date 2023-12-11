@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.envs.gymnax.carl_gymnax_env import CARLGymnaxEnv
 
 
 class CARLGymnaxPendulum(CARLGymnaxEnv):
