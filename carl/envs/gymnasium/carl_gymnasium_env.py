@@ -10,10 +10,10 @@ from carl.utils.types import Contexts
 
 try:
     pygame.display.init()
-except:
-    import os
+except: # pragma: no cover
+    import os # pragma: no cover
 
-    os.environ["SDL_VIDEODRIVER"] = "dummy"
+    os.environ["SDL_VIDEODRIVER"] = "dummy" # pragma: no cover
 
 
 class CARLGymnasiumEnv(CARLEnv):

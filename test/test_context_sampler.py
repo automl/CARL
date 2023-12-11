@@ -1,4 +1,5 @@
 import unittest
+from omegaconf import DictConfig 
 
 from carl.context.context_space import (
     ContextSpace,
@@ -44,10 +45,24 @@ class TestContextSampler(unittest.TestCase):
             name="TestSampler",
         )
 
+        with self.assertRaises(ValueError):
+            ContextSampler(
+                context_distributions=0, 
+                context_space=self.cspace,
+                seed=0,
+                name="TestSampler",
+            )
+
     def test_sample_contexts(self):
         contexts = self.sampler.sample_contexts(n_contexts=3)
         self.assertEqual(len(contexts), 3)
         self.assertEqual(contexts[0]["gravity"], 9.8)
+
+        contexts = self.sampler.sample_contexts(n_contexts=1)
+        self.assertEqual(len(contexts), 1)
+        self.assertEqual(contexts[0]["gravity"], 9.8)
+
+
 
 
 if __name__ == "__main__":

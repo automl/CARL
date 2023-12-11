@@ -88,6 +88,25 @@ class TestContextSpace(unittest.TestCase):
         is_valid = self.context_space.verify_context(context)
         self.assertEqual(is_valid, False)
 
+    def test_sample(self):
+        context = self.context_space.sample_contexts(["gravity"], size=1)
+        is_valid = self.context_space.verify_context(context)
+        self.assertEqual(is_valid, True)
+
+        contexts = self.context_space.sample_contexts(["gravity"], size=10)
+        self.assertTrue(len(contexts) == 10)
+        for context in contexts:
+            is_valid = self.context_space.verify_context(context)
+            self.assertEqual(is_valid, True)
+
+        contexts = self.context_space.sample_contexts(None, size=10)
+        self.assertTrue(len(contexts) == 10)
+        for context in contexts:
+            is_valid = self.context_space.verify_context(context)
+            self.assertEqual(is_valid, True)
+
+        with self.assertRaises(ValueError):
+            self.context_space.sample_contexts(["false_feature"], size=0)
 
 if __name__ == "__main__":
     unittest.main()
