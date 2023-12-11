@@ -27,7 +27,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLJaxPendulumEnv(CARLGymnaxEnv):
+class CARLGymnaxPendulum(CARLGymnaxEnv):
     env_name: str = "Pendulum-v1"
     max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT

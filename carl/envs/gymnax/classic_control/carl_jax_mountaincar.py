@@ -29,7 +29,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLJaxMountainCarEnv(CARLGymnaxEnv):
+class CARLGymnaxMountainCar(CARLGymnaxEnv):
     env_name: str = "MountainCar-v0"
     max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
@@ -51,7 +51,7 @@ class CARLJaxMountainCarEnv(CARLGymnaxEnv):
         self.build_observation_space(self.low, self.high, CONTEXT_BOUNDS)
 
 
-class CARLJaxMountainCarContinuousEnv(CARLJaxMountainCarEnv):
+class CARLGymnaxMountainCarContinuous(CARLGymnaxMountainCar):
     env_name: str = "MountainCarContinuous-v0"
     max_episode_steps: int = 999
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT

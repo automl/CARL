@@ -31,7 +31,7 @@ CONTEXT_BOUNDS = {
 }
 
 
-class CARLJaxCartPoleEnv(CARLGymnaxEnv):
+class CARLGymnaxCartPole(CARLGymnaxEnv):
     env_name: str = "CartPole-v1"
     max_episode_steps: int = int(DEFAULT_CONTEXT["max_steps_in_episode"])  # type: ignore[arg-type]
     DEFAULT_CONTEXT: Context = DEFAULT_CONTEXT
