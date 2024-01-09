@@ -122,17 +122,21 @@ def adapt_context(xml_string: bytes, context: Context) -> bytes:
 
     # find option settings and override them if they exist, otherwise create new option
     option = mjcf.find(".//option")
+    import logging
+
     if option is None:
         option = etree.Element("option")
         mjcf.append(option)
 
     if "gravity" in context:
         gravity = option.get("gravity")
+        logging.info(gravity)
         if gravity is not None:
             g = gravity.split(" ")
             gravity = " ".join([g[0], g[1], str(-context["gravity"])])
         else:
-            gravity = " ".join(["0", "0", str(-context["gravity"])])
+            gravity = " ".join(["0", "0", f"{str(-context['gravity'])}"])
+        logging.info(gravity)
         option.set("gravity", gravity)
 
     if "wind_x" in context and "wind_y" in context and "wind_z" in context:

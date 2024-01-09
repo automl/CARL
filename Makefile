@@ -40,6 +40,9 @@ install-dev:
 	$(PIP) install -e ".[dev, docs]"
 	pre-commit install
 
+install:
+	$(PIP) install -e .
+
 check-black:
 	$(BLACK)  carl test --check || :
 
