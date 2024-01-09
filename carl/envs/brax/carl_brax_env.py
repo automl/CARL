@@ -280,14 +280,16 @@ class CARLBraxEnv(CARLEnv):
 
         self.env.unwrapped.sys = sys
 
-    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
+    def reset(
+        self, *, seed: int | None = None, options: dict[str, Any] | None = None
+    ) -> tuple[Any, dict[str, Any]]:
         """Overwrites reset in super to update context in wrapper."""
         last_context_id = self.context_id
         self._progress_instance()
         if self.context_id != last_context_id:
             self._update_context()
-        #if self.use_language_goals:
-            #self.env.env.context = self.context
+        # if self.use_language_goals:
+        # self.env.env.context = self.context
         self.env.context = self.context
         state, info = self.env.reset(seed=seed, options=options)
         state = self._add_context_to_state(state)

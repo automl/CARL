@@ -119,14 +119,12 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         info["success"] = 0
         return state, info
 
-
     def step(self, action):
         state, _, te, tr, info = self.env.step(action)
         indices = STATE_INDICES[self.env_name]
         new_position = (
             np.array(list(self.position))
-            + np.array([state[indices[0]], state[indices[1]]])
-            * self.dt
+            + np.array([state[indices[0]], state[indices[1]]]) * self.dt
         )
         current_distance_to_goal = np.linalg.norm(self.goal_position - new_position)
         previous_distance_to_goal = np.linalg.norm(self.goal_position - self.position)

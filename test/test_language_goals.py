@@ -1,9 +1,15 @@
 import unittest
 
-from carl.context.context_space import NormalFloatContextFeature, CategoricalContextFeature
+from carl.context.context_space import (
+    CategoricalContextFeature,
+    NormalFloatContextFeature,
+)
 from carl.context.sampler import ContextSampler
 from carl.envs import CARLBraxAnt, CARLBraxHalfcheetah
-from carl.envs.brax.brax_walker_goal_wrapper import BraxLanguageWrapper, BraxWalkerGoalWrapper
+from carl.envs.brax.brax_walker_goal_wrapper import (
+    BraxLanguageWrapper,
+    BraxWalkerGoalWrapper,
+)
 
 DIRECTIONS = [
     1,  # north
@@ -27,7 +33,10 @@ DIRECTIONS = [
 
 class TestGoalSampling(unittest.TestCase):
     def test_uniform_sampling(self):
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxAnt.get_context_space(),
@@ -42,7 +51,10 @@ class TestGoalSampling(unittest.TestCase):
         assert all([contexts[i]["target_distance"] >= 4 for i in range(10)])
 
     def test_normal_sampling(self):
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxAnt.get_context_space(),
@@ -59,7 +71,10 @@ class TestGoalSampling(unittest.TestCase):
 
 class TestGoalWrapper(unittest.TestCase):
     def test_reset(self):
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxAnt.get_context_space(),
@@ -76,7 +91,10 @@ class TestGoalWrapper(unittest.TestCase):
         assert info is not None
         assert env.position is not None
 
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxHalfcheetah.get_context_space(),
@@ -94,7 +112,10 @@ class TestGoalWrapper(unittest.TestCase):
         assert env.position is not None
 
     def test_reward_scale(self):
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxAnt.get_context_space(),
@@ -110,7 +131,10 @@ class TestGoalWrapper(unittest.TestCase):
                 _, wrapped_reward, _, _, _ = env.step(action)
                 assert wrapped_reward >= 0
 
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxHalfcheetah.get_context_space(),
@@ -129,7 +153,10 @@ class TestGoalWrapper(unittest.TestCase):
 
 class TestLanguageWrapper(unittest.TestCase):
     def test_reset(self) -> None:
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxAnt.get_context_space(),
@@ -147,7 +174,10 @@ class TestLanguageWrapper(unittest.TestCase):
         assert info is not None
 
     def test_step(self):
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxHalfcheetah.get_context_space(),
@@ -166,7 +196,10 @@ class TestLanguageWrapper(unittest.TestCase):
             assert "north north east" in state["obs"]["goal"]
             assert str(env.context["target_distance"]) in state["obs"]["goal"]
 
-        context_distributions = [NormalFloatContextFeature("target_distance", mu=9.8, sigma=1), CategoricalContextFeature("target_direction", choices=DIRECTIONS)]
+        context_distributions = [
+            NormalFloatContextFeature("target_distance", mu=9.8, sigma=1),
+            CategoricalContextFeature("target_direction", choices=DIRECTIONS),
+        ]
         context_sampler = ContextSampler(
             context_distributions=context_distributions,
             context_space=CARLBraxAnt.get_context_space(),
