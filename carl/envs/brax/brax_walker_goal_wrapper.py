@@ -1,12 +1,14 @@
 import gym
 import numpy as np
+from brax.io import mjcf
+from etils import epath
 
 STATE_INDICES = {
-    "CARLAnt": [13, 14],
-    "CARLHumanoid": [22, 23],
-    "CARLHalfcheetah": [14, 15],
-    "CARLHopper": [5, 6],
-    "CARLWalker2d": [8, 9],
+    "ant": [13, 14],
+    "humanoid": [22, 23],
+    "halfcheetah": [14, 15],
+    "hopper": [5, 6],
+    "walker2d": [8, 9],
 }
 
 DIRECTION_NAMES = {
@@ -51,15 +53,17 @@ directions = [
 class BraxWalkerGoalWrapper(gym.Wrapper):
     """Adds a positional goal to brax walker envs"""
 
-    def __init__(self, env) -> None:
+    def __init__(self, env, env_name, asset_path) -> None:
         super().__init__(env)
+        self.env_name = env_name
         if (
-            self.env.__class__.__name__ == "CARLHumanoid"
-            or self.env.__class__.__name__ == "CARLHalfcheetah"
-            or self.env.__class__.__name__ == "CARLHopper"
-            or self.env.__class__.__name__ == "CARLWalker2d"
+            self.env_name == "humanoid"
+            or self.env_name == "halfcheetah"
+            or self.env_name == "hopper"
+            or self.env_name == "walker2d"
         ):
             self.env._forward_reward_weight = 0
+        self.context = None
         self.position = None
         self.goal_position = None
         self.direction_values = {
@@ -101,38 +105,39 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
             ],
             212: [np.sin(22.5 * np.pi / 180), np.cos(22.5 * np.pi / 180)],
         }
+        path = epath.resource_path("brax") / asset_path
+        sys = mjcf.load(path)
+        self.dt = sys.dt
 
-    def reset(self, return_info=False):
-        state, info = self.env.reset(info=True)
+    def reset(self, seed=None, options={}):
+        state, info = self.env.reset(seed=seed, options=options)
         self.position = (0, 0)
         self.goal_position = (
             np.array(self.direction_values[self.context["target_direction"]])
             * self.context["target_distance"]
         )
-        if return_info:
-            info["success"] = 0
-            return state, info
-        else:
-            return state
+        info["success"] = 0
+        return state, info
+
 
     def step(self, action):
-        state, _, done, info = self.env.step(action)
-        indices = STATE_INDICES[self.env.__class__.__name__]
+        state, _, te, tr, info = self.env.step(action)
+        indices = STATE_INDICES[self.env_name]
         new_position = (
             np.array(list(self.position))
             + np.array([state[indices[0]], state[indices[1]]])
-            * self.env.env.sys.config.dt
+            * self.dt
         )
         current_distance_to_goal = np.linalg.norm(self.goal_position - new_position)
         previous_distance_to_goal = np.linalg.norm(self.goal_position - self.position)
         direction_reward = max(0, previous_distance_to_goal - current_distance_to_goal)
         self.position = new_position
         if abs(current_distance_to_goal) <= 5:
-            done = True
+            te = True
             info["success"] = 1
         else:
             info["success"] = 0
-        return state, direction_reward, done, info
+        return state, direction_reward, te, tr, info
 
 
 class BraxLanguageWrapper(gym.Wrapper):
@@ -140,21 +145,27 @@ class BraxLanguageWrapper(gym.Wrapper):
 
     def __init__(self, env) -> None:
         super().__init__(env)
+        self.context = None
 
-    def reset(self, return_info=False):
-        state, info = self.env.reset(info=True)
-        goal_str = self.get_goal_desc(info["context"])
-        extended_state = {"env_state": state, "goal": goal_str}
-        if return_info:
-            return extended_state, info
+    def reset(self, seed=None, options={}):
+        print(self.context)
+        self.env.context = self.context
+        state, info = self.env.reset(seed=seed, options=options)
+        goal_str = self.get_goal_desc(self.context)
+        if isinstance(state, dict):
+            state["goal"] = goal_str
         else:
-            return extended_state
+            state = {"obs": state, "goal": goal_str}
+        return state, info
 
     def step(self, action):
-        state, reward, done, info = self.env.step(action)
-        goal_str = self.get_goal_desc(info["context"])
-        extended_state = {"env_state": state, "goal": goal_str}
-        return extended_state, reward, done, info
+        state, reward, te, tr, info = self.env.step(action)
+        goal_str = self.get_goal_desc(self.context)
+        if isinstance(state, dict):
+            state["goal"] = goal_str
+        else:
+            state = {"obs": state, "goal": goal_str}
+        return state, reward, te, tr, info
 
     def get_goal_desc(self, context):
         if "target_radius" in context.keys():

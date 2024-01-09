@@ -71,7 +71,7 @@ format-isort:
 format: format-black format-isort
 
 test:
-	$(PYTEST) test
+	$(PYTEST) --disable-warnings test
 
 clean-doc:
 	$(MAKE) -C ${DOCDIR} clean

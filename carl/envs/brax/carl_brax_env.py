@@ -211,11 +211,11 @@ class CARLBraxEnv(CARLEnv):
 
         if contexts is not None:
             if (
-                "target_distance" in contexts[contexts.keys()[0]]
-                or "target_direction" in contexts[contexts.keys()[0]]
+                "target_distance" in contexts[list(contexts.keys())[0]].keys()
+                or "target_direction" in contexts[list(contexts.keys())[0]].keys()
             ):
-                base_dir = contexts[contexts.keys()[0]]["target_direction"]
-                base_dist = contexts[contexts.keys()[0]]["target_distance"]
+                base_dir = contexts[list(contexts.keys())[0]]["target_direction"]
+                base_dist = contexts[list(contexts.keys())[0]]["target_distance"]
                 max_diff_dir = max(
                     [c["target_direction"] - base_dir for c in contexts.values()]
                 )
@@ -223,9 +223,10 @@ class CARLBraxEnv(CARLEnv):
                     [c["target_distance"] - base_dist for c in contexts.values()]
                 )
                 if max_diff_dir > 0.1 or max_diff_dist > 0.1:
-                    env = BraxWalkerGoalWrapper(env)
+                    env = BraxWalkerGoalWrapper(env, self.env_name, self.asset_path)
                     if use_language_goals:
-                        env = BraxLanguageWrapper(env, contexts)
+                        env = BraxLanguageWrapper(env)
+        self.use_language_goals = use_language_goals
 
         super().__init__(
             env=env,
@@ -236,6 +237,7 @@ class CARLBraxEnv(CARLEnv):
             context_selector_kwargs=context_selector_kwargs,
             **kwargs,
         )
+        self.env.context = self.context
 
     def _update_context(self) -> None:
         context = self.context
@@ -247,6 +249,8 @@ class CARLBraxEnv(CARLEnv):
             "gravity",
             "viscosity",
             "elasticity",
+            "target_distance",
+            "target_direction",
         ]
         check_context(context, registered_cfs)
 
@@ -275,3 +279,17 @@ class CARLBraxEnv(CARLEnv):
             sys = sys.replace(geoms=updated_geoms)
 
         self.env.unwrapped.sys = sys
+
+    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
+        """Overwrites reset in super to update context in wrapper."""
+        last_context_id = self.context_id
+        self._progress_instance()
+        if self.context_id != last_context_id:
+            self._update_context()
+        #if self.use_language_goals:
+            #self.env.env.context = self.context
+        self.env.context = self.context
+        state, info = self.env.reset(seed=seed, options=options)
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info

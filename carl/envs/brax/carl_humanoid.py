@@ -76,6 +76,6 @@ class CARLBraxHumanoid(CARLBraxEnv):
                 "target_distance", lower=0, upper=np.inf, default_value=0
             ),
             "target_direction": CategoricalContextFeature(
-                "target_direction", choices=directions, default_value=0
+                "target_direction", choices=directions, default_value=1
             ),
         }
