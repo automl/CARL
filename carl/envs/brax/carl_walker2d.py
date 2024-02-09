@@ -14,6 +14,7 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 class CARLBraxWalker2d(CARLBraxEnv):
     env_name: str = "walker2d"
     asset_path: str = "envs/assets/walker2d.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

@@ -9,6 +9,7 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 class CARLBraxHumanoidStandup(CARLBraxEnv):
     env_name: str = "humanoidstandup"
     asset_path: str = "envs/assets/humanoidstandup.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

@@ -6,6 +6,14 @@ import warnings
 # Classic control is in gym and thus necessary for the base version to run
 from carl.envs.gymnasium import *
 
+__all__ = [
+    "CARLAcrobot",
+    "CARLCartPole",
+    "CARLMountainCar",
+    "CARLMountainCarContinuous",
+    "CARLPendulum",
+]
+
 
 def check_spec(spec_name: str) -> bool:
     """Check if the spec is installed
@@ -36,18 +44,44 @@ found = check_spec("Box2D")
 if found:
     from carl.envs.gymnasium.box2d import *
 
+    __all__ += ["CARLBipedalWalker", "CARLLunarLander", "CARLVehicleRacing"]
+
 found = check_spec("brax")
 if found:
     from carl.envs.brax import *
+
+    __all__ += [
+        "CARLBraxAnt",
+        "CARLBraxHalfcheetah",
+        "CARLBraxHopper",
+        "CARLBraxHumanoid",
+        "CARLBraxHumanoidStandup",
+        "CARLBraxInvertedDoublePendulum",
+        "CARLBraxInvertedPendulum",
+        "CARLBraxPusher",
+        "CARLBraxReacher",
+        "CARLBraxWalker2d",
+    ]
 
 found = check_spec("py4j")
 if found:
     from carl.envs.mario import *
 
+    __all__ += ["CARLMarioEnv"]
+
 found = check_spec("dm_control")
 if found:
     from carl.envs.dmc import *
 
-# found = check_spec("distance")
-# if found:
-#     from carl.envs.rna import *
+    __all__ += [
+        "CARLDmcFingerEnv",
+        "CARLDmcFishEnv",
+        "CARLDmcQuadrupedEnv",
+        "CARLDmcWalkerEnv",
+    ]
+
+found = check_spec("distance")
+if found:
+    from carl.envs.rna import *
+
+    __all__ += ["CARLRnaDesignEnv"]

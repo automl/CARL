@@ -14,6 +14,7 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 class CARLBraxHalfcheetah(CARLBraxEnv):
     env_name: str = "halfcheetah"
     asset_path: str = "envs/assets/half_cheetah.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

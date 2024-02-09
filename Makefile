@@ -40,6 +40,9 @@ install-dev:
 	$(PIP) install -e ".[dev, docs]"
 	pre-commit install
 
+install:
+	$(PIP) install -e .
+
 check-black:
 	$(BLACK)  carl test --check || :
 
@@ -63,7 +66,7 @@ pre-commit:
 	$(PRECOMMIT) run --all-files
 
 format-black:
-	$(BLACK) carl test
+	$(BLACK) carl test examples
 
 format-isort:
 	$(ISORT) carl test
@@ -72,6 +75,9 @@ format: format-black format-isort
 
 test:
 	$(PYTEST) --disable-warnings test
+
+cov-report:
+	coverage html -d coverage_html
 
 clean-doc:
 	$(MAKE) -C ${DOCDIR} clean

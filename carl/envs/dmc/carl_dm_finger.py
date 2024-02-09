@@ -7,12 +7,13 @@ from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 class CARLDmcFingerEnv(CARLDmcEnv):
     domain = "finger"
     task = "spin_context"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {
             "gravity": UniformFloatContextFeature(
-                "gravity", lower=-np.inf, upper=-0.1, default_value=-9.81
+                "gravity", lower=0.1, upper=np.inf, default_value=9.81
             ),
             "friction_torsional": UniformFloatContextFeature(
                 "friction_torsional", lower=0, upper=np.inf, default_value=1.0

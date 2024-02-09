@@ -9,6 +9,7 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 class CARLBraxPusher(CARLBraxEnv):
     env_name: str = "pusher"
     asset_path: str = "envs/assets/pusher.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

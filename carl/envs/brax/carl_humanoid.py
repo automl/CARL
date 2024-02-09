@@ -14,6 +14,7 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 class CARLBraxHumanoid(CARLBraxEnv):
     env_name: str = "humanoid"
     asset_path: str = "envs/assets/humanoid.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:

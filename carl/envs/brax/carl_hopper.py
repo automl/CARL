@@ -14,6 +14,7 @@ from carl.envs.brax.carl_brax_env import CARLBraxEnv
 class CARLBraxHopper(CARLBraxEnv):
     env_name: str = "hopper"
     asset_path: str = "envs/assets/hopper.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
