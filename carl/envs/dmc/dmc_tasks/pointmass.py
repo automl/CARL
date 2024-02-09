@@ -65,7 +65,7 @@ def check_constraints(
         )
 
 
-def get_pointmass_xml_string(
+def make_model(
     mass: float = 0.3,
     starting_x: float = 0.0,
     starting_y: float = 0.0,
@@ -224,16 +224,16 @@ class ContextualPointMass(PointMass):
 
 
 @SUITE.add("benchmarking")  # type: ignore[misc]
-def easy_context(
+def easy_pointmass(
     context: Context = {},
     context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
 ) -> control.Environment:
-    """Returns the Spin task."""
+    """No randomization."""
     xml_string, assets = get_model_and_assets()
-    xml_string = get_pointmass_xml_string(**context)
+    xml_string = make_model(**context)
     if context != {}:
         xml_string = adapt_context(
             xml_string=xml_string, context=context, context_mask=context_mask
@@ -250,16 +250,16 @@ def easy_context(
 
 
 @SUITE.add("benchmarking")  # type: ignore[misc]
-def hard_context(
+def hard_pointmass(
     context: Context = {},
     context_mask: list = [],
     time_limit: float = _DEFAULT_TIME_LIMIT,
     random: np.random.RandomState | int | None = None,
     environment_kwargs: dict | None = None,
 ) -> control.Environment:
-    """Returns the hard Turn task."""
+    """Randomized initializations."""
     xml_string, assets = get_model_and_assets()
-    xml_string = get_pointmass_xml_string(**context)
+    xml_string = make_model(**context)
     if context != {}:
         xml_string = adapt_context(
             xml_string=xml_string, context=context, context_mask=context_mask
