@@ -74,7 +74,7 @@ format-isort:
 format: format-black format-isort
 
 test:
-	$(PYTEST) test
+	$(PYTEST) --disable-warnings test
 
 cov-report:
 	coverage html -d coverage_html

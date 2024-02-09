@@ -8,6 +8,7 @@ from dm_control import suite  # type: ignore
 from carl.envs.dmc.dmc_tasks import (  # type: ignore [import]  # noqa: F401
     finger,
     fish,
+    pointmass,
     quadruped,
     walker,
 )

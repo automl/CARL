@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from copy import deepcopy
+
 import numpy as np
 
 from carl.context.context_space import ContextFeature, UniformFloatContextFeature
@@ -77,4 +79,25 @@ class CARLBraxPusher(CARLBraxEnv):
             "mass_object": UniformFloatContextFeature(
                 "mass_object", lower=1e-6, upper=np.inf, default_value=1.8325957e-03
             ),
+            "goal_position_x": UniformFloatContextFeature(
+                "goal_position_x", lower=0, upper=np.inf, default_value=0.45
+            ),
+            "goal_position_y": UniformFloatContextFeature(
+                "goal_position_y", lower=0, upper=np.inf, default_value=0.05
+            ),
+            "goal_position_z": UniformFloatContextFeature(
+                "goal_position_z", lower=0, upper=np.inf, default_value=0.05
+            ),
         }
+
+    def _update_context(self) -> None:
+        goal_x = self.context["goal_position_x"]
+        goal_y = self.context["goal_position_y"]
+        goal_z = self.context["goal_position_z"]
+        context = deepcopy(self.context)
+        del self.context["goal_position_x"]
+        del self.context["goal_position_y"]
+        del self.context["goal_position_z"]
+        super()._update_context()
+        self.env._goal_pos = np.array([goal_x, goal_y, goal_z])
+        self.context = context

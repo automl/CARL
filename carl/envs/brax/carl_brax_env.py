@@ -13,9 +13,13 @@ from etils import epath
 from jax import numpy as jp
 
 from carl.context.selection import AbstractSelector
+from carl.envs.brax.brax_walker_goal_wrapper import (
+    BraxLanguageWrapper,
+    BraxWalkerGoalWrapper,
+)
 from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
 from carl.envs.carl_env import CARLEnv
-from carl.utils.types import Contexts
+from carl.utils.types import Context, Contexts
 
 
 def set_geom_attr(
@@ -152,6 +156,7 @@ class CARLBraxEnv(CARLEnv):
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
+        use_language_goals: bool = False,
         **kwargs,
     ) -> None:
         """
@@ -204,6 +209,37 @@ class CARLBraxEnv(CARLEnv):
                 dtype=np.float32,
             )
 
+        if contexts is not None:
+            if (
+                "target_distance" in contexts[list(contexts.keys())[0]].keys()
+                or "target_direction" in contexts[list(contexts.keys())[0]].keys()
+            ):
+                assert all(
+                    [
+                        "target_direction" in contexts[list(contexts.keys())[i]].keys()
+                        for i in range(len(contexts))
+                    ]
+                ), "All contexts must have a 'target_direction' key"
+                assert all(
+                    [
+                        "target_distance" in contexts[list(contexts.keys())[i]].keys()
+                        for i in range(len(contexts))
+                    ]
+                ), "All contexts must have a 'target_distance' key"
+                base_dir = contexts[list(contexts.keys())[0]]["target_direction"]
+                base_dist = contexts[list(contexts.keys())[0]]["target_distance"]
+                max_diff_dir = max(
+                    [c["target_direction"] - base_dir for c in contexts.values()]
+                )
+                max_diff_dist = max(
+                    [c["target_distance"] - base_dist for c in contexts.values()]
+                )
+                if max_diff_dir > 0.1 or max_diff_dist > 0.1:
+                    env = BraxWalkerGoalWrapper(env, self.env_name, self.asset_path)
+                    if use_language_goals:
+                        env = BraxLanguageWrapper(env)
+        self.use_language_goals = use_language_goals
+
         super().__init__(
             env=env,
             contexts=contexts,
@@ -213,6 +249,7 @@ class CARLBraxEnv(CARLEnv):
             context_selector_kwargs=context_selector_kwargs,
             **kwargs,
         )
+        self.env.context = self.context
 
     def _update_context(self) -> None:
         context = self.context
@@ -224,6 +261,9 @@ class CARLBraxEnv(CARLEnv):
             "gravity",
             "viscosity",
             "elasticity",
+            "target_distance",
+            "target_direction",
+            "target_radius",
         ]
         check_context(context, registered_cfs)
 
@@ -252,3 +292,47 @@ class CARLBraxEnv(CARLEnv):
             sys = sys.replace(geoms=updated_geoms)
 
         self.env.unwrapped.sys = sys
+
+    def reset(
+        self, *, seed: int | None = None, options: dict[str, Any] | None = None
+    ) -> tuple[Any, dict[str, Any]]:
+        """Overwrites reset in super to update context in wrapper."""
+        last_context_id = self.context_id
+        self._progress_instance()
+        if self.context_id != last_context_id:
+            self._update_context()
+        self.env.context = self.context
+        state, info = self.env.reset(seed=seed, options=options)
+        state = self._add_context_to_state(state)
+        info["context_id"] = self.context_id
+        return state, info
+
+    @classmethod
+    def get_default_context(cls) -> Context:
+        """Get the default context (without any goal features)
+
+        Returns
+        -------
+        Context
+            Default context.
+        """
+        default_context = cls.get_context_space().get_default_context()
+        if "target_distance" in default_context:
+            del default_context["target_distance"]
+        if "target_direction" in default_context:
+            del default_context["target_direction"]
+        if "target_radius" in default_context:
+            del default_context["target_radius"]
+        return default_context
+
+    @classmethod
+    def get_default_goal_context(cls) -> Context:
+        """Get the default context (with goal features)
+
+        Returns
+        -------
+        Context
+            Default context.
+        """
+        default_context = cls.get_context_space().get_default_context()
+        return default_context
