@@ -53,7 +53,7 @@ directions = [
 class BraxWalkerGoalWrapper(gym.Wrapper):
     """Adds a positional goal to brax walker envs"""
 
-    def __init__(self, env, env_name, asset_path) -> None:
+    def __init__(self, env: gym.Env, env_name: str, asset_path: str) -> None:
         super().__init__(env)
         self.env_name = env_name
         if (
@@ -66,6 +66,7 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         self.context = None
         self.position = None
         self.goal_position = None
+        self.goal_radius = None
         self.direction_values = {
             3: [0, -1],
             1: [0, 1],
@@ -116,6 +117,7 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
             np.array(self.direction_values[self.context["target_direction"]])
             * self.context["target_distance"]
         )
+        self.goal_radius = self.context["target_radius"]
         info["success"] = 0
         return state, info
 
@@ -130,7 +132,7 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         previous_distance_to_goal = np.linalg.norm(self.goal_position - self.position)
         direction_reward = max(0, previous_distance_to_goal - current_distance_to_goal)
         self.position = new_position
-        if abs(current_distance_to_goal) <= 5:
+        if abs(current_distance_to_goal) <= self.goal_radius:
             te = True
             info["success"] = 1
         else:
@@ -168,8 +170,11 @@ class BraxLanguageWrapper(gym.Wrapper):
     def get_goal_desc(self, context):
         if "target_radius" in context.keys():
             target_distance = context["target_distance"]
+            target_direction = context["target_direction"]
             target_radius = context["target_radius"]
-            return f"The distance to the goal is {target_distance}m. Move within {target_radius} steps of the goal."
+            return f"""The distance to the goal is {target_distance}m
+                        {DIRECTION_NAMES[target_direction]}.
+                        Move within {target_radius} steps of the goal."""
         else:
             target_distance = context["target_distance"]
             target_direction = context["target_direction"]

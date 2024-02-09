@@ -235,9 +235,7 @@ def easy_pointmass(
     xml_string, assets = get_model_and_assets()
     xml_string = make_model(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = ContextualPointMass(randomize_gains=False, random=random)
     environment_kwargs = environment_kwargs or {}
@@ -261,9 +259,7 @@ def hard_pointmass(
     xml_string, assets = get_model_and_assets()
     xml_string = make_model(**context)
     if context != {}:
-        xml_string = adapt_context(
-            xml_string=xml_string, context=context, context_mask=context_mask
-        )
+        xml_string = adapt_context(xml_string=xml_string, context=context)
     physics = Physics.from_xml_string(xml_string, assets)
     task = ContextualPointMass(randomize_gains=True, random=random)
     environment_kwargs = environment_kwargs or {}

@@ -43,4 +43,7 @@ class CARLBraxAnt(CARLBraxEnv):
             "target_direction": CategoricalContextFeature(
                 "target_direction", choices=directions, default_value=1
             ),
+            "target_radius": UniformFloatContextFeature(
+                "target_radius", lower=0.1, upper=np.inf, default_value=5
+            ),
         }
