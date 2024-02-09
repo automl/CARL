@@ -21,6 +21,7 @@ dict_space_2 = {
             "lower": -512.0,
             "upper": 512.0,
             "default": -3.0,
+            "q": None,
         },
         {
             "name": "x1",
@@ -29,6 +30,7 @@ dict_space_2 = {
             "lower": -512.0,
             "upper": 512.0,
             "default": -4.0,
+            "q": None,
         },
     ],
     "conditions": [],
@@ -51,25 +53,27 @@ class TestSearchSpacEncoding(unittest.TestCase):
         self.test_space = ConfigurationSpace(name="myspace", space=dict_space)
         return super().setUp()
 
-    def test_init(self):
-        self.test_space = ConfigurationSpace(name="myspace", space=dict_space_2)
-
-        self.test_space = ConfigurationSpace(name="myspace", space=str_space)
-
-    def test_config_spaces(self):
+    def test_ss_as_cs(self):
         try:
             search_space_to_config_space(self.test_space)
         except Exception as e:
             print(f"Cannot encode search space --  {self.test_space}.")
             raise e
 
-    def test_dict_configs(self):
+    def test_ss_as_dictconfig(self):
         try:
             dict_space = DictConfig({"hyperparameters": {}})
 
             search_space_to_config_space(dict_space)
         except Exception as e:
             print(f"Cannot encode search space --  {dict_space}.")
+            raise e
+
+    def test_ss_as_dict(self):
+        try:
+            search_space_to_config_space(dict_space_2)
+        except Exception as e:
+            print(f"Cannot encode search space --  {dict_space_2}.")
             raise e
 
 
