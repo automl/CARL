@@ -56,7 +56,7 @@ class CARLBraxHalfcheetah(CARLBraxEnv):
                 "mass_ffoot", lower=1e-6, upper=np.inf, default_value=0.8845188
             ),
             "target_distance": UniformFloatContextFeature(
-                "target_distance", lower=0, upper=np.inf, default_value=0
+                "target_distance", lower=0, upper=np.inf, default_value=100
             ),
             "target_direction": CategoricalContextFeature(
                 "target_direction", choices=directions, default_value=1
