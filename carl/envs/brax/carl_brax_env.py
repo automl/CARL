@@ -19,7 +19,7 @@ from carl.envs.brax.brax_walker_goal_wrapper import (
 )
 from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
 from carl.envs.carl_env import CARLEnv
-from carl.utils.types import Contexts
+from carl.utils.types import Context, Contexts
 
 
 def set_geom_attr(
@@ -306,3 +306,33 @@ class CARLBraxEnv(CARLEnv):
         state = self._add_context_to_state(state)
         info["context_id"] = self.context_id
         return state, info
+
+    @classmethod
+    def get_default_context(cls) -> Context:
+        """Get the default context (without any goal features)
+
+        Returns
+        -------
+        Context
+            Default context.
+        """
+        default_context = cls.get_context_space().get_default_context()
+        if "target_distance" in default_context:
+            del default_context["target_distance"]
+        if "target_direction" in default_context:
+            del default_context["target_direction"]
+        if "target_radius" in default_context:
+            del default_context["target_radius"]
+        return default_context
+
+    @classmethod
+    def get_default_goal_context(cls) -> Context:
+        """Get the default context (with goal features)
+
+        Returns
+        -------
+        Context
+            Default context.
+        """
+        default_context = cls.get_context_space().get_default_context()
+        return default_context

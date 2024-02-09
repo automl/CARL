@@ -148,7 +148,6 @@ class BraxLanguageWrapper(gym.Wrapper):
         self.context = None
 
     def reset(self, seed=None, options={}):
-        print(self.context)
         self.env.context = self.context
         state, info = self.env.reset(seed=seed, options=options)
         goal_str = self.get_goal_desc(self.context)
