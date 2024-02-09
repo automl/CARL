@@ -2,13 +2,19 @@ from __future__ import annotations
 
 import numpy as np
 
-from carl.context.context_space import ContextFeature, UniformFloatContextFeature
+from carl.context.context_space import (
+    CategoricalContextFeature,
+    ContextFeature,
+    UniformFloatContextFeature,
+)
+from carl.envs.brax.brax_walker_goal_wrapper import directions
 from carl.envs.brax.carl_brax_env import CARLBraxEnv
 
 
 class CARLBraxHopper(CARLBraxEnv):
     env_name: str = "hopper"
     asset_path: str = "envs/assets/hopper.xml"
+    metadata = {"render_modes": []}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
@@ -39,5 +45,14 @@ class CARLBraxHopper(CARLBraxEnv):
             ),
             "mass_foot": UniformFloatContextFeature(
                 "mass_foot", lower=1e-6, upper=np.inf, default_value=5.3155746
+            ),
+            "target_distance": UniformFloatContextFeature(
+                "target_distance", lower=0, upper=np.inf, default_value=100
+            ),
+            "target_direction": CategoricalContextFeature(
+                "target_direction", choices=directions, default_value=1
+            ),
+            "target_radius": UniformFloatContextFeature(
+                "target_radius", lower=0.1, upper=np.inf, default_value=5
             ),
         }

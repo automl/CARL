@@ -219,7 +219,7 @@ class ContextSpace(object):
 
         contexts = []
         for _ in range(size):
-            context = {cf.name: cf.sample() for cf in self.context_space.values()}
+            context = {cf.name: cf.rvs() for cf in self.context_space.values()}
             context = self.insert_defaults(context, context_keys)
             contexts += [context]
 

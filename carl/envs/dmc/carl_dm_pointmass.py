@@ -4,16 +4,15 @@ from carl.context.context_space import ContextFeature, UniformFloatContextFeatur
 from carl.envs.dmc.carl_dmcontrol import CARLDmcEnv
 
 
-class CARLDmcFishEnv(CARLDmcEnv):
-    domain = "fish"
-    task = "swim_context"
-    metadata = {"render_modes": []}
+class CARLDmcPointMassEnv(CARLDmcEnv):
+    domain = "pointmass"
+    task = "easy_pointmass"
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {
             "gravity": UniformFloatContextFeature(
-                "gravity", lower=0.1, upper=np.inf, default_value=9.81
+                "gravity", lower=-np.inf, upper=-0.1, default_value=-9.81
             ),
             "friction_torsional": UniformFloatContextFeature(
                 "friction_torsional", lower=0, upper=np.inf, default_value=1.0
@@ -53,5 +52,23 @@ class CARLDmcFishEnv(CARLDmcEnv):
             ),
             "wind_z": UniformFloatContextFeature(
                 "wind_z", lower=-np.inf, upper=np.inf, default_value=0.0
+            ),
+            "mass": UniformFloatContextFeature(
+                "mass", lower=0.0, upper=np.inf, default_value=0.3
+            ),
+            "starting_x": UniformFloatContextFeature(
+                "starting_x", lower=-np.inf, upper=np.inf, default_value=0.14
+            ),
+            "starting_y": UniformFloatContextFeature(
+                "starting_y", lower=-np.inf, upper=np.inf, default_value=0.14
+            ),
+            "target_x": UniformFloatContextFeature(
+                "target_x", lower=-np.inf, upper=np.inf, default_value=0.0
+            ),
+            "target_y": UniformFloatContextFeature(
+                "target_y", lower=-np.inf, upper=np.inf, default_value=0.0
+            ),
+            "area_size": UniformFloatContextFeature(
+                "area_size", lower=-np.inf, upper=np.inf, default_value=0.6
             ),
         }

@@ -1,6 +1,11 @@
 <img align="left" width="80" src="./docs/source/figures/CARL_logo.png" alt="CARL">
 
 # – The Benchmark Library
+[![PyPI Version](https://img.shields.io/pypi/v/carl-bench.svg)](https://pypi.python.org/pypi/carl-bench)
+[![Test](https://github.com/automl/carl/actions/workflows/tests.yaml/badge.svg)](https://github.com/automl/carl/actions/workflows/tests.yaml)
+[![Doc Status](https://github.com/automl/carl/actions/workflows/docs.yaml/badge.svg)](https://github.com/automl/carl/actions/workflows/docs.yaml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 CARL (context adaptive RL) provides highly configurable contextual extensions
 to several well-known RL environments.
 It's designed to test your agent's generalization capabilities

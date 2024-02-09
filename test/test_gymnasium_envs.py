@@ -1,6 +1,9 @@
 import inspect
 import unittest
 
+import gymnasium as gym
+
+import carl
 import carl.envs.gymnasium
 
 
@@ -12,7 +15,6 @@ class TestGymnasiumEnvs(unittest.TestCase):
             if inspect.isclass(env_obj) and "CARL" in env_name:
                 try:
                     env_obj.get_context_features()
-
                     env = env_obj()
                     env._progress_instance()
                     env._update_context()
@@ -21,5 +23,21 @@ class TestGymnasiumEnvs(unittest.TestCase):
                     raise e
 
 
+class TestGymnasiumRegistration(unittest.TestCase):
+    def test_registration(self):
+        registered_envs = gym.envs.registration.registry.keys()
+        for e in carl.envs.__all__:
+            if "RNA" not in e and "Brax" not in e:
+                env_name = f"carl/{e}-v0"
+                self.assertTrue(env_name in registered_envs)
+
+    def test_make(self):
+        for e in carl.envs.__all__:
+            if "RNA" not in e and "Brax" not in e:
+                env_name = f"carl/{e}-v0"
+                env = gym.make(env_name)
+                self.assertTrue(isinstance(env, gym.Env))
+
+
 if __name__ == "__main__":
-    TestGymnasiumEnvs().test_envs()
+    unittest.main()

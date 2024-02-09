@@ -10,6 +10,7 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 class CARLAcrobot(CARLGymnasiumEnv):
     env_name: str = "Acrobot-v1"
+    metadata = {"render.modes": ["human", "rgb_array"]}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
