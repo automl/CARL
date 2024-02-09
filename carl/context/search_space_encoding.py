@@ -106,11 +106,11 @@ def search_space_to_config_space(
     -------
     ConfigurationSpace
     """
-    if type(search_space) == str:
+    if isinstance(search_space, str):
         with open(search_space, "r") as f:
             jason_string = f.read()
         cs = csjson.read(jason_string)
-    elif type(search_space) == DictConfig:
+    elif isinstance(search_space, DictConfig):
         # reorder hyperparameters as List[Dict]
         hyperparameters = []
         for name, cfg in search_space.hyperparameters.items():
@@ -130,8 +130,10 @@ def search_space_to_config_space(
 
         jason_string = json.dumps(search_space, cls=JSONCfgEncoder)
         cs = csjson.read(jason_string)
-    elif type(search_space) == ConfigurationSpace:
+    elif isinstance(search_space, ConfigurationSpace):
         cs = search_space
+    elif isinstance(search_space, dict):
+        cs = csjson.read(json.dumps(search_space))
     else:
         raise ValueError(
             f"search_space must be of type str or DictConfig. Got {type(search_space)}."
