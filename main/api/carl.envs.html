@@ -3,9 +3,9 @@
 <html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>carl.envs &#8212; CARL Documentation 1.0.0 documentation</title>
+    <title>carl.envs &#8212; CARL Documentation 1.1.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
@@ -27,7 +27,7 @@
     
   <link rel="preload" as="script" href="../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script src="../_static/documentation_options.js?v=4ebf8126"></script>
+    <script src="../_static/documentation_options.js?v=2a705162"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -89,11 +89,11 @@
         <div class="dropdown mt-1">
     <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
         data-toggle="dropdown">
-        v1.0.0
+        v1.1.0
         <span class="caret"></span>
     </button>
     <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
-        <a class="list-group-item list-group-item-action" href="#">v1.0.0 (stable)</a>
+        <a class="list-group-item list-group-item-action" href="#">v1.1.0 (stable)</a>
     </div>
 </div>
       </div>
@@ -118,7 +118,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../index.html">CARL Documentation</a></h4>
-<div class="mb-3">v1.0.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+<div class="mb-3">v1.1.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
@@ -270,13 +270,149 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#carl.envs.check_spec">
+    <a class="reference internal nav-link" href="#carl.envs.CARLAcrobot">
      <code class="docutils literal notranslate">
       <span class="pre">
-       check_spec()
+       CARLAcrobot
       </span>
      </code>
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLAcrobot.get_context_features">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLAcrobot.get_context_features()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLAcrobot.reset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLAcrobot.reset()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.CARLCartPole">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CARLCartPole
+      </span>
+     </code>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLCartPole.get_context_features">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLCartPole.get_context_features()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLCartPole.reset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLCartPole.reset()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.CARLMountainCar">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CARLMountainCar
+      </span>
+     </code>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLMountainCar.get_context_features">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLMountainCar.get_context_features()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLMountainCar.reset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLMountainCar.reset()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.CARLMountainCarContinuous">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CARLMountainCarContinuous
+      </span>
+     </code>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLMountainCarContinuous.get_context_features">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLMountainCarContinuous.get_context_features()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLMountainCarContinuous.reset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLMountainCarContinuous.reset()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#carl.envs.CARLPendulum">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CARLPendulum
+      </span>
+     </code>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLPendulum.get_context_features">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLPendulum.get_context_features()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#carl.envs.CARLPendulum.reset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CARLPendulum.reset()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -312,7 +448,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#carl.envs.check_spec" title="carl.envs.check_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_spec</span></code></a>(spec_name)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_spec</span></code>(spec_name)</p></td>
 <td><p>Check if the spec is installed</p></td>
 </tr>
 </tbody>
@@ -320,21 +456,229 @@
 </section>
 <section id="interfaces">
 <h2>Interfaces<a class="headerlink" href="#interfaces" title="Link to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="carl.envs.check_spec">
-<span class="sig-prename descclassname"><span class="pre">carl.envs.</span></span><span class="sig-name descname"><span class="pre">check_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spec_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs.html#check_spec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.check_spec" title="Link to this definition">¶</a></dt>
-<dd><p>Check if the spec is installed</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="carl.envs.CARLAcrobot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.</span></span><span class="sig-name descname"><span class="pre">CARLAcrobot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_acrobot.html#CARLAcrobot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLAcrobot" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="carl.envs.gymnasium.carl_gymnasium_env.html#carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv" title="carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">CARLGymnasiumEnv</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLAcrobot.get_context_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_acrobot.html#CARLAcrobot.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLAcrobot.get_context_features" title="Link to this definition">¶</a></dt>
+<dd><p>Get the context features</p>
+<p>Defined per environment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>spec_name</strong> (<em>str</em>) – Name of package that is necessary for the environment suite.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Context feature definitions</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Whether the spec was found.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, ContextFeature]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLAcrobot.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_acrobot.html#CARLAcrobot.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLAcrobot.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the environment.</p>
+<p>First, we progress the instance, i.e. select a new context with the context
+selector. Then we update the context in the wrapped environment.
+Finally, we reset the underlying environment and add context information
+to the observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Seed, by default None</p></li>
+<li><p><strong>options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Options, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation, info.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Any, dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="carl.envs.CARLCartPole">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.</span></span><span class="sig-name descname"><span class="pre">CARLCartPole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_cartpole.html#CARLCartPole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLCartPole" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="carl.envs.gymnasium.carl_gymnasium_env.html#carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv" title="carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">CARLGymnasiumEnv</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLCartPole.get_context_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_cartpole.html#CARLCartPole.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLCartPole.get_context_features" title="Link to this definition">¶</a></dt>
+<dd><p>Get the context features</p>
+<p>Defined per environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Context feature definitions</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, ContextFeature]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLCartPole.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_cartpole.html#CARLCartPole.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLCartPole.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the environment.</p>
+<p>First, we progress the instance, i.e. select a new context with the context
+selector. Then we update the context in the wrapped environment.
+Finally, we reset the underlying environment and add context information
+to the observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Seed, by default None</p></li>
+<li><p><strong>options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Options, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation, info.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Any, dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="carl.envs.CARLMountainCar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.</span></span><span class="sig-name descname"><span class="pre">CARLMountainCar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_mountaincar.html#CARLMountainCar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLMountainCar" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="carl.envs.gymnasium.carl_gymnasium_env.html#carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv" title="carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">CARLGymnasiumEnv</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLMountainCar.get_context_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_mountaincar.html#CARLMountainCar.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLMountainCar.get_context_features" title="Link to this definition">¶</a></dt>
+<dd><p>Get the context features</p>
+<p>Defined per environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Context feature definitions</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, ContextFeature]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLMountainCar.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_mountaincar.html#CARLMountainCar.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLMountainCar.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the environment.</p>
+<p>First, we progress the instance, i.e. select a new context with the context
+selector. Then we update the context in the wrapped environment.
+Finally, we reset the underlying environment and add context information
+to the observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Seed, by default None</p></li>
+<li><p><strong>options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Options, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation, info.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Any, dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="carl.envs.CARLMountainCarContinuous">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.</span></span><span class="sig-name descname"><span class="pre">CARLMountainCarContinuous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_mountaincarcontinuous.html#CARLMountainCarContinuous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLMountainCarContinuous" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="carl.envs.gymnasium.carl_gymnasium_env.html#carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv" title="carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">CARLGymnasiumEnv</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLMountainCarContinuous.get_context_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_mountaincarcontinuous.html#CARLMountainCarContinuous.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLMountainCarContinuous.get_context_features" title="Link to this definition">¶</a></dt>
+<dd><p>Get the context features</p>
+<p>Defined per environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Context feature definitions</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, ContextFeature]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLMountainCarContinuous.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_mountaincarcontinuous.html#CARLMountainCarContinuous.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLMountainCarContinuous.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the environment.</p>
+<p>First, we progress the instance, i.e. select a new context with the context
+selector. Then we update the context in the wrapped environment.
+Finally, we reset the underlying environment and add context information
+to the observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Seed, by default None</p></li>
+<li><p><strong>options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Options, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation, info.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Any, dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="carl.envs.CARLPendulum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">carl.envs.</span></span><span class="sig-name descname"><span class="pre">CARLPendulum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_context_as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_selector_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_pendulum.html#CARLPendulum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLPendulum" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="carl.envs.gymnasium.carl_gymnasium_env.html#carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv" title="carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">CARLGymnasiumEnv</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLPendulum.get_context_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_context_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_pendulum.html#CARLPendulum.get_context_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLPendulum.get_context_features" title="Link to this definition">¶</a></dt>
+<dd><p>Get the context features</p>
+<p>Defined per environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Context feature definitions</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, ContextFeature]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="carl.envs.CARLPendulum.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/carl/envs/gymnasium/classic_control/carl_pendulum.html#CARLPendulum.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#carl.envs.CARLPendulum.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the environment.</p>
+<p>First, we progress the instance, i.e. select a new context with the context
+selector. Then we update the context in the wrapped environment.
+Finally, we reset the underlying environment and add context information
+to the observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Seed, by default None</p></li>
+<li><p><strong>options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Options, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Observation, info.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Any, dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -380,7 +724,7 @@
     <div class="footer-item">
       <p class="copyright">
     &copy; Copyright 
-    Copyright 2023, AutoML.org Freiburg-Hannover
+    Copyright 2024, AutoML.org Freiburg-Hannover
 .<br>
 </p>
     </div>

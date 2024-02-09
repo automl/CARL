@@ -9,6 +9,14 @@ carl.envs.gymnasium
 
    
    
+
+   Functions
+   ^^^^^^^^^
+
+   .. autosummary::
+   
+      check_spec
+   
    
 
    
