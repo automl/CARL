@@ -1,3 +1,9 @@
+# 1.1.0
+- increased test coverage
+- smaller bug fixes
+- added DMC pointmass env
+- added goal & language goal options for Brax
+
 # 1.0.0
 Major overhaul of the CARL environment
 - Contexts are stored in each environment's class
