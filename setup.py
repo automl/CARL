@@ -25,7 +25,7 @@ extras_require = {
         "gymnasium[box2d]>=0.27.1",
     ],
     "brax": [
-        "brax==0.9.1",
+        "brax==0.9.3",
         "protobuf>=3.17.3",
         "mujoco==3.0.1"
     ],
