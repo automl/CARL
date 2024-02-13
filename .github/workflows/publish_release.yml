@@ -67,7 +67,11 @@ jobs:
       name: pypi
       url: https://pypi.org/p/carl-bench
     steps:
-    # retrieve your distributions here
+    - name: Cleanup
+      run: make clean-build 
+
+    - name: Build
+      run: make build
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
