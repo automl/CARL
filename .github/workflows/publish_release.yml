@@ -1,6 +1,8 @@
 name: Publish Python Package
 
 on:
+  # Manually triggerable in github
+  workflow_dispatch:
   release:
     types: [created]
 
