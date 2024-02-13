@@ -66,8 +66,8 @@ jobs:
     environment:
       name: pypi
       url: https://pypi.org/p/carl-bench
-    permissions:
-      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    with:
+      password: ${{ secrets.pypi_api_token }}
     steps:
     # retrieve your distributions here
 
