@@ -66,10 +66,10 @@ jobs:
     environment:
       name: pypi
       url: https://pypi.org/p/carl-bench
-    with:
-      password: ${{ secrets.pypi_api_token }}
     steps:
     # retrieve your distributions here
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.pypi_api_token }}
