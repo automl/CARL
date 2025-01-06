@@ -46,7 +46,7 @@ pip install .
 
 This will only install the basic classic control environments, which should run on most operating systems. For the full set of environments, use the install options:
 ```bash
-pip install -e .[box2d,brax,dm_control,mario,rna]
+pip install -e ".[box2d,brax,dm_control,mario,rna]"
 ```
 
 These may not be compatible with Windows systems. Box2D environment may need to be installed via conda on MacOS systems:
