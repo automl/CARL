@@ -26,8 +26,7 @@ We cover different kinds of reward signals with our benchmarks, ranging from rel
 rewards where the agent only receives a reward of -1 each step to complex composite reward functions in e.g. the
 Brax-based environments. The latter version is also quite informative, providing updates on factors like movement
 economy and progress towards the goal whereas the former does not let the agents distinguish between transitions
-without looking at the whole episode. % this sentence could be dropped if space is needed
-Further examples for sparse rewards are the CARLCartPoleEnv and CARLVehicleRacingEnv.
+without looking at the whole episode. Further examples for sparse rewards are the CARLCartPoleEnv and CARLVehicleRacingEnv.
 
 Context Spaces
 --------------
