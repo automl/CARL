@@ -25,9 +25,9 @@ extras_require = {
         "gymnasium[box2d]>=0.27.1",
     ],
     "brax": [
-        "brax==0.9.3",
+        "brax==0.12.1",
         "protobuf>=3.17.3",
-        "mujoco==3.0.1"
+        "mujoco==3.2.7"
     ],
     "dm_control": [
         "dm_control>=1.0.3",
@@ -80,7 +80,7 @@ setuptools.setup(
     python_requires=">=3.9",
     install_requires=[
         "gym",
-        "gymnasium>=0.27.1",
+        "gymnasium>=1.0.0",
         "pygame",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
