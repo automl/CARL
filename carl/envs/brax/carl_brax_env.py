@@ -5,9 +5,10 @@ from typing import Any
 from dataclasses import asdict
 
 import brax
+import brax.v1.physics.geometry as Geometry
 import gymnasium
 import numpy as np
-from brax.base import Geometry, Inertia, Link, System
+from brax.base import Inertia, Link, System
 from brax.io import mjcf
 from etils import epath
 from jax import numpy as jp
@@ -20,37 +21,6 @@ from carl.envs.brax.brax_walker_goal_wrapper import (
 from carl.envs.brax.wrappers import GymWrapper, VectorGymWrapper
 from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Context, Contexts
-
-
-def set_geom_attr(
-    geom: Geometry, data: dict[str, Any], context: dict[str, Any], key: str
-) -> dict:
-    """Set Geometry attribute
-
-    Check whether the desired attribute is present both in the geometry and in the context.
-
-    Parameters
-    ----------
-    geom : Geometry
-        Brax geometry (a surface or spatial volume with a shape and material properties)
-    data : dict[str, Any]
-        Data from the Geometry dataclass, potentially already modified.
-    context : dict[str, Any]
-        The context to set.
-    key : str
-        The context feature to update.
-
-    Returns
-    -------
-    dict
-        Modified data from the geometry dataclas.
-    """
-    if key in context and key in data:
-        value = getattr(geom, key)
-        n_items = len(value)
-        vec = jp.array([context[key]] * n_items)
-        data[key] = vec
-    return data
 
 
 def set_masses2(sys: System, context: dict[str, Any]) -> System:
@@ -193,21 +163,35 @@ class CARLBraxEnv(CARLEnv):
         """
         if env is None:
             bs = batch_size if batch_size != 1 else None
-            env = brax.envs.create(
+            brax_env_instance = brax.envs.create(
                 env_name=self.env_name, backend=self.backend, batch_size=bs
             )
-            # Brax uses gym instead of gymnasium
-            if batch_size == 1:
-                env = GymWrapper(env)
-            else:
-                env = VectorGymWrapper(env)
 
-            # The observation space also needs to from gymnasium
+            # import pdb; pdb.set_trace()
+
+            # Create Gymnasium-compatible wrapper
+            if batch_size == 1:
+                env = GymWrapper(brax_env_instance)
+
+            else:
+                env = VectorGymWrapper(brax_env_instance)
+
+            # import pdb; pdb.set_trace()
+
+            # Convert to Gymnasium spaces
             env.observation_space = gymnasium.spaces.Box(
                 low=env.observation_space.low,
                 high=env.observation_space.high,
                 dtype=np.float32,
             )
+            env.action_space = gymnasium.spaces.Box(
+                low=env.action_space.low,
+                high=env.action_space.high,
+                dtype=np.float32,
+            )
+
+        # Store the original Brax environment for context updates
+        self._brax_env = env.unwrapped if hasattr(env, "unwrapped") else env
 
         if contexts is not None:
             if (
@@ -238,6 +222,7 @@ class CARLBraxEnv(CARLEnv):
                     env = BraxWalkerGoalWrapper(env, self.env_name, self.asset_path)
                     if use_language_goals:
                         env = BraxLanguageWrapper(env)
+
         self.use_language_goals = use_language_goals
 
         super().__init__(
@@ -250,6 +235,23 @@ class CARLBraxEnv(CARLEnv):
             **kwargs,
         )
         self.env.context = self.context
+
+    def _get_unwrapped_env(self, env):
+        """Return the base environment without any wrappers."""
+        return env.unwrapped if hasattr(env, "unwrapped") else env
+
+    @property
+    def env(self) -> gymnasium.Env:
+        """Return the environment as a Gymnasium environment."""
+        return self._env
+
+    @env.setter
+    def env(self, env: Any) -> None:
+        """Set the environment, ensuring Gymnasium compatibility."""
+        self._env = env
+        # Store the original Brax environment if needed
+        if hasattr(env, "unwrapped"):
+            self._brax_env = self._get_unwrapped_env(env)
 
     def _update_context(self) -> None:
         context = self.context
@@ -279,17 +281,14 @@ class CARLBraxEnv(CARLEnv):
 
         sys = set_masses(sys, context)
 
-        if "friction" in context or "elasticity" in context:
-            updated_geoms = []
-            for i, geom in enumerate(sys.geoms):
-                cls = type(geom)
-                data = asdict(geom)
-                data = set_geom_attr(geom, data, context, "friction")
-                data = set_geom_attr(geom, data, context, "elasticity")
-
-                geom_new = cls(**data)
-                updated_geoms.append(geom_new)
-            sys = sys.replace(geoms=updated_geoms)
+        if "friction" in context:
+            sys = sys.replace(
+                geom_friction=sys.geom_friction.at[:, 0].set(context["friction"])
+            )
+        if "elasticity" in context:
+            sys = sys.replace(
+                elasticity=sys.elasticity.at[:].set(context["elasticity"])
+            )
 
         self.env.unwrapped.sys = sys
 
