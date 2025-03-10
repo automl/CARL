@@ -1,5 +1,120 @@
-# For TOML reference
-# https://learnxinyminutes.com/docs/toml/
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CARL"
+version = "1.1.0"
+description = "Benchmark for contextual RL"
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["RL", "Generalization"]
+authors = [
+    { name = "Carolin Benjamins"},
+    { name = "Theresa Eimer", email = "t.eimer@ai.uni-hannover.de" },
+    { name = "Frederik Schubert"},
+    { name = "André Biedenkapp"},
+    { name = "Aditya Mohan", email = "a.mohan@ai.uni-hannover.de" },
+    { name = "Sebastian Döhler"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Natural Language :: English",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+]
+requires-python = ">=3.9"
+dependencies = ["gym",
+        "gymnasium>=0.27.1",
+        "pygame",
+        "scipy>=1.7.0",
+        "ConfigArgParse>=1.5.1",
+        "numpy>=1.19.5",
+        "pandas>=1.3.0",
+        "matplotlib>=3.4.2",
+        "dataclasses>=0.6",
+        "numpyencoder>=0.3.0",
+        "pyglet>=1.5.15",
+        "pytablewriter>=0.62.0",
+        "PyYAML>=5.4.1",
+        "tabulate>=0.8.9",
+        "bs4>=0.0.1",
+        "configspace>=0.7.1",
+        "omegaconf>=2.3.0"]
+
+[project.urls]
+Homepage = "https://github.com/automl/CARL"
+Documentation = "https://automl.github.io/CARL/main/"
+Repository = "https://github.com/automl/CARL"
+Issues = "https://github.com/automl/CARL/issues"
+
+[project.optional-dependencies]
+box2d = [
+        "gymnasium[box2d]>=0.27.1",
+    ]
+brax = [
+        "brax==0.9.3",
+        "protobuf>=3.17.3",
+        "mujoco==3.0.1"
+    ]
+dm_control = [
+        "dm_control>=1.0.3",
+    ]
+mario = [
+        "opencv-python>=4.8.0",
+        "torch>=1.9.0",
+        "Pillow>=8.3.1",
+        "py4j>=0.10.9.2",
+        "pyvirtualdisplay>=3.0",
+        "jdk4py>=17.0.7.0"
+    ]
+all-envs = [
+        "opencv-python>=4.8.0",
+        "torch>=1.9.0",
+        "Pillow>=8.3.1",
+        "py4j>=0.10.9.2",
+        "pyvirtualdisplay>=3.0",
+        "jdk4py>=17.0.7.0",
+        "gymnasium[box2d]>=0.27.1",
+        "brax==0.9.3",
+        "protobuf>=3.17.3",
+        "mujoco==3.0.1",
+        "dm_control>=1.0.3",
+    ]
+dev = [
+        "pytest>=6.1.1",
+        "pytest-cov",
+        "mypy",
+        "black",
+        "flake8",
+        "isort",
+        "pydocstyle",
+        "pre-commit",
+    ]
+docs = [
+        "sphinx>=4.2.0",
+        "sphinx-gallery>=0.10.0",
+        "image>=1.5.33",
+        "sphinx-autoapi>=1.8.4",
+        "automl-sphinx-theme>=0.1.9",
+    ]
+examples = [
+        "stable-baselines3",
+    ]
+all = [
+  "ioh==0.3.17", 
+  "modcma==1.0.8",
+  "torchvision==0.19.1",
+  "torch==2.4.1",
+  "uuid"
+]
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
