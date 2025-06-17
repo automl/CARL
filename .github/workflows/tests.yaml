@@ -71,7 +71,8 @@ jobs:
       run: |
         # Miniconda is available in $CONDA env var
         $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
-        $CONDA/bin/conda install -c conda-forge libstdcxx-ng libgcc=3.4.32 swig
+        $CONDA/bin/conda install rmg::glibc=3.4.32
+        $CONDA/bin/conda install -c conda-forge libstdcxx-ng swig
         $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
         $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control,mario,brax,box2d]
 
