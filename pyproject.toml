@@ -60,7 +60,7 @@ box2d = [
         "gymnasium[box2d]>=0.27.1",
     ]
 brax = [
-        "brax==0.9.3",
+        "brax==0.12.1",
         "protobuf>=3.17.3",
     ]
 dm_control = [
@@ -82,7 +82,7 @@ all-envs = [
         "pyvirtualdisplay>=3.0",
         "jdk4py>=17.0.7.0",
         "gymnasium[box2d]>=0.27.1",
-        "brax==0.9.3",
+        "brax==0.12.1",
         "protobuf>=3.17.3",
         "dm_control>=1.0.3",
     ]
