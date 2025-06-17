@@ -15,6 +15,7 @@
 # ============================================================================
 
 """Finger Domain."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -164,10 +165,10 @@ def get_finger_xml_string(
 
         <body name="spinner" pos="{x_spinner} 0 {y_spinner}">
           <joint name="hinge" frictionloss=".1" damping=".5"/>
-          <geom name="cap1" type="capsule" size="{spinner_radius}" fromto="{spinner_radius/2} 0 {-spinner_half_length} {spinner_radius} 0 {spinner_half_length}" material="self"/>
-          <geom name="cap2" type="capsule" size="{spinner_radius}" fromto="{-spinner_radius/2} 0 {-spinner_half_length} 0 0 {spinner_half_length}" material="self"/>
+          <geom name="cap1" type="capsule" size="{spinner_radius}" fromto="{spinner_radius / 2} 0 {-spinner_half_length} {spinner_radius} 0 {spinner_half_length}" material="self"/>
+          <geom name="cap2" type="capsule" size="{spinner_radius}" fromto="{-spinner_radius / 2} 0 {-spinner_half_length} 0 0 {spinner_half_length}" material="self"/>
           <site name="tip" type="sphere"  size="{spinner_tip_radius}" pos="0 0 {y_spinner_tip}" material="target"/>
-          <geom name="spinner_decoration" type="cylinder" fromto="0 -.045 0 0 .045 0" size="{spinner_radius/2}" material="decoration"/>
+          <geom name="spinner_decoration" type="cylinder" fromto="0 -.045 0 0 .045 0" size="{spinner_radius / 2}" material="decoration"/>
         </body>
 
         <site name="target" type="sphere" size=".03" pos="0 0 {y_target}" material="target"/>

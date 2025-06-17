@@ -108,7 +108,7 @@ class BraxWalkerGoalWrapper(gym.Wrapper):
         }
         path = epath.resource_path("brax") / asset_path
         sys = mjcf.load(path)
-        self.dt = sys.dt
+        self.dt = sys.opt.timestep
 
     def reset(self, seed=None, options={}):
         state, info = self.env.reset(seed=seed, options=options)
@@ -171,9 +171,7 @@ class BraxLanguageWrapper(gym.Wrapper):
             target_distance = context["target_distance"]
             target_direction = context["target_direction"]
             target_radius = context["target_radius"]
-            return f"""The distance to the goal is {target_distance}m
-                        {DIRECTION_NAMES[target_direction]}.
-                        Move within {target_radius} steps of the goal."""
+            return f"The distance to the goal is {target_distance}m {DIRECTION_NAMES[target_direction]}. Move within {target_radius} steps of the goal."
         else:
             target_distance = context["target_distance"]
             target_direction = context["target_direction"]

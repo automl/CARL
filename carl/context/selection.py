@@ -41,9 +41,9 @@ class AbstractSelector(object):
         self.context_ids: List[int] = list(np.arange(len(contexts)))
         self.contexts_keys: List[Any] = list(contexts.keys())
         self.n_calls: int = 0
-        self.context_id: Optional[
-            int
-        ] = None  # holds index of current context (integer index of context keys)
+        self.context_id: Optional[int] = (
+            None  # holds index of current context (integer index of context keys)
+        )
 
     @abstractmethod
     def _select(self) -> Tuple[Context, int]:

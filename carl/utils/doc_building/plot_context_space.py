@@ -5,6 +5,7 @@ Boxplot
 - number of CFs changing the dynamics
 - number of CFs changing the reward
 """
+
 from __future__ import annotations
 
 if __name__ == "__main__":
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         n_context_features_per_env.append(len(defaults))
         bounds = vars[env_name + "_bounds"]
         bounds_vals = list(bounds.values())
-        n_float_cfs += np.sum([1 for v in bounds_vals if v[2] == float])
+        n_float_cfs += np.sum([1 for v in bounds_vals if v[2] is float])
         env_context_feature_names[env_name] = defaults.keys()
 
     n_context_features = np.sum(n_context_features_per_env)

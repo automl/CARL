@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import List
 
-import sys
-
 import numpy as np
 
 from carl.context.context_space import (
@@ -31,8 +29,9 @@ class CARLMarioEnv(CARLEnv):
         self,
         env: MarioEnv = None,
         contexts: Contexts | None = None,
-        obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state
+        obs_context_features: (
+            list[str] | None
+        ) = None,  # list the context features which should be added to the state
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
@@ -78,7 +77,7 @@ class CARLMarioEnv(CARLEnv):
                 "level_index", choices=np.arange(0, 14), default_value=0
             ),
             "noise_seed": UniformIntegerContextFeature(
-                "noise_seed", 0, sys.maxsize, default_value=0
+                "noise_seed", 0, 2**31 - 1, default_value=0
             ),
             "mario_state": CategoricalContextFeature(
                 "mario_state", choices=[0, 1, 2], default_value=0

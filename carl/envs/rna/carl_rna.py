@@ -27,8 +27,9 @@ class CARLRnaDesignEnv(CARLEnv):
         self,
         env: RnaDesignEnvironment | None = None,
         contexts: Contexts | None = None,
-        obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state
+        obs_context_features: (
+            list[str] | None
+        ) = None,  # list the context features which should be added to the state
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,
@@ -56,7 +57,9 @@ class CARLRnaDesignEnv(CARLEnv):
             dot_brackets = parse_dot_brackets(
                 dataset=context_space["dataset"].default_value,  # type: ignore[arg-type]  # type: ignore[arg-type]
                 data_dir=data_location,
-                target_structure_ids=context_space["target_structure_ids"].default_value,  # type: ignore[arg-type]
+                target_structure_ids=context_space[
+                    "target_structure_ids"
+                ].default_value,  # type: ignore[arg-type]
             )
             env = RnaDesignEnvironment(dot_brackets, env_config)
 

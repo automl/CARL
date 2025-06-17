@@ -2,7 +2,6 @@ from typing import Union, Optional
 
 from gymnasium.envs.box2d.lunar_lander import heuristic
 import gymnasium.envs.box2d.lunar_lander as lunar_lander
-from gymnasium.utils.step_api_compatibility import step_api_compatibility
 from carl.envs import CARLLunarLander
 
 

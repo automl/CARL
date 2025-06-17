@@ -7,7 +7,9 @@ from carl.envs.dmc import (
     CARLDmcQuadrupedEnv,
     CARLDmcWalkerEnv,
 )
-from carl.envs.dmc.dmc_tasks.finger import check_constraints
+from carl.envs.dmc.dmc_tasks.finger import (
+    check_constraints,
+)
 from carl.envs.dmc.dmc_tasks.finger import (
     get_model_and_assets as get_finger_model_and_assets,
 )

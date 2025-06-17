@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "CARL"
-version = "1.1.0"
+version = "1.1.1"
 description = "Benchmark for contextual RL"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -32,7 +32,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = ["gym",
-        "gymnasium>=0.27.1",
+        "gymnasium<1.0.0",
         "pygame",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
@@ -46,7 +46,7 @@ dependencies = ["gym",
         "PyYAML>=5.4.1",
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
-        "configspace>=0.7.1",
+        "configspace>=1.2.1",
         "omegaconf>=2.3.0"]
 
 [project.urls]
@@ -57,19 +57,18 @@ Issues = "https://github.com/automl/CARL/issues"
 
 [project.optional-dependencies]
 box2d = [
-        "gymnasium[box2d]>=0.27.1",
+        "gymnasium[box2d]<1.0.0",
     ]
 brax = [
-        "brax==0.9.3",
+        "brax==0.12.1",
         "protobuf>=3.17.3",
-        "mujoco==3.0.1"
     ]
 dm_control = [
         "dm_control>=1.0.3",
     ]
 mario = [
         "opencv-python>=4.8.0",
-        "torch>=1.9.0",
+        "torch~=2.4.1",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
         "pyvirtualdisplay>=3.0",
@@ -77,23 +76,21 @@ mario = [
     ]
 all-envs = [
         "opencv-python>=4.8.0",
-        "torch>=1.9.0",
+        "torch~=2.4.1",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
         "pyvirtualdisplay>=3.0",
         "jdk4py>=17.0.7.0",
         "gymnasium[box2d]>=0.27.1",
-        "brax==0.9.3",
+        "brax==0.12.1",
         "protobuf>=3.17.3",
-        "mujoco==3.0.1",
         "dm_control>=1.0.3",
     ]
 dev = [
         "pytest>=6.1.1",
         "pytest-cov",
         "mypy",
-        "black",
-        "flake8",
+        "ruff",
         "isort",
         "pydocstyle",
         "pre-commit",

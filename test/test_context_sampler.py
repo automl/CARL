@@ -14,7 +14,7 @@ context_space_dict = {
 }
 sample_dist = {
     "gravity": NormalFloatContextFeature(
-        "gravity", mu=9.8, sigma=0.0, default_value=9.8
+        "gravity", mu=9.8, sigma=0.0, default_value=9.8, upper=20, lower=1
     )
 }
 

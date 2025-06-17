@@ -33,9 +33,9 @@ class JSONCfgEncoder(json.JSONEncoder):
         elif isinstance(obj, ListConfig):
             parsed_list = []
             for o in obj:
-                if type(o) == DictConfig:
+                if type(o) is DictConfig:
                     o = dict(o)
-                elif type(o) == ListConfig:
+                elif type(o) is ListConfig:
                     o = list(o)
                 parsed_list.append(o)
 

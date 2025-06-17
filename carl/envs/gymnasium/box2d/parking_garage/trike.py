@@ -11,7 +11,6 @@ from Box2D.b2 import polygonShape  # noqa: F401
 from Box2D.b2 import prismaticJointDef  # noqa: F401
 from Box2D.b2 import revoluteJointDef  # noqa: F401
 from Box2D.b2 import ropeJointDef  # noqa: F401
-from Box2D.b2 import shape  # noqa: F401; noqa: F401
 from gymnasium.envs.box2d.car_dynamics import Car
 
 from carl.envs.gymnasium.box2d.parking_garage.utils import Particle
