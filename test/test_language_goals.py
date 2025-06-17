@@ -32,18 +32,18 @@ class TestGoalSampling(unittest.TestCase):
         contexts = context_sampler.sample_contexts(n_contexts=10)
         assert len(contexts.keys()) == 10
         assert "target_distance" in contexts[0].keys(), "target_distance not in context"
-        assert (
-            "target_direction" in contexts[0].keys()
-        ), "target_direction not in context"
+        assert "target_direction" in contexts[0].keys(), (
+            "target_direction not in context"
+        )
         assert all(
             [contexts[i]["target_direction"] in DIRECTIONS for i in range(10)]
         ), "Not all directions are valid."
-        assert all(
-            [contexts[i]["target_distance"] <= 200 for i in range(10)]
-        ), "Not all distances are valid (too large)."
-        assert all(
-            [contexts[i]["target_distance"] >= 4 for i in range(10)]
-        ), "Not all distances are valid (too small)."
+        assert all([contexts[i]["target_distance"] <= 200 for i in range(10)]), (
+            "Not all distances are valid (too large)."
+        )
+        assert all([contexts[i]["target_distance"] >= 4 for i in range(10)]), (
+            "Not all distances are valid (too small)."
+        )
 
     def test_normal_sampling(self):
         context_distributions = [
@@ -58,22 +58,22 @@ class TestGoalSampling(unittest.TestCase):
             seed=0,
         )
         contexts = context_sampler.sample_contexts(n_contexts=10)
-        assert (
-            len(contexts.keys()) == 10
-        ), "Number of sampled contexts does not match the requested number."
+        assert len(contexts.keys()) == 10, (
+            "Number of sampled contexts does not match the requested number."
+        )
         assert "target_distance" in contexts[0].keys(), "target_distance not in context"
-        assert (
-            "target_direction" in contexts[0].keys()
-        ), "target_direction not in context"
+        assert "target_direction" in contexts[0].keys(), (
+            "target_direction not in context"
+        )
         assert all(
             [contexts[i]["target_direction"] in DIRECTIONS for i in range(10)]
         ), "Not all directions are valid."
-        assert all(
-            [contexts[i]["target_distance"] <= 200 for i in range(10)]
-        ), "Not all distances are valid (too large)."
-        assert all(
-            [contexts[i]["target_distance"] >= 4 for i in range(10)]
-        ), "Not all distances are valid (too small)."
+        assert all([contexts[i]["target_distance"] <= 200 for i in range(10)]), (
+            "Not all distances are valid (too large)."
+        )
+        assert all([contexts[i]["target_distance"] >= 4 for i in range(10)]), (
+            "Not all distances are valid (too small)."
+        )
 
 
 class TestGoalWrapper(unittest.TestCase):
@@ -186,9 +186,9 @@ class TestLanguageWrapper(unittest.TestCase):
         assert "obs" in state.keys(), "Observation not in state."
         assert "goal" in state["obs"].keys(), "Goal not in observation."
         assert type(state["obs"]["goal"]) is str, "Goal is not a string."
-        assert (
-            str(env.context["target_distance"]) in state["obs"]["goal"]
-        ), f"Distance not in goal, got: '{state['obs']['goal']}'."
+        assert str(env.context["target_distance"]) in state["obs"]["goal"], (
+            f"Distance not in goal, got: '{state['obs']['goal']}'."
+        )
         assert (
             DIRECTION_NAMES[env.context["target_direction"]] in state["obs"]["goal"]
         ), f"Direction not in goal, got: '{state['obs']['goal']}'."
@@ -219,9 +219,9 @@ class TestLanguageWrapper(unittest.TestCase):
             assert (
                 DIRECTION_NAMES[env.context["target_direction"]] in state["obs"]["goal"]
             ), f"Direction not in goal, got: '{state['obs']['goal']}'."
-            assert (
-                str(env.context["target_distance"]) in state["obs"]["goal"]
-            ), "Distance not in goal, got: '{state['obs']['goal']}'."
+            assert str(env.context["target_distance"]) in state["obs"]["goal"], (
+                "Distance not in goal, got: '{state['obs']['goal']}'."
+            )
 
         context_distributions = [
             NormalFloatContextFeature(

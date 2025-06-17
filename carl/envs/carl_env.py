@@ -148,9 +148,9 @@ class CARLEnv(Wrapper, abc.ABC):
         new_id :
             ID to set the context to
         """
-        assert (
-            new_id in self.context_selector.context_ids
-        ), "Unknown ID, this context does not exist in the context set."
+        assert new_id in self.context_selector.context_ids, (
+            "Unknown ID, this context does not exist in the context set."
+        )
         self.context_selector.context_id = new_id
         self.context_selector.context = self.context_selector.contexts[new_id]
         self.context = self.context_selector.context
