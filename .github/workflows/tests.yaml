@@ -70,7 +70,8 @@ jobs:
       if: matrix.kind == 'conda'
       run: |
         # Miniconda is available in $CONDA env var
-        $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 libstdcxx-ng gcc_linux-64 python=${{ matrix.python-version }}
+        $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
+        $CONDA/bin/conda install -c conda-forge libstdcxx-ng libgcc
         $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
         $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control,mario,brax,box2d]
 
