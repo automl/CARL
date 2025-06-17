@@ -36,9 +36,9 @@ Modules
    :toctree:
    :recursive:
 
-   carl.envs.gymnasium.classic_control.carl_acrobot
-   carl.envs.gymnasium.classic_control.carl_cartpole
-   carl.envs.gymnasium.classic_control.carl_mountaincar
-   carl.envs.gymnasium.classic_control.carl_mountaincarcontinuous
-   carl.envs.gymnasium.classic_control.carl_pendulum
+   carl_acrobot
+   carl_cartpole
+   carl_mountaincar
+   carl_mountaincarcontinuous
+   carl_pendulum
 

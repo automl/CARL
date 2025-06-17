@@ -44,10 +44,10 @@ Modules
    :toctree:
    :recursive:
 
-   carl.envs.brax
-   carl.envs.carl_env
-   carl.envs.dmc
-   carl.envs.gymnasium
-   carl.envs.mario
-   carl.envs.rna
+   brax
+   carl_env
+   dmc
+   gymnasium
+   mario
+   rna
 

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>carl.envs.carl_env &#8212; CARL Documentation 1.1.0 documentation</title>
+    <title>carl.envs.carl_env &#8212; CARL Documentation 1.1.1 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
@@ -21,13 +21,13 @@
       
 
     
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=2eb4fb78" />
     
   <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script src="../../../_static/documentation_options.js?v=2a705162"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/documentation_options.js?v=83302504"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -88,11 +88,11 @@
         <div class="dropdown mt-1">
     <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
         data-toggle="dropdown">
-        v1.1.0
+        v1.1.1
         <span class="caret"></span>
     </button>
     <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
-        <a class="list-group-item list-group-item-action" href="#">v1.1.0 (stable)</a>
+        <a class="list-group-item list-group-item-action" href="#">v1.1.1 (stable)</a>
     </div>
 </div>
       </div>
@@ -117,7 +117,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../../../index.html">CARL Documentation</a></h4>
-<div class="mb-3">v1.1.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+<div class="mb-3">v1.1.1</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
@@ -261,28 +261,28 @@
               <div>
                 
   <h1>Source code for carl.envs.carl_env</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">SupportsFloat</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">SupportsFloat</span><span class="p">,</span> <span class="n">TypeVar</span>
 
-<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
-<span class="kn">import</span> <span class="nn">gymnasium</span>
-<span class="kn">from</span> <span class="nn">gymnasium</span> <span class="kn">import</span> <span class="n">Wrapper</span><span class="p">,</span> <span class="n">spaces</span>
-<span class="kn">from</span> <span class="nn">gymnasium.core</span> <span class="kn">import</span> <span class="n">Env</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gymnasium</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wrapper</span><span class="p">,</span> <span class="n">spaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Env</span>
 
-<span class="kn">from</span> <span class="nn">carl.context.context_space</span> <span class="kn">import</span> <span class="n">ContextFeature</span><span class="p">,</span> <span class="n">ContextSpace</span>
-<span class="kn">from</span> <span class="nn">carl.context.selection</span> <span class="kn">import</span> <span class="n">AbstractSelector</span><span class="p">,</span> <span class="n">RoundRobinSelector</span>
-<span class="kn">from</span> <span class="nn">carl.utils.types</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Contexts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">carl.context.context_space</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextFeature</span><span class="p">,</span> <span class="n">ContextSpace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">carl.context.selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractSelector</span><span class="p">,</span> <span class="n">RoundRobinSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">carl.utils.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Contexts</span>
 
 <span class="n">ObsType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;ObsType&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CARLEnv">
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv">[docs]</a>
-<span class="k">class</span> <span class="nc">CARLEnv</span><span class="p">(</span><span class="n">Wrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CARLEnv</span><span class="p">(</span><span class="n">Wrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env</span><span class="p">:</span> <span class="n">Env</span><span class="p">,</span>
         <span class="n">contexts</span><span class="p">:</span> <span class="n">Contexts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -377,15 +377,15 @@
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Contexts</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Contexts</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contexts</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">context_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">context_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context_id</span>
 
     <span class="nd">@contexts</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contexts</span><span class="p">:</span> <span class="n">Contexts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contexts</span><span class="p">:</span> <span class="n">Contexts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set `contexts` property</span>
 
 <span class="sd">        For each context maybe fill with default context values.</span>
@@ -402,7 +402,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_contexts</span> <span class="o">=</span> <span class="n">contexts</span>
 
     <span class="nd">@context_id</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">context_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">context_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set `context_id` property</span>
 
 <span class="sd">        This will switch the context ID of the context selector.</span>
@@ -413,9 +413,9 @@
 <span class="sd">        new_id :</span>
 <span class="sd">            ID to set the context to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="n">new_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context_ids</span>
-        <span class="p">),</span> <span class="s2">&quot;Unknown ID, this context does not exist in the context set.&quot;</span>
+        <span class="k">assert</span> <span class="n">new_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context_ids</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;Unknown ID, this context does not exist in the context set.&quot;</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context_id</span> <span class="o">=</span> <span class="n">new_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">contexts</span><span class="p">[</span><span class="n">new_id</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_selector</span><span class="o">.</span><span class="n">context</span>
@@ -423,7 +423,7 @@
 
 <div class="viewcode-block" id="CARLEnv.get_observation_space">
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_observation_space">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_observation_space</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_observation_space</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">obs_context_feature_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the observation space for the context.</span>
@@ -459,7 +459,7 @@
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_context_features">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_context_features</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ContextFeature</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_context_features</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ContextFeature</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the context features</span>
 
 <span class="sd">        Defined per environment.</span>
@@ -475,7 +475,7 @@
 <div class="viewcode-block" id="CARLEnv.get_context_space">
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_context_space">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_context_space</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextSpace</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_context_space</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextSpace</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get context space</span>
 
 <span class="sd">        Returns</span>
@@ -490,7 +490,7 @@
 <div class="viewcode-block" id="CARLEnv.get_default_context">
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.get_default_context">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_default_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Context</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_default_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Context</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the default context</span>
 
 <span class="sd">        Returns</span>
@@ -502,7 +502,7 @@
         <span class="k">return</span> <span class="n">default_context</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_progress_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_progress_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Progress instance.</span>
 
@@ -521,7 +521,7 @@
 
 <div class="viewcode-block" id="CARLEnv.reset">
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.reset">[docs]</a>
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the environment.</span>
@@ -553,7 +553,7 @@
         <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">info</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_context_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_context_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add context observation to the state</span>
 
 <span class="sd">        The state is the observation from the underlying environment</span>
@@ -585,7 +585,7 @@
         <span class="k">return</span> <span class="n">state_context_dict</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_update_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the context feature values of the environment.</span>
 
@@ -600,7 +600,7 @@
 
 <div class="viewcode-block" id="CARLEnv.step">
 <a class="viewcode-back" href="../../../api/carl.envs.carl_env.html#carl.envs.carl_env.CARLEnv.step">[docs]</a>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">SupportsFloat</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Step the environment.</span>
@@ -646,7 +646,7 @@
     <div class="footer-item">
       <p class="copyright">
     &copy; Copyright 
-    Copyright 2024, AutoML.org Freiburg-Hannover
+    Copyright 2025, AutoML.org Freiburg-Hannover
 .<br>
 </p>
     </div>
@@ -654,7 +654,7 @@
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.2.6. Template is modified version of <a
+7.4.7. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>

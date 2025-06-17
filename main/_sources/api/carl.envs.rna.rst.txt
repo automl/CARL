@@ -36,8 +36,8 @@ Modules
    :toctree:
    :recursive:
 
-   carl.envs.rna.carl_rna
-   carl.envs.rna.carl_rna_definitions
-   carl.envs.rna.parse_dot_brackets
-   carl.envs.rna.rna_environment
+   carl_rna
+   carl_rna_definitions
+   parse_dot_brackets
+   rna_environment
 

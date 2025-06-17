@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>carl.envs.gymnasium.carl_gymnasium_env &#8212; CARL Documentation 1.1.0 documentation</title>
+    <title>carl.envs.gymnasium.carl_gymnasium_env &#8212; CARL Documentation 1.1.1 documentation</title>
     
   <link href="../../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
@@ -21,13 +21,13 @@
       
 
     
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=2eb4fb78" />
     
   <link rel="preload" as="script" href="../../../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script src="../../../../_static/documentation_options.js?v=2a705162"></script>
-    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/documentation_options.js?v=83302504"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -88,11 +88,11 @@
         <div class="dropdown mt-1">
     <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
         data-toggle="dropdown">
-        v1.1.0
+        v1.1.1
         <span class="caret"></span>
     </button>
     <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
-        <a class="list-group-item list-group-item-action" href="#">v1.1.0 (stable)</a>
+        <a class="list-group-item list-group-item-action" href="#">v1.1.1 (stable)</a>
     </div>
 </div>
       </div>
@@ -117,7 +117,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../../../../index.html">CARL Documentation</a></h4>
-<div class="mb-3">v1.1.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+<div class="mb-3">v1.1.1</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
@@ -261,36 +261,37 @@
               <div>
                 
   <h1>Source code for carl.envs.gymnasium.carl_gymnasium_env</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">gymnasium</span>
-<span class="kn">import</span> <span class="nn">pygame</span>
-<span class="kn">from</span> <span class="nn">gymnasium.core</span> <span class="kn">import</span> <span class="n">Env</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gymnasium</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pygame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Env</span>
 
-<span class="kn">from</span> <span class="nn">carl.context.selection</span> <span class="kn">import</span> <span class="n">AbstractSelector</span>
-<span class="kn">from</span> <span class="nn">carl.envs.carl_env</span> <span class="kn">import</span> <span class="n">CARLEnv</span>
-<span class="kn">from</span> <span class="nn">carl.utils.types</span> <span class="kn">import</span> <span class="n">Contexts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">carl.context.selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">carl.envs.carl_env</span><span class="w"> </span><span class="kn">import</span> <span class="n">CARLEnv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">carl.utils.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Contexts</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">import</span> <span class="nn">os</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa:E722</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>  <span class="c1"># pragma: no cover</span>
 
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SDL_VIDEODRIVER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dummy&quot;</span>  <span class="c1"># pragma: no cover</span>
 
 
 <div class="viewcode-block" id="CARLGymnasiumEnv">
 <a class="viewcode-back" href="../../../../api/carl.envs.gymnasium.carl_gymnasium_env.html#carl.envs.gymnasium.carl_gymnasium_env.CARLGymnasiumEnv">[docs]</a>
-<span class="k">class</span> <span class="nc">CARLGymnasiumEnv</span><span class="p">(</span><span class="n">CARLEnv</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CARLGymnasiumEnv</span><span class="p">(</span><span class="n">CARLEnv</span><span class="p">):</span>
     <span class="n">env_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">render_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rgb_array&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env</span><span class="p">:</span> <span class="n">Env</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">contexts</span><span class="p">:</span> <span class="n">Contexts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">obs_context_features</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-        <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># list the context features which should be added to the state</span>
+        <span class="n">obs_context_features</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># list the context features which should be added to the state</span>
         <span class="n">obs_context_as_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">context_selector</span><span class="p">:</span> <span class="n">AbstractSelector</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AbstractSelector</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">context_selector_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -336,7 +337,7 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_update_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
@@ -362,7 +363,7 @@
     <div class="footer-item">
       <p class="copyright">
     &copy; Copyright 
-    Copyright 2024, AutoML.org Freiburg-Hannover
+    Copyright 2025, AutoML.org Freiburg-Hannover
 .<br>
 </p>
     </div>
@@ -370,7 +371,7 @@
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.2.6. Template is modified version of <a
+7.4.7. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>

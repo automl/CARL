@@ -36,6 +36,6 @@ Modules
    :toctree:
    :recursive:
 
-   carl.envs.mario.carl_mario
-   carl.envs.mario.pcg_smb_env
+   carl_mario
+   pcg_smb_env
 

@@ -44,7 +44,7 @@ Modules
    :toctree:
    :recursive:
 
-   carl.envs.gymnasium.box2d
-   carl.envs.gymnasium.carl_gymnasium_env
-   carl.envs.gymnasium.classic_control
+   box2d
+   carl_gymnasium_env
+   classic_control
 

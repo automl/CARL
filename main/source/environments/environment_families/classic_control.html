@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>CARL Classic Control Environments &#8212; CARL Documentation 1.1.0 documentation</title>
+    <title>CARL Classic Control Environments &#8212; CARL Documentation 1.1.1 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ac9c05f7c49ca1e1f876c6e36360ea26.css" rel="stylesheet">
@@ -22,13 +22,13 @@
       
 
     
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=2eb4fb78" />
     
   <link rel="preload" as="script" href="../../../_static/js/index.9ea38e314b9e6d9dab77.js">
 
-    <script src="../../../_static/documentation_options.js?v=2a705162"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/documentation_options.js?v=83302504"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -91,11 +91,11 @@
         <div class="dropdown mt-1">
     <button type="button" class="btn btn-secondary btn-md navbar-btn dropdown-toggle" id="dLabelMore"
         data-toggle="dropdown">
-        v1.1.0
+        v1.1.1
         <span class="caret"></span>
     </button>
     <div class="dropdown-menu list-group-flush py-0" aria-labelledby="dLabelMore">
-        <a class="list-group-item list-group-item-action" href="#">v1.1.0 (stable)</a>
+        <a class="list-group-item list-group-item-action" href="#">v1.1.1 (stable)</a>
     </div>
 </div>
       </div>
@@ -120,7 +120,7 @@
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><h4 class="mt-0 mb-0"><a href="../../../index.html">CARL Documentation</a></h4>
-<div class="mb-3">v1.1.0</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+<div class="mb-3">v1.1.1</div><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
@@ -309,12 +309,14 @@ of simply physics simulation tasks. Context features here are therefore
 also physics-based, e.g. friction, mass or gravity.</p>
 <section id="carl-pendulum-environment">
 <h2>CARL Pendulum Environment<a class="headerlink" href="#carl-pendulum-environment" title="Link to this heading">¶</a></h2>
-<a class="reference internal image-reference" href="../../../_images/pendulum.jpeg"><img alt="Pendulum Environment" class="align-center" src="../../../_images/pendulum.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/pendulum.jpeg"><img alt="Pendulum Environment" class="align-center" src="../../../_images/pendulum.jpeg" style="width: 25%;" />
+</a>
 <p>In Pendulum, the agent’s task is to swing up an inverted pendulum and
 balance it at the top from a random position. The action here is the
 direction and amount of force the agent wants to apply to the pendulum.
 Influence of context settings on an agent trained on the default environment:</p>
-<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLPendulumEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLPendulumEnv.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLPendulumEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLPendulumEnv.png" style="width: 50%;" />
+</a>
 <table class="table" id="id1">
 <caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
 <thead>
@@ -349,12 +351,14 @@ Influence of context settings on an agent trained on the default environment:</p
 </section>
 <section id="carl-cartpole-environment">
 <h2>CARL CartPole Environment<a class="headerlink" href="#carl-cartpole-environment" title="Link to this heading">¶</a></h2>
-<a class="reference internal image-reference" href="../../../_images/cartpole.jpeg"><img alt="CartPole Environment" class="align-center" src="../../../_images/cartpole.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/cartpole.jpeg"><img alt="CartPole Environment" class="align-center" src="../../../_images/cartpole.jpeg" style="width: 25%;" />
+</a>
 <p>CartPole, similarly to Pendulum, asks the agent to balance a pole upright, though
 this time the agent doesn’t directly apply force to the pole but moves a cart on which
 the pole ist placed either to the left or the right.
 Influence of context settings on an agent trained on the default environment:</p>
-<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLCartPoleEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLCartPoleEnv.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLCartPoleEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLCartPoleEnv.png" style="width: 50%;" />
+</a>
 <table class="table" id="id2">
 <caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
 <thead>
@@ -393,12 +397,14 @@ Influence of context settings on an agent trained on the default environment:</p
 </section>
 <section id="carl-acrobot-environment">
 <h2>CARL Acrobot Environment<a class="headerlink" href="#carl-acrobot-environment" title="Link to this heading">¶</a></h2>
-<a class="reference internal image-reference" href="../../../_images/acrobot.jpeg"><img alt="Acrobot Environment" class="align-center" src="../../../_images/acrobot.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/acrobot.jpeg"><img alt="Acrobot Environment" class="align-center" src="../../../_images/acrobot.jpeg" style="width: 25%;" />
+</a>
 <p>Acrobot is another swing-up task with the goal being swinging the end of the lower
 of two links up to a given height. The agent accomplishes this by actuating
 the joint connecting both links.
 Influence of context settings on an agent trained on the default environment:</p>
-<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLAcrobotEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLAcrobotEnv.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLAcrobotEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLAcrobotEnv.png" style="width: 50%;" />
+</a>
 <table class="table" id="id3">
 <caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <thead>
@@ -453,13 +459,15 @@ Influence of context settings on an agent trained on the default environment:</p
 </section>
 <section id="carl-mountaincar-environment">
 <h2>CARL MountainCar Environment<a class="headerlink" href="#carl-mountaincar-environment" title="Link to this heading">¶</a></h2>
-<a class="reference internal image-reference" href="../../../_images/mountaincar.jpeg"><img alt="MountainCar Environment" class="align-center" src="../../../_images/mountaincar.jpeg" style="width: 25%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/mountaincar.jpeg"><img alt="MountainCar Environment" class="align-center" src="../../../_images/mountaincar.jpeg" style="width: 25%;" />
+</a>
 <p>The MountainCar environment asks the agent to move a car up a steep slope. In order
 to succeed, the agent has to accelerate using the opposite slope. There are two
 versions of the environment, a discrete one with only “left” and “right” as actions,
 as well as a continuous one.
 Influence of context settings on an agent trained on the default environment:</p>
-<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLMountainCarEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLMountainCarEnv.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/plot_ecdf_CARLMountainCarEnv.png"><img alt="Influence of context settings on an agent trained on the default environment." class="align-center" src="../../../_images/plot_ecdf_CARLMountainCarEnv.png" style="width: 50%;" />
+</a>
 <p>Defaults and bounds for the discrete MountainCar:</p>
 <table class="table" id="id4">
 <caption><span class="caption-text">Defaults and Bounds</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
@@ -606,7 +614,7 @@ Influence of context settings on an agent trained on the default environment:</p
     <div class="footer-item">
       <p class="copyright">
     &copy; Copyright 
-    Copyright 2024, AutoML.org Freiburg-Hannover
+    Copyright 2025, AutoML.org Freiburg-Hannover
 .<br>
 </p>
     </div>
@@ -614,7 +622,7 @@ Influence of context settings on an agent trained on the default environment:</p
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-7.2.6. Template is modified version of <a
+7.4.7. Template is modified version of <a
 href="https://pydata-sphinx-theme.readthedocs.io">PyData Sphinx Theme</a>. <br>
 </p>
     </div>
