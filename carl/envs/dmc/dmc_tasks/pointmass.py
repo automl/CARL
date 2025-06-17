@@ -15,11 +15,10 @@
 # ============================================================================
 
 """Finger Domain."""
+
 from __future__ import annotations
 
 from typing import Any
-
-from multiprocessing.sharedctypes import Value
 
 import numpy as np
 from dm_control.mujoco.wrapper import mjbindings
@@ -51,7 +50,7 @@ def check_constraints(
         or starting_y <= -area_size / 4
     ):
         raise ValueError(
-            f"The starting points are located outside of the grid. Choose a value lower than {area_size/4}."
+            f"The starting points are located outside of the grid. Choose a value lower than {area_size / 4}."
         )
 
     if (
@@ -61,7 +60,7 @@ def check_constraints(
         or target_y <= -area_size / 4
     ):
         raise ValueError(
-            f"The target points are located outside of the grid. Choose a value lower than {area_size/4}."
+            f"The target points are located outside of the grid. Choose a value lower than {area_size / 4}."
         )
 
 
@@ -101,11 +100,11 @@ def make_model(
     <worldbody>
         <light name="light" pos="0 0 1"/>
         <camera name="fixed" pos="0 0 .75" quat="1 0 0 0"/>
-        <geom name="ground" type="plane" pos="0 0 0" size="{area_size/2} {area_size/2} .1" material="grid"/>
-        <geom name="wall_x" type="plane" pos="{-area_size/2} 0 .02" zaxis="1 0 0"  size=".02 .3 .02" material="decoration"/>
-        <geom name="wall_y" type="plane" pos="0 {-area_size/2} .02" zaxis="0 1 0"  size=".3 .02 .02" material="decoration"/>
-        <geom name="wall_neg_x" type="plane" pos="{area_size/2} 0 .02" zaxis="-1 0 0"  size=".02 .3 .02" material="decoration"/>
-        <geom name="wall_neg_y" type="plane" pos="0 {area_size/2} .02" zaxis="0 -1 0"  size=".3 .02 .02" material="decoration"/>
+        <geom name="ground" type="plane" pos="0 0 0" size="{area_size / 2} {area_size / 2} .1" material="grid"/>
+        <geom name="wall_x" type="plane" pos="{-area_size / 2} 0 .02" zaxis="1 0 0"  size=".02 .3 .02" material="decoration"/>
+        <geom name="wall_y" type="plane" pos="0 {-area_size / 2} .02" zaxis="0 1 0"  size=".3 .02 .02" material="decoration"/>
+        <geom name="wall_neg_x" type="plane" pos="{area_size / 2} 0 .02" zaxis="-1 0 0"  size=".02 .3 .02" material="decoration"/>
+        <geom name="wall_neg_y" type="plane" pos="0 {area_size / 2} .02" zaxis="0 -1 0"  size=".3 .02 .02" material="decoration"/>
 
         <body name="pointmass" pos="{starting_x} {starting_y} .01">
         <camera name="cam0" pos="0 -0.3 0.3" xyaxes="1 0 0 0 0.7 0.7"/>

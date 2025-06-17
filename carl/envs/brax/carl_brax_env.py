@@ -5,7 +5,6 @@ from typing import Any
 from dataclasses import asdict
 
 import brax
-import brax.v1.physics.geometry as Geometry
 import gymnasium
 import numpy as np
 from brax.base import Inertia, Link, System

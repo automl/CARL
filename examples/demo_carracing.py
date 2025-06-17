@@ -11,8 +11,6 @@ from carl.envs.gymnasium.box2d.carl_vehicle_racing import (
 )
 
 if __name__ == "__main__":
-    from pyglet.window import key
-
     a = np.array([0.0, 0.0, 0.0])
 
     def register_input():

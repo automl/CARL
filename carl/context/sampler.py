@@ -11,10 +11,9 @@ from carl.utils.types import Context, Contexts
 class ContextSampler(ConfigurationSpace):
     def __init__(
         self,
-        context_distributions: list[ContextFeature]
-        | dict[str, ContextFeature]
-        | str
-        | DictConfig,
+        context_distributions: (
+            list[ContextFeature] | dict[str, ContextFeature] | str | DictConfig
+        ),
         context_space: ContextSpace,
         seed: int,
         name: str | None = None,

@@ -10,7 +10,7 @@ from carl.utils.types import Contexts
 
 try:
     pygame.display.init()
-except:  # pragma: no cover
+except:  # noqa:E722
     import os  # pragma: no cover
 
     os.environ["SDL_VIDEODRIVER"] = "dummy"  # pragma: no cover
@@ -24,8 +24,9 @@ class CARLGymnasiumEnv(CARLEnv):
         self,
         env: Env | None = None,
         contexts: Contexts | None = None,
-        obs_context_features: list[str]
-        | None = None,  # list the context features which should be added to the state
+        obs_context_features: (
+            list[str] | None
+        ) = None,  # list the context features which should be added to the state
         obs_context_as_dict: bool = True,
         context_selector: AbstractSelector | type[AbstractSelector] | None = None,
         context_selector_kwargs: dict = None,

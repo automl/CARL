@@ -47,6 +47,10 @@ def check_spec(spec_name: str) -> bool:
 # Environment loading
 found = check_spec("Box2D")
 if found:
-    from carl.envs.gymnasium.box2d import *
+    from carl.envs.gymnasium.box2d import (
+        CARLBipedalWalker,
+        CARLLunarLander,
+        CARLVehicleRacing,
+    )
 
     __all__ += ["CARLBipedalWalker", "CARLLunarLander", "CARLVehicleRacing"]

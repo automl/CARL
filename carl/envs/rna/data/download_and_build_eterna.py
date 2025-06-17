@@ -60,7 +60,7 @@ def extract_secondarys(download_path: str, dump_path: str) -> None:
 
 
 if __name__ == "__main__":
-    download_path = f'{"data/eterna/raw/eterna_raw.txt"}'
-    dump_path = f'{"data/eterna/interim/eterna.txt"}'
+    download_path = f"{'data/eterna/raw/eterna_raw.txt'}"
+    dump_path = f"{'data/eterna/interim/eterna.txt'}"
     download_eterna(download_path)
     extract_secondarys(download_path, dump_path)

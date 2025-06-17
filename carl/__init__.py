@@ -19,7 +19,7 @@ project_urls = {
     "Source Code": "https://github.com/https://github.com/automl/CARL",
 }
 copyright = f"""
-    Copyright {datetime.date.today().strftime('%Y')}, AutoML.org Freiburg-Hannover
+    Copyright {datetime.date.today().strftime("%Y")}, AutoML.org Freiburg-Hannover
 """
 version = __version__
 
@@ -80,7 +80,7 @@ try:
             id="carl/CARLMarioEnv-v0",
             entry_point="carl.envs.mario:CARLMarioEnv",
         )
-except:
+except:  # noqa: E722
     print(
         """Gym registration failed - this is normal during installation.
         After that, please check that gymnasium is installed correctly."""

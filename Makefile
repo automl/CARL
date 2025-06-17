@@ -24,12 +24,11 @@ PYTEST ?= python -m pytest
 CTAGS ?= ctags
 PIP ?= python -m pip
 MAKE ?= make
-BLACK ?= python -m black
 ISORT ?= isort
 PYDOCSTYLE ?= pydocstyle
 MYPY ?= mypy
 PRECOMMIT ?= pre-commit
-FLAKE8 ?= flake8
+RUFF ?= ruff
 
 DIR := ${CURDIR}
 DIST := ${CURDIR}/dist
@@ -43,8 +42,8 @@ install-dev:
 install:
 	$(PIP) install -e .
 
-check-black:
-	$(BLACK)  carl test --check || :
+check-ruff:
+	$(RUFF) check carl test --check || :
 
 check-isort:
 	$(ISORT) carl test --check || :
@@ -55,23 +54,21 @@ check-pydocstyle:
 check-mypy:
 	$(MYPY) carl || :
 
-check-flake8:
-	$(FLAKE8) carl || :
-	$(FLAKE8) test || :
-
 # pydocstyle does not have easy ignore rules, instead, we include as they are covered
-check: check-black check-isort check-mypy check-flake8 # check-pydocstyle
+check: check-ruff check-isort check-mypy check-pydocstyle
 
 pre-commit:
 	$(PRECOMMIT) run --all-files
 
-format-black:
-	$(BLACK) carl test examples
+format-ruff:
+	$(RUFF) format --silent carl test examples
+	$(RUFF) check --fix --silent carl test --exit-zero
+	$(RUFF) check --fix carl test --exit-zero
 
 format-isort:
 	$(ISORT) carl test
 
-format: format-black format-isort
+format: format-ruff format-isort
 
 test:
 	$(PYTEST) --disable-warnings test

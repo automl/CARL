@@ -1,4 +1,3 @@
-import carl
 import gymnasium as gym
 from gymnasium.wrappers import FlattenObservation
 from stable_baselines3 import DQN

@@ -17,6 +17,7 @@
 # limitations under the License.
 
 """Wrappers to convert brax envs to gym envs."""
+
 from typing import ClassVar, Optional
 
 import gymnasium
@@ -25,12 +26,7 @@ import jax
 import numpy as np
 from brax.envs.base import PipelineEnv
 from brax.io import image
-from gymnasium import spaces
-from gymnasium.vector import utils
-
-# from brax.envs.wrappers.gym import GymWrapper as BraxGymWrapper
-
-
+from gymnasium import spaces, vector
 
 
 class BraxGymWrapper(gym.Env):
@@ -51,7 +47,7 @@ class BraxGymWrapper(gym.Env):
         self.observation_space = spaces.Box(-obs, obs, dtype="float32")
 
         # Set up action space.
-        action = jax.tree_map(np.array, self._env.sys.actuator.ctrl_range)
+        action = jax.tree.map(np.array, self._env.sys.actuator.ctrl_range)
         self.action_space = spaces.Box(action[:, 0], action[:, 1], dtype="float32")
 
         # Modified reset function now accepts seed and options.
@@ -211,11 +207,3 @@ class GymWrapper(gymnasium.Env):
     @context.setter
     def context(self, context):
         self._env.context = context
-
-
-class VectorGymWrapper(GymWrapper):
-    """Wrapper for vectorized environments"""
-
-    def __init__(self, env):
-        super().__init__(env)
-        self.num_envs = env.num_envs if hasattr(env, "num_envs") else 1

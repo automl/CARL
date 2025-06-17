@@ -46,7 +46,7 @@ dependencies = ["gym",
         "PyYAML>=5.4.1",
         "tabulate>=0.8.9",
         "bs4>=0.0.1",
-        "configspace>=0.7.1",
+        "configspace>=1.2.1",
         "omegaconf>=2.3.0"]
 
 [project.urls]
@@ -62,7 +62,6 @@ box2d = [
 brax = [
         "brax==0.9.3",
         "protobuf>=3.17.3",
-        "mujoco==3.0.1"
     ]
 dm_control = [
         "dm_control>=1.0.3",
@@ -85,15 +84,13 @@ all-envs = [
         "gymnasium[box2d]>=0.27.1",
         "brax==0.9.3",
         "protobuf>=3.17.3",
-        "mujoco==3.0.1",
         "dm_control>=1.0.3",
     ]
 dev = [
         "pytest>=6.1.1",
         "pytest-cov",
         "mypy",
-        "black",
-        "flake8",
+        "ruff",
         "isort",
         "pydocstyle",
         "pre-commit",

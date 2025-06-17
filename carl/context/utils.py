@@ -28,9 +28,9 @@ def get_context_bounds(
     upper_bounds = np.empty(shape=len(context_keys))
 
     for i, context_key in enumerate(context_keys):
-        l, u, dtype = context_bounds[context_key]
-        lower_bounds[i] = l
-        upper_bounds[i] = u
+        lower, upper, dtype = context_bounds[context_key]
+        lower_bounds[i] = lower
+        upper_bounds[i] = upper
 
     return lower_bounds, upper_bounds
 
