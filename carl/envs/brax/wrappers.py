@@ -19,29 +19,24 @@
 """Wrappers to convert brax envs to gym envs."""
 from typing import ClassVar, Optional
 
-import gym
+import gymnasium
+import gymnasium as gym
 import jax
 import numpy as np
 from brax.envs.base import PipelineEnv
 from brax.io import image
-from gym import spaces
-from gym.vector import utils
+from gymnasium import spaces
+from gymnasium.vector import utils
+
+# from brax.envs.wrappers.gym import GymWrapper as BraxGymWrapper
 
 
-class GymWrapper(gym.Env):
-    """A wrapper that converts Brax Env to one that follows Gym API."""
 
-    # Flag that prevents `gym.register` from misinterpreting the `_step` and
-    # `_reset` as signs of a deprecated gym Env API.
+
+class BraxGymWrapper(gym.Env):
     _gym_disable_underscore_compat: ClassVar[bool] = True
 
-    def __init__(
-        self,
-        env: PipelineEnv,
-        seed: int = 0,
-        backend: Optional[str] = None,
-        render_mode: str = "rgb_array",
-    ):
+    def __init__(self, env: PipelineEnv, seed: int = 0, backend: Optional[str] = None):
         self._env = env
         self.metadata = {
             "render.modes": ["human", "rgb_array"],
@@ -50,21 +45,24 @@ class GymWrapper(gym.Env):
         self.seed(seed)
         self.backend = backend
         self._state = None
-        self.render_mode = render_mode
 
+        # Set up observation space.
         obs = np.inf * np.ones(self._env.observation_size, dtype="float32")
         self.observation_space = spaces.Box(-obs, obs, dtype="float32")
 
-        action = np.ones(self._env.action_size, dtype="float32")
-        self.action_space = spaces.Box(-action, action, dtype="float32")
+        # Set up action space.
+        action = jax.tree_map(np.array, self._env.sys.actuator.ctrl_range)
+        self.action_space = spaces.Box(action[:, 0], action[:, 1], dtype="float32")
 
-        def reset(key):
+        # Modified reset function now accepts seed and options.
+        def reset(key, seed=None, options=None):
             key1, key2 = jax.random.split(key)
             state = self._env.reset(key2)
             return state, state.obs, key1
 
         self._reset = jax.jit(reset, backend=self.backend)
 
+        # The step function remains unchanged.
         def step(state, action):
             state = self._env.step(state, action)
             info = {**state.metrics, **state.info}
@@ -72,72 +70,66 @@ class GymWrapper(gym.Env):
 
         self._step = jax.jit(step, backend=self.backend)
 
-    def reset(self, seed: Optional[int] = None, options: dict = {}):
-        self._state, obs, self._key = self._reset(self._key)
-        # We return device arrays for pytorch users.
-        return obs, {}
+    def reset(self, *, seed: int | None = None, options: dict | None = None):
+        self._state, obs, self._key = self._reset(self._key, seed=seed, options=options)
+        info = {}
+        return obs, info
 
     def step(self, action):
         self._state, obs, reward, done, info = self._step(self._state, action)
-        # We return device arrays for pytorch users.
-        return obs, reward, done, False, info
+        terminated = done
+        truncated = False
+        return obs, reward, terminated, truncated, info
 
     def seed(self, seed: int = 0):
         self._key = jax.random.PRNGKey(seed)
 
-    def render(self):
-        if self.render_mode == "rgb_array":
+    def render(self, mode="human"):
+        if mode == "rgb_array":
             sys, state = self._env.sys, self._state
             if state is None:
-                raise RuntimeError("must call reset or step before rendering")
+                raise RuntimeError("Call reset or step before rendering.")
             return image.render_array(sys, state.pipeline_state, 256, 256)
         else:
-            return super().render()  # just raise an exception
+            return super().render(mode=mode)
 
 
 class VectorGymWrapper(gym.vector.VectorEnv):
-    """A wrapper that converts batched Brax Env to one that follows Gym VectorEnv API."""
-
-    # Flag that prevents `gym.register` from misinterpreting the `_step` and
-    # `_reset` as signs of a deprecated gym Env API.
     _gym_disable_underscore_compat: ClassVar[bool] = True
 
-    def __init__(
-        self,
-        env: PipelineEnv,
-        seed: int = 0,
-        backend: Optional[str] = None,
-        render_mode="rgb_array",
-    ):
+    def __init__(self, env: PipelineEnv, seed: int = 0, backend: Optional[str] = None):
         self._env = env
         self.metadata = {
             "render.modes": ["human", "rgb_array"],
             "video.frames_per_second": 1 / self._env.dt,
         }
-        self.render_mode = render_mode
         if not hasattr(self._env, "batch_size"):
-            raise ValueError("underlying env must be batched")
+            raise ValueError("The underlying env must be batched.")
 
         self.num_envs = self._env.batch_size
         self.seed(seed)
         self.backend = backend
         self._state = None
 
+        # Set up batched observation space.
         obs = np.inf * np.ones(self._env.observation_size, dtype="float32")
         obs_space = spaces.Box(-obs, obs, dtype="float32")
-        self.observation_space = utils.batch_space(obs_space, self.num_envs)
+        self.observation_space = vector.utils.batch_space(obs_space, self.num_envs)
 
-        action = np.ones(self._env.action_size, dtype="float32")
-        action_space = spaces.Box(-action, action, dtype="float32")
-        self.action_space = utils.batch_space(action_space, self.num_envs)
+        # Set up batched action space.
+        action = jax.tree_map(np.array, self._env.sys.actuator.ctrl_range)
+        action_space = spaces.Box(action[:, 0], action[:, 1], dtype="float32")
+        self.action_space = vector.utils.batch_space(action_space, self.num_envs)
 
-        def reset(key):
+        # Modified reset function to accept extra kwargs.
+        def reset(key, seed=None, options=None):
             key1, key2 = jax.random.split(key)
             state = self._env.reset(key2)
             return state, state.obs, key1
 
         self._reset = jax.jit(reset, backend=self.backend)
 
+        # Step function remains as before.
         def step(state, action):
             state = self._env.step(state, action)
             info = {**state.metrics, **state.info}
@@ -145,22 +137,85 @@ class VectorGymWrapper(gym.vector.VectorEnv):
 
         self._step = jax.jit(step, backend=self.backend)
 
-    def reset(self):
-        self._state, obs, self._key = self._reset(self._key)
-        return obs, {}
+    def reset(self, *, seed: int | None = None, options: dict | None = None):
+        self._state, obs, self._key = self._reset(self._key, seed=seed, options=options)
+        info = {}
+        return obs, info
 
     def step(self, action):
         self._state, obs, reward, done, info = self._step(self._state, action)
-        return obs, reward, done, False, info
+        terminated = done
+        truncated = False
+        return obs, reward, terminated, truncated, info
 
     def seed(self, seed: int = 0):
         self._key = jax.random.PRNGKey(seed)
 
-    def render(self):
-        if self.render_mode == "rgb_array":
+    def render(self, mode="human"):
+        if mode == "rgb_array":
             sys, state = self._env.sys, self._state
             if state is None:
-                raise RuntimeError("must call reset or step before rendering")
-            return image.render_array(sys, state.pipeline_state, 256, 256)
+                raise RuntimeError("Call reset or step before rendering.")
+            # Render the first instance in the batch.
+            return image.render_array(sys, state.pipeline_state.take(0), 256, 256)
         else:
-            return super().render()  # just raise an exception
+            return super().render(mode=mode)
+
+
+class GymWrapper(gymnasium.Env):
+    """Wrapper that converts Brax env to be Gymnasium-compatible"""
+
+    def __init__(self, env):
+        self._env = BraxGymWrapper(env)
+
+        # Convert spaces to gymnasium spaces
+        self.observation_space = spaces.Box(
+            low=self._env.observation_space.low,
+            high=self._env.observation_space.high,
+            dtype=np.float32,
+        )
+
+        self.action_space = spaces.Box(
+            low=self._env.action_space.low,
+            high=self._env.action_space.high,
+            dtype=np.float32,
+        )
+
+        # Forward attributes from wrapped env
+        # import pdb; pdb.set_trace()
+        # self.unwrapped = self._env
+        self.metadata = self._env.metadata if hasattr(self._env, "metadata") else {}
+
+    @property
+    def unwrapped(self):
+        """Return the base environment without any wrappers."""
+        return self._env.unwrapped if hasattr(self._env, "unwrapped") else self._env
+
+    def reset(self, *args, **kwargs):
+        # import pdb; pdb.set_trace()
+        return self._env.reset(*args, **kwargs)  #
+
+    def step(self, action):
+        return self._env.step(action)
+
+    def render(self):
+        return self._env.render()
+
+    def close(self):
+        return self._env.close()
+
+    @property
+    def context(self):
+        return self._env.context if hasattr(self._env, "context") else None
+
+    @context.setter
+    def context(self, context):
+        self._env.context = context
+
+
+class VectorGymWrapper(GymWrapper):
+    """Wrapper for vectorized environments"""
+
+    def __init__(self, env):
+        super().__init__(env)
+        self.num_envs = env.num_envs if hasattr(env, "num_envs") else 1
