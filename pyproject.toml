@@ -32,7 +32,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = ["gym",
-        "gymnasium>=0.27.1",
+        "gymnasium<1.0.0",
         "pygame",
         "scipy>=1.7.0",
         "ConfigArgParse>=1.5.1",
@@ -57,7 +57,7 @@ Issues = "https://github.com/automl/CARL/issues"
 
 [project.optional-dependencies]
 box2d = [
-        "gymnasium[box2d]>=0.27.1",
+        "gymnasium[box2d]<1.0.0",
     ]
 brax = [
         "brax==0.12.1",
@@ -68,7 +68,7 @@ dm_control = [
     ]
 mario = [
         "opencv-python>=4.8.0",
-        "torch>=1.9.0",
+        "torch~=2.4.1",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
         "pyvirtualdisplay>=3.0",
@@ -76,7 +76,7 @@ mario = [
     ]
 all-envs = [
         "opencv-python>=4.8.0",
-        "torch>=1.9.0",
+        "torch~=2.4.1",
         "Pillow>=8.3.1",
         "py4j>=0.10.9.2",
         "pyvirtualdisplay>=3.0",
