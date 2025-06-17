@@ -1,5 +1,5 @@
 __license__ = "Apache-2.0 License"
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __author__ = "Carolin Benjamins, Theresa Eimer, Frederik Schubert, André Biedenkapp, Aditya Mohan, Sebastian Döhler"
 
 
