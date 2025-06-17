@@ -1,6 +1,7 @@
 import inspect
 import unittest
 
+import importlib.util as iutil
 import carl.envs.gymnasium
 
 
@@ -23,4 +24,9 @@ class TestBox2DEnvs(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    TestBox2DEnvs().test_envs()
+    spec = iutil.find_spec("Box2D")
+    found = spec is not None
+    if found:
+        TestBox2DEnvs().test_envs()
+    else:
+        print("Box2D not found, skipping tests.")
