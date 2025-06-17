@@ -7,62 +7,11 @@ on:
     types: [created]
 
 jobs:
-  test:
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.kind }}
-    if: ${{ !github.event.pull_request.draft }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ['3.10', '3.11']
-        kind: ['conda']
-
-        include:
-          # Add the tag code-cov to ubuntu-3.7-source
-          - os: ubuntu-latest
-            python-version: 3.10
-            kind: 'conda'
-            code-cov: true
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: "recursive"
-
-    - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Conda install
-      if: matrix.kind == 'conda'
-      run: |
-        # Miniconda is available in $CONDA env var
-        $CONDA/bin/conda create -n testenv --yes pip wheel gxx_linux-64 gcc_linux-64 python=${{ matrix.python-version }}
-        $CONDA/envs/testenv/bin/python3 -m pip install --upgrade pip
-        $CONDA/envs/testenv/bin/pip3 install -e .[dev,dm_control,mario,brax]
-
-    - name: Tests
-      timeout-minutes: 60
-      run: |
-        echo "Running all tests..."
-        if [[ ${{ matrix.kind }} == 'conda' ]]; then
-          PYTHON=$CONDA/envs/testenv/bin/python3
-          export PATH="$CONDA/envs/testenv/bin:$PATH"
-        else
-          PYTHON=$(which python3)
-        fi
-
-        if [ ${{ matrix.code-cov }} ]; then
-          $PYTHON -m pytest ${{ env.pytest-args }} ${{ env.code-cov-args }} --ignore=test/local_only test
-        else
-          $PYTHON -m pytest ${{ env.pytest-args }} --ignore=test/local_only test
-        fi
   pypi-publish:
     name: Upload release to PyPI
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     environment:
       name: pypi
       url: https://pypi.org/p/carl-bench
