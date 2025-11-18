@@ -1,5 +1,4 @@
 import inspect
-import unittest
 
 import gymnasium as gym
 
@@ -7,7 +6,7 @@ import carl
 import carl.envs.gymnasium
 
 
-class TestGymnasiumEnvs(unittest.TestCase):
+class TestGymnasiumEnvs:
     def test_envs(self):
         envs = inspect.getmembers(carl.envs.gymnasium)
 
@@ -23,21 +22,17 @@ class TestGymnasiumEnvs(unittest.TestCase):
                     raise e
 
 
-class TestGymnasiumRegistration(unittest.TestCase):
+class TestGymnasiumRegistration:
     def test_registration(self):
         registered_envs = gym.envs.registration.registry.keys()
         for e in carl.envs.__all__:
             if "RNA" not in e and "Brax" not in e:
                 env_name = f"carl/{e}-v0"
-                self.assertTrue(env_name in registered_envs)
+                assert env_name in registered_envs
 
     def test_make(self):
         for e in carl.envs.__all__:
             if "RNA" not in e and "Brax" not in e:
                 env_name = f"carl/{e}-v0"
                 env = gym.make(env_name)
-                self.assertTrue(isinstance(env, gym.Env))
-
-
-if __name__ == "__main__":
-    unittest.main()
+                assert isinstance(env, gym.Env)

@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from carl.context.context_space import (
     ContextSpace,
@@ -19,48 +19,42 @@ sample_dist = {
 }
 
 
-class TestContextSampler(unittest.TestCase):
-    def setUp(self) -> None:
-        self.cspace = ContextSpace(context_space_dict)
-        self.sampler = ContextSampler(
-            context_distributions=sample_dist,
-            context_space=ContextSpace(context_space_dict),
-            seed=0,
-            name="TestSampler",
-        )
-        return super().setUp()
-
+class TestContextSampler:
     def test_init(self):
+        cspace = ContextSpace(context_space_dict)
         ContextSampler(
             context_distributions=sample_dist,  # as dict
-            context_space=self.cspace,
+            context_space=cspace,
             seed=0,
             name="TestSampler",
         )
         ContextSampler(
             context_distributions=list(sample_dist.values()),  # as list/iterable
-            context_space=self.cspace,
+            context_space=cspace,
             seed=0,
             name="TestSampler",
         )
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             ContextSampler(
                 context_distributions=0,
-                context_space=self.cspace,
+                context_space=cspace,
                 seed=0,
                 name="TestSampler",
             )
 
     def test_sample_contexts(self):
-        contexts = self.sampler.sample_contexts(n_contexts=3)
-        self.assertEqual(len(contexts), 3)
-        self.assertEqual(contexts[0]["gravity"], 9.8)
+        cspace = ContextSpace(context_space_dict)
+        sampler = ContextSampler(
+            context_distributions=sample_dist,
+            context_space=cspace,
+            seed=0,
+            name="TestSampler",
+        )
+        contexts = sampler.sample_contexts(n_contexts=3)
+        assert len(contexts) == 3
+        assert contexts[0]["gravity"] == 9.8
 
-        contexts = self.sampler.sample_contexts(n_contexts=1)
-        self.assertEqual(len(contexts), 1)
-        self.assertEqual(contexts[0]["gravity"], 9.8)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        contexts = sampler.sample_contexts(n_contexts=1)
+        assert len(contexts) == 1
+        assert contexts[0]["gravity"] == 9.8

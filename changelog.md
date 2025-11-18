@@ -1,6 +1,7 @@
 # 1.1.2 (current)
 - python version upgrade (since brax would be incompatible with 3.9)
 - fix & test context propagation in brax
+- fully moved to pytest from unittest
 
 # 1.1.1
 - brax version fix

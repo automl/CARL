@@ -1,5 +1,3 @@
-import unittest
-
 from carl.context.context_space import (
     CategoricalContextFeature,
     NormalFloatContextFeature,
@@ -16,7 +14,7 @@ from carl.envs.brax.brax_walker_goal_wrapper import (
 DIRECTIONS = directions
 
 
-class TestGoalSampling(unittest.TestCase):
+class TestGoalSampling:
     def test_uniform_sampling(self):
         context_distributions = [
             NormalFloatContextFeature(
@@ -76,7 +74,7 @@ class TestGoalSampling(unittest.TestCase):
         )
 
 
-class TestGoalWrapper(unittest.TestCase):
+class TestGoalWrapper:
     def test_reset(self):
         context_distributions = [
             NormalFloatContextFeature(
@@ -166,7 +164,7 @@ class TestGoalWrapper(unittest.TestCase):
                 assert wrapped_reward >= 0, "Negative reward."
 
 
-class TestLanguageWrapper(unittest.TestCase):
+class TestLanguageWrapper:
     def test_reset(self) -> None:
         context_distributions = [
             NormalFloatContextFeature(

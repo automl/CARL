@@ -1,11 +1,9 @@
-import unittest
-
 import numpy as np
 
 from carl.context.utils import get_context_bounds
 
 
-class TestContextBounds(unittest.TestCase):
+class TestContextBounds:
     def test_context_bounds(self):
         DEFAULT_CONTEXT = {
             "min_position": -1.2,  # unit?
@@ -37,9 +35,9 @@ class TestContextBounds(unittest.TestCase):
 
         lower, upper = get_context_bounds(list(DEFAULT_CONTEXT.keys()), CONTEXT_BOUNDS)
 
-        self.assertEqual(
-            lower.all(),
-            np.array(
+        assert (
+            lower.all()
+            == np.array(
                 [
                     -np.inf,
                     -np.inf,
@@ -53,11 +51,7 @@ class TestContextBounds(unittest.TestCase):
                     -np.inf,
                     -np.inf,
                 ]
-            ).all(),
+            ).all()
         )
 
-        self.assertEqual(upper.all(), np.array([np.inf] * upper.shape[0]).all())
-
-
-if __name__ == "__main__":
-    TestContextBounds.test_context_bounds()
+        assert upper.all() == np.array([np.inf] * upper.shape[0]).all()

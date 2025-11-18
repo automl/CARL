@@ -1,5 +1,3 @@
-import unittest
-
 from ConfigSpace import ConfigurationSpace
 from omegaconf import DictConfig
 
@@ -47,17 +45,13 @@ str_space = """{
             }"""
 
 
-class TestSearchSpacEncoding(unittest.TestCase):
-    def setUp(self):
-        self.test_space = None
-        self.test_space = ConfigurationSpace(name="myspace", space=dict_space)
-        return super().setUp()
-
+class TestSearchSpaceEncoding:
     def test_ss_as_cs(self):
+        test_space = ConfigurationSpace(name="myspace", space=dict_space)
         try:
-            search_space_to_config_space(self.test_space)
+            search_space_to_config_space(test_space)
         except Exception as e:
-            print(f"Cannot encode search space --  {self.test_space}.")
+            print(f"Cannot encode search space --  {test_space}.")
             raise e
 
     def test_ss_as_dictconfig(self):
@@ -75,7 +69,3 @@ class TestSearchSpacEncoding(unittest.TestCase):
         except Exception as e:
             print(f"Cannot encode search space --  {dict_space_2}.")
             raise e
-
-
-if __name__ == "__main__":
-    unittest.main()

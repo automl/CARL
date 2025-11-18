@@ -1,11 +1,10 @@
 import inspect
-import unittest
 
 import carl
 from carl.envs.brax import CARLBraxHalfcheetah
 
 
-class TestBraxEnvs(unittest.TestCase):
+class TestBraxEnvs:
     def test_envs(self):
         envs = inspect.getmembers(carl.envs.brax)
 
@@ -50,7 +49,3 @@ class TestBraxEnvs(unittest.TestCase):
             env.env.unwrapped._env.sys.link.inertia.mass[torso_idx]
             == current_context["mass_torso"]
         ), "Mass does not change upon reset."
-
-
-if __name__ == "__main__":
-    TestBraxEnvs().test_envs()

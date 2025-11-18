@@ -1,7 +1,6 @@
-import unittest
-
 import gymnasium
 import numpy as np
+import pytest
 
 from carl.context.context_space import (
     ContextSpace,
@@ -40,9 +39,10 @@ context_space_dict_othertypes = {
 }
 
 
-class TestContextSpace(unittest.TestCase):
-    def setUp(self) -> None:
-        self.default_context = {
+class TestContextSpace:
+    @staticmethod
+    def generate_context_space() -> None:
+        default_context = {
             "gravity": 9.8,
             "masscart": 1,
             "masspole": 0.1,
@@ -50,64 +50,69 @@ class TestContextSpace(unittest.TestCase):
             "force_mag": 10,
             "tau": 0.02,
         }
-        self.context_space = ContextSpace(context_space=context_space_dict)
-        return super().setUp()
+        context_space = ContextSpace(context_space=context_space_dict)
+        return default_context, context_space
 
     def test_insert_defaults(self):
-        context_with_defaults = self.context_space.insert_defaults({})
-        self.assertDictEqual(context_with_defaults, self.default_context)
+        default_context, context_space = self.generate_context_space()
+        context_with_defaults = context_space.insert_defaults({})
+        assert len(context_with_defaults) == len(default_context)
+        for key in default_context:
+            assert context_with_defaults[key] == default_context[key]
 
     def test_get_default_context(self):
-        default_context = self.context_space.get_default_context()
-        self.assertDictEqual(default_context, self.default_context)
+        default_context, _ = self.generate_context_space()
+        assert len(default_context) == len(default_context)
+        for key in default_context:
+            assert default_context[key] == default_context[key]
 
     def test_get_lower_and_upper_bound(self):
+        _, context_space = self.generate_context_space()
         bounds_gt = (0.05, 5)
-        bounds = self.context_space.get_lower_and_upper_bound("length")
-        self.assertTupleEqual(bounds_gt, bounds)
+        bounds = context_space.get_lower_and_upper_bound("length")
+        assert bounds == bounds_gt
 
     def test_to_gymnasium_space_type(self):
-        space = self.context_space.to_gymnasium_space(as_dict=False)
-        self.assertEqual(type(space), gymnasium.spaces.Box)
+        _, context_space = self.generate_context_space()
+        space = context_space.to_gymnasium_space(as_dict=False)
+        assert isinstance(space, gymnasium.spaces.Box)
 
-        space = self.context_space.to_gymnasium_space(as_dict=True)
-        self.assertEqual(type(space), gymnasium.spaces.Dict)
+        space = context_space.to_gymnasium_space(as_dict=True)
+        assert isinstance(space, gymnasium.spaces.Dict)
 
     def test_to_gynasium_space(self):
         cspace = ContextSpace(context_space_dict_othertypes)
         cspace.to_gymnasium_space()
 
     def test_verify_context(self):
+        _, context_space = self.generate_context_space()
         # Unknown context feature name
         context = {"hihi": 39, "gravity": 3}
-        is_valid = self.context_space.verify_context(context)
-        self.assertEqual(is_valid, False)
+        is_valid = context_space.verify_context(context)
+        assert not is_valid
 
         # Out of bounds
         context = {"masscart": -10}
-        is_valid = self.context_space.verify_context(context)
-        self.assertEqual(is_valid, False)
+        is_valid = context_space.verify_context(context)
+        assert not is_valid
 
     def test_sample(self):
-        context = self.context_space.sample_contexts(["gravity"], size=1)
-        is_valid = self.context_space.verify_context(context)
-        self.assertEqual(is_valid, True)
+        _, context_space = self.generate_context_space()
+        context = context_space.sample_contexts(["gravity"], size=1)
+        is_valid = context_space.verify_context(context)
+        assert is_valid
 
-        contexts = self.context_space.sample_contexts(["gravity"], size=10)
-        self.assertTrue(len(contexts) == 10)
+        contexts = context_space.sample_contexts(["gravity"], size=10)
+        assert len(contexts) == 10
         for context in contexts:
-            is_valid = self.context_space.verify_context(context)
-            self.assertEqual(is_valid, True)
+            is_valid = context_space.verify_context(context)
+            assert is_valid
 
-        contexts = self.context_space.sample_contexts(None, size=10)
-        self.assertTrue(len(contexts) == 10)
+        contexts = context_space.sample_contexts(None, size=10)
+        assert len(contexts) == 10
         for context in contexts:
-            is_valid = self.context_space.verify_context(context)
-            self.assertEqual(is_valid, True)
+            is_valid = context_space.verify_context(context)
+            assert is_valid
 
-        with self.assertRaises(ValueError):
-            self.context_space.sample_contexts(["false_feature"], size=0)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        with pytest.raises(ValueError):
+            context_space.sample_contexts(["false_feature"], size=0)

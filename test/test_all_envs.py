@@ -1,11 +1,9 @@
-import unittest
-
 import numpy as np
 
 import carl.envs
 
 
-class TestInitEnvs(unittest.TestCase):
+class TestInitEnvs:
     def test_init_all_envs(self):
         global_vars = vars(carl.envs)
         mustinclude = "CARL"
