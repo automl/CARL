@@ -288,8 +288,7 @@ class CARLBraxEnv(CARLEnv):
             sys = sys.replace(
                 elasticity=sys.elasticity.at[:].set(context["elasticity"])
             )
-
-        self.env.unwrapped.sys = sys
+        self.env.unwrapped._env.sys = sys
 
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
