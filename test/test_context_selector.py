@@ -36,7 +36,7 @@ class TestContextSelection:
         env = CARLPendulum(
             contexts=contexts, context_selector=RoundRobinSelector(contexts=contexts)
         )
-        self.assertEqual(type(env.context_selector), RoundRobinSelector)
+        assert isinstance(env.context_selector, RoundRobinSelector)
 
     def test_random_selector_init(self):
         from carl.context.selection import RandomSelector
