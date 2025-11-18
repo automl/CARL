@@ -8,7 +8,7 @@ from carl.context.context_space import NormalFloatContextFeature
 from carl.context.sampler import ContextSampler
 
 # Create environment
-context_distributions = [NormalFloatContextFeature("GRAVITY_X", mu=9.8, sigma=1)]
+context_distributions = [NormalFloatContextFeature("GRAVITY_X", mu=9.8, sigma=1, upper=50, lower=0)]
 context_sampler = ContextSampler(
     context_distributions=context_distributions,
     context_space=CARLLunarLander.get_context_space(),

@@ -15,8 +15,8 @@ class CARLPendulum(CARLGymnasiumEnv):
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {
-            "gravity": UniformFloatContextFeature(
-                "gravity", lower=-np.inf, upper=np.inf, default_value=8.0
+            "max_speed": UniformFloatContextFeature(
+                "max_speed", lower=-np.inf, upper=np.inf, default_value=8.0
             ),
             "dt": UniformFloatContextFeature(
                 "dt", lower=0, upper=np.inf, default_value=0.05
