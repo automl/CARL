@@ -1,3 +1,11 @@
+# 1.1.2 (current)
+- python version upgrade (since brax would be incompatible with 3.9)
+- fix & test context propagation in brax
+
+# 1.1.1
+- brax version fix
+- smaller bugs
+
 # 1.1.0
 - increased test coverage
 - smaller bug fixes

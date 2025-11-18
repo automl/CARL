@@ -34,3 +34,5 @@ core
 *.tex
 build
 target
+
+.DS_Store

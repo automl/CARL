@@ -30,7 +30,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["gym",
         "gymnasium<1.0.0",
         "pygame",
