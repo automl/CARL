@@ -33,19 +33,53 @@ class TestBraxEnvs:
 
         current_context = env.contexts[env.context_id]
         assert env.env.unwrapped._env.sys.gravity[-1] == current_context["gravity"], (
-            "Gravity not set correctly in env."
+            "Gravity not set correctly in high level env."
+        )
+        current_context = env.contexts[env.context_id]
+        assert env.env.unwrapped._env.env.sys.gravity[-1] == current_context["gravity"], (
+            "Gravity not set correctly in mid level env."
+        )
+        current_context = env.contexts[env.context_id]
+        assert env.env.unwrapped._env.env.env.sys.gravity[-1] == current_context["gravity"], (
+            "Gravity not set correctly in low level env."
         )
         assert (
             env.env.unwrapped._env.sys.link.inertia.mass[torso_idx]
             == current_context["mass_torso"]
-        ), "Mass not set correctly in env."
+        ), "Mass not set correctly in high level env."
+        assert (
+            env.env.unwrapped._env.env.sys.link.inertia.mass[torso_idx]
+            == current_context["mass_torso"]
+        ), "Mass not set correctly in mid level env."
+        assert (
+            env.env.unwrapped._env.env.env.sys.link.inertia.mass[torso_idx]
+            == current_context["mass_torso"]
+        ), "Mass not set correctly in low level env."
 
         env.reset()
         current_context = env.contexts[env.context_id]
         assert env.env.unwrapped._env.sys.gravity[-1] == current_context["gravity"], (
-            "Gravity does not change upon reset."
+            "Gravity does not change upon reset in high level env."
+        )
+        env.reset()
+        current_context = env.contexts[env.context_id]
+        assert env.env.unwrapped._env.env.sys.gravity[-1] == current_context["gravity"], (
+            "Gravity does not change upon reset in mid level env."
+        )
+        env.reset()
+        current_context = env.contexts[env.context_id]
+        assert env.env.unwrapped._env.env.env.sys.gravity[-1] == current_context["gravity"], (
+            "Gravity does not change upon reset in low level env."
         )
         assert (
             env.env.unwrapped._env.sys.link.inertia.mass[torso_idx]
             == current_context["mass_torso"]
-        ), "Mass does not change upon reset."
+        ), "Mass does not change upon reset in high level env."
+        assert (
+            env.env.unwrapped._env.env.sys.link.inertia.mass[torso_idx]
+            == current_context["mass_torso"]
+        ), "Mass does not change upon reset in mid level env."
+        assert (
+            env.env.unwrapped._env.env.env.sys.link.inertia.mass[torso_idx]
+            == current_context["mass_torso"]
+        ), "Mass does not change upon reset in low level env."

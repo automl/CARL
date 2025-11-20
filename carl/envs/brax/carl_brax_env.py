@@ -22,58 +22,6 @@ from carl.envs.carl_env import CARLEnv
 from carl.utils.types import Context, Contexts
 
 
-def set_masses2(sys: System, context: dict[str, Any]) -> System:
-    for cfname, cfvalue in context.items():
-        if cfname.startswith("mass"):
-            link_name = cfname.split("_")[-1]
-            if link_name in sys.link_names:
-                idx = sys.link_names.index(link_name)
-                sys.link.inertia.mass.at[idx].set(cfvalue)
-    return sys
-
-
-def _set_masses(
-    context: dict[str, Any], inertia: Inertia, link_names: list[str]
-) -> Inertia:
-    """Actual/helper method to set masses
-
-    The required syntax for masses is as follows:
-    `mass_<linkname>` where linkname is the name of the entity to update, e.g. torso.
-
-    Parameters
-    ----------
-    context : dict[str, Any]
-        Context to set
-    inertia : Inertia
-        The inertia dataclass.
-    link_names : list[str]
-        Available link names.
-
-    Raises
-    ------
-    RuntimeError
-        When link name not in available names
-
-    Returns
-    -------
-    Inertia
-        Update inertia dataclass.
-    """
-    inertia_data = asdict(inertia)
-    for cfname, cfvalue in context.items():
-        if cfname.startswith("mass"):
-            link_name = cfname.split("_", 1)[-1]
-            if link_name in link_names:
-                idx = link_names.index(link_name)
-                inertia_data["mass"] = inertia_data["mass"].at[idx].set(cfvalue)
-            else:
-                raise RuntimeError(
-                    f"Link {link_name} not in available link names {link_names}. Probably "
-                    "something went wrong during context creation."
-                )
-    inertia_new = Inertia(**inertia_data)
-    return inertia_new
-
 
 def set_masses(sys: System, context: dict[str, Any]) -> System:
     """Set masses
@@ -93,10 +41,19 @@ def set_masses(sys: System, context: dict[str, Any]) -> System:
     System
         The updated system.
     """
-    link_data = asdict(sys.link)
-    inertia_new = _set_masses(context, sys.link.inertia, sys.link_names)
-    link_data["inertia"] = inertia_new
-    link_new = Link(**link_data)
+    inertia = sys.link.inertia
+    for cfname, cfvalue in context.items():
+        if cfname.startswith("mass"):
+            link_name = cfname.split("_", 1)[-1]
+            if link_name in sys.link_names:
+                idx = sys.link_names.index(link_name)
+                inertia = inertia.replace(mass=inertia.mass.at[idx].set(cfvalue))
+            else:
+                raise RuntimeError(
+                    f"Link {link_name} not in available link names {sys.link_names}. Probably "
+                    "something went wrong during context creation."
+                )
+    link_new = sys.link.replace(inertia=inertia)
     sys = sys.replace(link=link_new)
     return sys
 
@@ -166,16 +123,12 @@ class CARLBraxEnv(CARLEnv):
                 env_name=self.env_name, backend=self.backend, batch_size=bs
             )
 
-            # import pdb; pdb.set_trace()
-
             # Create Gymnasium-compatible wrapper
             if batch_size == 1:
                 env = GymWrapper(brax_env_instance)
 
             else:
                 env = VectorGymWrapper(brax_env_instance)
-
-            # import pdb; pdb.set_trace()
 
             # Convert to Gymnasium spaces
             env.observation_space = gymnasium.spaces.Box(
@@ -272,11 +225,11 @@ class CARLBraxEnv(CARLEnv):
         sys = mjcf.load(path)
 
         if "gravity" in context:
-            sys = sys.replace(gravity=jp.array([0, 0, self.context["gravity"]]))
+            sys = sys.replace(gravity=jp.array([0, 0, jp.float32(self.context["gravity"])]))
         if "ang_damping" in context:
-            sys = sys.replace(ang_damping=self.context["ang_damping"])
+            sys = sys.replace(ang_damping=jp.float32(self.context["ang_damping"]))
         if "viscosity" in context:
-            sys = sys.replace(ang_damping=self.context["viscosity"])
+            sys = sys.replace(ang_damping=jp.float32(self.context["viscosity"]))
 
         sys = set_masses(sys, context)
 
@@ -289,6 +242,8 @@ class CARLBraxEnv(CARLEnv):
                 elasticity=sys.elasticity.at[:].set(context["elasticity"])
             )
         self.env.unwrapped._env.sys = sys
+        self.env.unwrapped._env.env.sys = sys
+        self.env.unwrapped._env.env.env.sys = sys
 
     def reset(
         self, *, seed: int | None = None, options: dict[str, Any] | None = None
