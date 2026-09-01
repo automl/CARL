@@ -90,6 +90,9 @@ class MujocoToGymWrapper(gym.Env):
         options: Optional[dict] = None,
     ) -> Union[ObsType, tuple[ObsType, dict]]:
         super(MujocoToGymWrapper, self).reset(seed=seed, options=options)
+        if seed is not None:
+            # dm_control draws the initial state from the task's own RandomState, which is otherwise never seeded.
+            self.env.task.random.seed(seed)
         timestep = self.env.reset()
         if isinstance(self.observation_space, spaces.Box):
             observation = timestep.observation["observations"]

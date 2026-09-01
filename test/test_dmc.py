@@ -185,3 +185,17 @@ class TestPointmass:
                 target_y=0.3,
                 area_size=0.6,
             )
+
+
+class TestDmcSeeding:
+    @pytest.mark.parametrize("env_cls", [CARLDmcWalkerEnv, CARLDmcFingerEnv, CARLDmcFishEnv])
+    def test_reset_seed_is_deterministic(self, env_cls):
+        import numpy as np
+
+        def first_obs(seed):
+            env = env_cls(obs_context_features=[])
+            obs, _ = env.reset(seed=seed)
+            return np.asarray(obs["obs"])
+
+        assert np.array_equal(first_obs(3), first_obs(3))
+        assert not np.array_equal(first_obs(3), first_obs(4))

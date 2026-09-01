@@ -40,6 +40,14 @@ class CARLCartPole(CARLGymnasiumEnv):
             ),
         }
 
+    def _update_context(self) -> None:
+        super()._update_context()
+        # gymnasium's CartPoleEnv caches these derived quantities in __init__ and reads them in step(), so setting
+        # masscart/masspole/length alone would leave the dynamics (partially) unchanged.
+        env = self.env.unwrapped
+        env.total_mass = env.masspole + env.masscart
+        env.polemass_length = env.masspole * env.length
+
     def reset(
         self,
         *,

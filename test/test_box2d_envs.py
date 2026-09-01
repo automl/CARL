@@ -4,12 +4,12 @@ import unittest
 
 import carl.envs.gymnasium
 
+BOX2D_AVAILABLE = iutil.find_spec("Box2D") is not None
+
 
 class TestBox2DEnvs(unittest.TestCase):
     def test_envs(self):
-        spec = iutil.find_spec("Box2D")
-        found = spec is not None
-        if found:
+        if BOX2D_AVAILABLE:
             envs = inspect.getmembers(carl.envs.gymnasium.box2d)
 
             for env_name, env_obj in envs:
@@ -28,10 +28,20 @@ class TestBox2DEnvs(unittest.TestCase):
             print("Box2D not found, skipping tests.")
 
 
+class TestLunarLanderContext(unittest.TestCase):
+    @unittest.skipIf(not BOX2D_AVAILABLE, "Box2D not found")
+    def test_gravity_survives_reset(self):
+        # gymnasium's LunarLander re-creates its Box2D world in reset(); the context gravity must still apply.
+        from carl.envs.gymnasium.box2d import CARLLunarLander
+
+        context = CARLLunarLander.get_context_space().get_default_context()
+        context.update(GRAVITY_X=1.5, GRAVITY_Y=-3.0)
+        env = CARLLunarLander(contexts={0: context}, obs_context_features=[])
+        env.reset(seed=0)
+        self.assertEqual(tuple(env.env.unwrapped.world.gravity), (1.5, -3.0))
+        env.step(0)
+        self.assertEqual(tuple(env.env.unwrapped.world.gravity), (1.5, -3.0))
+
+
 if __name__ == "__main__":
-    spec = iutil.find_spec("Box2D")
-    found = spec is not None
-    if found:
-        TestBox2DEnvs().test_envs()
-    else:
-        print("Box2D not found, skipping tests.")
+    unittest.main()
