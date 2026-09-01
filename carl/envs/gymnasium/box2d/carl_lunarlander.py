@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from Box2D.b2 import vec2
 from gymnasium.envs.box2d import lunar_lander
 from gymnasium.envs.box2d.lunar_lander import LunarLander
@@ -13,8 +15,7 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 
 class CARLLunarLander(CARLGymnasiumEnv):
-    env_name: str = "LunarLander-v2"
-    metadata = {"render.modes": ["human", "rgb_array"]}
+    env_name: str = "LunarLander-v3"
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
@@ -85,6 +86,20 @@ class CARLLunarLander(CARLGymnasiumEnv):
         gravity_y = self.context.get(
             "GRAVITY_Y", self.get_context_features()["GRAVITY_Y"].default_value
         )
+        self._gravity = vec2(float(gravity_x), float(gravity_y))
 
-        gravity = vec2(float(gravity_x), float(gravity_y))
-        self.env.unwrapped.world.gravity = gravity
+        # gymnasium's LunarLander re-creates its Box2D world in reset() from `self.gravity`, which would discard a
+        # gravity set on the current world. Set the attribute so the new world starts with the right value; the x
+        # component is re-applied after reset (see below).
+        self.env.unwrapped.gravity = float(gravity_y)
+        self.env.unwrapped.world.gravity = self._gravity
+
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        options: Optional[dict] = None,
+    ):
+        state, info = super().reset(seed=seed, options=options)
+        self.env.unwrapped.world.gravity = self._gravity
+        return state, info

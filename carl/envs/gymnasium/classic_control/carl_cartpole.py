@@ -10,7 +10,6 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 class CARLCartPole(CARLGymnasiumEnv):
     env_name: str = "CartPole-v1"
-    metadata = {"render.modes": ["human", "rgb_array"]}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
@@ -40,6 +39,14 @@ class CARLCartPole(CARLGymnasiumEnv):
                 "initial_state_upper", lower=-np.inf, upper=np.inf, default_value=0.1
             ),
         }
+
+    def _update_context(self) -> None:
+        super()._update_context()
+        # gymnasium's CartPoleEnv caches these derived quantities in __init__ and reads them in step(), so setting
+        # masscart/masspole/length alone would leave the dynamics (partially) unchanged.
+        env = self.env.unwrapped
+        env.total_mass = env.masspole + env.masscart
+        env.polemass_length = env.masspole * env.length
 
     def reset(
         self,

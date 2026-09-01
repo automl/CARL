@@ -66,7 +66,6 @@ class CARLRnaDesignEnv(CARLEnv):
         env.action_space = ACTION_SPACE
         env.observation_space = OBSERVATION_SPACE
         env.reward_range = (-np.inf, np.inf)
-        env.metadata = {}
         # The data_location in the RNA env refers to the place where the dataset is downloaded to, so it is not changed
         # with the context.
         env.data_location = data_location

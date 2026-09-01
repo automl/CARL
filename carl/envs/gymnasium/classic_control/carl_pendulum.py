@@ -10,13 +10,12 @@ from carl.envs.gymnasium.carl_gymnasium_env import CARLGymnasiumEnv
 
 class CARLPendulum(CARLGymnasiumEnv):
     env_name: str = "Pendulum-v1"
-    metadata = {"render_modes": ["human", "rgb_array"]}
 
     @staticmethod
     def get_context_features() -> dict[str, ContextFeature]:
         return {
             "max_speed": UniformFloatContextFeature(
-                "max_speed", lower=-np.inf, upper=np.inf, default_value=8.0
+                "max_speed", lower=0, upper=np.inf, default_value=8.0
             ),
             "dt": UniformFloatContextFeature(
                 "dt", lower=0, upper=np.inf, default_value=0.05

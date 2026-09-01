@@ -35,8 +35,8 @@ class BraxGymWrapper(gym.Env):
     def __init__(self, env: PipelineEnv, seed: int = 0, backend: Optional[str] = None):
         self._env = env
         self.metadata = {
-            "render.modes": ["human", "rgb_array"],
-            "video.frames_per_second": 1 / self._env.dt,
+            "render_modes": ["human", "rgb_array"],
+            "render_fps": 1 / self._env.dt,
         }
         self.seed(seed)
         self.backend = backend

@@ -179,13 +179,12 @@ class CARLEnv(Wrapper, abc.ABC):
             as_dict=self.obs_context_as_dict,
         )
 
-        obs_space = spaces.Dict(
-            {
-                "obs": self.base_observation_space,
-                "context": obs_space_context,
-            }
-        )
-        return obs_space
+        obs_space_dict = {
+            "obs": self.base_observation_space,
+        }
+        if len(obs_context_feature_names) > 0:
+            obs_space_dict["context"] = obs_space_context
+        return spaces.Dict(obs_space_dict)
 
     @staticmethod
     @abc.abstractmethod
@@ -291,17 +290,17 @@ class CARLEnv(Wrapper, abc.ABC):
         dict[str, Any]
             State context observation dict
         """
-
-        if not self.obs_context_as_dict:
-            context = [self.context[k] for k in self.obs_context_features]
-        else:
-            context = {
-                k: v for k, v in self.context.items() if k in self.obs_context_features
-            }
         state_context_dict = {
             "obs": state,
-            "context": context,
         }
+        if len(self.obs_context_features) > 0:
+            if not self.obs_context_as_dict:
+                context = [self.context[k] for k in self.obs_context_features]
+            else:
+                context = {
+                    k: v for k, v in self.context.items() if k in self.obs_context_features
+                }
+            state_context_dict["context"] = context
         return state_context_dict
 
     @abc.abstractmethod
